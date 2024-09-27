@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('py_user_access', function (Blueprint $table) {
-            $table->id();
-            $table->integer('sp_id')->nullable()->default('0');
+        Schema::create('ta_user_access', function (Blueprint $table) {
+            $table->string('id')->unique()->primary();
+            $table->string('sp_id')->nullable()->default('0');
             $table->string('mname')->nullable();
             $table->string('mtitle')->nullable();
-            $table->integer('mid')->nullable()->default('0');
+            $table->string('mid')->nullable()->default('0');
             $table->string('is_access')->nullable();
         });
     }

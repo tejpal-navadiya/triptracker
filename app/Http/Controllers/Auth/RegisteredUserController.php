@@ -35,17 +35,20 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
-
+        $id = $this->GenerateUniqueRandomString($table='users', $column="id", $chars=6);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'id' => $id
         ]);
-
+       
+        
         event(new Registered($user));
 
         Auth::login($user);
-
+        
+       // dd($user);
         return redirect(RouteServiceProvider::HOME);
     }
 }

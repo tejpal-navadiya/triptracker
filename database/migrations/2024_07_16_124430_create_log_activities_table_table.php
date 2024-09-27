@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('log_activities_table', function (Blueprint $table) {
-            $table->id()->unique();
+            $table->string('id')->unique()->primary();
             $table->string('subject')->nullable();
             $table->string('url')->nullable();
             $table->string('method')->nullable();
             $table->string('ip')->nullable();
             $table->string('agent')->nullable();
-            $table->integer('user_id')->nullable()->default('0');
+            $table->string('user_id')->nullable()->default('0');
             $table->timestamps();
         });
     }

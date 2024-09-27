@@ -77,6 +77,9 @@ class RegisterController extends Controller
 
         // Update the record with the final unique ID
         $admin->buss_unique_id = $buss_unique_id;
+        $id = $this->GenerateUniqueRandomString($table='users', $column="id", $chars=6);
+        $admin->id = $id;
+
         $admin->save();
 
         // Uncomment this line if you want to log in the user after registration

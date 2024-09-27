@@ -67,7 +67,6 @@
                                     </tr>
                                 @endforeach    
                             @else
-                                <tr class="odd"><td valign="top" colspan="7" class="dataTables_empty">No records found</td></tr>
                             @endif
                         </tbody>
                 </table>

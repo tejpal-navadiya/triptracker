@@ -10,6 +10,7 @@ class Plan extends Model
     use HasFactory;
     public $table = "ta_subscription_plans";
     protected $fillable = [
+        'sp_id',
         'sp_name',
         'sp_amount',
         'sp_month',

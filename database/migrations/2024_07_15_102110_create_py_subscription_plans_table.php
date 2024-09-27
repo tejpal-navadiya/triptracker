@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('py_subscription_plans', function (Blueprint $table) {
+        Schema::create('ta_subscription_plans', function (Blueprint $table) {
             $table->string('sp_id')->unique()->primary();
             $table->string('sp_name')->nullable();
             $table->string('sp_amount')->nullable()->default('0');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('py_subscription_plans');
+        Schema::dropIfExists('ta_subscription_plans');
     }
 };

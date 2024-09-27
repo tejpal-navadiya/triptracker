@@ -52,7 +52,8 @@ class PlanController extends Controller
             'sp_desc.string' => 'The description must be a string.',
             'sp_user.integer' => 'The user field must be an integer.',
         ]);
-
+        $id = $this->GenerateUniqueRandomString($table='ta_subscription_plans', $column="sp_id", $chars=6);
+        $validatedData['sp_id'] = $id;
         // Assuming you have a Plan model to handle database interactions
         Plan::create($validatedData);
         \LogActivity::addToLog('Admin Plan Created.');

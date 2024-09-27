@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use App\Http\Controllers\Controller;
 use Request;
 use Session;
 use Illuminate\Support\Facades\Auth;
@@ -13,14 +14,18 @@ class LogActivity
     {	
 
         $user = Auth::user();
-		
     	$log = [];
+        $controller = new Controller();
+        $id = $controller->GenerateUniqueRandomString($table='log_activities_table', $column="id", $chars=6);
+
+        $log['id'] = $id;
     	$log['subject'] = $subject;
     	$log['url'] = Request::fullUrl();
     	$log['method'] = Request::method();
     	$log['ip'] = Request::ip();
     	$log['agent'] = Request::header('user-agent');
     	$log['user_id'] = $user->id;
+    
     	LogActivityModel::create($log);
     }
 

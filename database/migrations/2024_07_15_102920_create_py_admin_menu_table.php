@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('py_admin_menu', function (Blueprint $table) {
+        Schema::create('ta_admin_menu', function (Blueprint $table) {
             $table->string('mid')->unique()->primary();
             $table->string('mname')->nullable();
             $table->string('mtitle')->nullable();
