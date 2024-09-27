@@ -1,0 +1,49 @@
+h4 {
+    margin: 0;
+}
+.w-full {
+    width: 100%;
+}
+.w-half {
+    width: 32%;
+}
+.margin-top {
+    margin-top: 1.25rem;
+}
+.footer {
+    font-size: 0.875rem;
+    padding: 1rem;
+    background-color: rgb(241 245 249);
+    position: relative;
+    margin-top: 180px;
+}
+table {
+    width: 100%;
+    border-spacing: 0;
+}
+table.products {
+    font-size: 0.875rem;
+}
+table.products tr {
+    background-color: #37B663;
+    text-align: left;
+}
+table.products th {
+    color: #ffffff;
+    padding: 0.5rem;
+}
+table tr.items {
+    background-color: rgb(241 245 249);
+}
+table tr.items td {
+    padding: 0.5rem;
+}
+.total {
+    width: 50%;
+    text-align: right;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    background-color: rgb(241 245 249);
+    padding: 20px;
+    float: right;
+}
