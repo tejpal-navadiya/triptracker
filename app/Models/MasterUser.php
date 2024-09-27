@@ -14,6 +14,9 @@ class MasterUser extends Authenticatable
     protected $guard = 'masteradmin';
 
     public $table = "buss_master_users";
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'id',
