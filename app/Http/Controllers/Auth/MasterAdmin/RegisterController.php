@@ -35,7 +35,7 @@ class RegisterController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-
+        //dd($request->all());
         $request->validate([
             'user_agencies_name' => ['required', 'string', 'max:255'],
             'user_franchise_name' => ['nullable', 'string', 'max:255'],
@@ -71,7 +71,16 @@ class RegisterController extends Controller
         $months = $plan->sp_month;
         $expirationDate = $startDate->addMonths($months);
         $expiryDate = $expirationDate->toDateString();
-        $uniqueId = $this->GenerateUniqueRandomString('buss_master_users', 'id', 6);        //dd($id);
+        $uniqueId = $this->GenerateUniqueRandomString('buss_master_users', 'id', 6);  
+              //dd($id);
+        $users_image = '';
+        if ($request->hasFile('image')) {
+            // Handle the image upload and check the result
+            $users_image = $this->handleImageUpload($request, $request->file('image'), 'masteradmin/profile_image');
+            
+            // Debug output
+            //dd($users_image); // This will output the image path and stop execution for debugging purposes
+        }
         $admin = MasterUser::create([
             'id' => $uniqueId,
             'user_agencies_name' => $request->user_agencies_name,
@@ -85,7 +94,7 @@ class RegisterController extends Controller
             'user_iata_number' => $request->user_iata_number,
             'user_address' => $request->user_address,
             'user_state' => $request->user_state,
-            'user_image' => '',
+            'user_image' => $users_image,
             'buss_unique_id' => '',
             'sp_id' => $request->sp_id,
             'user_password' => Hash::make($request->user_password),
@@ -122,7 +131,7 @@ class RegisterController extends Controller
             'users_consortia_name' => $request->user_consortia_name,
             'users_first_name' => $request->user_first_name,
             'users_last_name' => $request->user_last_name,
-            'userss_iata_clia_number' => $request->user_iata_clia_number,
+            'users_iata_clia_number' => $request->user_iata_clia_number,
             'users_email' => $request->user_email,
             'users_clia_number' => $request->user_clia_number,
             'users_iata_number' => $request->user_iata_number,
@@ -130,9 +139,10 @@ class RegisterController extends Controller
             'users_state' => $request->user_state,
             'users_city' => $request->user_city,
             'users_zip' => $request->user_zip,
-            'users_image' => '',
+            'users_image' => $users_image,
             'id' => $admin->id,
             'role_id' => 0,
+            'users_password' => Hash::make($request->user_password),
             'user_id' => $buss_unique_id,
             'users_status' => '1',
             'users_id' => $users_id

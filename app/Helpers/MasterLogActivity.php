@@ -5,6 +5,7 @@ use Request;
 use Session;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Http\Controllers\Controller;
 use App\Models\MasterAdminLogActivities as MasterLogActivityModel;
 
 class MasterLogActivity
@@ -20,8 +21,13 @@ class MasterLogActivity
         $logActivityModel = new MasterLogActivityModel();
         // Set the table name for this user's logs
         $logActivityModel->setTableForUniqueId($user->user_id);
-
+        $tableName = $logActivityModel->getTable();
+        // dd($tableName);
+        $controller = new Controller();
+        $id = $controller->GenerateUniqueRandomString($table= $tableName, $column="id", $chars=6);
+        
         $log = [
+            'id' => $id,
             'subject' => $subject,
             'url' => Request::fullUrl(),
             'method' => Request::method(),

@@ -109,7 +109,7 @@ class MasterLoginRequest extends FormRequest
 
        
 
-        $msg=$users->users_name." is Logged in";
+        $msg=$users->users_first_name.$users->users_last_name." is Logged in";
         \MasterLogActivity::addToLog($msg);
         
         if ($this->boolean('user_remember')) {

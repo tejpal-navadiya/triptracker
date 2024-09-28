@@ -7,7 +7,7 @@
       <p class="text-danger" > {{ Session::get('link-error') }}</p>
     @endif
               
-    <form method="POST" action="{{ route('masteradmin.register.store') }}">
+    <form method="POST" action="{{ route('masteradmin.register.store') }}" enctype="multipart/form-data">
         @csrf
         <div>
           <div class="input-group mb-2">
@@ -247,6 +247,16 @@
               </select>
           </div>
           @error('sp_id')
+              <div class="invalid-feedback mb-2">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div>
+          <div class="input-group">
+              <input type="file" name="image" accept="image/*" class="">
+              <span>Please upload a valid image file. Size of image should not be more than 2MB.</span>
+          </div>
+          @error('image')
               <div class="invalid-feedback mb-2">{{ $message }}</div>
           @enderror
         </div>

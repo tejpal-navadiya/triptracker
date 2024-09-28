@@ -102,10 +102,9 @@ class Controller extends BaseController
                     $table->string('users_iata_number')->nullable();
                     $table->string('users_address')->nullable();
                     $table->string('users_city')->nullable();
-                    $table->integer('state_id')->nullable()->default(0);
+                    $table->integer('users_state')->nullable()->default(0);
                     $table->integer('users_zip')->nullable()->default(0);
                     $table->string('email_verified_at')->nullable()->unique();
-                    $table->string('users_phone')->nullable()->unique();
                     $table->string('users_password')->nullable();
                     $table->string('users_image')->nullable();
                     $table->string('role_id')->nullable()->default(0);

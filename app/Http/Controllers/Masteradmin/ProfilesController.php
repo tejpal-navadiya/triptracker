@@ -259,7 +259,8 @@ class ProfilesController extends Controller
           
             $logs->transform(function ($log) use ($userDetails) {
                 $userDetail = $userDetails->get($log->user_id);
-                $log->user_name = $userDetail ? $userDetail->users_name : 'Unknown'; 
+                $log->users_first_name = $userDetail ? $userDetail->users_first_name : 'Unknown'; 
+                $log->users_last_name = $userDetail ? $userDetail->users_last_name : 'Unknown'; 
                 return $log;
             });
             // dd($logs);

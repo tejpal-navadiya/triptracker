@@ -22,19 +22,7 @@
           </li>
           
          
-          <li class="nav-item {{ request()->is($busadminRoutes.'/profile*') ||
-           request()->is($busadminRoutes.'/business-profile*') || 
-           request()->is($busadminRoutes.'/logActivity*') || 
-           request()->is($busadminRoutes.'/user-role-details*') || 
-           request()->is($busadminRoutes.'/rolecreate*') || 
-           request()->is($busadminRoutes.'/roleedit/*') ||
-           request()->is($busadminRoutes.'/userrole/*') ||
-           request()->is($busadminRoutes.'/salestax*') || 
-           request()->is($busadminRoutes.'/taxcreate*') || 
-           request()->is($busadminRoutes.'/taxedit/*') ||
-           request()->is($busadminRoutes.'/userdetails*') || 
-           request()->is($busadminRoutes.'/usercreate*') || 
-           request()->is($busadminRoutes.'/useredit/*') 
+          <li class="nav-item {{ request()->is($busadminRoutes.'/profile*') 
                     ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon far fas fa-cog"></i>
@@ -44,14 +32,14 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              @if(isset($access['personal_profile']) && $access['personal_profile'])
+             
               <li class="nav-item">
                 <a href="{{ route('masteradmin.profile.edit') }}" class="nav-link {{ request()->is($busadminRoutes.'/profile*') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Personal Profile</p>
+                  <p>Profile</p>
                 </a>
               </li>
-              @endif
+            
               
               @if(isset($access['business_profile']) && $access['business_profile']) 
               <li class="nav-item">

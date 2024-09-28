@@ -32,7 +32,7 @@
           @else
             <img src="{{url('public/dist/img/user2-160x160.jpg')}}" class="elevation-2 user_img" alt="User Image">
           @endif
-          <span class="d-block dropdown-toggle" >{{ Auth::guard('masteradmins')->user()->users_name}} </span>
+          <span class="d-block dropdown-toggle" >{{ Auth::guard('masteradmins')->user()->users_first_name}} {{ Auth::guard('masteradmins')->user()->users_last_name}} </span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <x-dropdown-link :href="route('masteradmin.profile.edit')">

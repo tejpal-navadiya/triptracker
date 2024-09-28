@@ -47,7 +47,7 @@
                                         <td>{{ $log->method }}</td>
                                         <td>{{ $log->ip }}</td>
                                         <td>{{ $log->agent }}</td>
-                                        <td>{{ $log->user_name }}</td>
+                                        <td>{{ $log->users_first_name }} {{ $log->users_last_name }}</td>
                                         <td>{{ $log->created_at }}</td>
                                     </tr>
                                 @endforeach    

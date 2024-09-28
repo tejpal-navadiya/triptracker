@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class MasterAdminLogActivities extends Model
 {
     use HasFactory;
-    protected $fillable = ['subject', 'url', 'method', 'ip', 'agent', 'user_id'];
+    protected $fillable = ['id', 'subject', 'url', 'method', 'ip', 'agent', 'user_id'];
 
     public function setTableForUniqueId($uniqueId)
     {
