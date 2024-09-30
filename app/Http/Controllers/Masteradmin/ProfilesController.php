@@ -32,28 +32,55 @@ class ProfilesController extends Controller
     {
         // Retrieve the authenticated user
         $user = Auth::guard('masteradmins')->user();
-        // dd($user);
-
-        $countries = Countries::all();
+       // dd($user);
        
-        $states = States::where('country_id', $user->country_id)->get();
+        $states = States::get();
         // dd($user);
         return view('masteradmin.profile.edit', [
             'user' => $user,
-            'countries' => $countries,
             'states' => $states,
-            'selectedStateId' => $user->state_id,
         ]);
     }
 
-    public function getStates($countryId): JsonResponse
+    public function fetchUser()
     {
-        $states = States::where('country_id', $countryId)->get();
 
-        return response()->json($states);
+         $user = Auth::guard('masteradmins')->user();
+       // $userDetails = session('user_details');
+       //dd($user);
+       if ($user) {
+            return response()->json(['users' => $user]);  // Return the entire user object for debugging
+        } else {
+            return response()->json(['status' => 404, 'message' => 'User not found']);
+        }
     }
 
-    public function update(MasterProfileUpdateRequest $request): RedirectResponse
+    public function edits($id)
+    {
+        $user = Auth::guard('masteradmins')->user();
+        $userDetails = new MasterUserDetails();
+        $userDetails->setTableForUniqueId($user->user_id);
+    
+        $existingUser = $userDetails->where('users_id', $id)->first();
+
+        if($existingUser)
+        {
+            return response()->json([
+                'status'=>200,
+                'users'=> $existingUser,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'=>404,
+                'message'=>'No users Found.'
+            ]);
+        }
+
+    }
+
+    public function update(MasterProfileUpdateRequest $request)
     {
         // dd($request);
         $user = Auth::guard('masteradmins')->user();
@@ -62,17 +89,14 @@ class ProfilesController extends Controller
         $userDetails->setTableForUniqueId($user->user_id);
     
         $existingUser = $userDetails->find($user->id);
-        // dd($existingUser);
+        //  dd($existingUser);
         if (!$existingUser) {
             return Redirect::route('masteradmin.profile.edit')->withErrors('User not found');
         }
     
         $data = $request->validated();
     
-        if ($request->hasFile('image')) {
-            $data['users_image'] = $this->handleImageUpload($request, $request->file('image'), 'masteradmin/profile_image');
-        }
-    
+       
         // Update the record
         $existingUser->where('users_id',$existingUser->users_id)->update($data);
 
@@ -81,7 +105,11 @@ class ProfilesController extends Controller
         session(['user_details' => $updatedUser]);
 
         \MasterLogActivity::addToLog('Master Admin Profile is Edited.');
-        return Redirect::route('masteradmin.profile.edit')->with('status', 'profile-updated');
+
+        return response()->json([
+            'status'=>200,
+            'message'=>'User Updated Successfully.'
+        ]);
     }
 
     public function businessProfile(Request $request): View

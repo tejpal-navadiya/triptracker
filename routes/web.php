@@ -98,14 +98,16 @@ Route::group(['prefix' => $busadminRoute], function () {
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');
         Route::get('/profile', [ProfilesController::class, 'edit'])->name('masteradmin.profile.edit');
+        Route::get('/profile/{id}', [ProfilesController::class, 'edits'])->name('masteradmin.profile.edits');
         Route::patch('/profile', [ProfilesController::class, 'update'])->name('masteradmin.profile.update');
         Route::delete('/profile', [ProfilesController::class, 'destroy'])->name('masteradmin.profile.destroy');
-        Route::get('states/{countryId}', [ProfilesController::class, 'getStates'])->name('masteradmin.profile.destroy');
+        Route::get('fetch-users', [ProfilesController::class, 'fetchUser'])->name('masteradmin.profile.fetchUser');
+
         Route::put('password', [MasterPasswordController::class, 'update'])->name('masteradmin.password.update');
         Route::post('logout', [LoginController::class, 'destroy'])->name('masteradmin.logout');
         
         //create alter database
-        Route::get('/create-table', [Controller::class, 'createTableRoute']);
+        Route::get('/create-table', [Controller::class, 'createTableRoute'])->name('create.table');
        
         //Log Activity
         Route::get('/logActivity', [ProfilesController::class, 'logActivity'])->name('masteradmin.masterlog.index');

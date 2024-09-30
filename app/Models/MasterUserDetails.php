@@ -28,6 +28,7 @@ class MasterUserDetails extends Authenticatable
         'users_clia_number',
         'users_iata_number',
         'users_password',
+        'users_phone',
         'users_image',
         'users_address',
         'users_state',
@@ -36,6 +37,7 @@ class MasterUserDetails extends Authenticatable
         'role_id',
         'user_id',
         'user_status',
+        'users_bio',
     ];
 
     
@@ -49,7 +51,7 @@ class MasterUserDetails extends Authenticatable
     }
 
     protected $hidden = [
-        'users_phone',
+        'users_password',
         'remember_token',
     ];
 

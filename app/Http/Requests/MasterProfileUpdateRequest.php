@@ -18,11 +18,11 @@ class MasterProfileUpdateRequest extends FormRequest
         $user = Auth::guard('masteradmins')->user();
         // dd($user );
         return [
-            'users_name' => ['required', 'string', 'max:255'],
-            'users_city_name' => ['required', 'string', 'max:255'],
-            'users_pincode' => ['required', 'string', 'max:255'],
-            'country_id' => ['required', 'integer'],
-            'state_id' => ['required', 'integer'],
+            'users_first_name' => ['required', 'string', 'max:255'],
+            'users_last_name' => ['required', 'string', 'max:255'],
+            'users_email' => ['required', 'string', 'max:255'],
+            'users_phone' => ['nullable', 'string', 'max:255'],
+            'users_bio' => ['required', 'string', 'max:255']
         ];
     }
     

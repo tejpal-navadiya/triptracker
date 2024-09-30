@@ -18,5 +18,6 @@
             @yield('content')
         </div>
         @include('masteradmin.layouts.footerlink')
+        @yield('scripts')
     </body>
 </html>

@@ -35,12 +35,5 @@
   <link rel="stylesheet" href="{{url('public/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{url('public/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 
-
-
-
-
-
-
-
     <!-- css style -->
     <link rel="stylesheet" href="{{url('public/dist/css/custom.css')}}">

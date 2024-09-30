@@ -27,6 +27,7 @@
               <div class="profile nav flex-column nav-tabs" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
                 <a class="nav-link active" id="vert-tabs-personalinformation-tab" data-toggle="pill" href="#vert-tabs-personalinformation" role="tab" aria-controls="vert-tabs-personalinformation" aria-selected="true">Personal Information <i class="fas fa-angle-right right"></i></a>
                 <a class="nav-link" id="vert-tabs-changepassword-tab" data-toggle="pill" href="#vert-tabs-changepassword" role="tab" aria-controls="vert-tabs-changepassword" aria-selected="false">Change Password <i class="fas fa-angle-right right"></i></a>
+                <a class="nav-link" id="vert-tabs-certifications-tab" data-toggle="pill" href="#vert-tabs-certifications" role="tab" aria-controls="vert-tabs-certifications" aria-selected="false">Certifications <i class="fas fa-angle-right right"></i></a>
               </div>
             </div>
           </div>
@@ -43,6 +44,13 @@
                   @include('masteradmin.profile.update-password-form')
                 </div>
               </div>
+
+              <div class="tab-pane fade" id="vert-tabs-certifications" role="tabpanel" aria-labelledby="vert-tabs-certifications-tab">
+                <div class="card">
+                  @include('masteradmin.profile.update-password-form')
+                </div>
+              </div>
+              
             </div>
           </div>
           <!-- /.col -->

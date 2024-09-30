@@ -59,10 +59,21 @@ class Controller extends BaseController
         return $currentImage;
     }
 
-    public function CreateTable($id){
-        $master_user = MasterUser::find($id);
+    public function CreateTable($id)
+    {
+        // Debugging to see the passed $id
+        //dd($id); // Check if the ID being passed is correct
+    
+        $master_user = MasterUser::where('buss_unique_id', $id)->first();
+    
+        if (!$master_user) {
+            return response()->json(['message' => 'No user found with this ID.'], 404);
+        }
+    
+        // This will dump the value if a record is found
         if($master_user){
             $storeId = $master_user->buss_unique_id;
+
             if (!Schema::hasTable($storeId.'_tc_log_activities_table')){   
                 Schema::create($storeId.'_tc_log_activities_table', function (Blueprint $table) {
                     $table->string('id')->unique()->primary();
@@ -106,6 +117,7 @@ class Controller extends BaseController
                     $table->integer('users_zip')->nullable()->default(0);
                     $table->string('email_verified_at')->nullable()->unique();
                     $table->string('users_password')->nullable();
+                    $table->string('users_phone')->nullable();
                     $table->string('users_image')->nullable();
                     $table->string('role_id')->nullable()->default(0);
                     $table->string('id')->nullable()->default(0);
@@ -113,6 +125,18 @@ class Controller extends BaseController
                     $table->string('remember_token')->nullable();
                     $table->tinyInteger('users_status')->default(0)->nullable();
                     $table->timestamps();
+                });
+            }else{
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_phone')) {
+                        $table->string('users_phone')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_bio')) {
+                        $table->string('users_bio')->nullable();
+                    }
                 });
             }
 
@@ -131,15 +155,17 @@ class Controller extends BaseController
             }
 
         }
+        
     }
+    
 
     public function createTableRoute(Request $request)
     {
         
        $user = Auth::guard('masteradmins')->user();
-        //dd($user);
-        $id = $user->id;
 
+        $id = $user->user_id;
+        //dd($id);
         if (!$id) {
             return response()->json(['message' => 'ID is required'], 400);
         }
