@@ -180,7 +180,8 @@ class PlanController extends Controller
                 }
             }
         }
-
+        \LogActivity::addToLog('Admin Plan role assign.');
+        
         return redirect()->route('plans.planrole', ['plan' => $sp_id])
             ->with('plan-role', __('messages.admin.plan.roll_plan_access_success'));
     }

@@ -15,6 +15,17 @@
         <!-- /.Main Sidebar Container -->
         <div class="content-wrapper">
             <section class="content px-10">
+            @if(Session::has('plan-role'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ Session::get('plan-role') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                @php
+                Session::forget('plan-role');
+                @endphp
+            @endif
             <div class="container-fluid">
                 <div class="card">
                     
