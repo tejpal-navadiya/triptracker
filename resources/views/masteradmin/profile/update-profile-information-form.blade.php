@@ -151,7 +151,7 @@
                 url: "{{ route('masteradmin.profile.fetchUser') }}", 
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
+                   // console.log(response);
                     if(response.users) {
                         // Set the user data in your HTML
                         $('p#users_first_name').text(response.users.users_first_name ?? ' - ');
@@ -243,7 +243,8 @@
                         $('#editModal').find('textarea').val('');
 
                         document.getElementById('editModal').style.display = 'none';
-
+                        // let editModals = new bootstrap.Modal(document.getElementById('editModal'));
+                        // editModals.dispose();
 
                         $('.update_users').text('Update');
 

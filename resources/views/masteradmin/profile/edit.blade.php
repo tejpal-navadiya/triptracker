@@ -47,7 +47,7 @@
 
               <div class="tab-pane fade" id="vert-tabs-certifications" role="tabpanel" aria-labelledby="vert-tabs-certifications-tab">
                 <div class="card">
-                  @include('masteradmin.profile.update-password-form')
+                  @include('masteradmin.profile.update-profile-certification-form')
                 </div>
               </div>
               

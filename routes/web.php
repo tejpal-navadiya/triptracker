@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\superadmin\HomesController;
 use App\Http\Controllers\Masteradmin\UserController;
 use App\Http\Controllers\Masteradmin\UserRoleController;
+use App\Http\Controllers\Masteradmin\UserCertificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,7 +139,11 @@ Route::group(['prefix' => $busadminRoute], function () {
        
        Route::patch('/userupdate/{userdetail}', [UserController::class, 'update'])->name('masteradmin.userdetail.update');
        Route::delete('/userdestroy/{userdetail}', [UserController::class, 'destroy'])->name('masteradmin.userdetail.destroy');
-        
+
+       //user certification
+       Route::resource('user-certification', UserCertificationController::class);
+
+
     });
      
 

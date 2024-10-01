@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\BusinessDetails;
 use App\Models\MasterUserDetails;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserCertification;
 
 class ProfilesController extends Controller
 {
@@ -32,13 +33,17 @@ class ProfilesController extends Controller
     {
         // Retrieve the authenticated user
         $user = Auth::guard('masteradmins')->user();
-       // dd($user);
+        // dd($user);
+        $certification = UserCertification::where(['id' => $user->id])->get();
+        
+        //dd($cerifications);
        
         $states = States::get();
         // dd($user);
         return view('masteradmin.profile.edit', [
             'user' => $user,
             'states' => $states,
+            'certification' => $certification
         ]);
     }
 
@@ -80,6 +85,7 @@ class ProfilesController extends Controller
 
     }
 
+    
     public function update(MasterProfileUpdateRequest $request)
     {
         // dd($request);

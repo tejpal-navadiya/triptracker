@@ -154,6 +154,23 @@ class Controller extends BaseController
                 });
             }
 
+
+            // user certificate
+            if (!Schema::hasTable($storeId.'_tc_users_certification')){   
+                Schema::create($storeId.'_tc_users_certification', function (Blueprint $table) {
+                    $table->string('users_cert_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('users_cert_name')->nullable();
+                    $table->string('users_cert_person_name')->nullable();
+                    $table->string('users_cert_completed_date')->nullable();
+                    $table->string('users_cert_expiration')->nullable();
+                    $table->text('users_cert_desc')->nullable();
+                    $table->text('users_cert_document')->nullable();
+                    $table->tinyInteger('users_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }
+
         }
         
     }
