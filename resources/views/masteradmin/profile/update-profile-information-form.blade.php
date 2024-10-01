@@ -66,7 +66,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post" action="{{ route('masteradmin.profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
+                <form method="post" action="{{ route('masteradmin.profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data" id="profileForm">
                     @csrf
                     @method('patch')
                     <ul id="update_msgList"></ul>
@@ -242,9 +242,12 @@
                         $('#editModal').find('input').val('');
                         $('#editModal').find('textarea').val('');
 
-                        document.getElementById('editModal').style.display = 'none';
-                        // let editModals = new bootstrap.Modal(document.getElementById('editModal'));
-                        // editModals.dispose();
+                        $('#editModal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $('body').removeClass('modal-open');
+                        $('#editModal').css('display', 'none');
+
+                        $('#profileForm')[0].reset();
 
                         $('.update_users').text('Update');
 

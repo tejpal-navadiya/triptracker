@@ -222,43 +222,6 @@
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
         });
-     
-
-        // //insert or update data
-        // $('#saveBtn').click(function (e) {
-         
-        //     const modalElement = document.getElementById('ajaxModel');
-    
-        //     // Create a new modal instance and hide it
-        //     const modal = new bootstrap.Modal(modalElement);
-         
-        //     $(this).html('Sending..');
-        //     e.preventDefault();
-        //     var formData = new FormData($('#certForm')[0]);
-        //     formData.append('_token', "{{ csrf_token() }}");
-           
-        //     // console.log($('#certForm').serialize());
-        //     $.ajax({
-        //         data: formData,
-        //         url: "{{ route('user-certification.store') }}",
-        //         type: "POST",
-        //         contentType: false,
-        //         processData: false,
-        //         dataType: 'json',
-        //         success: function (data) {
-                   
-        //             modal.hide();
-                  
-        //             // Hide the modal
-        //             fetchUserCertification(); // Fetch user certification after a slight delay
-                   
-        //         },
-        //         error: function (data) {
-        //             console.log('Error:', data);
-        //             $('#saveBtn').html('Save Changes');
-        //         }
-        //     });
-        // });
 
         //insert or update data
         $('#saveBtn').click(function (e) {
