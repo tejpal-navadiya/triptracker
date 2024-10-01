@@ -130,103 +130,55 @@ class PlanController extends Controller
     }
     public function planrole($sp_id): View
     {
+        // dd($sp_id);
+        $id = $sp_id;
         $plan = Plan::where('sp_id', $sp_id)->firstOrFail();
         $permissions = AdminMenu::where('pmenu', 0)
-            ->where('is_deleted', 0)
-            ->whereIn('mid', range(1, 20))
-            ->get();
-        $reports = AdminMenu::where('pmenu', 21)
-            ->where('is_deleted', 0)
-            ->get();
+        ->where('is_deleted', 0)
+        ->get();
 
-        foreach ($permissions as $permission) {
-            $this->setPermissionAccess($permission, $sp_id);
-        }
+        $subPermissions = AdminMenu::where('mid', '>=', 12)
+        ->where('is_deleted', 0)
+        ->whereExists(function ($query) {
+            $query->select('*')
+                ->from('ta_admin_menu')
+                ->whereRaw('`ta_admin_menu`.`pmenu` IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)');
+        })
+        ->get();
+        
+        $useraccess = UserAccess::where('sp_id', $sp_id)->get();
 
-        foreach ($reports as $report) {
-            $this->setPermissionAccess($report, $sp_id);
-        }
 
-        // Check if the parent Reports checkbox should be checked
-        $reports_parent_checked = $this->getIsAccess('reports_parent', $sp_id);
+        // dd($useraccess);
 
-        return view('superadmin.plans.plan_role_access', compact('permissions', 'reports', 'plan', 'reports_parent_checked'));
+        return view('superadmin.plans.plan_role_access', compact('permissions', 'subPermissions','id','useraccess'));
     }
-
-    private function setPermissionAccess(&$item, $sp_id)
-    {
-        $item->is_access = $this->getIsAccess($item->mname, $sp_id);
-        $item->is_access_add = $this->getIsAccess('add_' . $item->mname, $sp_id);
-        $item->is_access_view = $this->getIsAccess('view_' . $item->mname, $sp_id);
-        $item->is_access_update = $this->getIsAccess('update_' . $item->mname, $sp_id);
-        $item->is_access_delete = $this->getIsAccess('delete_' . $item->mname, $sp_id);
-    }
-
-    private function getIsAccess($permissionName, $roleId)
-    {
-        $access = UserAccess::where('sp_id', $roleId)
-            ->where('mname', $permissionName)
-            ->first();
-
-        return $access ? $access->is_access : 0;
-    }
-
 
 
     public function updaterole(Request $request, $sp_id): RedirectResponse
     {
         UserAccess::where('sp_id', $sp_id)->delete();
 
-        // Fetch all admin menu items
-        $menus = AdminMenu::where('is_deleted', 0)->get();
-
-        // Fetch the reports data
-        $reports = AdminMenu::where('pmenu', 21)
-            ->where('is_deleted', 0)
-            ->get();
-
-        // Process permissions checkboxes
-        foreach ($menus as $menu) {
-            $mname = $menu->mname;
-            $mtitle = $menu->mtitle;
-            $mid = $menu->mid;
-            $is_access = $request->has($mname) ? 1 : 0;
-
-            // Insert or update user access
-            UserAccess::create([
-                'sp_id' => $sp_id,
-                'mid' => $mid,
-                'mtitle' => $mtitle,
-                'mname' => $mname,
-                'is_access' => $is_access,
-            ]);
-        }
-
-        // Process reports parent checkbox
-        $reports_parent_checked = $request->has('reports_parent') ? 1 : 0;
-
-        // Insert or update user access for reports parent
-        UserAccess::create([
-            'sp_id' => $sp_id,
-            'mid' => 21,
-            'mtitle' => 'Reports',
-            'mname' => 'reports_parent', // Adjust as per your naming convention
-            'is_access' => $reports_parent_checked,
-        ]);
-
-        // Process individual report checkboxes
-        foreach ($reports as $report) {
-            $report_name = $report->mname;
-            $report_checked = $request->has($report_name) ? 1 : 0;
-
-            // Insert or update user access for each report
-            UserAccess::create([
-                'sp_id' => $sp_id,
-                'mid' => $report->mid,
-                'mtitle' => $report->mtitle,
-                'mname' => $report_name,
-                'is_access' => $report_checked,
-            ]);
+        $sp_id = $request->input('sp_id');
+        $permissions = $request->input('permissions');
+        //dd($permissions);
+        foreach ($permissions as $permissionId => $permission) {
+     
+            if (isset($permission['subPermissions'])) {
+                foreach ($permission['subPermissions'] as $subPermission) {
+                    if ($subPermission['checked'] ?? '') {
+                        $id = $this->GenerateUniqueRandomString($table='ta_user_access', $column="id", $chars=6);
+                        UserAccess::create([
+                            'id' => $id,
+                            'sp_id' => $sp_id,
+                            'mname' => $subPermission['mname'],
+                            'mtitle' => $subPermission['mtitle'],
+                            'mid' => $subPermission['mid'],
+                            'is_access' => 1
+                        ]);
+                    }
+                }
+            }
         }
 
         return redirect()->route('plans.planrole', ['plan' => $sp_id])

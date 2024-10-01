@@ -11,6 +11,7 @@ class UserAccess extends Model
     public $table = "ta_user_access";
 
     protected $fillable = [
+        'id',
         'sp_id',
         'mname',
         'mtitle',

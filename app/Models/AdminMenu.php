@@ -11,11 +11,6 @@ class AdminMenu extends Model
     use HasFactory;
     public $table = "ta_admin_menu";
 
-    public function subPermissions()
-    {
-        return $this->hasMany(AdminMenu::class, 'pmenu');
-    }
-
     protected $fillable = [
         'mname',
         'mtitle',
@@ -28,5 +23,9 @@ class AdminMenu extends Model
         return $this->hasMany(UserAccess::class, 'mid');
     }
 
+    public function permissions()
+    {
+        return $this->belongsToMany(AdminMenu::class, 'permission_menu', 'menu_id', 'permission_id');
+    }
 
 }

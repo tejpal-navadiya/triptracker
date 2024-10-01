@@ -1637,6 +1637,26 @@ form {
   color: #053A51;
 }
 
+.user-role-box{
+  position: relative;
+  width: 100%;
+  background: transparent;
+  border: 1px solid #CECECE;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.module-title{
+  position: relative;
+  font-size: 18px;
+  color: #384150;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.checkbox-inputbox{
+  position: relative;
+  margin-right: 5px;
+}
 /*--------------------------------------------------------------
 # Responsive Css
 --------------------------------------------------------------*/
@@ -2299,3 +2319,7 @@ form {
     padding: 10px 10px 10px 10px;
   } 
 }
+
+
+
+
