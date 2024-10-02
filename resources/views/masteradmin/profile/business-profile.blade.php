@@ -1,5 +1,5 @@
 @extends('masteradmin.layouts.app')
-<title>Business Profile | Profityo</title>
+<title>Business Profile | Trip Tracker</title>
 @if(isset($access['business_profile']) && $access['business_profile']) 
 @section('content')
   <!-- Content Wrapper. Contains page content -->

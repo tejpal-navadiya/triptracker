@@ -1,5 +1,5 @@
 @extends('masteradmin.layouts.app')
-<title>Log Activity | Profityo</title>
+<title>Log Activity | Trip Tracker</title>
 @section('content')
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

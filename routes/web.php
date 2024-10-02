@@ -120,7 +120,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         // //exp plan or not plan purchase
         // Route::get('/plan/purchase', [ProfilesController::class, 'purchase'])->name('business.plan.purchase');
             
-       //User Role
+    //    //User Role
        Route::get('user-role-details', [UserRoleController::class, 'index'])->name('masteradmin.role.index');
        Route::get('rolecreate', [UserRoleController::class, 'create'])->name('masteradmin.role.create');
        Route::post('roleadd', [UserRoleController::class, 'store'])->name('masteradmin.role.store');

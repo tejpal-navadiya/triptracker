@@ -1,4 +1,4 @@
-<title>Forgot Password | Profityo</title>
+<title>Forgot Password | Trip Tracker</title>
 <x-guest-layout>
 
     <h5 class="login-box-msg">Forgot Password !</h5>

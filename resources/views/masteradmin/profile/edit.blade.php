@@ -1,6 +1,7 @@
 @extends('masteradmin.layouts.app')
-<title>Personal Profile | Profityo</title>
+<title>Personal Profile | Trip Tracker</title>
 @section('content')
+@if(isset($access['edit_profile']) && $access['edit_profile']) 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -25,9 +26,15 @@
           <div class="col-md-3">
             <div class="card">
               <div class="profile nav flex-column nav-tabs" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
+                @if(isset($access['edit_profile']) && $access['edit_profile']) 
                 <a class="nav-link active" id="vert-tabs-personalinformation-tab" data-toggle="pill" href="#vert-tabs-personalinformation" role="tab" aria-controls="vert-tabs-personalinformation" aria-selected="true">Personal Information <i class="fas fa-angle-right right"></i></a>
+                @endif
+                @if(isset($access['change_password']) && $access['change_password']) 
                 <a class="nav-link" id="vert-tabs-changepassword-tab" data-toggle="pill" href="#vert-tabs-changepassword" role="tab" aria-controls="vert-tabs-changepassword" aria-selected="false">Change Password <i class="fas fa-angle-right right"></i></a>
+                @endif
+                @if(isset($access['certifications']) && $access['certifications']) 
                 <a class="nav-link" id="vert-tabs-certifications-tab" data-toggle="pill" href="#vert-tabs-certifications" role="tab" aria-controls="vert-tabs-certifications" aria-selected="false">Certifications <i class="fas fa-angle-right right"></i></a>
+                @endif              
               </div>
             </div>
           </div>
@@ -69,5 +76,5 @@
 </div>
 <!-- ./wrapper -->
 
-
+@endif
 @endsection

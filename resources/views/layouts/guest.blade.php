@@ -32,7 +32,7 @@
         <div class="card">
             <div class="login-card-body">
                 <div class="login-logo">
-                    <img src="{{url('public/dist/img/logo.png')}}" alt="Profityo Logo" class="brand-image">
+                    <img src="{{url('public/dist/img/logo.png')}}" alt="Trip Tracker Logo" class="brand-image">
                 </div>
                 <div class="">
                     {{ $slot }}

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 @extends('layouts.app')
-<title>Dashboard | Profityo</title>
+<title>Dashboard | Trip Tracker</title>
 @section('content')
   <!-- /.Main Sidebar Container -->
 

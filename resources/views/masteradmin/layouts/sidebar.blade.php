@@ -4,7 +4,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ route('masteradmin.home') }}" class="brand-link">
-      <img src="{{url('public/dist/img/logo.png')}}" alt="Profityo Logo" class="brand-image">
+      <img src="{{url('public/dist/img/logo.png')}}" alt="Trip Tracker Logo" class="brand-image">
     </a>
 
     <!-- Sidebar -->
@@ -21,7 +21,6 @@
             </a>
           </li>
           
-         
           <li class="nav-item {{ request()->is($busadminRoutes.'/profile*') 
                     ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
@@ -32,46 +31,27 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-             
+            @if(isset($access['edit_profile']) && $access['edit_profile']) 
               <li class="nav-item">
                 <a href="{{ route('masteradmin.profile.edit') }}" class="nav-link {{ request()->is($busadminRoutes.'/profile*') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Profile</p>
                 </a>
               </li>
-            
+            @endif 
               
-              @if(isset($access['business_profile']) && $access['business_profile']) 
+              @if(isset($access['view_role']) && $access['view_role']) 
               <li class="nav-item">
-                <a href="{{ route('masteradmin.business.edit') }}" class="nav-link {{ request()->is($busadminRoutes.'/business-profile*') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Business Profile</p>
-                </a>
-              </li>
-              @endif
-              @if(isset($access['users']) && $access['users']) 
-              <li class="nav-item">
-                <a href="{{ route('masteradmin.userdetail.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/userdetails*') || 
+                <a href="{{ route('masteradmin.role.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/userdetails*') || 
                              request()->is($busadminRoutes.'/usercreate*') || 
                              request()->is($busadminRoutes.'/useredit/*')  
                               ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Users</p>
+                  <p>User Role</p>
                 </a>
               </li>
               @endif
-              @if(isset($access['roles']) && $access['roles'])  
-              <li class="nav-item">
-                <a href="{{ route('masteradmin.role.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/user-role-details*') || 
-                             request()->is($busadminRoutes.'/rolecreate*') || 
-                             request()->is($busadminRoutes.'/roleedit/*')  ||
-                             request()->is($busadminRoutes.'/userrole/*') 
-                              ? 'active' : '' }} ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Roles</p>
-                </a>
-              </li>
-              @endif
+             
             
               <li class="nav-item">
                 <a href="{{ route('masteradmin.masterlog.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/logActivity*') ? 'active' : '' }}">

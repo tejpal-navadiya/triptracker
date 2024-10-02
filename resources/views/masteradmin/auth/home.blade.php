@@ -1,8 +1,8 @@
 @extends('masteradmin.layouts.app')
-<title>Dashboard | Profityo</title>
+<title>Dashboard | Trip Tracker</title>
 @section('content')
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="{{url('public/dist/img/logo.png')}}" alt="ProfityoLogo">
+    <img class="animation__shake" src="{{url('public/dist/img/logo.png')}}" alt="Trip Tracker Logo">
   </div>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

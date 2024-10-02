@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1); 
 error_reporting(E_ALL);
 ?>
-<title>Login | Profityo</title>
+<title>Login | Trip Tracker</title>
 <x-guest-layout>
     
     <h5 class="login-box-msg">Login !</h5>

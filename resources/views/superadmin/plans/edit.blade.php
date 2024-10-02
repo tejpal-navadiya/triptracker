@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Profityo | Edit subscription Plans</title>
+    <title>Trip Tracker | Edit subscription Plans</title>
     @include('layouts.headerlink')
 </head>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to Profityo</title>
+    <title>Welcome to Trip Tracker</title>
 </head>
 <body>
     <p>Dear User,</p>

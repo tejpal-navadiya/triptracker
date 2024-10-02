@@ -28,8 +28,8 @@ class PlanAccessMiddleware
             if(empty($userDetailsFromSession->role_id)){
                 if (Auth::guard($guard)->check()) {
                     $user = Auth::guard($guard)->user();
-                    
-                    if ($user->id) {
+                    // dd( $user->buss_unique_id );
+                    if ($user->buss_unique_id) {
                         $this->setUserAccessById($user);
                     } else {
                         View::share('access', []);
@@ -52,7 +52,7 @@ class PlanAccessMiddleware
         $userDetailsModel = new MasterUserDetails();
         $userDetailsModel->setTableForUniqueId($userDetailsFromSession['user_id']);
         $user = $userDetailsModel->where('users_id', $userDetailsFromSession['users_id'])->first();
-    
+        //  dd( $user );
         if ($user) {
             Auth::guard($guard)->login($user);
     
@@ -61,7 +61,7 @@ class PlanAccessMiddleware
                 $userDetails = new MasterUserDetails();
                 $userDetails->setTableForUniqueId($user->user_id);
                 $existingUser = $userDetails->where('users_id', $user->users_id)->first();
-    
+               
                 if ($existingUser) {
                     $userRole = new UserRole();
                     $userRole->setTable($user->user_id . '_tc_users_role');
@@ -96,11 +96,11 @@ class PlanAccessMiddleware
     {
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($user->buss_unique_id);
-        $existingUser = $userDetails->where('id', $user->id)->first();
-    
+        $existingUser = $userDetails->where('user_id', $user->buss_unique_id)->first();
+       
         if ($existingUser) {
             $masterUser = $existingUser->masterUser;
-    
+           
             if ($masterUser) {
                 $access = $masterUser->userAccess->pluck('is_access', 'mname')->toArray();
                 View::share('access', $access);

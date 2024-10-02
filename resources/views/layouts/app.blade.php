@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Profityo') }}</title>
+        <title>{{ config('app.name', '') }}</title>
 
         <!-- Fonts -->
         <!-- <link rel="preconnect" href="https://fonts.bunny.net">
@@ -41,7 +41,7 @@
     <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{url('public/dist/img/logo.png')}}" alt="ProfityoLogo">
+            <img class="animation__shake" src="{{url('public/dist/img/logo.png')}}" alt="Trip TrackerLogo">
         </div>
             @include('layouts.navigation')
             @include('layouts.sidebar')

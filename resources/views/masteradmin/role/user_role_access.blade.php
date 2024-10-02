@@ -1,7 +1,7 @@
 
     <div class="wrapper">
     @extends('masteradmin.layouts.app')
-<title>New User Role | Profityo</title>
+<title>New User Role | Trip Tracker</title>
 @section('content')
 
         <div class="content-wrapper">

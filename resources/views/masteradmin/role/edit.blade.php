@@ -1,5 +1,5 @@
 @extends('masteradmin.layouts.app')
-<title>Edit User Role | Profityo</title>
+<title>Edit User Role | Trip Tracker</title>
 @if(isset($access['update_roles']) && $access['update_roles']) 
 @section('content')
 

@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\MasterAdminLogCleaner::class,
-            // \App\Http\Middleware\UsersRoleAccess::class,
+            \App\Http\Middleware\PlanAccessMiddleware::class,
             
         ],
 

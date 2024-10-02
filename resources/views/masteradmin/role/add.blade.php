@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
-<title>New User Role | Profityo</title>
-@if(isset($access['add_roles']) && $access['add_roles']) 
+<title>New User Role | Trip Tracker</title>
+@if(isset($access['add_role']) && $access['add_role']) 
 @section('content')
 
 <!-- Content Wrapper. Contains page content -->

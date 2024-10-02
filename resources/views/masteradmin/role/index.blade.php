@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
-<title>User Role | Profityo</title>
-@if(isset($access['view_roles']) && $access['view_roles']) 
+<title>User Role | Trip Tracker</title>
+@if(isset($access['view_role']) && $access['view_role']) 
 @section('content')
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -17,7 +17,7 @@
           </div><!-- /.col -->
           <div class="col-auto">
             <ol class="breadcrumb float-sm-right">
-            @if(isset($access['add_roles']) && $access['add_roles']) 
+            @if(isset($access['add_role']) && $access['add_role']) 
               <a href="{{ route('masteradmin.role.create') }}"><button class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add User Role</button></a>
               @endif
             </ol>
@@ -70,11 +70,11 @@
                                   <td>{{ $role->role_name }}</td>
                                   <td class="text-right">
                                     <a href="{{ route('masteradmin.role.userrole',$role->role_id) }}"><i class="fas ffa-solid fa-key view_icon_grid"></i></a>
-                                    @if(isset($access['update_roles']) && $access['update_roles']) 
+                                    @if(isset($access['edit_role']) && $access['edit_role']) 
                                     <a href="{{ route('masteradmin.role.edit',$role->role_id) }}"><i
                                     class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
                                     @endif
-                                    @if(isset($access['delete_roles']) && $access['delete_roles']) 
+                                    @if(isset($access['delete_role']) && $access['delete_role']) 
                                     <a data-toggle="modal" data-target="#delete-role-modal-{{ $role->role_id }}"><i class="fas fa-solid fa-trash delete_icon_grid"></i></a>
                                     @endif
                                   </td>
@@ -101,7 +101,6 @@
                               </div>
                             @endforeach    
                         @else
-                            <tr class="odd"><td valign="top" colspan="7" class="dataTables_empty">No records found</td></tr>
                         @endif
                     </tbody>
                 </table>
