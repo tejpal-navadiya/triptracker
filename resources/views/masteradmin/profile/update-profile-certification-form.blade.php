@@ -213,12 +213,14 @@
         }
 
         //create popup
-        $('#createNewCertification').click(function () {
+        $('#createNewCertification').click(function (e) {
+            e.preventDefault();
             $('#saveBtn').val("create-product");
             $('#users_cert_id').val('');
             $('#certForm')[0].reset();
             $('#modelHeading').html("Add Certification");
             $('body').addClass('modal-open');
+            $('#users_cert_document').html('');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
         });
@@ -271,7 +273,7 @@
             var users_id = $(this).val(); 
 
             $.get("{{ route('user-certification.index') }}" + '/' + users_id + '/edit', function (data) {
-                console.log(data);
+                // console.log(data);
                 $('#modelHeading').html("Edit Certification");
                 $('#saveBtn').val("edit-user");
 
@@ -283,6 +285,7 @@
              
                 $('#users_cert_desc').val(data.users_cert_desc);
                 $('#users_cert_document').html('');
+            
                 if (data.users_cert_document) {
                     $('#users_cert_document').append('<a href="{{ url(env('IMAGE_URL')) }}/masteradmin/certification_image/' + data.users_cert_document + '" target="_blank">' + data.users_cert_document + '</a>');
                 }
