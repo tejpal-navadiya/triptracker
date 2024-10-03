@@ -120,13 +120,13 @@ Route::group(['prefix' => $busadminRoute], function () {
         // //exp plan or not plan purchase
         // Route::get('/plan/purchase', [ProfilesController::class, 'purchase'])->name('business.plan.purchase');
             
-    //    //User Role
-       Route::get('user-role-details', [UserRoleController::class, 'index'])->name('masteradmin.role.index');
-       Route::get('rolecreate', [UserRoleController::class, 'create'])->name('masteradmin.role.create');
-       Route::post('roleadd', [UserRoleController::class, 'store'])->name('masteradmin.role.store');
-       Route::get('roleedit/{role}', [UserRoleController::class, 'edit'])->name('masteradmin.role.edit');
-       Route::patch('roleupdate/{role}', [UserRoleController::class, 'update'])->name('masteradmin.role.update');
+        //user role 
        Route::delete('roledestroy/{role}', [UserRoleController::class, 'destroy'])->name('masteradmin.role.destroy');
+
+       Route::patch('/roleupdate/{role}', [UserRoleController::class, 'update'])->name('masteradmin.role.update');
+
+        Route::resource('user-role-details', UserRoleController::class);
+
        Route::get('userrole/{userrole}', [UserRoleController::class, 'userrole'])->name('masteradmin.role.userrole');
        Route::put('updaterole/{userrole}', [UserRoleController::class, 'updaterole'])->name('masteradmin.role.updaterole');
                        

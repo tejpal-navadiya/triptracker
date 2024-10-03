@@ -59,6 +59,7 @@ class MasterUserDetails extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'users_password' => 'hashed',
+        'id' => 'string',
     ];
 
     public function masterUser()
@@ -66,6 +67,5 @@ class MasterUserDetails extends Authenticatable
         return $this->belongsTo(MasterUser::class, 'id', 'id');
     }
 
-  
 
 }

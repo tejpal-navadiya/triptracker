@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Edit User Role | Trip Tracker</title>
-@if(isset($access['update_roles']) && $access['update_roles']) 
+@if(isset($access['edit_role']) && $access['edit_role']) 
 @section('content')
 
 <!-- Content Wrapper. Contains page content -->

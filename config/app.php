@@ -195,6 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class, 
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 
@@ -214,6 +215,8 @@ return [
         'LogActivity' => App\Helpers\LogActivity::class,
         'MasterLogActivity' => App\Helpers\MasterLogActivity::class,
         'PDF' => Barryvdh\DomPDF\Facade::class, 
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+
     ])->toArray(),
 
 ];

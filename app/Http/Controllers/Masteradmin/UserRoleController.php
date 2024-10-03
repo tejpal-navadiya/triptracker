@@ -10,15 +10,69 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AdminMenu;
 use App\Models\MasterUserAccess;
+use DataTables;
 
 class UserRoleController extends Controller
 {
     //
-    public function index(): View
+    // public function index(): View
+    // {
+    //     $user = Auth::guard('masteradmins')->user();
+    //     $roles = UserRole::where(['role_status' => 1, 'id' => $user->id])->get();
+    //     return view('masteradmin.role.index', compact('roles'));
+    // }
+
+    
+
+    public function index(Request $request)
     {
+        $access = view()->shared('access');
+        // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $roles = UserRole::where(['role_status' => 1, 'id' => $user->id])->get();
+        $roles = UserRole::where(['id' => Auth::guard('masteradmins')->user()->id])->latest()->get();
+
+    
+        if ($request->ajax()) {
+            $roles = UserRole::where(['id' => $user->id])->latest()->get();
+            //  dd($access);
+            return Datatables::of($roles)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($role) use ($access){
+                        $btn = '';
+                        if(isset($access['assign_role']) && $access['assign_role']) {
+                            $btn .= '<a href="'.route('masteradmin.role.userrole', $role->role_id).'" data-id="'.$role->role_id.'"  data-toggle="tooltip" data-original-title="Assign Role" class=""><i class="fas fa-key view_icon_grid"></i></a>';
+                        }
+                        if(isset($access['edit_role']) && $access['edit_role']) {
+                            $btn .= '<a data-id="'.$role->role_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editRole"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                        }
+                        if(isset($access['delete_role']) && $access['delete_role']) {
+                            $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$role->role_id.'">
+                                        <i class="fas fa-trash delete_icon_grid"></i>
+                                        <div class="modal fade" id="delete-role-modal-'.$role->role_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body pad-1 text-center">
+                                                        <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                        <p class="company_business_name px-10"><b>Delete User Role</b></p>
+                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This User Role?</p>
+                                                        <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="delete_btn px-15 deleteRolebtn" data-id='.$role->role_id.'>Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>';
+                        }
+                        // dd($access);
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->toJson();
+                  
+        }
+      
         return view('masteradmin.role.index', compact('roles'));
+
     }
 
     public function create(): View
@@ -26,7 +80,7 @@ class UserRoleController extends Controller
         return view('masteradmin.role.add');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $user = Auth::guard('masteradmins')->user();
         $validatedData = $request->validate([
@@ -34,25 +88,30 @@ class UserRoleController extends Controller
         ], [
             'role_name.required' => 'The role name field is required.',
         ]);
-
+        $userCertification = new UserRole();
+        $tableName = $userCertification->getTable();
+        $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "role_id", $chars = 6);
+      
         $validatedData['id'] = $user->id;
+        $validatedData['role_id'] = $uniqueId;
         $validatedData['role_status'] = 1;
         UserRole::create($validatedData);
         \MasterLogActivity::addToLog('Master Admin Users Role Created.');
 
-        return redirect()->route('masteradmin.role.index')->with(['role-add' =>__('messages.masteradmin.user-role.add_role_success')]);
+        return response()->json(['success'=>'Record saved successfully.']);
     }
 
-    public function edit($role_id, Request $request): View
+    public function edit($role_id)
     {   
-        $user = Auth::guard('masteradmins')->user();
-        $role = UserRole::where(['role_id' => $role_id , 'id' => $user->id])->firstOrFail();
+        
+        $role = UserRole::where('role_id' , $role_id)->firstOrFail();
 
-        return view('masteradmin.role.edit', compact('role'));
+        return response()->json($role);
     }
 
-    public function update(Request $request, $role_id): RedirectResponse
+    public function update(Request $request, $role_id)
     {   
+        // dd($role_id);
         // Find the plan by sp_id
         $user = Auth::guard('masteradmins')->user();
         $roles = UserRole::where(['role_id' => $role_id, 'id' => $user->id])->firstOrFail();
@@ -67,14 +126,12 @@ class UserRoleController extends Controller
         // Update the plan attributes based on validated data
         $roles->where('role_id', $role_id)->update($validatedData);
         \MasterLogActivity::addToLog('Master Admin User Role is Edited.');
-
-        // Redirect back to the edit form with a success message
-        return redirect()->route('masteradmin.role.edit', ['role' => $roles->role_id])
-                        ->with('role-edit', __('messages.masteradmin.user-role.edit_role_success'));
+       
+        return response()->json(['success'=>'Record saved successfully.']);       
 
     }
 
-    public function destroy($role_id): RedirectResponse
+    public function destroy($role_id)
     {
         //
         // dd($role_id);
@@ -86,128 +143,72 @@ class UserRoleController extends Controller
 
         \MasterLogActivity::addToLog('Master Admin User role is Deleted.');
          
-        return redirect()->route('masteradmin.role.index')
-                        ->with('role-delete', __('messages.masteradmin.user-role.delete_role_success'));
+        return response()->json(['success'=>'Record deleted successfully.']);
 
     }
-
-
     
-    // add by dxx.............
     public function Userrole($role_id): View
     {
-        $user = Auth::guard('masteradmins')->user();
-        
-        $userrole = UserRole::where(['role_id' => $role_id, 'id' => $user->id])->firstOrFail();
+        $id = $role_id;
+        // dd($id);
+
         $permissions = AdminMenu::where('pmenu', 0)
-            ->where('is_deleted', 0)
-            ->whereIn('mid', range(1, 20))
-            ->get();
-        $reports = AdminMenu::where('pmenu', 21)
-            ->where('is_deleted', 0)
-            ->get();
+        ->where('is_deleted', 0)
+        ->get();
 
-        foreach ($permissions as $permission) {
-            $this->setPermissionAccess($permission, $role_id);
-        }
+        $subPermissions = AdminMenu::where('mid', '>=', 12)
+        ->where('is_deleted', 0)
+        ->whereExists(function ($query) {
+            $query->select('*')
+                ->from('ta_admin_menu')
+                ->whereRaw('`ta_admin_menu`.`pmenu` IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)');
+        })
+        ->get();
+        
+        $useraccess = MasterUserAccess::where('role_id', $role_id)->get();
 
-        foreach ($reports as $report) {
-            $this->setPermissionAccess($report, $role_id);
-        }
 
-        // Check if the parent Reports checkbox should be checked
-        $reports_parent_checked = $this->getIsAccess('reports_parent', $role_id);
+        // dd($useraccess);
+        return view('masteradmin.role.user_role_access', compact('permissions', 'subPermissions','id','useraccess'));
 
-        return view('masteradmin.role.user_role_access', compact('permissions', 'reports', 'userrole', 'reports_parent_checked'));
-    }
-
-    private function setPermissionAccess(&$item, $role_id)
-    {
-        $item->is_access = $this->getIsAccess($item->mname, $role_id);
-        $item->is_access_add = $this->getIsAccess('add_' . $item->mname, $role_id);
-        $item->is_access_view = $this->getIsAccess('view_' . $item->mname, $role_id);
-        $item->is_access_update = $this->getIsAccess('update_' . $item->mname, $role_id);
-        $item->is_access_delete = $this->getIsAccess('delete_' . $item->mname, $role_id);
-    }
-
-    private function getIsAccess($permissionName, $roleId)
-    {
-        $access = MasterUserAccess::where('role_id', $roleId)
-            ->where('mname', $permissionName)
-            ->first();
-
-        return $access ? $access->is_access : 0;
-        // dd($access);
     }
 
     public function updaterole(Request $request, $role_id): RedirectResponse
     {
-        // dd($request->all()); 
+        // dd($role_id);
         $user = Auth::guard('masteradmins')->user();
-        MasterUserAccess::where(['role_id' => $role_id, 'u_id' => $user->id])->delete();
+        MasterUserAccess::where('role_id', $role_id)->delete();
 
-        // Fetch all admin menu items
-        $menus = AdminMenu::where('is_deleted', 0)->get();
+        $role_id = $request->input('role_id');
+        $permissions = $request->input('permissions');
+        //dd($permissions);
+        foreach ($permissions as $permissionId => $permission) {
+     
+            if (isset($permission['subPermissions'])) {
+                foreach ($permission['subPermissions'] as $subPermission) {
+                    if ($subPermission['checked'] ?? '') {
 
-        // Fetch the reports data
-        $reports = AdminMenu::where('pmenu', 21)
-            ->where('is_deleted', 0)
-            ->get();
-
-        // Process permissions checkboxes
-        foreach ($menus as $menu) {
-            $mname = $menu->mname;
-            $mtitle = $menu->mtitle;
-            $mid = $menu->mid;
-            $is_access = $request->has($mname) ? 1 : 0;
-
-            // Insert or update user access
-            MasterUserAccess::create([
-                'role_id' => $role_id,
-                'u_id' => $user->id,
-                'mid' => $mid,
-                'mtitle' => $mtitle,
-                'mname' => $mname,
-                'is_access' => $is_access,
-            ]);
-        }
-
-        // Process reports parent checkbox
-        $reports_parent_checked = $request->has('reports_parent') ? 1 : 0;
-
-        // Insert or update user access for reports parent
-        MasterUserAccess::create([
-            'role_id' => $role_id,
-            'u_id' => $user->id,
-            'mid' => 21,
-            'mtitle' => 'Reports',
-            'mname' => 'reports_parent', // Adjust as per your naming convention
-            'is_access' => $reports_parent_checked,
-        ]);
-
-        // Process individual report checkboxes
-        foreach ($reports as $report) {
-            $report_name = $report->mname;
-            $report_checked = $request->has($report_name) ? 1 : 0;
-
-            // Insert or update user access for each report
-            MasterUserAccess::create([
-                'role_id' => $role_id,
-                'u_id' => $user->id,
-                'mid' => $report->mid,
-                'mtitle' => $report->mtitle,
-                'mname' => $report_name,
-                'is_access' => $report_checked,
-            ]);
+                        $userMasterAccess = new MasterUserAccess();
+                        $tableName = $userMasterAccess->getTable();
+                        
+                        $id = $this->GenerateUniqueRandomString($table=$tableName, $column="id", $chars=6);
+                        MasterUserAccess::create([
+                            'id' => $id,
+                            'u_id' => $user->id,
+                            'role_id' => $role_id,
+                            'mname' => $subPermission['mname'],
+                            'mtitle' => $subPermission['mtitle'],
+                            'mid' => $subPermission['mid'],
+                            'is_access' => 1
+                        ]);
+                    }
+                }
+            }
         }
         \MasterLogActivity::addToLog('Master Admin User role Assigned.');
         return redirect()->route('masteradmin.role.userrole', ['userrole' => $role_id])
         ->with('user-role', __('messages.masteradmin.user-role.roll_user_access_success'));
-    }
-
-
-    // end by dxx...
-    
+    }    
 
     
 }

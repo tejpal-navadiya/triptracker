@@ -18,7 +18,7 @@ class SetUserDetails
 
             // Retrieve user details from the session
             $userDetails = session('user_details');
-             //dd($userDetails);
+        
             if ($userDetails) {
                 // Set the user details in the guard
                 Auth::guard('masteradmins')->setUser($userDetails);

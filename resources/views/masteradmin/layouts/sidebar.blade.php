@@ -42,7 +42,7 @@
               
               @if(isset($access['view_role']) && $access['view_role']) 
               <li class="nav-item">
-                <a href="{{ route('masteradmin.role.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/userdetails*') || 
+                <a href="{{ route('user-role-details.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/userdetails*') || 
                              request()->is($busadminRoutes.'/usercreate*') || 
                              request()->is($busadminRoutes.'/useredit/*')  
                               ? 'active' : '' }}">

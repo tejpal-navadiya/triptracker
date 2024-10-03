@@ -12,6 +12,7 @@ class MasterUserAccess extends Model
     // public $table = "py_master_user_access";
 
     protected $fillable = [
+        'id',
         'role_id',
         'u_id',
         'mname',
