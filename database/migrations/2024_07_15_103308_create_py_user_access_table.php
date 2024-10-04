@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('mtitle')->nullable();
             $table->string('mid')->nullable()->default('0');
             $table->string('is_access')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -65,25 +65,6 @@
                     </thead>
                     <tbody>
 
-                    @foreach($roles as $role)
-                    <div class="modal fade deleteajax" id="delete-role-modal-{{ $role->role_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <form id="delete-role-form-{{ $role->role_id }}" action="{{ route('masteradmin.role.destroy', ['role' => $role->role_id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <div class="modal-body pad-1 text-center">
-                                        <i class="fas fa-solid fa-trash delete_icon"></i>
-                                        <p class="company_business_name px-10"><b>Delete User Role</b></p>
-                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This User Role?</p>
-                                        <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="delete_btn px-15 deleteRolebtn" data-id="{{ $role->role_id }}">Delete</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
                     </tbody>
                 </table>
               </div>

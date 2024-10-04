@@ -51,6 +51,18 @@
                 </a>
               </li>
               @endif
+
+              @if(isset($access['book_trip']) && $access['book_trip']) 
+              <li class="nav-item">
+                <a href="{{ route('trip.index') }}" class="nav-link {{ request()->is($busadminRoutes.'/userdetails*') || 
+                             request()->is($busadminRoutes.'/usercreate*') || 
+                             request()->is($busadminRoutes.'/useredit/*')  
+                              ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Workflow</p>
+                </a>
+              </li>
+              @endif
              
             
               <li class="nav-item">

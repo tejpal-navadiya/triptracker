@@ -18,6 +18,7 @@ use App\Http\Controllers\superadmin\HomesController;
 use App\Http\Controllers\Masteradmin\UserController;
 use App\Http\Controllers\Masteradmin\UserRoleController;
 use App\Http\Controllers\Masteradmin\UserCertificationController;
+use App\Http\Controllers\Masteradmin\TripController;
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +143,10 @@ Route::group(['prefix' => $busadminRoute], function () {
 
        //user certification
        Route::resource('user-certification', UserCertificationController::class);
+
+       //trip
+       Route::resource('trip', TripController::class);
+
 
 
     });

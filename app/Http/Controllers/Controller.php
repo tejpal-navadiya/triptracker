@@ -171,6 +171,59 @@ class Controller extends BaseController
                 });
             }
 
+            //Trip
+            if (!Schema::hasTable($storeId.'_tc_trip')){   
+                Schema::create($storeId.'_tc_trip', function (Blueprint $table) {
+                    $table->string('tr_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('tr_name')->nullable();
+                    $table->string('tr_agent_id')->nullable();
+                    $table->string('tr_traveler_name')->nullable();
+                    $table->string('tr_dob')->nullable();
+                    $table->string('tr_age')->nullable();
+                    $table->string('tr_number')->nullable();
+                    $table->string('tr_email')->nullable();
+                    $table->string('tr_phone')->nullable();
+                    $table->string('tr_num_people')->nullable();
+                    $table->string('tr_start_date')->nullable();
+                    $table->string('tr_end_date')->nullable();
+                    $table->string('tr_value_trip')->nullable();
+                    $table->text('tr_type_trip')->nullable();
+                    $table->text('tr_desc')->nullable();
+                    $table->string('status')->nullable();
+                    $table->tinyInteger('tr_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }else{
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'status')) {
+                        $table->string('status')->nullable();
+                    }
+                });
+            }
+
+            //Trip Traveling Member
+            if (!Schema::hasTable($storeId.'_tc_trip_traveling_member')){   
+                Schema::create($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    $table->string('trtm_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('tr_id')->constrained($storeId.'_tc_trip', 'tr_id')->onDelete('cascade');
+                    $table->string('trtm_type')->nullable();
+                    $table->string('trtm_first_name')->nullable();
+                    $table->string('trtm_middle_name')->nullable();
+                    $table->string('trtm_last_name')->nullable();
+                    $table->string('trtm_nick_name')->nullable();
+                    $table->string('trtm_gender')->nullable();
+                    $table->string('trtm_dob')->nullable();
+                    $table->string('trtm_age')->nullable();
+                    $table->string('trtm_relationship')->nullable();
+                    $table->tinyInteger('trtm_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }else{
+
+            }
+
         }
         
     }
