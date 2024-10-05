@@ -48,7 +48,7 @@
             <x-input-label for="tr_name" :value="__('Name of Trip')"> <span
               class="text-danger">*</span></x-input-label>
             <x-text-input type="text" class="form-control" id="tr_name" placeholder="Enter Name of Trip"
-            name="tr_name" required autofocus autocomplete="tr_name" />
+            name="tr_name"  autofocus autocomplete="tr_name" />
 
             <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
           </div>
@@ -58,7 +58,7 @@
             <x-input-label for="tr_agent_id" :value="__('Agent Name')"> <span
               class="text-danger">*</span></x-input-label>
             <x-text-input type="text" class="form-control" id="tr_agent_id" placeholder="Select Agent"
-            name="tr_agent_id" required autofocus autocomplete="tr_agent_id" />
+            name="tr_agent_id"  autofocus autocomplete="tr_agent_id" />
 
             <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
           </div>
@@ -68,7 +68,7 @@
             <x-input-label for="tr_traveler_name" :value="__('Traveler Name')"> <span
               class="text-danger">*</span></x-input-label>
             <x-text-input type="text" class="form-control" id="tr_traveler_name" placeholder="Traveler Name"
-            name="tr_traveler_name" required autofocus autocomplete="tr_traveler_name" />
+            name="tr_traveler_name"  autofocus autocomplete="tr_traveler_name" />
 
             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
           </div>
@@ -95,15 +95,15 @@
           <div class="form-group">
             <x-input-label for="tr_age" :value="__('Age')" />
             <x-text-input type="text" class="form-control" id="tr_age" placeholder="Enter Age" name="tr_age"
-            required autofocus autocomplete="users_cert_name" readonly />
+             autofocus autocomplete="users_cert_name" readonly />
             <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
           </div>
           </div>
           <div class="col-md-4">
           <div class="form-group">
             <x-input-label for="tr_number" :value="__('Trip Number')" />
-            <x-text-input type="text" class="form-control" id="tr_number" placeholder="Enter Trip Number"
-            name="tr_number" required autofocus autocomplete="tr_number" />
+            <x-text-input type="number" class="form-control" id="tr_number" placeholder="Enter Trip Number"
+            name="tr_number"  autofocus autocomplete="tr_number" />
             <x-input-error class="mt-2" :messages="$errors->get('tr_number')" />
           </div>
           </div>
@@ -111,7 +111,7 @@
           <div class="form-group">
             <x-input-label for="tr_email" :value="__('Email Address')" />
             <x-text-input type="email" class="form-control" id="tr_email" placeholder="Enter Email Address"
-            name="tr_email" required autofocus autocomplete="tr_email" />
+            name="tr_email"  autofocus autocomplete="tr_email" />
             <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
           </div>
           </div>
@@ -119,7 +119,7 @@
           <div class="form-group">
             <x-input-label for="tr_phone" :value="__('Phone Number')" />
             <x-text-input type="text" class="form-control" id="tr_phone" placeholder="Enter Phone Number"
-            name="tr_phone" required autofocus autocomplete="tr_phone" />
+            name="tr_phone"  autofocus autocomplete="tr_phone" />
             <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
           </div>
           </div>
@@ -127,7 +127,7 @@
           <div class="form-group">
             <x-input-label for="tr_num_people" :value="__('Number of People')" />
             <x-text-input type="text" class="form-control" id="tr_num_people" placeholder="Enter Number of People"
-            name="tr_num_people" required autofocus autocomplete="tr_num_people" readonly />
+            name="tr_num_people"  autofocus autocomplete="tr_num_people" readonly />
             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
           </div>
           </div>
@@ -168,8 +168,8 @@
           <div class="col-md-4">
           <div class="form-group">
             <x-input-label for="tr_value_trip" :value="__('Value of trip')" />
-            <x-text-input type="text" class="form-control" id="tr_value_trip" placeholder="Enter Value of trip"
-            name="tr_value_trip" required autofocus autocomplete="tr_value_trip" />
+            <x-text-input type="number" class="form-control" id="tr_value_trip" placeholder="Enter Value of trip"
+            name="tr_value_trip"  autofocus autocomplete="tr_value_trip" />
             <x-input-error class="mt-2" :messages="$errors->get('tr_value_trip')" />
           </div>
           </div>
@@ -178,7 +178,7 @@
           <div class="form-group">
             <x-input-label for="tr_desc" :value="__('Description')" />
             <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description"
-            name="tr_desc" required autofocus autocomplete="tr_desc"></textarea>
+            name="tr_desc"  autofocus autocomplete="tr_desc"></textarea>
             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
           </div>
           </div>
@@ -201,7 +201,15 @@
             Traveling Member</button>
           </div>
           <div class="col-md-12" id="dynamic_field">
-
+          @if ($errors->any())
+          <div class="alert alert-danger">
+              <ul>
+                  @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                  @endforeach
+              </ul>
+          </div>
+          @endif
           </div>
 
         </div>
@@ -286,13 +294,75 @@
       rowCount++;
       $('#dynamic_field').append(`
      <div class="item-row row" id="row${rowCount}">
-      <div class="col-md-3">
+    <div class="col-md-3">
       <div class="form-group">
-        <label for="trtm_name">Lead Traveler</label>
         <div class="d-flex">
-         <input type="text" class="form-control" id="trtm_name" name="items[][trtm_name]" placeholder="Enter Lead Traveler">
+          <input type="radio" class="trtm_type" id="trtm_type_family${rowCount}" name="items[${rowCount}][trtm_type]" value="1" ><label for="trtm_type_family${rowCount}">Family Member</label>
+          <input type="radio" class="trtm_type" id="trtm_type_trip${rowCount}" name="items[${rowCount}][trtm_type]" value="2"><label for="trtm_type_trip${rowCount}">Trip Member</label>
         </div>
       </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="trtm_first_name">First Name<span
+              class="text-danger">*</span></label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_first_name${rowCount}" name="items[${rowCount}][trtm_first_name]" placeholder="Enter First Name">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 family-member-field">
+        <div class="form-group">
+          <label for="trtm_middle_name">Middle name</label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_middle_name${rowCount}" name="items[${rowCount}][trtm_middle_name]" placeholder="Enter Middle name">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="trtm_last_name">Last Name</label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_last_name${rowCount}" name="items[${rowCount}][trtm_last_name]" placeholder="Enter Last Name">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 family-member-field">
+        <div class="form-group">
+          <label for="trtm_nick_name">Nickname</label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_nick_name${rowCount}" name="items[${rowCount}][trtm_nick_name]" placeholder="Enter Nickname">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 family-member-field">
+        <div class="form-group">
+          <label for="trtm_relationship">Relationship<span
+              class="text-danger">*</span></label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]" placeholder="Enter Relationship">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="trtm_gender">Gender<span
+              class="text-danger">*</span></label>
+          <div class="d-flex">
+            <select class="form-control select2" style="width: 100%;" id="trtm_gender${rowCount}" name="items[${rowCount}][trtm_gender]" >
+              <option default>Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="col-md-3">
@@ -300,7 +370,7 @@
         <label for="trtm_dob">Birthdate</label>
         <div class="d-flex">
          <div class="input-group date" id="trtm_dob" data-target-input="nearest">
-            <x-flatpickr id="traveler_date_${rowCount}" name="items[][trtm_dob]" placeholder="mm/dd/yyyy" />
+            <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
             <div class="input-group-append">
             <div class="input-group-text" id="traveler-date-icon_${rowCount}">
             <i class="fa fa-calendar-alt"></i>
@@ -316,7 +386,7 @@
       <div class="form-group">
         <label for="trtm_age">Age</label>
         <div class="d-flex">
-        <input type="text" name="items[][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age_${rowCount}" readonly>
+        <input type="text" name="items[${rowCount}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age_${rowCount}" readonly>
         </div>
       </div>
       </div>
@@ -325,7 +395,11 @@
       </div>
 
     </div>
+    <hr />
     `);
+
+    $(`#row${rowCount} .family-member-field`).hide();
+    $(`#row${rowCount} .trip-member-field`).hide();
 
       var numofpeople = document.querySelector('#tr_num_people');
       numofpeople.value = rowCount;
@@ -365,6 +439,16 @@
 
     });
 
+    $(document).on('change', '.trtm_type', function() {
+      var rowId = $(this).closest('.item-row').attr('id').replace('row', '');
+      if ($(this).val() == 1) {
+        $(`#row${rowId} .family-member-field`).show();
+        $(`#row${rowId} .trip-member-field`).hide();
+      } else  if ($(this).val() == 2){
+        $(`#row${rowId} .family-member-field`).hide();
+        $(`#row${rowId} .trip-member-field`).show();
+      }
+    });
 
     $(document).on('click', '.delete-item', function () {
       var rowId = $(this).attr("id");

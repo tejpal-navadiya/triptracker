@@ -29,7 +29,7 @@ class TripController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        //  dd($request->all());
+        //dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
         $validatedData = $request->validate([
@@ -38,16 +38,22 @@ class TripController extends Controller
             'tr_traveler_name' => 'required|string',
             'tr_dob' => 'nullable|string',
             'tr_age' => 'nullable|string',
-            'tr_email' => 'nullable|email', 
-            'tr_phone' => 'nullable|string', 
+            'tr_email' => 'nullable|email',
+            'tr_phone' => 'nullable|string',
             'tr_num_people' => 'nullable|string',
             'tr_number' => 'nullable|string',
-            'tr_start_date' => 'required', 
+            'tr_start_date' => 'required',
             'tr_end_date' => 'nullable|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
-            'items.*.trtm_name' => 'nullable|string',
-            'items.*.trtm_dob' => 'nullable|string',
+            'items.*.trtm_type' => 'required|string',
+            'items.*.trtm_first_name' => 'required|string',
+            'items.*.trtm_middle_name' => 'nullable|string',
+            'items.*.trtm_last_name' => 'nullable|string',
+            'items.*.trtm_nick_name' => 'nullable|string',
+            'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
+            'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
+            'items.*.trtm_dob' => 'required|string',
             'items.*.trtm_age' => 'nullable|string',
         ], [
             'tr_name.required' => 'Traveler name is required',
@@ -55,7 +61,17 @@ class TripController extends Controller
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
             'tr_start_date.required' => 'Start date is required',
+            'items.*.trtm_type.required' => 'Traveling member type is required',
+            'items.*.trtm_first_name.required' => 'First name is required',
+            'items.*.trtm_last_name.required' => 'Last name is required',
+            'items.*.trtm_gender.required' => 'Gender is required',
+            'items.*.trtm_dob.required' => 'Birthdate is required',
+            'items.*.trtm_age.required' => 'Age is required',
         ]);
+
+    
+
+       // dd('data');
 
             // Store data
             $traveler = new Trip();
@@ -82,21 +98,9 @@ class TripController extends Controller
             $traveler->save();
 
 
-            $rawItems = $request->input('items');
-            $groupedItems = [];
-            if (is_array($rawItems) && count($rawItems) > 0) {
-            for ($i = 0; $i < count($rawItems); $i += 3) {
-                $groupedItems[] = [
-                    'trtm_name' => $rawItems[$i]['trtm_name'] ?? null,
-                    'trtm_dob' => $rawItems[$i + 1]['trtm_dob'] ?? null,
-                    'trtm_age' => $rawItems[$i + 2]['trtm_age'] ?? null,
-                ];
-            }
-            }else{
-                $groupedItems = [];
-            }
+            $rawItems = $request->input('items');           
 
-            foreach ($groupedItems as $item) {
+            foreach ($rawItems as $item) {
                 $travelerItem = new TripTravelingMember();
                 $tableName = $travelerItem->getTable();
                 $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trtm_id", $chars = 6);
@@ -130,9 +134,10 @@ class TripController extends Controller
 
     public function update(Request $request, $id): RedirectResponse
     {
-
-        // dd($request->all());
+        dd($request->all());
+       
         $user = Auth::guard('masteradmins')->user();
+        $dynamicId = $user->id; 
 
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
 
@@ -150,8 +155,14 @@ class TripController extends Controller
             'tr_end_date' => 'nullable|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
-            'items.*.trtm_name' => 'nullable|string',
-            'items.*.trtm_dob' => 'nullable|string',
+            'items.*.trtm_type' => 'required|string',
+            'items.*.trtm_first_name' => 'required|string',
+            'items.*.trtm_middle_name' => 'nullable|string',
+            'items.*.trtm_last_name' => 'nullable|string',
+            'items.*.trtm_nick_name' => 'nullable|string',
+            'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
+            'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
+            'items.*.trtm_dob' => 'required|string',
             'items.*.trtm_age' => 'nullable|string',
         ], [
             'tr_name.required' => 'Traveler name is required',
@@ -159,41 +170,34 @@ class TripController extends Controller
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
             'tr_start_date.required' => 'Start date is required',
+            'items.*.trtm_type.required' => 'Traveling member type is required',
+            'items.*.trtm_first_name.required' => 'First name is required',
+            'items.*.trtm_last_name.required' => 'Last name is required',
+            'items.*.trtm_gender.required' => 'Gender is required',
+            'items.*.trtm_dob.required' => 'Birthdate is required',
+            'items.*.trtm_age.required' => 'Age is required',
         ]);
 
     
         $trip->update($request->all());
 
         TripTravelingMember::where('tr_id', $id)->delete();
+        $rawItems = $request->input('items');           
 
-            $rawItems = $request->input('items');
-            $groupedItems = [];
-            if (is_array($rawItems) && count($rawItems) > 0) {
-            for ($i = 0; $i < count($rawItems); $i += 3) {
-                $groupedItems[] = [
-                    'trtm_name' => $rawItems[$i]['trtm_name'] ?? null,
-                    'trtm_dob' => $rawItems[$i + 1]['trtm_dob'] ?? null,
-                    'trtm_age' => $rawItems[$i + 2]['trtm_age'] ?? null,
-                ];
-            }
-            }else{
-                $groupedItems = [];
-            }
+        foreach ($rawItems as $item) {
+            $travelerItem = new TripTravelingMember();
+            $tableName = $travelerItem->getTable();
+            $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trtm_id", $chars = 6);
+            
+            $travelerItem->fill($item);
 
-            foreach ($groupedItems as $item) {
-                $travelerItem = new TripTravelingMember();
-                $tableName = $travelerItem->getTable();
-                $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trtm_id", $chars = 6);
-                
-                $travelerItem->fill($item);
+            $travelerItem->tr_id = $trip->tr_id;
+            $travelerItem->id = $dynamicId;
+            $travelerItem->trtm_status = 1;
+            $travelerItem->trtm_id = $uniqueId1;
 
-                $travelerItem->tr_id = $id;
-                $travelerItem->id = $user->id;
-                $travelerItem->trtm_status = 1;
-                $travelerItem->trtm_id = $uniqueId1;
-
-                $travelerItem->save();
-            }
+            $travelerItem->save();
+        }
 
         return redirect()->route('trip.index')
 

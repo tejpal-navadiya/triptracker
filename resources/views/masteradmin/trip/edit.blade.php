@@ -207,48 +207,121 @@
             Traveling Member</button>
           </div>
           <div class="col-md-12" id="dynamic_field">
-            @foreach($tripmember as $item)
-    
-            <div class="item-row row" id="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="trtm_name">Lead Traveler</label>
-                        <div class="d-flex">
-                        <input type="text" class="form-control" id="trtm_name" name="items[][trtm_name]" placeholder="Enter Lead Traveler" value="{{ $item->trtm_name ?? '' }}">
-                        </div>
-                    </div>
+          @php
+          $i = 0;
+          @endphp
+           @foreach($tripmember as $index => $item)
+            @php
+            $rowCount = $i+1;
+            
+            @endphp
+            <div class="item-row row" id="row{{$rowCount}}">
+            <input type="hidden" name="trtm_id_hidden" id="trtm_id_hidden" value="{{$rowCount}}" />
+            <div class="col-md-3">
+              <div class="form-group">
+                <div class="d-flex">
+                  <input type="hidden" name="trtm_type_hidden" id="trtm_type_hidden" value="{{ $item->trtm_type }}" />
+                  <input type="radio" class="trtm_type" id="trtm_type_family_{{ $rowCount }}" name="items[{{ $rowCount }}][trtm_type]" value="1" {{ $item->trtm_type == 1 ? 'checked' : '' }}><label for="trtm_type_family_{{ $rowCount }}">Family Member</label>
+                  <input type="radio" class="trtm_type" id="trtm_type_trip_{{ $rowCount }}" name="items[{{ $rowCount }}][trtm_type]" value="2" {{ $item->trtm_type == 2 ? 'checked' : '' }}><label for="trtm_type_trip_{{ $rowCount }}">Trip Member</label>
                 </div>
+              </div>
+            </div>
 
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="trtm_dob">Birthdate</label>
-                        <div class="d-flex">
-                        <div class="input-group date" id="trtm_dob" data-target-input="nearest">
-                            <x-flatpickr id="traveler_date" name="items[][trtm_dob]" placeholder="mm/dd/yyyy" />
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="trtm_first_name">First Name<span
+                    class="text-danger">*</span></label>
+                <div class="d-flex">
+                  <input type="text" class="form-control" id="trtm_first_name{{ $rowCount }}" name="items[{{ $rowCount }}][trtm_first_name]" placeholder="Enter First Name" value="{{ $item->trtm_first_name }}">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 family-member-field">
+              <div class="form-group">
+                <label for="trtm_middle_name">Middle name</label>
+                <div class="d-flex">
+                  <input type="text" class="form-control" id="trtm_middle_name{{ $rowCount }}" name="items[{{ $rowCount }}][trtm_middle_name]" placeholder="Enter Middle name" value="{{ $item->trtm_middle_name }}">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="trtm_last_name">Last Name</label>
+                <div class="d-flex">
+                  <input type="text" class="form-control" id="trtm_last_name{{ $rowCount }}" name="items[{{$rowCount}}][trtm_last_name]" placeholder="Enter Last Name" value="{{ $item->trtm_last_name }}">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 family-member-field">
+              <div class="form-group">
+                <label for="trtm_nick_name">Nickname</label>
+                <div class="d-flex">
+                  <input type="text" class="form-control" id="trtm_nick_name{{$rowCount}}" name="items[{{$rowCount}}][trtm_nick_name]" placeholder="Enter Nickname" value="{{ $rowCount }}">
+                </div>
+              </div>
+            </div>
+
+              <div class="col-md-3 family-member-field">
+                <div class="form-group">
+                  <label for="trtm_relationship">Relationship<span
+                      class="text-danger">*</span></label>
+                  <div class="d-flex">
+                    <input type="text" class="form-control" id="trtm_relationship{{$rowCount}}" name="items[{{$rowCount}}][trtm_relationship]" placeholder="Enter Relationship" value="{{ $item->trtm_relationship }}">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="trtm_gender">Gender<span
+                      class="text-danger">*</span></label>
+                  <div class="d-flex">
+                    <select class="form-control select2" style="width: 100%;" id="trtm_gender{{$rowCount}}" name="items[{{$rowCount}}][trtm_gender]" >
+                      <option default>Select Gender</option>
+                      <option value="Male" {{ $item->trtm_gender == 'Male' ? 'selected' : '' }}>Male</option>
+                      <option value="Female" {{ $item->trtm_gender == 'Female' ? 'selected' : '' }} >Female</option>
+                      <option value="Other" {{ $item->trtm_gender == 'Other' ? 'selected' : '' }}>Other</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-group">
+                    <label for="trtm_dob_{{ $index }}">Birthdate</label>
+                    <div class="d-flex">
+                        <div class="input-group date" id="trtm_dob_{{ $index }}" data-target-input="nearest">
+                            <x-flatpickr id="traveler_date_{{ $index }}" name="items[{{ $index }}][trtm_dob]" placeholder="mm/dd/yyyy" />
                             <div class="input-group-append">
-                            <div class="input-group-text" id="traveler-date-icon">
-                            <i class="fa fa-calendar-alt"></i>
-                            <input type="hidden" id="trtm_dob_hidden" value="{{ $item->trtm_dob ?? '' }}" />
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div ss="col-md-3">
-                    <div class="form-group">
-                        <label for="trtm_age">Age</label>
-                        <div class="d-flex">
-                        <input type="text" name="items[][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age" value="{{ $item->trtm_age ?? '' }}" readonly>
+                                <div class="input-group-text" id="traveler-date-icon_{{ $index }}">
+                                    <i class="fa fa-calendar-alt"></i>
+                                    <input type="hidden" id="trtm_dob_hidden_{{ $index }}" value="{{ $item->trtm_dob ?? '' }}" />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-3">
-                    <i class="fa fa-trash delete-item" id="${rowCount}"> Remove</i>
                 </div>
             </div>
+               <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="trtm_age">Age</label>
+                    <div class="d-flex">
+                      <input type="text" name="items[{{$rowCount}}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age" value="{{ $item->trtm_age ?? '' }}"  readonly>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="col-md-3">
+                    <i class="fa fa-trash delete-item" id="{{$rowCount}}"> Remove</i>
+                </div>
+            </div>
+            <hr />
+            @php
+            $i++;
+            @endphp
             @endforeach
           </div>
         </div>
@@ -321,47 +394,89 @@
       allowInput: true,
       defaultDate: birthdatedate.value || null,
     });
-
+    
     document.getElementById('birthdate-hidden-icon').addEventListener('click', function () {
       birthdatedate.open();
     });
 
-    var travelerdate1 = document.querySelector('#trtm_dob_hidden');
-      travelerdate1 = flatpickr(`#traveler_date`, {
-      locale: 'en',
-      altInput: true,
-      dateFormat: "m/d/Y",
-      altFormat: "d/m/Y",
-      allowInput: true,
-      defaultDate: travelerdate1.value || null,
-      });
 
-      document.getElementById(`traveler-date-icon`).addEventListener('click', function () {
-      // alert('jhk');
-      travelerdate1.open();
-      });
 
-      var birthdateInput = document.querySelector(`#traveler_date`);
-      var ageInput = document.querySelector(`#trtm_age`);
+    // var travelerdate1 = document.querySelector('#trtm_dob_hidden');
+    //   travelerdate1 = flatpickr(`#traveler_date`, {
+    //   locale: 'en',
+    //   altInput: true,
+    //   dateFormat: "m/d/Y",
+    //   altFormat: "d/m/Y",
+    //   allowInput: true,
+    //   defaultDate: travelerdate1.value || null,
+    //   });
 
-      birthdateInput.addEventListener('change', function () {
-      var birthdate = new Date(birthdateInput.value);
-      var today = new Date();
-      var age = today.getFullYear() - birthdate.getFullYear();
-      var m = today.getMonth() - birthdate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-        age--;
-      }
-      if (age < 0) {
-        ageInput.value = 0;
-        // alert("Invalid birthdate. Please enter a valid birthdate.");
-      } else {
-        ageInput.value = age;
-      }
-      });
+    //   document.getElementById(`traveler-date-icon`).addEventListener('click', function () {
+    //   // alert('jhk');
+    //   travelerdate1.open();
+    //   });
+
+      
+
+    //   var birthdateInput = document.querySelector(`#traveler_date`);
+    //   var ageInput = document.querySelector(`#trtm_age`);
+
+    //   birthdateInput.addEventListener('change', function () {
+    //   var birthdate = new Date(birthdateInput.value);
+    //   var today = new Date();
+    //   var age = today.getFullYear() - birthdate.getFullYear();
+    //   var m = today.getMonth() - birthdate.getMonth();
+    //   if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+    //     age--;
+    //   }
+    //   if (age < 0) {
+    //     ageInput.value = 0;
+    //     // alert("Invalid birthdate. Please enter a valid birthdate.");
+    //   } else {
+    //     ageInput.value = age;
+    //   }
+    //   });
 
 
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOM fully loaded and parsed.");
+
+    // Select all hidden inputs with IDs that start with 'trtm_dob_hidden_'
+    document.querySelectorAll('[id^="trtm_dob_hidden_"]').forEach(function(hiddenInput) {
+        var index = hiddenInput.id.split('_').pop(); // Extract the unique index from the hidden input ID
+        console.log(`Initializing flatpickr for row ${index}`);
+
+        // Initialize Flatpickr for each traveler
+        var travelerDatePicker = flatpickr(`#traveler_date_${index}`, {
+            locale: 'en',
+            altInput: true,
+            dateFormat: "m/d/Y",
+            altFormat: "d/m/Y",
+            allowInput: true,
+            defaultDate: hiddenInput.value || null, // Use hidden input value as default
+        });
+
+        // Check if flatpickr was successfully initialized
+        if (travelerDatePicker) {
+            console.log(`Flatpickr initialized for traveler_date_${index}`);
+        } else {
+            console.error(`Failed to initialize Flatpickr for traveler_date_${index}`);
+        }
+
+        // Attach event listener to the calendar icon to open Flatpickr when clicked
+        var calendarIcon = document.getElementById(`traveler-date-icon_${index}`);
+        if (calendarIcon) {
+            calendarIcon.addEventListener('click', function () {
+                console.log(`Opening Flatpickr for traveler_date_${index}`);
+                travelerDatePicker.open(); // Open the date picker
+            });
+        } else {
+            console.error(`Calendar icon with ID traveler-date-icon_${index} not found!`);
+        }
+    });
+});
 
   </script>
 
@@ -375,13 +490,75 @@
       rowCount++;
       $('#dynamic_field').append(`
      <div class="item-row row" id="row${rowCount}">
-      <div class="col-md-3">
+     <div class="col-md-3">
       <div class="form-group">
-        <label for="trtm_name">Lead Traveler</label>
         <div class="d-flex">
-         <input type="text" class="form-control" id="trtm_name" name="items[][trtm_name]" placeholder="Enter Lead Traveler">
+          <input type="radio" class="trtm_type" id="trtm_type_family${rowCount}" name="items[${rowCount}][trtm_type]" value="1" ><label for="trtm_type_family${rowCount}">Family Member</label>
+          <input type="radio" class="trtm_type" id="trtm_type_trip${rowCount}" name="items[${rowCount}][trtm_type]" value="2"><label for="trtm_type_trip${rowCount}">Trip Member</label>
         </div>
       </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="trtm_first_name">First Name<span
+              class="text-danger">*</span></label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_first_name${rowCount}" name="items[${rowCount}][trtm_first_name]" placeholder="Enter First Name">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 family-member-field">
+        <div class="form-group">
+          <label for="trtm_middle_name">Middle name</label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_middle_name${rowCount}" name="items[${rowCount}][trtm_middle_name]" placeholder="Enter Middle name">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="trtm_last_name">Last Name</label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_last_name${rowCount}" name="items[${rowCount}][trtm_last_name]" placeholder="Enter Last Name">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 family-member-field">
+        <div class="form-group">
+          <label for="trtm_nick_name">Nickname</label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_nick_name${rowCount}" name="items[${rowCount}][trtm_nick_name]" placeholder="Enter Nickname">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 family-member-field">
+        <div class="form-group">
+          <label for="trtm_relationship">Relationship<span
+              class="text-danger">*</span></label>
+          <div class="d-flex">
+            <input type="text" class="form-control" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]" placeholder="Enter Relationship">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="trtm_gender">Gender<span
+              class="text-danger">*</span></label>
+          <div class="d-flex">
+            <select class="form-control select2" style="width: 100%;" id="trtm_gender${rowCount}" name="items[${rowCount}][trtm_gender]" >
+              <option default>Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="col-md-3">
@@ -389,7 +566,7 @@
         <label for="trtm_dob">Birthdate</label>
         <div class="d-flex">
          <div class="input-group date" id="trtm_dob" data-target-input="nearest">
-            <x-flatpickr id="traveler_date_${rowCount}" name="items[][trtm_dob]" placeholder="mm/dd/yyyy" />
+            <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
             <div class="input-group-append">
             <div class="input-group-text" id="traveler-date-icon_${rowCount}">
             <i class="fa fa-calendar-alt"></i>
@@ -405,7 +582,7 @@
       <div class="form-group">
         <label for="trtm_age">Age</label>
         <div class="d-flex">
-        <input type="text" name="items[][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age_${rowCount}" readonly>
+        <input type="text" name="items[${rowCount}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age_${rowCount}" readonly>
         </div>
       </div>
       </div>
@@ -414,7 +591,11 @@
       </div>
 
     </div>
+    <hr />
     `);
+    
+    $(`#row${rowCount} .family-member-field`).hide();
+    $(`#row${rowCount} .trip-member-field`).hide();
 
       var numofpeople = document.querySelector('#tr_num_people');
       numofpeople.value = rowCount;
@@ -453,6 +634,32 @@
       }
       });
 
+    });
+
+    $(document).on('change', '.trtm_type', function() {
+      var rowId = $(this).closest('.item-row').attr('id').replace('row', '');
+      if ($(this).val() == 1) {
+        $(`#row${rowId} .family-member-field`).show();
+        $(`#row${rowId} .trip-member-field`).hide();
+      } else  if ($(this).val() == 2){
+        $(`#row${rowId} .family-member-field`).hide();
+        $(`#row${rowId} .trip-member-field`).show();
+      }
+    });
+
+    $(document).ready(function() {
+      $('.trtm_type').each(function() {
+        var rowId = $(this).closest('.item-row').attr('id');
+       
+        if ($(this).val() == 1) {
+          
+          $(`#${rowId} .family-member-field`).show();
+          $(`#${rowId} .trip-member-field`).hide();
+        } else if ($(this).val() == 2) {
+          $(`#${rowId} .family-member-field`).hide();
+          $(`#${rowId} .trip-member-field`).show();
+        }
+      });
     });
    
     $(document).on('click', '.delete-item', function () {
