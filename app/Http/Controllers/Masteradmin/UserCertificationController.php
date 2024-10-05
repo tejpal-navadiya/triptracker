@@ -116,7 +116,7 @@ class UserCertificationController extends Controller
 
             return response()->json(['success' => 'Certification deleted successfully.']);
         }
-
+        \MasterLogActivity::addToLog('Master Admin Users Certification Deleted.');
         return response()->json(['error' => 'Certification not found.'], 404);
     }
 }

@@ -68,7 +68,7 @@
                             <td>{{ $value->status }}</td>
                             <td>
 
-                              <a href=""><i class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                              <a href="{{ route('trip.view',$value->tr_id) }}"><i class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
                               <a href="{{ route('trip.edit',$value->tr_id) }}"><i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 

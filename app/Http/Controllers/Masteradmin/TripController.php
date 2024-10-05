@@ -115,7 +115,7 @@ class TripController extends Controller
                 $travelerItem->save();
             }
 
-    
+            \MasterLogActivity::addToLog('Master Admin Trip Created.');
         return redirect()->route('trip.index')
         ->with('success','Trip created successfully.');
 
@@ -193,7 +193,7 @@ class TripController extends Controller
             $travelerItem->save();
         }
 
-
+        \MasterLogActivity::addToLog('Master Admin Trip Updated.');
         return redirect()->route('trip.index')
 
                         ->with('success','Trip updated successfully');
@@ -210,12 +210,22 @@ class TripController extends Controller
             $tripmember = TripTravelingMember::where('tr_id', $id)->delete();
             $trip->where('tr_id', $id)->delete();
 
+            \MasterLogActivity::addToLog('Master Admin Trip Deleted.');
+
             return redirect()->route('trip.index')
 
             ->with('success','Trip deleted successfully');
 
         }
 
+    }
+
+    public function view($id): View
+    {
+        // dd()
+        $trip = Trip::where('tr_id', $id)->firstOrFail();
+        // dd($trip);
+        return view('masteradmin.trip.view',compact('trip'));
     }
 
 }

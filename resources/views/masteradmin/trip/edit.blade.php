@@ -315,31 +315,31 @@
           </div> -->
 
           <!-- Dynamic Row Example -->
-<div class="col-md-3">
-    <div class="form-group">
-        <label for="trtm_dob_{{ $index }}">Birthdate</label>
-        <div class="d-flex">
-            <div class="input-group date" id="trtm_dob_{{ $index }}" data-target-input="nearest">
-                <x-flatpickr id="traveler_date_{{ $index }}" name="items[{{ $rowCount }}][trtm_dob]" placeholder="mm/dd/yyyy" />
-                <div class="input-group-append">
-                    <div class="input-group-text" id="traveler-date-icon_{{ $index }}">
-                        <i class="fa fa-calendar-alt"></i>
-                        <input type="hidden" id="trtm_dob_hidden_{{ $index }}" value="{{ $item->trtm_dob ?? '' }}" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-      <div class="col-md-3">
-          <div class="form-group">
-              <label for="trtm_age_{{ $index }}">Age</label> <!-- Ensure the ID is consistent -->
-              <div class="d-flex">
-                  <input type="text" name="items[{{ $rowCount }}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_ages_{{ $index }}" value="{{ $item->trtm_age ?? '' }}" readonly>
+          <div class="col-md-3">
+              <div class="form-group">
+                  <label for="trtm_dob_{{ $index }}">Birthdate</label>
+                  <div class="d-flex">
+                      <div class="input-group date" id="trtm_dob_{{ $index }}" data-target-input="nearest">
+                          <x-flatpickr id="traveler_date_{{ $index }}" name="items[{{ $rowCount }}][trtm_dob]" placeholder="mm/dd/yyyy" />
+                          <div class="input-group-append">
+                              <div class="input-group-text" id="traveler-date-icon_{{ $index }}">
+                                  <i class="fa fa-calendar-alt"></i>
+                                  <input type="hidden" id="trtm_dob_hidden_{{ $index }}" value="{{ $item->trtm_dob ?? '' }}" />
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
           </div>
-      </div>
+
+              <div class="col-md-3">
+                  <div class="form-group">
+                      <label for="trtm_age_{{ $index }}">Age</label> <!-- Ensure the ID is consistent -->
+                      <div class="d-flex">
+                          <input type="text" name="items[{{ $rowCount }}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_ages_{{ $index }}" value="{{ $item->trtm_age ?? '' }}" readonly>
+                      </div>
+                  </div>
+              </div>
 
                 <div class="col-md-3">
                     <i class="fa fa-trash delete-item" id="{{$rowCount}}"> Remove</i>
@@ -464,7 +464,7 @@
             travelerDatePicker.open(); 
         });
     } else {
-        console.warn(`Calendar icon with ID traveler-date-icon_${index} not found.`);
+        // console.warn(`Calendar icon with ID traveler-date-icon_${index} not found.`);
     }
 
     // Traveler date input
@@ -487,11 +487,11 @@
             if (travelerageInput) {
                 travelerageInput.value = (age < 0) ? 0 : age;
             } else {
-                console.error(`Traveler age input with ID trtm_ages_${index} not found.`);
+                // console.error(`Traveler age input with ID trtm_ages_${index} not found.`);
             }
         });
     } else {
-        console.warn(`Traveler date input with ID traveler_date_${index} not found.`);
+        // console.warn(`Traveler date input with ID traveler_date_${index} not found.`);
     }
 });
 
@@ -619,8 +619,8 @@ $(document).ready(function () {
     $(`#row${rowCount} .family-member-field`).hide();
     $(`#row${rowCount} .trip-member-field`).hide();
 
-      var numofpeople = document.querySelector('#tr_num_people');
-      numofpeople.value = rowCount;
+    var numofpeople = document.querySelector('#tr_num_people');
+    numofpeople.value = parseInt(numofpeople.value) + 1;
 
       var travelerdate = flatpickr(`#traveler_dates_${rowCount}`, {
       locale: 'en',
@@ -674,8 +674,9 @@ $(document).ready(function () {
       var rowId = $(this).attr("id");
       $('#row' + rowId).remove();
       
-      rowCount--;
-      $('#tr_num_people').val(rowCount);
+      var currentValue = parseInt($('#tr_num_people').val()); // get the current value
+      var newValue = currentValue - 1; // decrement the value by 1
+      $('#tr_num_people').val(newValue); // set the new value
     });
 
     var birthdateInput = document.querySelector('#birthdate_date');
