@@ -208,7 +208,7 @@
           </div>
           <div class="col-md-12" id="dynamic_field">
           @php
-          $i = 0;
+          $i = 1;
           @endphp
            @foreach($tripmember as $index => $item)
             @php
@@ -220,7 +220,7 @@
             <div class="col-md-3">
               <div class="form-group">
                 <div class="d-flex">
-                  <input type="hidden" name="trtm_type_hidden" id="trtm_type_hidden" value="{{ $item->trtm_type }}" />
+                  <input type="hidden" name="trtm_type_hidden" class="trtm_type_hidden" id="trtm_type_hidden" value="{{ $item->trtm_type }}" />
                   <input type="radio" class="trtm_type" id="trtm_type_family_{{ $rowCount }}" name="items[{{ $rowCount }}][trtm_type]" value="1" {{ $item->trtm_type == 1 ? 'checked' : '' }}><label for="trtm_type_family_{{ $rowCount }}">Family Member</label>
                   <input type="radio" class="trtm_type" id="trtm_type_trip_{{ $rowCount }}" name="items[{{ $rowCount }}][trtm_type]" value="2" {{ $item->trtm_type == 2 ? 'checked' : '' }}><label for="trtm_type_trip_{{ $rowCount }}">Trip Member</label>
                 </div>
@@ -289,7 +289,7 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
+              <!-- <div class="col-md-3">
                 <div class="form-group">
                     <label for="trtm_dob_{{ $index }}">Birthdate</label>
                     <div class="d-flex">
@@ -305,15 +305,42 @@
                     </div>
                 </div>
             </div>
-               <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="trtm_age">Age</label>
-                    <div class="d-flex">
-                      <input type="text" name="items[{{$rowCount}}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age" value="{{ $item->trtm_age ?? '' }}"  readonly>
-                    </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                  <label for="trtm_age">Age</label>
+                  <div class="d-flex">
+                      <input type="text" name="items[{{$rowCount}}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_ages_{{$rowCount}}" value="{{ $item->trtm_age ?? '' }}" readonly>
                   </div>
+              </div>
+          </div> -->
+
+          <!-- Dynamic Row Example -->
+<div class="col-md-3">
+    <div class="form-group">
+        <label for="trtm_dob_{{ $index }}">Birthdate</label>
+        <div class="d-flex">
+            <div class="input-group date" id="trtm_dob_{{ $index }}" data-target-input="nearest">
+                <x-flatpickr id="traveler_date_{{ $index }}" name="items[{{ $rowCount }}][trtm_dob]" placeholder="mm/dd/yyyy" />
+                <div class="input-group-append">
+                    <div class="input-group-text" id="traveler-date-icon_{{ $index }}">
+                        <i class="fa fa-calendar-alt"></i>
+                        <input type="hidden" id="trtm_dob_hidden_{{ $index }}" value="{{ $item->trtm_dob ?? '' }}" />
+                    </div>
                 </div>
-              
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="col-md-3">
+          <div class="form-group">
+              <label for="trtm_age_{{ $index }}">Age</label> <!-- Ensure the ID is consistent -->
+              <div class="d-flex">
+                  <input type="text" name="items[{{ $rowCount }}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_ages_{{ $index }}" value="{{ $item->trtm_age ?? '' }}" readonly>
+              </div>
+          </div>
+      </div>
+
                 <div class="col-md-3">
                     <i class="fa fa-trash delete-item" id="{{$rowCount}}"> Remove</i>
                 </div>
@@ -353,6 +380,21 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
+     $(document).ready(function() {
+      $('.trtm_type_hidden').each(function() {
+        var rowId = $(this).closest('.item-row').attr('id');
+       
+        if ($(this).val() == 1) {
+          
+          $(`#${rowId} .family-member-field`).show();
+          $(`#${rowId} .trip-member-field`).hide();
+        } else if ($(this).val() == 2) {
+          $(`#${rowId} .family-member-field`).hide();
+          $(`#${rowId} .trip-member-field`).show();
+        }
+      });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
 
         var fromdatepicker = document.getElementById('tr_start_date_hidden');
@@ -400,89 +442,69 @@
     });
 
 
-
-    // var travelerdate1 = document.querySelector('#trtm_dob_hidden');
-    //   travelerdate1 = flatpickr(`#traveler_date`, {
-    //   locale: 'en',
-    //   altInput: true,
-    //   dateFormat: "m/d/Y",
-    //   altFormat: "d/m/Y",
-    //   allowInput: true,
-    //   defaultDate: travelerdate1.value || null,
-    //   });
-
-    //   document.getElementById(`traveler-date-icon`).addEventListener('click', function () {
-    //   // alert('jhk');
-    //   travelerdate1.open();
-    //   });
-
-      
-
-    //   var birthdateInput = document.querySelector(`#traveler_date`);
-    //   var ageInput = document.querySelector(`#trtm_age`);
-
-    //   birthdateInput.addEventListener('change', function () {
-    //   var birthdate = new Date(birthdateInput.value);
-    //   var today = new Date();
-    //   var age = today.getFullYear() - birthdate.getFullYear();
-    //   var m = today.getMonth() - birthdate.getMonth();
-    //   if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-    //     age--;
-    //   }
-    //   if (age < 0) {
-    //     ageInput.value = 0;
-    //     // alert("Invalid birthdate. Please enter a valid birthdate.");
-    //   } else {
-    //     ageInput.value = age;
-    //   }
-    //   });
-
-
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-    console.log("DOM fully loaded and parsed.");
 
-    // Select all hidden inputs with IDs that start with 'trtm_dob_hidden_'
     document.querySelectorAll('[id^="trtm_dob_hidden_"]').forEach(function(hiddenInput) {
-        var index = hiddenInput.id.split('_').pop(); // Extract the unique index from the hidden input ID
-        console.log(`Initializing flatpickr for row ${index}`);
+    var index = hiddenInput.id.split('_').pop(); // Extract the unique index from the hidden input ID
 
-        // Initialize Flatpickr for each traveler
-        var travelerDatePicker = flatpickr(`#traveler_date_${index}`, {
-            locale: 'en',
-            altInput: true,
-            dateFormat: "m/d/Y",
-            altFormat: "d/m/Y",
-            allowInput: true,
-            defaultDate: hiddenInput.value || null, // Use hidden input value as default
-        });
-
-        // Check if flatpickr was successfully initialized
-        if (travelerDatePicker) {
-            console.log(`Flatpickr initialized for traveler_date_${index}`);
-        } else {
-            console.error(`Failed to initialize Flatpickr for traveler_date_${index}`);
-        }
-
-        // Attach event listener to the calendar icon to open Flatpickr when clicked
-        var calendarIcon = document.getElementById(`traveler-date-icon_${index}`);
-        if (calendarIcon) {
-            calendarIcon.addEventListener('click', function () {
-                console.log(`Opening Flatpickr for traveler_date_${index}`);
-                travelerDatePicker.open(); // Open the date picker
-            });
-        } else {
-            console.error(`Calendar icon with ID traveler-date-icon_${index} not found!`);
-        }
+    // Initialize Flatpickr
+    var travelerDatePicker = flatpickr(`#traveler_date_${index}`, {
+        locale: 'en',
+        altInput: true,
+        dateFormat: "m/d/Y",
+        altFormat: "d/m/Y",
+        allowInput: true,
+        defaultDate: hiddenInput.value || null,
     });
+
+    var calendarIcon = document.getElementById(`traveler-date-icon_${index}`);
+    if (calendarIcon) {
+        calendarIcon.addEventListener('click', function () {
+            travelerDatePicker.open(); 
+        });
+    } else {
+        console.warn(`Calendar icon with ID traveler-date-icon_${index} not found.`);
+    }
+
+    // Traveler date input
+    var travelerDateInput = document.querySelector(`#traveler_date_${index}`);
+    // Ensure the ID is consistent with the ID in the HTML
+    var travelerageInput = document.querySelector(`#trtm_ages_${index}`);
+
+    if (travelerDateInput) {
+        travelerDateInput.addEventListener('change', function () {
+            var birthdate = new Date(travelerDateInput.value);
+            var today = new Date();
+            var age = today.getFullYear() - birthdate.getFullYear();
+            var m = today.getMonth() - birthdate.getMonth();
+
+            if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                age--;
+            }
+
+            // Now set the age in the correct input
+            if (travelerageInput) {
+                travelerageInput.value = (age < 0) ? 0 : age;
+            } else {
+                console.error(`Traveler age input with ID trtm_ages_${index} not found.`);
+            }
+        });
+    } else {
+        console.warn(`Traveler date input with ID traveler_date_${index} not found.`);
+    }
 });
+
+
+
+
 
   </script>
 
   <script>
 
-    $(document).ready(function () {
+
+$(document).ready(function () {
       var  rowCount = 0;
 
     $('#add').click(function () {
@@ -490,7 +512,7 @@
       rowCount++;
       $('#dynamic_field').append(`
      <div class="item-row row" id="row${rowCount}">
-     <div class="col-md-3">
+    <div class="col-md-3">
       <div class="form-group">
         <div class="d-flex">
           <input type="radio" class="trtm_type" id="trtm_type_family${rowCount}" name="items[${rowCount}][trtm_type]" value="1" ><label for="trtm_type_family${rowCount}">Family Member</label>
@@ -566,9 +588,9 @@
         <label for="trtm_dob">Birthdate</label>
         <div class="d-flex">
          <div class="input-group date" id="trtm_dob" data-target-input="nearest">
-            <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
+            <x-flatpickr id="traveler_dates_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
             <div class="input-group-append">
-            <div class="input-group-text" id="traveler-date-icon_${rowCount}">
+            <div class="input-group-text" id="traveler_date_icon_${rowCount}">
             <i class="fa fa-calendar-alt"></i>
             <input type="hidden" id="trtm_dob_hidden" value="" />
           </div>
@@ -593,14 +615,14 @@
     </div>
     <hr />
     `);
-    
+
     $(`#row${rowCount} .family-member-field`).hide();
     $(`#row${rowCount} .trip-member-field`).hide();
 
       var numofpeople = document.querySelector('#tr_num_people');
       numofpeople.value = rowCount;
 
-      var travelerdate = flatpickr(`#traveler_date_${rowCount}`, {
+      var travelerdate = flatpickr(`#traveler_dates_${rowCount}`, {
       locale: 'en',
       altInput: true,
       dateFormat: "m/d/Y",
@@ -608,14 +630,13 @@
       allowInput: true,
       });
 
-      document.getElementById(`traveler-date-icon_${rowCount}`).addEventListener('click', function () {
+      document.getElementById(`traveler_date_icon_${rowCount}`).addEventListener('click', function () {
       // alert('jhk');
       travelerdate.open();
       });
 
-     
 
-      var birthdateInput = document.querySelector(`#traveler_date_${rowCount}`);
+      var birthdateInput = document.querySelector(`#traveler_dates_${rowCount}`);
       var ageInput = document.querySelector(`#trtm_age_${rowCount}`);
 
       birthdateInput.addEventListener('change', function () {
@@ -647,20 +668,7 @@
       }
     });
 
-    $(document).ready(function() {
-      $('.trtm_type').each(function() {
-        var rowId = $(this).closest('.item-row').attr('id');
-       
-        if ($(this).val() == 1) {
-          
-          $(`#${rowId} .family-member-field`).show();
-          $(`#${rowId} .trip-member-field`).hide();
-        } else if ($(this).val() == 2) {
-          $(`#${rowId} .family-member-field`).hide();
-          $(`#${rowId} .trip-member-field`).show();
-        }
-      });
-    });
+   
    
     $(document).on('click', '.delete-item', function () {
       var rowId = $(this).attr("id");

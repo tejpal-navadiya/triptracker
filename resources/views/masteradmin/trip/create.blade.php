@@ -372,7 +372,7 @@
          <div class="input-group date" id="trtm_dob" data-target-input="nearest">
             <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
             <div class="input-group-append">
-            <div class="input-group-text" id="traveler-date-icon_${rowCount}">
+            <div class="input-group-text" id="traveler-date-icons_${rowCount}">
             <i class="fa fa-calendar-alt"></i>
             <input type="hidden" id="trtm_dob_hidden" value="" />
           </div>
@@ -404,7 +404,7 @@
       var numofpeople = document.querySelector('#tr_num_people');
       numofpeople.value = rowCount;
 
-      var travelerdate = flatpickr(`#traveler_date_${rowCount}`, {
+      var travelerdates = flatpickr(`#traveler_date_${rowCount}`, {
       locale: 'en',
       altInput: true,
       dateFormat: "m/d/Y",
@@ -412,9 +412,9 @@
       allowInput: true,
       });
 
-      document.getElementById(`traveler-date-icon_${rowCount}`).addEventListener('click', function () {
+      document.getElementById(`traveler-date-icons_${rowCount}`).addEventListener('click', function () {
       // alert('jhk');
-      travelerdate.open();
+      travelerdates.open();
       });
 
 

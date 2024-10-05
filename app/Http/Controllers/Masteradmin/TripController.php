@@ -134,10 +134,9 @@ class TripController extends Controller
 
     public function update(Request $request, $id): RedirectResponse
     {
-        dd($request->all());
-       
+
+        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id; 
 
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
 
@@ -170,18 +169,13 @@ class TripController extends Controller
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
             'tr_start_date.required' => 'Start date is required',
-            'items.*.trtm_type.required' => 'Traveling member type is required',
-            'items.*.trtm_first_name.required' => 'First name is required',
-            'items.*.trtm_last_name.required' => 'Last name is required',
-            'items.*.trtm_gender.required' => 'Gender is required',
-            'items.*.trtm_dob.required' => 'Birthdate is required',
-            'items.*.trtm_age.required' => 'Age is required',
         ]);
 
     
         $trip->update($request->all());
 
         TripTravelingMember::where('tr_id', $id)->delete();
+
         $rawItems = $request->input('items');           
 
         foreach ($rawItems as $item) {
@@ -191,13 +185,14 @@ class TripController extends Controller
             
             $travelerItem->fill($item);
 
-            $travelerItem->tr_id = $trip->tr_id;
-            $travelerItem->id = $dynamicId;
+            $travelerItem->tr_id = $id;
+            $travelerItem->id = $user->id;
             $travelerItem->trtm_status = 1;
             $travelerItem->trtm_id = $uniqueId1;
 
             $travelerItem->save();
         }
+
 
         return redirect()->route('trip.index')
 
