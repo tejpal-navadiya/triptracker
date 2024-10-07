@@ -153,6 +153,10 @@ Route::group(['prefix' => $busadminRoute], function () {
        //trip family member
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
        Route::post('/family-member-store/{id}', [TripTravelingMemberController::class, 'store'])->name('masteradmin.family-member.store');
+       Route::get('/family-member-edit/{id}/{trip_id}', [TripTravelingMemberController::class, 'edit'])->name('masteradmin.family-member.edit');
+       Route::patch('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'update'])->name('masteradmin.family-member.update');
+       Route::delete('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'destroy'])->name('masteradmin.family-member.destroy');
+
 
 
     });

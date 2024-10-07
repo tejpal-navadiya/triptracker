@@ -55,6 +55,7 @@
                     <div class="row pxy-15 px-10">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <input type="hidden" name="trtm_type_hidden" class="trtm_type_hidden" id="trtm_type_hidden" value="" />
                                 <input type="radio" class="trtm_type" id="trtm_type_family" name="trtm_type" value="1" ><label for="trtm_type_family">Family Member</label>
                                 <input type="radio" class="trtm_type" id="trtm_type_trip" name="trtm_type" value="2"><label for="trtm_type_trip">Trip Member</label>
                                 @error('role_name')
@@ -173,7 +174,7 @@
         //datatable list
         var table = $('#example10').DataTable();
         table.destroy();
-
+        //list
         table = $('#example10').DataTable({
             processing: true,
             serverSide: true,
@@ -189,7 +190,7 @@
                     data: null,
                     name: 'trtm_full_name',
                     render: function(data, type, row) {
-                        return row.trtm_first_name + ' ' + row.trtm_middle_name + ' ' + row.trtm_last_name;
+                        return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
                     }
                 },
                 {data: 'trtm_relationship', name: 'trtm_relationship'},
@@ -209,7 +210,7 @@
             editModal.show();
         });
 
-         //insert data
+         //insert/update data
          $('#saveBtn').click(function (e) {
             e.preventDefault();
             $(this).html('Sending..');
@@ -224,7 +225,10 @@
             } else {
                 // Update existing data
                 var trtm_id = $('#trtm_id').val();
-                url = "{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/roleupdate/" + trtm_id;
+                var trip_id = '{{ $trip->tr_id }}'; // assuming $trip->tr_id is available in your view
+                var url = "{{ route('masteradmin.family-member.update', [$trip->tr_id, ':trtm_id']) }}";
+                url = url.replace(':trtm_id', trtm_id);
+
                 method = "PATCH";
             }
             
@@ -250,6 +254,81 @@
             });
         });
 
+        //edit popup
+        $('body').on('click', '.editMember', function () {
+        var id = $(this).data('id');
+        // alert(id);
+        $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}".replace('id', id).replace('{{$trip->tr_id}}', '{{ $trip->tr_id }}'), function (data) {
+
+            // console.log(data);
+            $('#modelHeading').html("Edit Traveling Member");
+            $('#saveBtn').val("edit-user");
+            var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
+            editModal.show();
+              $('#trtm_id').val(data.trtm_id);
+              $('#trtm_first_name').val(data.trtm_first_name);
+              $('#trtm_middle_name').val(data.trtm_middle_name);
+              $('#trtm_last_name').val(data.trtm_last_name);
+              $('#trtm_nick_name').val(data.trtm_nick_name);
+              $('#trtm_relationship').val(data.trtm_relationship);
+              $('#trtm_gender').val(data.trtm_gender).trigger('change.select2');
+              $('#trtm_dob_hidden').val(data.trtm_dob);
+              $('#trtm_age').val(data.trtm_age);
+              $('#trtm_type_hidden').val(data.trtm_type);
+              $(`input[name="trtm_type"][value="${data.trtm_type}"]`).prop('checked', true);
+
+            $('#trtm_type_hidden').val(data.trtm_type);
+            if ($('#trtm_type_hidden').val() == 1) {
+                $(`.family-member-field`).show();
+                $(`.trip-member-field`).hide();
+            } else  if ($('#trtm_type_hidden').val() == 2){
+                $(`.family-member-field`).hide();
+                $(`.trip-member-field`).show();
+            }
+                        
+            var trtm_dob = flatpickr("#traveler_date", {
+                locale: 'en',
+                altInput: true,
+                dateFormat: "m/d/Y",
+                altFormat: "m/d/Y",
+                allowInput: true,
+                defaultDate: trtm_dob_hidden.value || null,
+            });
+
+            document.getElementById('traveler-date-icon').addEventListener('click', function () {
+                fromdatepicker.open();
+            });
+
+           });
+       });
+
+       //delete record
+        $('body').on('click', '.deleteMemberbtn', function (e) {
+            e.preventDefault();
+            var trtm_id = $(this).data("id");
+            //  alert(trtm_id);
+            var url = "{{ route('masteradmin.family-member.destroy', [$trip->tr_id, ':trtm_id']) }}";
+            url = url.replace(':trtm_id', trtm_id);
+            // alert(url);
+            $.ajax({
+                type: "DELETE",
+                url: url,
+                success: function (data) {
+                    alert(data.success);
+                  
+                    $('.modal').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $('body').removeClass('modal-open');
+                    $('.modal').css('display', 'none');
+                    
+                    table.draw();
+
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        });  
     });
 </script>
 <script>
