@@ -20,6 +20,7 @@ use App\Http\Controllers\Masteradmin\UserRoleController;
 use App\Http\Controllers\Masteradmin\UserCertificationController;
 use App\Http\Controllers\Masteradmin\TripController;
 use App\Http\Controllers\Masteradmin\TripTravelingMemberController;
+use App\Http\Controllers\Masteradmin\LibraryController;
 
 
 /*
@@ -153,6 +154,9 @@ Route::group(['prefix' => $busadminRoute], function () {
        //trip family member
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
        Route::post('/family-member-store/{id}', [TripTravelingMemberController::class, 'store'])->name('masteradmin.family-member.store');
+
+       //library
+       Route::resource( 'library', LibraryController::class);
 
 
     });

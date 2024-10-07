@@ -69,8 +69,6 @@ class TripController extends Controller
             'items.*.trtm_age.required' => 'Age is required',
         ]);
 
-    
-
        // dd('data');
 
             // Store data

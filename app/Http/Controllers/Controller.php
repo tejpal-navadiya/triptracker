@@ -210,7 +210,7 @@ class Controller extends BaseController
                     $table->string('tr_id')->constrained($storeId.'_tc_trip', 'tr_id')->onDelete('cascade');
                     $table->string('trtm_type')->nullable();
                     $table->string('trtm_first_name')->nullable();
-                    $table->string('trtm_middle_name')->nullable();
+                    $table->string(column: 'trtm_middle_name')->nullable();
                     $table->string('trtm_last_name')->nullable();
                     $table->string('trtm_nick_name')->nullable();
                     $table->string('trtm_gender')->nullable();
@@ -223,6 +223,28 @@ class Controller extends BaseController
             }else{
 
             }
+
+            //Library 
+            if (!Schema::hasTable($storeId.'_tc_library')){   
+                Schema::create($storeId.'_tc_library', function (Blueprint $table) use ($storeId) {
+                    $table->string('lib_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('lib_category')->constrained($storeId.'_tc_trip', 'tr_id')->onDelete('cascade');
+                    $table->string('lib_currency')->nullable();
+                    $table->string('lib_country')->nullable();
+                    $table->string('lib_state')->nullable();
+                    $table->string('lib_city')->nullable();
+                    $table->string('lib_zip')->nullable();
+                    $table->text('lib_basic_information')->nullable();
+                    $table->text('lib_sightseeing_information')->nullable();
+                    $table->text('lib_image')->nullable();
+                    $table->tinyInteger('lib_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }else{
+
+            }
+
 
         }
         
