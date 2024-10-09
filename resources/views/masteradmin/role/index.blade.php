@@ -177,10 +177,13 @@
                 url = "{{ route('user-role-details.store') }}";
                 method = "POST";
             } else {
-                // Update existing data
-                var roleId = $('#role_id').val();
-    url = "{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/roleupdate/" + roleId;
-    method = "PATCH";
+              // Update existing data
+              var roleId = $('#role_id').val();
+              var url = "{{ route('masteradmin.role.update', ':roleId') }}";
+              url = url.replace(':roleId', roleId);
+
+              // Use PATCH method as required
+              var method = "PATCH";
             }
             
             $.ajax({

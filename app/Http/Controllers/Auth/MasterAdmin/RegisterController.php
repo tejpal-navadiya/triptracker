@@ -20,6 +20,7 @@ use App\Models\MasterUserDetails;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\UserRegistered;
 use App\Models\States;
+use Illuminate\Support\Facades\Storage;
 
 
 class RegisterController extends Controller
@@ -73,14 +74,14 @@ class RegisterController extends Controller
         $expiryDate = $expirationDate->toDateString();
         $uniqueId = $this->GenerateUniqueRandomString('buss_master_users', 'id', 6);  
               //dd($id);
-        $users_image = '';
-        if ($request->hasFile('image')) {
-            // Handle the image upload and check the result
-            $users_image = $this->handleImageUpload($request, $request->file('image'), 'masteradmin/profile_image');
+        // $users_image = '';
+        // if ($request->hasFile('image')) {
+        //     // Handle the image upload and check the result
+        //     $users_image = $this->handleImageUpload($request, $request->file('image'), 'masteradmin/profile_image');
             
-            // Debug output
-            //dd($users_image); // This will output the image path and stop execution for debugging purposes
-        }
+        //     // Debug output
+        //     //dd($users_image); // This will output the image path and stop execution for debugging purposes
+        // }
         $admin = MasterUser::create([
             'id' => $uniqueId,
             'user_agencies_name' => $request->user_agencies_name,
@@ -94,7 +95,7 @@ class RegisterController extends Controller
             'user_iata_number' => $request->user_iata_number,
             'user_address' => $request->user_address,
             'user_state' => $request->user_state,
-            'user_image' => $users_image,
+            'user_image' => '',
             'buss_unique_id' => '',
             'sp_id' => $request->sp_id,
             'user_password' => Hash::make($request->user_password),
@@ -112,10 +113,27 @@ class RegisterController extends Controller
         $admin->buss_unique_id = $buss_unique_id;
         $admin->updated_at = now();  // Or \Carbon\Carbon::now() for the current timestamp
 
+        //create own image floder 
+        $userFolder = 'masteradmin/' .$buss_unique_id.'_'.$request->input('user_first_name');
+        Storage::makeDirectory($userFolder, 0755, true);
+
+        $users_image = '';
+        if ($request->hasFile('image')) {
+            // Handle the image upload and check the result
+            $users_image =  $this->handleImageUpload($request, 'image', null, 'profile_image', $userFolder);
+
+            // Debug output
+            //dd($users_image); // This will output the image path and stop execution for debugging purposes
+        }
+
+        $admin->user_image = $users_image;
+
         // Save the updated values to the database
         $admin->save();
 
         // Uncomment this line if you want to log in the user after registration
+
+        // dd($admin->id);
         
         $this->createTable($admin->id);
 
@@ -125,6 +143,7 @@ class RegisterController extends Controller
         $tableName = $userDetails->getTable();
         // dd($userDetails->getTable());
         $users_id = $this->GenerateUniqueRandomString($table= $tableName, $column="users_id", $chars=6);
+
         $userDetails->create([
             'users_agencies_name' => $request->user_agencies_name,
             'users_franchise_name' => $request->user_franchise_name,

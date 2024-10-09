@@ -47,7 +47,11 @@ class UserCertificationController extends Controller
         }
     
         if ($request->hasFile('image')) {
-            $users_cert_document = $this->handleImageUpload($request, $request->file('image'), 'masteradmin/certification_image');
+            // $users_cert_document = $this->handleImageUpload($request, $request->file('image'), 'masteradmin/certification_image');
+            $userFolder = session('userFolder');
+            
+            $users_cert_document =  $this->handleImageUpload($request, 'image', null, 'certification_image', $userFolder);
+
             $validatedData['users_cert_document'] = $users_cert_document;
         } else {
             $validatedData['users_cert_document'] = $userCertification->users_cert_document ?? '';
@@ -106,12 +110,13 @@ class UserCertificationController extends Controller
     public function destroy($id)
     {
         $userCertification = UserCertification::where('users_cert_id', $id)->first();
-
+        $userFolderFromSession = session('userFolder');
+        // dd($userFolderFromSession);
         if ($userCertification) {
             if ($userCertification->users_cert_document) {
-                Storage::delete('masteradmin/certification_image/' . $userCertification->users_cert_document);
+                Storage::delete($userFolderFromSession.'/certification_image/' . $userCertification->users_cert_document);
             }
-
+           
             $userCertification->where('users_cert_id', $id)->delete();
 
             return response()->json(['success' => 'Certification deleted successfully.']);

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    
+
     public static function GenerateUniqueRandomString($table, $column, $chars)
     {
         $unique = false;
@@ -37,21 +37,46 @@ class Controller extends BaseController
     }
 
 
-    protected function handleImageUpload(Request $request, $currentImage = null, $directory = 'default_directory')
-    {
+    // protected function handleImageUpload(Request $request, $currentImage = null, $directory = 'default_directory')
+    // {
         
-        if ($request->hasFile('image')) {
+    //     if ($request->hasFile('image')) {
+    //         // Delete the old image if it exists
+    //         if ($currentImage) {
+    //             Storage::delete($directory . '/' . $currentImage);
+    //         }
+
+    //         // Generate a unique filename
+    //         $extension = $request->file('image')->getClientOriginalExtension();
+    //         $uniqueFilename = Str::uuid() . '.' . $extension;
+
+    //         // Store the new image
+    //         $request->file('image')->storeAs($directory, $uniqueFilename);
+            
+    //         return $uniqueFilename;
+    //     }
+
+    //     return $currentImage;
+    // }
+
+    protected function handleImageUpload(Request $request, $type, $currentImage = null, $directory = 'default_directory', $userFolder = '')
+    {
+        if ($userFolder) {
+            $directory = $userFolder . '/' . $directory;
+        }
+
+        if ($request->hasFile($type)) {
             // Delete the old image if it exists
             if ($currentImage) {
                 Storage::delete($directory . '/' . $currentImage);
             }
 
             // Generate a unique filename
-            $extension = $request->file('image')->getClientOriginalExtension();
+            $extension = $request->file($type)->getClientOriginalExtension();
             $uniqueFilename = Str::uuid() . '.' . $extension;
 
             // Store the new image
-            $request->file('image')->storeAs($directory, $uniqueFilename);
+            $request->file($type)->storeAs($directory, $uniqueFilename);
             
             return $uniqueFilename;
         }
@@ -62,9 +87,9 @@ class Controller extends BaseController
     public function CreateTable($id)
     {
         // Debugging to see the passed $id
-        //dd($id); // Check if the ID being passed is correct
+        // dd($id); // Check if the ID being passed is correct
     
-        $master_user = MasterUser::where('buss_unique_id', $id)->first();
+        $master_user = MasterUser::where('id', $id)->first();
     
         if (!$master_user) {
             return response()->json(['message' => 'No user found with this ID.'], 404);
@@ -118,6 +143,7 @@ class Controller extends BaseController
                     $table->string('email_verified_at')->nullable()->unique();
                     $table->string('users_password')->nullable();
                     $table->string('users_phone')->nullable();
+                    $table->string('users_bio')->nullable();
                     $table->string('users_image')->nullable();
                     $table->string('role_id')->nullable()->default(0);
                     $table->string('id')->nullable()->default(0);
@@ -220,8 +246,36 @@ class Controller extends BaseController
                     $table->tinyInteger('trtm_status')->default(0)->nullable();
                     $table->timestamps();
                 });
-            }else{
+            }
 
+            //Trip Task
+            if (!Schema::hasTable($storeId.'_tc_traveling_task')){   
+                Schema::create($storeId.'_tc_traveling_task', function (Blueprint $table) use ($storeId) {
+                    $table->string('trvt_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('tr_id')->constrained($storeId.'_tc_trip', 'tr_id')->onDelete('cascade');
+                    $table->string('trvt_name')->nullable();
+                    $table->string('trvt_agent_id')->nullable();
+                    $table->string('trvt_category')->nullable();
+                    $table->string('trvt_priority')->nullable();
+                    $table->string('trvt_date')->nullable();
+                    $table->string('trvt_due_date')->nullable();
+                    $table->text('trvt_document')->nullable();
+                    $table->string('status')->nullable();
+                    $table->tinyInteger('trvt_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }
+
+            //Trip Task Category
+            if (!Schema::hasTable($storeId.'_tc_task_category')){   
+                Schema::create($storeId.'_tc_task_category', function (Blueprint $table) use ($storeId) {
+                    $table->string('task_cat_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('task_cat_name')->nullable();
+                    $table->tinyInteger('task_cat_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
             }
 
         }
@@ -246,6 +300,7 @@ class Controller extends BaseController
             return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
+
 
 }
     

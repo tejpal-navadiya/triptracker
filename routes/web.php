@@ -97,7 +97,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         
     });
 
-    Route::middleware(['auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details'])->group(function () {
+    Route::middleware(['auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
         
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');
@@ -125,11 +125,8 @@ Route::group(['prefix' => $busadminRoute], function () {
             
         //user role 
        Route::delete('roledestroy/{role}', [UserRoleController::class, 'destroy'])->name('masteradmin.role.destroy');
-
-       Route::patch('/roleupdate/{role}', [UserRoleController::class, 'update'])->name('masteradmin.role.update');
-
-        Route::resource('user-role-details', UserRoleController::class);
-
+       Route::patch('roleupdate/{role}', [UserRoleController::class, 'update'])->name('masteradmin.role.update');
+       Route::resource('user-role-details', UserRoleController::class);
        Route::get('userrole/{userrole}', [UserRoleController::class, 'userrole'])->name('masteradmin.role.userrole');
        Route::put('updaterole/{userrole}', [UserRoleController::class, 'updaterole'])->name('masteradmin.role.updaterole');
                        
@@ -157,6 +154,8 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::patch('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'update'])->name('masteradmin.family-member.update');
        Route::delete('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'destroy'])->name('masteradmin.family-member.destroy');
 
+       //Task
+       Route::resource('Task', TripController::class);
 
 
     });
