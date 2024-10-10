@@ -58,8 +58,6 @@
             <!-- /.tab-pane -->
             <div class="tab-pane" id="Tasksinfo">
               @include('masteradmin.trip.task-information')
-              
-              
             </div>
             <!-- /.tab-pane -->
           </div>

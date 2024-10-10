@@ -3,9 +3,9 @@
     <div class="card-header">
         <div class="row justify-content-between align-items-center">
             <div class="col-auto">
-                <h3 class="card-title">Traveling Member Information</h3>
+                <h3 class="card-title">Task</h3>
             </div>
-            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveling Member</button></div>
+            <div class="col-auto"><button href="javascript:void(0)" id="createNewTask" class="reminder_btn">Add Task</button></div>
         </div>
     <!-- /.card-header -->
         <div class="card-body">
@@ -23,16 +23,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Hotel Booking</td>
-                            <td>Hotel</td>
-                            <td>May 1, 2024</td>
-                            <td>Apr 1, 2024</td>
-                            <td>Medium</td>
-                            <td>Incomplete</td>
-                            <td></td>
-                        </tr>
-
+                       
                     </tbody>
                 </table>
             </div>
@@ -40,86 +31,51 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="ajaxModel" aria-hidden="true">
+<div class="modal fade" id="ajaxModelTask" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title" id="modelHeading"></h4>
+            <h4 class="modal-title" id="modelHeadingTask"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="Form" name="Form" class="mt-6 space-y-6" enctype="multipart/form-data">
+            <form id="FormTask" name="FormTask" class="mt-6 space-y-6" enctype="multipart/form-data">
                 
-                <input type="hidden" name="trtm_id" id="trtm_id">
+                <input type="hidden" name="trvt_id" id="trvt_id">
                 <ul id="update_msgList"></ul>
                 <div class="modal-body">
                     <div class="row pxy-15 px-10">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <input type="hidden" name="trtm_type_hidden" class="trtm_type_hidden" id="trtm_type_hidden" value="" />
-                                <input type="radio" class="trtm_type" id="trtm_type_family" name="trtm_type" value="1" ><label for="trtm_type_family">Family Member</label>
-                                <input type="radio" class="trtm_type" id="trtm_type_trip" name="trtm_type" value="2"><label for="trtm_type_trip">Trip Member</label>
-                                @error('role_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                            <label for="trtm_first_name">First Name<span class="text-danger">*</span></label>
+                            <label for="trvt_name">Task</label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trtm_first_name" name="trtm_first_name" placeholder="Enter First Name" >
+                                    <input type="text" class="form-control" id="trvt_name" name="trvt_name" placeholder="Enter Task" >
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_name')" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-6 family-member-field">
                             <div class="form-group">
-                            <label for="trtm_middle_name">Middle name</label>
+                            <label for="trvt_agent_id">Assign Agent</label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trtm_middle_name" name="trtm_middle_name" placeholder="Enter Middle name">
+                                    <input type="text" class="form-control" id="trvt_agent_id" name="trvt_agent_id" placeholder="Enter Assign Agent">
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_agent_id')" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trtm_last_name">Last Name</label>
+                            <label for="trvt_category">Category<span class="text-danger">*</span></label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trtm_last_name" name="trtm_last_name" placeholder="Enter Last Name" >
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 family-member-field">
-                            <div class="form-group">
-                            <label for="trtm_nick_name">Nickname</label>
-                                <div class="d-flex">
-                                    <input type="text" class="form-control" id="trtm_nick_name" name="trtm_nick_name" placeholder="Enter Nickname" >
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 family-member-field">
-                            <div class="form-group">
-                            <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
-                                <div class="d-flex">
-                                    <input type="text" class="form-control" id="trtm_relationship" name="trtm_relationship" placeholder="Enter Relationship" >
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                            <label for="trtm_gender">Gender<span class="text-danger">*</span></label>
-                                <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trtm_gender" name="trtm_gender" >
-                                        <option default>Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_category" name="trvt_category" >
+                                        <option default>Select Category</option>
+                                        @foreach ($taskCategory as $taskcat)
+                                        <option value="{{ $taskcat->task_cat_id }}">{{  $taskcat->task_cat_name }}</option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_category')" />
                                     </select>
                                 </div>
                             </div>
@@ -127,16 +83,32 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trtm_dob">Birthdate</label>
+                            <label for="trvt_priority">Priority</label>
                                 <div class="d-flex">
-                                    <div class="input-group date" id="trtm_dob" data-target-input="nearest">
-                                        <x-flatpickr id="traveler_date" name="trtm_dob" placeholder="mm/dd/yyyy" />
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_priority" name="trvt_priority" >
+                                        <option default>Select Priority</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_priority')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                            <label for="trvt_date">Create Date</label>
+                                <div class="d-flex">
+                                    <div class="input-group date" id="trvt_date" data-target-input="nearest">
+                                        <x-flatpickr id="create_date" name="trvt_date" placeholder="mm/dd/yyyy" />
                                         <div class="input-group-append">
-                                            <div class="input-group-text" id="traveler-date-icon">
+                                            <div class="input-group-text" id="create-date-icon">
                                                 <i class="fa fa-calendar-alt"></i>
-                                                <input type="hidden" id="trtm_dob_hidden"  />
+                                                <input type="hidden" id="trvt_date_hidden"  />
                                             </div>
                                         </div>
+                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_date')" />
                                     </div>
                                 </div>
                             </div>
@@ -144,18 +116,37 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trtm_age">Age</label>
+                            <label for="trvt_due_date">Due Date</label>
                                 <div class="d-flex">
-                                    <input type="text" name="trtm_age" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age"  readonly>
+                                    <div class="input-group date" id="trvt_due_date" data-target-input="nearest">
+                                        <x-flatpickr id="due_date" name="trvt_due_date" placeholder="mm/dd/yyyy" />
+                                        <div class="input-group-append">
+                                            <div class="input-group-text" id="due-date-icon">
+                                                <i class="fa fa-calendar-alt"></i>
+                                                <input type="hidden" id="trvt_due_date_hidden"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_due_date')" />
                                 </div>
                             </div>
                         </div>
-
+                        
+                        <div class="col-md-6 family-member-field">
+                            <div class="form-group">
+                            <label for="trvt_document">Upload Documents</label>
+                                <div class="d-flex">
+                                    <x-text-input type="file" name="trvt_document" id="trvt_document" accept="image/*" class="" />
+                                </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
+                                <p id="task_document"></p>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="modal-footer">
                         <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
-                        <button type="submit" id="saveBtn" value="create" class="add_btn">{{ __('Save Changes') }}</button>
+                        <button type="submit" id="saveBtnTask" value="create" class="add_btn">{{ __('Save Changes') }}</button>
                     </div>
                 </div>
             </form>
@@ -178,31 +169,218 @@
         var table = $('#example11').DataTable();
         table.destroy();
 
-
          //list
          table = $('#example11').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('masteradmin.family-member.index', $trip->tr_id) }}",
+                url: "{{ route('masteradmin.task.index', $trip->tr_id) }}",
                 type: 'GET',
                 data: function(d) {
                     d._token = "{{ csrf_token() }}";
                 }
             },
             columns: [
-                {
-                    data: null,
-                    name: 'trtm_full_name',
-                    render: function(data, type, row) {
-                        return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
-                    }
-                },
-                {data: 'trtm_relationship', name: 'trtm_relationship'},
-                {data: 'trtm_age', name: 'trtm_age'},
+                {data: 'trvt_name', name: 'trvt_name'},
+                {data: 'trvt_category', name: 'trvt_category'},
+                {data: 'trvt_date', name: 'trvt_date'},
+                {data: 'trvt_due_date', name: 'trvt_due_date'},
+                {data: 'trvt_priority', name: 'trvt_priority'},
+                {data: 'status', name: 'status'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
 
+        //create task
+        $('#createNewTask').click(function () {
+            $('#saveBtnTask').val("create-product");
+            $('#trvt_id').val('');
+            $('#FormTask')[0].reset();
+            $('#modelHeadingTask').html("Add Task");
+            $('body').addClass('modal-open');
+            $('#task_document').html('');
+            var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+            editModal.show();
+        });
+
+         //insert/update data
+         $('#saveBtnTask').click(function (e) {
+            e.preventDefault();
+            $(this).html('Sending..');
+            
+               var formData = new FormData($('#FormTask')[0]);
+    formData.append('_token', "{{ csrf_token() }}");
+
+    var url = '';
+    var method = 'POST';  // Default to POST for new tasks
+
+    if ($('#trvt_id').val() === '') {
+        // Create new task
+        url = "{{ route('masteradmin.task.store', $trip->tr_id) }}";
+        formData.append('_method', 'POST');
+    } else {
+        // Update existing task
+        var trvt_id = $('#trvt_id').val();
+        url = "{{ route('masteradmin.task.update', [$trip->tr_id, ':trvt_id']) }}";
+        url = url.replace(':trvt_id', trvt_id);
+        formData.append('_method', 'PATCH');
+    }
+            
+            $.ajax({
+                data: formData,
+                url: url,
+                type: method,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    table.draw();
+                    $('#ajaxModelTask').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $('body').removeClass('modal-open');
+                    $('#ajaxModelTask').css('display', 'none');
+                    $('#saveBtnTask').html('Save');
+                    $('#FormTask')[0].reset();
+                    
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                    $('#saveBtnTask').html('Save Changes');
+                }
+            });
+        });
+
+        //edit popup open
+        $(document).on('click', '.editTask', function (e) {
+            e.preventDefault();
+        
+    
+            var id = $(this).data('id'); 
+            // alert(id);
+            $.get("{{ route('masteradmin.task.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}".replace('id', id).replace('{{$trip->tr_id}}', '{{ $trip->tr_id }}'), function (data) {
+
+                // console.log(data);
+                $('#modelHeadingTask').html("Edit Task");
+                $('#saveBtnTask').val("edit-user");
+
+                var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+                editModal.show();
+
+                $('#trvt_id').val(data.trvt_id);
+                $('#trvt_name').val(data.trvt_name);
+                $('#trvt_agent_id').val(data.trvt_agent_id);
+                $('#trvt_category').val(data.trvt_category).trigger('change.select2');
+                $('#trvt_date').val(data.trvt_date);
+                $('#trvt_due_date').val(data.trvt_due_date);
+                
+                $('#trvt_date_hidden').val(data.trvt_date);
+                $('#trvt_due_date_hidden').val(data.trvt_due_date);
+
+                $('#trvt_priority').val(data.trvt_priority).trigger('change.select2');
+             
+                $('#task_document').html('');
+                var baseUrl = "{{ config('app.image_url') }}";
+                if (data.trvt_document) {
+                    $('#task_document').append(
+                        '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' + data.trvt_document + '" target="_blank">' +
+                        data.trvt_document + 
+                        '</a>'
+                    );
+                }
+                                
+                var trvt_date_hidden = document.getElementById('trvt_date_hidden');
+                var trvt_due_date_hidden = document.getElementById('trvt_due_date_hidden');
+
+                if (trvt_date_hidden && trvt_due_date_hidden) {
+                var completed_date = flatpickr("#create_date", {
+                locale: 'en',
+                altInput: true,
+                dateFormat: "m/d/Y",
+                altFormat: "m/d/Y",
+                allowInput: true,
+                defaultDate: trvt_date_hidden.value || null,
+                });
+
+                var todatepicker = flatpickr("#due_date", {
+                locale: 'en',
+                altInput: true,
+                dateFormat: "m/d/Y",
+                altFormat: "m/d/Y",
+                allowInput: true,
+                defaultDate: trvt_due_date_hidden.value || null,
+                });
+
+                document.getElementById('create-date-icon').addEventListener('click', function () {
+                fromdatepicker.open();
+                });
+
+                document.getElementById('due-date-icon').addEventListener('click', function () {
+                todatepicker.open();
+                });
+            }
+           
+            
+            });
+        });
+
+        //delete record
+        $('body').on('click', '.deleteTaskbtn', function (e) {
+            e.preventDefault();
+            var trvt_id = $(this).data("id");
+            //  alert(trtm_id);
+            var url = "{{ route('masteradmin.task.destroy', [$trip->tr_id, ':trvt_id']) }}";
+            url = url.replace(':trvt_id', trvt_id);
+            // alert(url);
+            $.ajax({
+                type: "DELETE",
+                url: url,
+                success: function (data) {
+                    alert(data.success);
+                  
+                    $('.ajaxModelTask').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $('body').removeClass('modal-open');
+                    $('.ajaxModelTask').css('display', 'none');
+                    
+                    table.draw();
+
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        }); 
     });
+    
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+    var fromdatepicker = flatpickr("#create_date", {
+      locale: 'en',
+      altInput: true,
+      dateFormat: "m/d/Y",
+      altFormat: "d/m/Y",
+      allowInput: true,
+    });
+
+    var todatepicker = flatpickr("#due_date", {
+      locale: 'en',
+      altInput: true,
+      dateFormat: "m/d/Y",
+      altFormat: "d/m/Y",
+      allowInput: true,
+    });
+
+    document.getElementById('create-date-icon').addEventListener('click', function () {
+      fromdatepicker.open();
+    });
+
+    document.getElementById('due-date-icon').addEventListener('click', function () {
+      todatepicker.open();
+    });
+
+
+    });
+
+  </script>

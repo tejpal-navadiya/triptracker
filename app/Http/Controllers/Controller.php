@@ -87,10 +87,10 @@ class Controller extends BaseController
     public function CreateTable($id)
     {
         // Debugging to see the passed $id
-        // dd($id); // Check if the ID being passed is correct
+        //dd($id); // Check if the ID being passed is correct
     
         $master_user = MasterUser::where('id', $id)->first();
-    
+        // dd($master_user);
         if (!$master_user) {
             return response()->json(['message' => 'No user found with this ID.'], 404);
         }
@@ -278,6 +278,19 @@ class Controller extends BaseController
                 });
             }
 
+            if (!Schema::hasTable($storeId.'_tc_email_template')){   
+                Schema::create($storeId.'_tc_email_template', function (Blueprint $table) {
+                    $table->string('id')->unique()->primary();
+                    $table->string('u_id')->nullable()->default(0);
+                    $table->string('email_tid')->nullable()->default(0);
+                    $table->string('category')->nullable();
+                    // $table->string('mtitle')->nullable();
+                    // $table->integer('mid')->nullable();
+                    // $table->string('is_access')->nullable();
+                    $table->timestamps();
+                });
+            }
+
         }
         
     }
@@ -287,9 +300,9 @@ class Controller extends BaseController
     {
         
        $user = Auth::guard('masteradmins')->user();
+       //dd($user);
 
-        $id = $user->user_id;
-        //dd($id);
+        $id = $user->id;
         if (!$id) {
             return response()->json(['message' => 'ID is required'], 400);
         }
