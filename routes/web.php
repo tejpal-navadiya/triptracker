@@ -21,6 +21,7 @@ use App\Http\Controllers\Masteradmin\UserCertificationController;
 use App\Http\Controllers\Masteradmin\TripController;
 use App\Http\Controllers\Masteradmin\TripTravelingMemberController;
 use App\Http\Controllers\Masteradmin\TripTaskController;
+use App\Http\Controllers\Masteradmin\LibraryController;
 
 
 /*
@@ -162,6 +163,13 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::patch('/task-update/{trip_id}/{trvt_id}', [TripTaskController::class, 'update'])->name('masteradmin.task.update');
        Route::delete('/task-delete/{trip_id}/{trtm_id}', [TripTaskController::class, 'destroy'])->name('masteradmin.task.destroy');
 
+        //library
+        Route::resource( 'library', LibraryController::class);
+        Route::get('states/{countryId}', [LibraryController::class, 'getStates']);
+        Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
+        Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities']);
+        Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
+        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
 
     });
