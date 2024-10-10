@@ -205,6 +205,7 @@
 
 <script src="{{ url('public/js/tinymce/tinymce.min.js') }}"></script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     tinymce.init({
@@ -216,7 +217,6 @@
 </script>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function() {
