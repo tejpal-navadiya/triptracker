@@ -45,14 +45,17 @@
         <div class="card-body2">
         <div class="row pxy-15 px-10">
           <div class="col-md-4">
+
           <div class="form-group">
             <x-input-label for="tr_name" :value="__('Name of Trip')"> <span
               class="text-danger">*</span></x-input-label>
             <x-text-input type="text" class="form-control" id="tr_name" placeholder="Enter Name of Trip"
             name="tr_name" required autofocus autocomplete="tr_name" :value="old('tr_name', $trip->tr_name ?? '')" />
-
             <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
           </div>
+
+
+          
           </div>
           <div class="col-md-4">
           <div class="form-group">

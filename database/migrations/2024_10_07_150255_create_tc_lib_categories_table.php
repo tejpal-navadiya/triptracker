@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tc_lib_categories', function (Blueprint $table) {
-            $table->id();
+            $table->string('lib_id')->unique()->primary();
+            $table->string('lib_name')->nullable();
+            $table->tinyInteger('lib_status')->default(0)->nullable();
             $table->timestamps();
         });
     }

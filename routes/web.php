@@ -37,6 +37,8 @@ use App\Http\Controllers\Masteradmin\LibraryController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+
 global $adminRoute;
 $adminRoute = config('global.superAdminURL');
 $busadminRoute = config('global.businessAdminURL');
@@ -151,12 +153,28 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::resource('trip', TripController::class);
        Route::get('/view-trip/{userdetail}', [TripController::class, 'view'])->name('trip.view');
 
-       //trip family member
+       //trip family member 
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
        Route::post('/family-member-store/{id}', [TripTravelingMemberController::class, 'store'])->name('masteradmin.family-member.store');
 
        //library
        Route::resource( 'library', LibraryController::class);
+
+       //Library Add Dropdown
+       Route::get('states/{countryId}', [LibraryController::class, 'getStates']);
+       Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
+       Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities']);
+
+        //Library Edit Dropdown
+       Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
+
+
+
+
+       Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+
+
+
 
 
     });

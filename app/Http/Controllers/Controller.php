@@ -229,7 +229,8 @@ class Controller extends BaseController
                 Schema::create($storeId.'_tc_library', function (Blueprint $table) use ($storeId) {
                     $table->string('lib_id')->unique()->primary();
                     $table->string('id')->nullable()->default(0);
-                    $table->string('lib_category')->constrained($storeId.'_tc_trip', 'tr_id')->onDelete('cascade');
+                    $table->string('lib_category')->constrained('tc_lib_categories', 'lib_id')->onDelete('cascade');
+                    $table->string('lib_name')->nullable();
                     $table->string('lib_currency')->nullable();
                     $table->string('lib_country')->nullable();
                     $table->string('lib_state')->nullable();
@@ -243,10 +244,19 @@ class Controller extends BaseController
                 });
             }else{
 
+            //library Category
+
+            if (!Schema::hasTable($storeId.'_tc_library_category')){   
+                Schema::create($storeId.'_tc_library_category', function (Blueprint $table) use ($storeId) {
+                    $table->string('lib_cat_id')->unique()->primary();
+                    $table->string('lib_cat_name')->nullable();
+                    $table->tinyInteger('lib_cat_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+
             }
-
-
         }
+    }
         
     }
     

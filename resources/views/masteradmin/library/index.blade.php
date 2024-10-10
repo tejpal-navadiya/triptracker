@@ -56,52 +56,55 @@
                                     <th>Location</th>
                                     <th>Currency</th>
                                     <th>Infomation</th>
-                                    <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
+                                    <th class="sorting_disabled" data-orderable="false">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($library as $value)
+
                                 <tr>
-                                    <td>Destination</td>
-                                    <td>Singapor</td>
-                                    <td>80 Mandai Lake Road ,Singapor 729826</td>
-                                    <td>$ Dollar</td>
-                                    <td>Some Dummy text.</td>
+                                    <td>{{$value->lib_category}}</td>
+                                    <td>{{$value->lib_name}}</td>
+                                    <td>{{$value->lib_country}}</td>
+                                    <td>{{$value->lib_currency}}</td>
+                                    <td>{{$value->lib_basic_information}}</td>
 
                                     <td>
 
-                                        <a href=""><i class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                                        <a href="{{ route('masteradmin.library.view',$value->lib_id) }}"><i class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                                        <a href=""><i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                        <a href="{{ route('library.edit',$value->lib_id) }}"><i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
-                                        <a data-toggle="modal" data-target="#delete-product-modal-"><i
-                                                class="fas fa-solid fa-trash delete_icon_grid"></i></a>
 
-                                        <div class="modal fade" id="delete-product-modal-" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                                        <a data-toggle="modal" data-target="#delete-library-modal-{{ $value->lib_id }}">
+                                            <i class="fas fa-solid fa-trash delete_icon_grid"></i>
+                                        </a>
+
+                                        <div class="modal fade" id="delete-library-modal-{{ $value->lib_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                                 <div class="modal-content">
-                                                    <form id="delete-plan-form" action="" method="POST">
+
+                                                    <form id="delete-plan-form" action="{{ route('library.destroy', $value->lib_id) }}" method="POST">
                                                         @csrf
-                                                        @method('DELETE')
-                                                        <div class="modal-body pad-1 text-center">
+                                                        @method('DELETE') <!-- Spoofing DELETE method -->
+
+                                                        <div class="modal-body  pad-1 text-center">
                                                             <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                            <p class="company_business_name px-10"><b>Delete
-                                                                    Trip</b></p>
-                                                            <p class="company_details_text">Are You Sure You
-                                                                Want to Delete This Trip?</p>
-                                                            <button type="button" class="add_btn px-15"
-                                                                data-dismiss="modal">Cancel</button>
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="delete_btn px-15">Delete</button>
+                                                            <p class="company_business_name px-10"> <b>Delete Library</b></p>
+                                                            <p class="company_details_text">Are You Sure You Want to Delete This Library?</p>
+                                                            <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="delete_btn px-15">Delete</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
+
+
                                     </td>
                                 </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
