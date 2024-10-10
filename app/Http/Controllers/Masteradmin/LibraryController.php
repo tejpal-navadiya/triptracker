@@ -151,24 +151,6 @@ class LibraryController extends Controller
     return view('masteradmin.library.edit', compact('library', 'currencies', 'categories', 'countries', 'states', 'cities'));
 }
 
-
-
-
-
-    // public function edit($id)
-    // {
-    //     $library = Library::where('lib_id', $id)->firstOrFail();
-
-    //     $categories = LibraryCategory::select('lib_cat_id', 'lib_cat_name')->get();
-    //     $currencies = Countries::select('id', 'name', 'iso2')->get();
-    //     $countries = Countries::select('id', 'name', 'iso2')->get();
-    //     $states = States::select('id', 'name', 'iso2')->get();
-        
-    //     $cities = Cities::select('id', 'name')->get(); 
-
-    //     return view('masteradmin.library.edit', compact('library', 'currencies', 'categories', 'countries', 'states','cities'));
-    // }
-
     public function update(Request $request, $id)
     {
         // dd($request->all()); die();
@@ -231,13 +213,8 @@ class LibraryController extends Controller
         $library->lib_sightseeing_information = $request->input('lib_sightseeing_information');
         $library->lib_status = 1; // Default status to active
 
-
-
         // Save the updated record to the database
         $library->where('lib_id', $id)->update($validationData);
-
-
-
         \MasterLogActivity::addToLog('Master Admin Library Updated.');
 
         return redirect()->route('library.index')->with('success', 'Library updated successfully.');
@@ -259,30 +236,20 @@ class LibraryController extends Controller
         return response()->json($currencies);
     }
 
-
-
-
-    
     public function getCities($stateId)
     {
         $cities = Cities::where('state_id', $stateId)->get();  // Fetch cities by state_id
         return response()->json($cities);
     }
-    
 
     public function loadCities(Request $request)
-{
-    $cities = Cities::when($request->state_id, function ($query) use ($request) {
-        return $query->where('state_id', $request->state_id);
-    })->paginate(25);
+    {
+        $cities = Cities::when($request->state_id, function ($query) use ($request) {
+            return $query->where('state_id', $request->state_id);
+        })->paginate(25);
 
-    return response()->json($cities);
-}
-
-    
-    
-
-
+        return response()->json($cities);
+    }
 
     public function destroy($lib_id)
     {

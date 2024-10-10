@@ -177,8 +177,6 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
 
 
-
-
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
 

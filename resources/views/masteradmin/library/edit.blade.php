@@ -26,7 +26,6 @@
             <!-- Main content -->
 
 
-
             <section class="content px-10">
                 <div class="container-fluid">
                     <!-- card -->
@@ -48,14 +47,12 @@
                                             <x-input-label for="tr_category" :value="__('Category*')" />
                                             <select class="form-control" id="tr_category" name="lib_category" autofocus>
                                                 <option value="" disabled>Select Category</option>
-                                    
                                                 @foreach ($categories as $category)
                                                     <option value="{{ $category->lib_cat_id }}" {{ old('lib_category', $library->lib_category) == $category->lib_cat_id ? 'selected' : '' }}>
                                                         {{ $category->lib_cat_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
-                                    
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_category')" />
                                         </div>
                                     </div>
@@ -64,22 +61,18 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_agent_id" :value="__('Name')"> <span
                                                     class="text-danger">*</span></x-input-label>
-
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Select Agent" name="lib_name" autofocus
                                                 autocomplete="tr_agent_id" :value="old('tr_name', $library->lib_name ?? '')" />
-
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
                                         </div>
-
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_dob" :value="__('Country')" />
-                                            <select class="form-control select2" id="tr_category" name="lib_country" autofocus>
+                                            <x-input-label for="lib_country" :value="__('Country')" />
+                                            <select class="form-control select2" id="tr_country" name="lib_country" autofocus>
                                                 <option value="" disabled selected>Select Location</option>
-
                                                 @foreach ($countries as $country)
                                                 <option value="{{ $country->id }}"
                                                     {{ old('lib_country', $library->lib_country ?? '') == $country->id ? 'selected' : '' }}>
@@ -88,10 +81,11 @@
                                             @endforeach 
                                                 <!-- Add more options as needed -->
                                             </select>
-
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
                                         </div>
                                     </div>
+
+                                    
                                 </div>
 
                                 <div class="row pxy-15 px-10">
@@ -112,13 +106,11 @@
                                     </div>
                                     
 
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_age" :value="__('State')" />
                                             <select class="form-control select2" id="tr_state" name="lib_state" autofocus>
                                                 <option value="" disabled selected>Select State</option>
-
                                                   @foreach ($states as $state)
                                                    <option value="{{ $state->id }}"
                                                      {{ old('lib_state', $library->lib_state ?? '') == $state->id ? 'selected' : '' }}>
@@ -131,17 +123,14 @@
                                     </div>
 
 
-                                    {{-- index --}}
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="lib_city" :value="__('City')"> <span class="text-danger">*</span></x-input-label>
                                             <select class="form-control form-control select2" id="lib_city" name="lib_city" autofocus>
                                                 <option value="" selected>Select City</option>
-                                                
                                                  @foreach ($cities as $city)
                                                 <option value="{{ $city->id }}" {{ old('lib_city', $library->lib_city) == $city->id ? 'selected' : '' }}>
-                                                   {{ $city->name }}
+                                                   {{ $city->name }}    
                                               </option>
                                                 @endforeach
                                             </select>
@@ -187,10 +176,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <x-input-label for="lib_image" :value="__('Image Upload')" />
-                                        
                                         <!-- File input for uploading an image -->
                                         <input type="file" class="form-control" id="lib_image" name="image" accept="image/*" />
-                                        
                                         <!-- Display the uploaded image if it exists -->
                                         @if ($library->lib_image)
                                         <div class="mt-2">
@@ -198,7 +185,6 @@
                                             <img src="{{ url('storage/masteradmin/library_image/' . $library->lib_image) }}" alt="Uploaded Image" class="img-thumbnail" style="max-width: 100%; height: auto;">
                                         </div>
                                     @endif
-                                    
                                         <x-input-error class="mt-2" :messages="$errors->get('lib_image')" />
                                     </div>
                                 </div>
@@ -266,11 +252,14 @@
 </script>
 
 
+
 <script>
-   $(document).ready(function() {
+
+$(document).ready(function() {
     $('#tr_country').change(function() {
         var countryId = $(this).val();
         if (countryId) {
+            // Fetch currencies related to the selected country
             $.ajax({
                 url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/currencies/' + countryId,
                 type: 'GET',
@@ -279,7 +268,6 @@
                     $('#tr_currency').append('<option value="" selected>Select Currency</option>');
                     $.each(currencies, function(index, currency) {
                         $('#tr_currency').append('<option value="' + currency.id + '">' + currency.currency + ' (' + currency.currency_symbol + ') - ' + currency.currency_name + '</option>');
-
                     });
                     $('#tr_currency').select2(); // Re-initialize Select2
                 },
@@ -287,8 +275,8 @@
                     console.log('Error fetching currencies: ' + textStatus);
                 }
             });
-            
-            // Also load states related to the selected country if necessary
+
+            // Fetch states related to the selected country
             $.ajax({
                 url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/states/' + countryId,
                 type: 'GET',
@@ -305,16 +293,41 @@
                 }
             });
         } else {
-            $('#tr_currency').empty();
-            $('#tr_currency').append('<option value="" selected>Select Currency</option>');
-            $('#tr_state').empty();
-            $('#tr_state').append('<option value="" selected>Select State</option>');
-            $('#lib_city').empty();
-            $('#lib_city').append('<option value="" selected>Select City</option>');
+            $('#tr_currency').empty().append('<option value="" selected>Select Currency</option>');
+            $('#tr_state').empty().append('<option value="" selected>Select State</option>');
         }
     });
 
     // Load cities when the state changes
+    $('#tr_state').change(function() {
+        var stateId = $(this).val();
+        if (stateId) {
+            $.ajax({
+                url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/cities/' + stateId,
+                type: 'GET',
+                success: function(cities) {
+                    $('#lib_city').empty();
+                    $('#lib_city').append('<option value="" selected>Select City</option>');
+                    $.each(cities, function(index, city) {
+                        $('#lib_city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                    });
+                    $('#lib_city').select2(); // Re-initialize Select2
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error fetching cities: ' + textStatus);
+                }
+            });
+        } else {
+            $('#lib_city').empty().append('<option value="" selected>Select City</option>');
+        }
+    });
+});
+</script>
+
+<script>
+
+$(document).ready(function() {
+    // Trigger state selection to load cities
     $('#tr_state').change(function() {
         var stateId = $(this).val();
         if (stateId) {
@@ -341,5 +354,9 @@
 });
 
 </script>
+
+
+
+
     @endsection
 @endif
