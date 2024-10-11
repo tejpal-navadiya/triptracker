@@ -176,8 +176,15 @@ Route::group(['prefix' => $busadminRoute], function () {
         //Library Edit Dropdown
        Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
 
+       //Library Delete Image
+       Route::get('/library/{id}/image/{image}', [LibraryController::class, 'deleteImage'])->name('library.image.delete');
 
+       //Library View 
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+
+       
+       //Agency
+       Route::resource( 'library', LibraryController::class);
 
 
 
