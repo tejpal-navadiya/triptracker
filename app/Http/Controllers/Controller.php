@@ -39,7 +39,7 @@ class Controller extends BaseController
 
     // protected function handleImageUpload(Request $request, $currentImage = null, $directory = 'default_directory')
     // {
-        
+
     //     if ($request->hasFile('image')) {
     //         // Delete the old image if it exists
     //         if ($currentImage) {
@@ -52,37 +52,130 @@ class Controller extends BaseController
 
     //         // Store the new image
     //         $request->file('image')->storeAs($directory, $uniqueFilename);
-            
+
     //         return $uniqueFilename;
     //     }
 
     //     return $currentImage;
     // }
 
-    protected function handleImageUpload(Request $request, $type, $currentImage = null, $directory = 'default_directory', $userFolder = '')
+
+    //Main handleImageUpload /************* */
+
+
+    // protected function handleImageUpload(Request $request, $type, $currentImage = null, $directory = 'default_directory', $userFolder = '')
+    // {
+    //     if ($userFolder) {
+    //         $directory = $userFolder . '/' . $directory;
+    //     }
+
+    //     if ($request->hasFile($type)) {
+    //         // Delete the old image if it exists
+    //         if ($currentImage) {
+    //             Storage::delete($directory . '/' . $currentImage);
+    //         }
+
+    //         // Generate a unique filename
+    //         $extension = $request->file($type)->getClientOriginalExtension();
+    //         $uniqueFilename = Str::uuid() . '.' . $extension;
+
+    //         // Store the new image
+    //         $request->file($type)->storeAs($directory, $uniqueFilename);
+
+    //         return $uniqueFilename;
+    //     }
+
+    //     return $currentImage;
+    // }
+
+
+    //end Main handleImageUpload /************* */
+
+
+    protected function handleImageUpload(Request $request, $type, $currentImages = null, $directory = 'default_directory', $userFolder = '')
     {
         if ($userFolder) {
             $directory = $userFolder . '/' . $directory;
         }
+    
+        $uploadedImages = [];
+        
+    
+        // Check if multiple files are uploaded
+        if (is_array($request->file($type))) {
+            foreach ($request->file($type) as $key => $file) {
+                // Delete the old image if it exists (if there's a corresponding entry in $currentImages)
+                if ($currentImages && isset($currentImages[$key])) {
+                    Storage::delete($directory . '/' . $currentImages[$key]);
+                }
+    
+                // Generate a unique filename
+                $extension = $file->getClientOriginalExtension();
+                $uniqueFilename = Str::uuid() . '.' . $extension;
+    
+                // Store the new image
+                $file->storeAs($directory, $uniqueFilename);
+                
+                // Add the filename to the list of uploaded images
+                $uploadedImages[] = $uniqueFilename;
+            }
+    
+            return $uploadedImages; // Return the list of filenames
+        }
 
+
+    
+        // If it's a single file upload
         if ($request->hasFile($type)) {
             // Delete the old image if it exists
-            if ($currentImage) {
-                Storage::delete($directory . '/' . $currentImage);
+            if ($currentImages) {
+                Storage::delete($directory . '/' . $currentImages);
             }
-
+    
             // Generate a unique filename
             $extension = $request->file($type)->getClientOriginalExtension();
             $uniqueFilename = Str::uuid() . '.' . $extension;
-
+    
             // Store the new image
             $request->file($type)->storeAs($directory, $uniqueFilename);
-            
-            return $uniqueFilename;
+    
+            return $uniqueFilename; // Return the filename for a single file
         }
-
-        return $currentImage;
+    
+        return $currentImages; // Return current images if no new file is uploaded
     }
+
+
+
+
+
+
+    // public function handlemultiImageUpload(Request $request, $userFolder = ''){
+
+    //     if ($request->hasFile('image') && count($request->file('image')) > 0) {
+    //         foreach ($request->file('image') as $file) {
+                   
+    //          //dd($file);
+    //          //Log::info('Processing image: ', ['originalName' => $file->getClientOriginalName(), 'size' => $file->getSize()]);
+
+
+    //             if ($file instanceof \Illuminate\Http\UploadedFile) {
+    //                 // Generate a unique file name
+    //                 $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+    //                 // Define the path to store the image
+    //                 $path = storage_path('app/' . $userFolder . '/library_image/');
+                    
+    //                 // Move the uploaded file to the specified path
+    //                 $file->move($path, $fileName);
+                    
+    //                 // Store the image path in the array
+    //                 $library_images[] = 'storage/' . $userFolder . '/library_image/' . $fileName;
+    //             }
+    //         }
+    //     }
+
+    
+    
 
     public function CreateTable($id)
     {

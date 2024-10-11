@@ -177,6 +177,12 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
+       //Library Delete Image
+       Route::get('/library/{id}/image/{image}', [LibraryController::class, 'deleteImage'])->name('library.image.delete');
+
+       //Library View 
+       Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+
         //trip traveler document 
         Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
         Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
@@ -194,6 +200,12 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/fetch-traveller-details', [EmailTemplateController::class, 'fetchTravellerDetails'])->name('fetchTravellerDetails');
         Route::post('/email-template/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
 
+
+       
+       //Agency
+       Route::resource( 'agency', AgencyController::class);
+
+      
 
 
 
