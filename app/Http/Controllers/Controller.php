@@ -368,6 +368,35 @@ class Controller extends BaseController
 
             }
 
+            // email template....
+            if (!Schema::hasTable($storeId.'_tc_email_template')){   
+                Schema::create($storeId.'_tc_email_template', function (Blueprint $table) {
+                   
+                    $table->string('email_tid')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('category')->nullable();
+                    $table->string('title')->nullable();
+                    $table->text('email_text')->nullable();
+                    $table->timestamps();
+                });
+            }
+
+
+            // email template....
+            if (!Schema::hasTable($storeId.'_tc_email_template_details')){   
+                Schema::create($storeId.'_tc_email_template_details', function (Blueprint $table) {
+                    $table->string('emt_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('category_id')->nullable();
+                    $table->string('traveller_id')->nullable();
+                    $table->text('email_text')->nullable();
+                    $table->tinyInteger('emt_status')->default(0)->nullable();
+                    $table->tinyInteger('status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }
+
+
 
         
         }
