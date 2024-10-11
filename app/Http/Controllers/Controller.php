@@ -433,10 +433,9 @@ class Controller extends BaseController
                     $table->tinyInteger('lib_status')->default(0)->nullable();
                     $table->timestamps();
                 });
-            }else{
+            }
 
             //library Category
-
             if (!Schema::hasTable($storeId.'_tc_library_category')){   
                 Schema::create($storeId.'_tc_library_category', function (Blueprint $table) use ($storeId) {
                     $table->string('lib_cat_id')->unique()->primary();
@@ -446,8 +445,54 @@ class Controller extends BaseController
                 });
 
             }
+
+            //Trip Document
+            if (!Schema::hasTable($storeId.'_tc_traveling_document')){   
+                Schema::create($storeId.'_tc_traveling_document', function (Blueprint $table) use ($storeId) {
+                    $table->string('trvd_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('tr_id')->nullable()->default(0);
+                    $table->string('trvm_id')->nullable()->default(0);
+                    $table->string('trvd_name')->nullable();
+                    $table->string('trvd_document')->nullable();                    
+                    $table->tinyInteger('trvd_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+
+            }
+
+            // email template....
+            if (!Schema::hasTable($storeId.'_tc_email_template')){   
+                Schema::create($storeId.'_tc_email_template', function (Blueprint $table) {
+                   
+                    $table->string('email_tid')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('category')->nullable();
+                    $table->string('title')->nullable();
+                    $table->text('email_text')->nullable();
+                    $table->timestamps();
+                });
+            }
+
+
+            // email template....
+            if (!Schema::hasTable($storeId.'_tc_email_template_details')){   
+                Schema::create($storeId.'_tc_email_template_details', function (Blueprint $table) {
+                    $table->string('emt_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('category_id')->nullable();
+                    $table->string('traveller_id')->nullable();
+                    $table->text('email_text')->nullable();
+                    $table->tinyInteger('emt_status')->default(0)->nullable();
+                    $table->tinyInteger('status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }
+
+
+
+        
         }
-    }
         
     }
     

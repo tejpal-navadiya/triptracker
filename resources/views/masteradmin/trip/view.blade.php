@@ -60,6 +60,10 @@
               @include('masteradmin.trip.task-information')
             </div>
             <!-- /.tab-pane -->
+            <div class="tab-pane" id="Documentsinfo">
+            @include('masteradmin.trip.document-information')
+          </div>
+          <!-- /.tab-pane -->
           </div>
           <!-- /.tab-content -->
       </div><!-- /.container-fluid -->

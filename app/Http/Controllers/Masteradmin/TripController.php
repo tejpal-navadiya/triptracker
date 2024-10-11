@@ -11,6 +11,7 @@ use App\Models\Trip;
 use App\Models\TripType;
 use App\Models\TripTravelingMember;
 use App\Models\TaskCategory;
+use App\Models\DocumentType;
 class TripController extends Controller
 {
     //
@@ -216,8 +217,12 @@ class TripController extends Controller
         $user = Auth::guard('masteradmins')->user();
         $trip = Trip::where('tr_id', $id)->firstOrFail();
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+        $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
+        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+        $documentType = DocumentType::get();
+
         // dd($trip);
-        return view('masteradmin.trip.view',compact('trip','taskCategory'));
+        return view('masteradmin.trip.view',compact('trip','taskCategory','tripTraveling','documentType'));
     }
 
 }

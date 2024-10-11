@@ -22,7 +22,8 @@ use App\Http\Controllers\Masteradmin\TripController;
 use App\Http\Controllers\Masteradmin\TripTravelingMemberController;
 use App\Http\Controllers\Masteradmin\TripTaskController;
 use App\Http\Controllers\Masteradmin\LibraryController;
-
+use App\Http\Controllers\Masteradmin\TravelerDocumentController;
+use App\Http\Controllers\Masteradmin\EmailTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -172,9 +173,9 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::get('states/{countryId}', [LibraryController::class, 'getStates']);
        Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
        Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities']);
-
-        //Library Edit Dropdown
+      //Library Edit Dropdown
        Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
+       Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
        //Library Delete Image
        Route::get('/library/{id}/image/{image}', [LibraryController::class, 'deleteImage'])->name('library.image.delete');
@@ -182,10 +183,29 @@ Route::group(['prefix' => $busadminRoute], function () {
        //Library View 
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
+        //trip traveler document 
+        Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
+        Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
+
+
+        Route::get('/email', [EmailTemplateController::class, 'index'])->name('masteradmin.emailtemplate.index');
+        Route::get('/email-create', [EmailTemplateController::class, 'create'])->name('masteradmin.emailtemplate.create');
+
+        Route::post('/emailtemplate/store', [EmailTemplateController::class, 'store'])->name('emailtemplate.store');
+        Route::delete('/emailtemplate/{emailTemplate}', [EmailTemplateController::class, 'destroy'])->name('masteradmin.emailtemplate.destroy');
+        Route::get('/emailtemplate/{emailTemplate}', [EmailTemplateController::class, 'edit'])->name('masteradmin.emailtemplate.edit');
+        Route::patch('/emailtemplate/{emailTemplate}', [EmailTemplateController::class, 'update'])->name('masteradmin.emailtemplate.update');
+        Route::get('/emaildetail', [EmailTemplateController::class, 'EmailTemplate'])->name('masteradmin.emailtemplate.EmailTemplate');
+        Route::post('/fetch-email-text', [EmailTemplateController::class, 'fetchEmailText'])->name('fetchEmailText');
+        Route::post('/fetch-traveller-details', [EmailTemplateController::class, 'fetchTravellerDetails'])->name('fetchTravellerDetails');
+        Route::post('/email-template/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
+
+
        
        //Agency
-       Route::resource( 'library', LibraryController::class);
+       Route::resource( 'agency', AgencyController::class);
 
+      
 
 
 
