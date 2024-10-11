@@ -40,6 +40,17 @@ return [
             
             
         ],
+
+        // add by dx....
+        'email-template' => [
+            'send_success' => 'Email Template created successfully.',
+            'edit_emailtemplate_success' => 'Email Template updated successfully',
+            'delete_emailtemplate_success' => 'Email Template deleted successfully',
+        ],
+
+
+
+        // end.....
         'register' => [
             'link_send_success' => 'Success! A registration email has been sent to you.',
             'link_send_error' => 'Failed to send email.',
