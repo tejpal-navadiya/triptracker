@@ -22,7 +22,7 @@ use App\Http\Controllers\Masteradmin\TripController;
 use App\Http\Controllers\Masteradmin\TripTravelingMemberController;
 use App\Http\Controllers\Masteradmin\TripTaskController;
 use App\Http\Controllers\Masteradmin\LibraryController;
-
+use App\Http\Controllers\Masteradmin\TravelerDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -172,13 +172,13 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::get('states/{countryId}', [LibraryController::class, 'getStates']);
        Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
        Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities']);
-
-        //Library Edit Dropdown
+      //Library Edit Dropdown
        Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
-
-
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
+        //trip traveler document 
+        Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
+        Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
 
 
 
