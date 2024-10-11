@@ -141,13 +141,18 @@
                 url: "{{ route('user-certification.index') }}",
                 dataType: "json",
                 success: function (response) {
+                    // alert(response);
+                    var baseUrl = "{{ config('app.image_url') }}";
+                //    alert(baseUrl);
+                    $('#CertificationList').empty();
                 //    console.log(response);
                    if (response.users_certification && response.users_certification.length > 0) {
                     // Clear any existing data before appending new data
-                    $('#CertificationList').empty();
-
+                  
+                   
                     // Loop through each user in the response
                     response.users_certification.forEach(function(user, index) {
+                       
                         // Dynamically generate HTML for each certification
                         let certHtml = `
                             <div class="row pad-5">
@@ -172,14 +177,15 @@
                                         <strong>Descriptions :</strong>
                                         <p id="users_cert_desc_${index}">${user.users_cert_desc ?? ' - '}</p>
                                     </div>
-                                    <div class="col-md-6">
+                                   <div class="col-md-6">
                                         <strong>Document :</strong>
                                         ${user.users_cert_document ? 
-                                            `<a href="{{ url(env('IMAGE_URL')) }}/masteradmin/certification_image/${user.users_cert_document}" target="_blank">
+                                            `<a href="${baseUrl}{{$userFolder}}/certification_image/${user.users_cert_document}" target="_blank">
                                                 <div title="${user.users_cert_document}" class="ptm pbm">
                                                     ${user.users_cert_document}
                                                 </div>
-                                            </a>` : '<div class="ptm pbm">-</div>'}
+                                            </a>` : 
+                                            '<div class="ptm pbm">-</div>'}
                                     </div>
                                     <div class="col-md-6">
                                         <button type="button" value="${user.users_cert_id}" class="btn btn-primary editCertbtn btn-sm">Edit</button>
@@ -207,6 +213,14 @@
                         // Append the generated HTML to the container
                         $('#CertificationList').append(certHtml);
                     });
+                    }else{
+                        $('#CertificationList').append(`
+                            <div class="row pad-5">
+                                <div class="col-md-12 text-center">
+                                    <p>No certifications found.</p>
+                                </div>
+                            </div>
+                        `);
                     }
                 }
             });
@@ -285,9 +299,13 @@
              
                 $('#users_cert_desc').val(data.users_cert_desc);
                 $('#users_cert_document').html('');
-            
+                var baseUrl = "{{ config('app.image_url') }}";
                 if (data.users_cert_document) {
-                    $('#users_cert_document').append('<a href="{{ url(env('IMAGE_URL')) }}/masteradmin/certification_image/' + data.users_cert_document + '" target="_blank">' + data.users_cert_document + '</a>');
+                    $('#users_cert_document').append(
+                        '<a href="' + baseUrl + '{{ $userFolder }}/certification_image/' + data.users_cert_document + '" target="_blank">' +
+                        data.users_cert_document + 
+                        '</a>'
+                    );
                 }
                                 
                 var completed_date_hidde = document.getElementById('users_cert_completed_date_hidden');
@@ -330,7 +348,7 @@
         $('body').on('click', '.deleteCertbtn', function (e) {
             e.preventDefault();
             var users_id = $(this).data("id");
-            alert(users_id);
+            // alert(users_id);
             $.ajax({
                 type: "DELETE",
                 url: "{{ route('user-certification.store') }}"+'/'+users_id,

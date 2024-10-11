@@ -501,7 +501,6 @@ interface ButtonSpec {
     icon?: string;
     borderless?: boolean;
     buttonType?: 'primary' | 'secondary' | 'toolbar';
-    context?: string;
 }
 interface FormComponentSpec {
     type: string;
@@ -514,11 +513,9 @@ interface CheckboxSpec extends FormComponentSpec {
     type: 'checkbox';
     label: string;
     enabled?: boolean;
-    context?: string;
 }
 interface CollectionSpec extends FormComponentWithLabelSpec {
     type: 'collection';
-    context?: string;
 }
 interface CollectionItem {
     value: string;
@@ -528,7 +525,6 @@ interface CollectionItem {
 interface ColorInputSpec extends FormComponentWithLabelSpec {
     type: 'colorinput';
     storageKey?: string;
-    context?: string;
 }
 interface ColorPickerSpec extends FormComponentWithLabelSpec {
     type: 'colorpicker';
@@ -555,7 +551,6 @@ interface CustomEditorNewSpec extends FormComponentSpec {
 type CustomEditorSpec = CustomEditorOldSpec | CustomEditorNewSpec;
 interface DropZoneSpec extends FormComponentWithLabelSpec {
     type: 'dropzone';
-    context?: string;
 }
 interface GridSpec {
     type: 'grid';
@@ -586,7 +581,6 @@ interface InputSpec extends FormComponentWithLabelSpec {
     placeholder?: string;
     maximized?: boolean;
     enabled?: boolean;
-    context?: string;
 }
 type Alignment = 'start' | 'center' | 'end';
 interface LabelSpec {
@@ -609,7 +603,6 @@ interface ListBoxSpec extends FormComponentWithLabelSpec {
     type: 'listbox';
     items: ListBoxItemSpec[];
     disabled?: boolean;
-    context?: string;
 }
 interface PanelSpec {
     type: 'panel';
@@ -625,13 +618,11 @@ interface SelectBoxSpec extends FormComponentWithLabelSpec {
     items: SelectBoxItemSpec[];
     size?: number;
     enabled?: boolean;
-    context?: string;
 }
 interface SizeInputSpec extends FormComponentWithLabelSpec {
     type: 'sizeinput';
     constrain?: boolean;
     enabled?: boolean;
-    context?: string;
 }
 interface SliderSpec extends FormComponentSpec {
     type: 'slider';
@@ -649,7 +640,6 @@ interface TextAreaSpec extends FormComponentWithLabelSpec {
     placeholder?: string;
     maximized?: boolean;
     enabled?: boolean;
-    context?: string;
 }
 interface BaseToolbarButtonSpec<I extends BaseToolbarButtonInstanceApi> {
     enabled?: boolean;
@@ -657,7 +647,6 @@ interface BaseToolbarButtonSpec<I extends BaseToolbarButtonInstanceApi> {
     icon?: string;
     text?: string;
     onSetup?: (api: I) => (api: I) => void;
-    context?: string;
 }
 interface BaseToolbarButtonInstanceApi {
     isEnabled: () => boolean;
@@ -712,7 +701,6 @@ interface CommonMenuItemSpec {
     value?: string;
     meta?: Record<string, any>;
     shortcut?: string;
-    context?: string;
 }
 interface CommonMenuItemInstanceApi {
     isEnabled: () => boolean;
@@ -828,7 +816,6 @@ interface BaseMenuButtonSpec {
     };
     fetch: (success: SuccessCallback$1, fetchContext: MenuButtonFetchContext, api: BaseMenuButtonInstanceApi) => void;
     onSetup?: (api: BaseMenuButtonInstanceApi) => (api: BaseMenuButtonInstanceApi) => void;
-    context?: string;
 }
 interface BaseMenuButtonInstanceApi {
     isEnabled: () => boolean;
@@ -861,7 +848,6 @@ interface ToolbarSplitButtonSpec {
     onSetup?: (api: ToolbarSplitButtonInstanceApi) => (api: ToolbarSplitButtonInstanceApi) => void;
     onAction: (api: ToolbarSplitButtonInstanceApi) => void;
     onItemAction: (api: ToolbarSplitButtonInstanceApi, value: string) => void;
-    context?: string;
 }
 interface ToolbarSplitButtonInstanceApi {
     isEnabled: () => boolean;
@@ -903,8 +889,6 @@ interface BaseTreeItemSpec {
     title: string;
     id: Id;
     menu?: ToolbarMenuButtonSpec;
-    customStateIcon?: string;
-    customStateIconTooltip?: string;
 }
 interface DirectorySpec extends BaseTreeItemSpec {
     type: 'directory';
@@ -919,7 +903,6 @@ interface UrlInputSpec extends FormComponentWithLabelSpec {
     filetype?: 'image' | 'media' | 'file';
     enabled?: boolean;
     picker_text?: string;
-    context?: string;
 }
 interface UrlInputData {
     value: string;
@@ -944,7 +927,6 @@ interface BaseDialogFooterButtonSpec {
     enabled?: boolean;
     icon?: string;
     buttonType?: 'primary' | 'secondary';
-    context?: string;
 }
 interface DialogFooterNormalButtonSpec extends BaseDialogFooterButtonSpec {
     type: 'submit' | 'cancel' | 'custom';
@@ -1247,7 +1229,6 @@ interface ViewButtonApi {
 interface ViewToggleButtonApi extends ViewButtonApi {
     isActive: () => boolean;
     setActive: (state: boolean) => void;
-    focus: () => void;
 }
 interface BaseButtonSpec<Api extends ViewButtonApi> {
     text?: string;
@@ -1256,7 +1237,6 @@ interface BaseButtonSpec<Api extends ViewButtonApi> {
     buttonType?: 'primary' | 'secondary';
     borderless?: boolean;
     onAction: (api: Api) => void;
-    context?: string;
 }
 interface ViewNormalButtonSpec extends BaseButtonSpec<ViewButtonApi> {
     text: string;
@@ -1301,7 +1281,6 @@ interface Registry$1 {
     addAutocompleter: (name: string, spec: AutocompleterSpec) => void;
     addSidebar: (name: string, spec: SidebarSpec) => void;
     addView: (name: string, spec: ViewSpec) => void;
-    addContext: (name: string, pred: (args: string) => boolean) => void;
     getAll: () => {
         buttons: Record<string, ToolbarButtonSpec | GroupToolbarButtonSpec | ToolbarMenuButtonSpec | ToolbarSplitButtonSpec | ToolbarToggleButtonSpec>;
         menuItems: Record<string, MenuItemSpec | NestedMenuItemSpec | ToggleMenuItemSpec>;
@@ -1311,7 +1290,6 @@ interface Registry$1 {
         icons: Record<string, string>;
         sidebars: Record<string, SidebarSpec>;
         views: Record<string, ViewSpec>;
-        contexts: Record<string, (args: string) => boolean>;
     };
 }
 interface AutocompleteLookupData {
@@ -1414,7 +1392,6 @@ interface DomParserSettings {
     allow_html_in_named_anchor?: boolean;
     allow_script_urls?: boolean;
     allow_unsafe_link_target?: boolean;
-    allow_mathml_annotation_encodings?: string[];
     blob_cache?: BlobCache;
     convert_fonts_to_spans?: boolean;
     convert_unsafe_embeds?: boolean;

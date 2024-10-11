@@ -20,7 +20,9 @@ use App\Http\Controllers\Masteradmin\UserRoleController;
 use App\Http\Controllers\Masteradmin\UserCertificationController;
 use App\Http\Controllers\Masteradmin\TripController;
 use App\Http\Controllers\Masteradmin\TripTravelingMemberController;
-
+use App\Http\Controllers\Masteradmin\TripTaskController;
+use App\Http\Controllers\Masteradmin\LibraryController;
+use App\Http\Controllers\Masteradmin\TravelerDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,8 @@ use App\Http\Controllers\Masteradmin\TripTravelingMemberController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+
 global $adminRoute;
 $adminRoute = config('global.superAdminURL');
 $busadminRoute = config('global.businessAdminURL');
@@ -97,7 +101,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         
     });
 
-    Route::middleware(['auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details'])->group(function () {
+    Route::middleware(['auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
         
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');
@@ -125,11 +129,8 @@ Route::group(['prefix' => $busadminRoute], function () {
             
         //user role 
        Route::delete('roledestroy/{role}', [UserRoleController::class, 'destroy'])->name('masteradmin.role.destroy');
-
-       Route::patch('/roleupdate/{role}', [UserRoleController::class, 'update'])->name('masteradmin.role.update');
-
-        Route::resource('user-role-details', UserRoleController::class);
-
+       Route::patch('roleupdate/{role}', [UserRoleController::class, 'update'])->name('masteradmin.role.update');
+       Route::resource('user-role-details', UserRoleController::class);
        Route::get('userrole/{userrole}', [UserRoleController::class, 'userrole'])->name('masteradmin.role.userrole');
        Route::put('updaterole/{userrole}', [UserRoleController::class, 'updaterole'])->name('masteradmin.role.updaterole');
                        
@@ -150,12 +151,35 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::resource('trip', TripController::class);
        Route::get('/view-trip/{userdetail}', [TripController::class, 'view'])->name('trip.view');
 
-       //trip family member
+       //trip family member 
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
        Route::post('/family-member-store/{id}', [TripTravelingMemberController::class, 'store'])->name('masteradmin.family-member.store');
        Route::get('/family-member-edit/{id}/{trip_id}', [TripTravelingMemberController::class, 'edit'])->name('masteradmin.family-member.edit');
        Route::patch('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'update'])->name('masteradmin.family-member.update');
        Route::delete('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'destroy'])->name('masteradmin.family-member.destroy');
+
+       //Task
+       Route::get('task/{id}', [TripTaskController::class, 'index'])->name('masteradmin.task.index');
+       Route::post('/task-store/{id}', [TripTaskController::class, 'store'])->name('masteradmin.task.store');
+       Route::get('task-edit/{id}/{trip_id}', [TripTaskController::class, 'edit'])->name('masteradmin.task.edit');
+       Route::patch('/task-update/{trip_id}/{trvt_id}', [TripTaskController::class, 'update'])->name('masteradmin.task.update');
+       Route::delete('/task-delete/{trip_id}/{trtm_id}', [TripTaskController::class, 'destroy'])->name('masteradmin.task.destroy');
+
+        //library
+       Route::resource( 'library', LibraryController::class);
+
+       //Library Add Dropdown
+       Route::get('states/{countryId}', [LibraryController::class, 'getStates']);
+       Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
+       Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities']);
+      //Library Edit Dropdown
+       Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
+       Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+
+        //trip traveler document 
+        Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
+        Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
+
 
 
 

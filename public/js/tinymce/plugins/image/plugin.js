@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.4.0 (2024-10-09)
+ * TinyMCE version 7.3.0 (2024-08-07)
  */
 
 (function () {
@@ -1289,9 +1289,7 @@
               finalize();
             }).catch(err => {
               finalize();
-              helpers.alertErr(err, () => {
-                api.focus('fileinput');
-              });
+              helpers.alertErr(err);
             });
           } else {
             helpers.addToBlobCache(blobInfo);
@@ -1372,8 +1370,8 @@
     const addToBlobCache = editor => blobInfo => {
       editor.editorUpload.blobCache.add(blobInfo);
     };
-    const alertErr = editor => (message, callback) => {
-      editor.windowManager.alert(message, callback);
+    const alertErr = editor => message => {
+      editor.windowManager.alert(message);
     };
     const normalizeCss = editor => cssText => normalizeCss$1(editor, cssText);
     const parseStyle = editor => cssText => editor.dom.parseStyle(cssText);

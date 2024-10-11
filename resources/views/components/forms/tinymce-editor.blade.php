@@ -1,3 +1,6 @@
 <div>
-    <!-- It is never too late to be what you might have been. - George Eliot -->
+    <!-- Breathing in, I calm body and mind. Breathing out, I smile. - Thich Nhat Hanh -->
+    <form method="post">
+        <textarea id="myeditorinstance">Hello, World!</textarea>
+      </form>
 </div>

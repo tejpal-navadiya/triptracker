@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.4.0 (2024-10-09)
+ * TinyMCE version 7.3.0 (2024-08-07)
  */
 
 (function () {
@@ -190,9 +190,8 @@
     };
 
     const makeSetupHandler = editor => api => {
-      const shouldEnable = () => hasDraft(editor) && !editor.mode.isReadOnly();
-      api.setEnabled(shouldEnable());
-      const editorEventCallback = () => api.setEnabled(shouldEnable());
+      api.setEnabled(hasDraft(editor));
+      const editorEventCallback = () => api.setEnabled(hasDraft(editor));
       editor.on('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
       return () => editor.off('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
     };

@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.4.0 (2024-10-09)
+ * TinyMCE version 7.3.0 (2024-08-07)
  */
 
 (function () {
@@ -2003,6 +2003,7 @@
     const requiredNumber = key => requiredOf(key, number);
     const requiredString = key => requiredOf(key, string);
     const requiredStringEnum = (key, values) => field$1(key, key, required$2(), validateEnum(values));
+    const requiredBoolean = key => requiredOf(key, boolean);
     const requiredFunction = key => requiredOf(key, functionProcessor);
     const forbid = (key, message) => field$1(key, key, asOption(), value$2(_v => SimpleResult.serror('The field: ' + key + ' is forbidden. ' + message)));
     const requiredObjOf = (key, objSchema) => field$1(key, key, required$2(), objOf(objSchema));
@@ -8431,7 +8432,7 @@
     }(ToolbarLocation$1 || (ToolbarLocation$1 = {})));
     const option$2 = name => editor => editor.options.get(name);
     const wrapOptional = fn => editor => Optional.from(fn(editor));
-    const register$f = editor => {
+    const register$e = editor => {
       const isPhone = global$6.deviceType.isPhone();
       const isMobile = global$6.deviceType.isTablet() || isPhone;
       const registerOption = editor.options.register;
@@ -8709,7 +8710,7 @@
         __proto__: null,
         get ToolbarMode () { return ToolbarMode$1; },
         get ToolbarLocation () { return ToolbarLocation$1; },
-        register: register$f,
+        register: register$e,
         getSkinUrl: getSkinUrl,
         getSkinUrlOption: getSkinUrlOption,
         isReadOnly: isReadOnly,
@@ -11701,8 +11702,7 @@
       optionalTooltip,
       optionalIcon,
       optionalText,
-      onSetup,
-      defaultedString('context', 'mode:design')
+      onSetup
     ];
     const toolbarButtonSchema = objOf([
       type,
@@ -11803,8 +11803,7 @@
       optionalRole,
       optionalShortcut,
       generatedValue('menuitem'),
-      defaultedMeta,
-      defaultedString('context', 'mode:design')
+      defaultedMeta
     ];
 
     const cardMenuItemSchema = objOf([
@@ -11894,6 +11893,46 @@
 
     const escape = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+    const ReadOnlyChannel = 'silver.readonly';
+    const ReadOnlyDataSchema = objOf([requiredBoolean('readonly')]);
+    const broadcastReadonly = (uiRefs, readonly) => {
+      const outerContainer = uiRefs.mainUi.outerContainer;
+      const target = outerContainer.element;
+      const motherships = [
+        uiRefs.mainUi.mothership,
+        ...uiRefs.uiMotherships
+      ];
+      if (readonly) {
+        each$1(motherships, m => {
+          m.broadcastOn([dismissPopups()], { target });
+        });
+      }
+      each$1(motherships, m => {
+        m.broadcastOn([ReadOnlyChannel], { readonly });
+      });
+    };
+    const setupReadonlyModeSwitch = (editor, uiRefs) => {
+      editor.on('init', () => {
+        if (editor.mode.isReadOnly()) {
+          broadcastReadonly(uiRefs, true);
+        }
+      });
+      editor.on('SwitchMode', () => broadcastReadonly(uiRefs, editor.mode.isReadOnly()));
+      if (isReadOnly(editor)) {
+        editor.mode.set('readonly');
+      }
+    };
+    const receivingConfig = () => Receiving.config({
+      channels: {
+        [ReadOnlyChannel]: {
+          schema: ReadOnlyDataSchema,
+          onReceive: (comp, data) => {
+            Disabling.set(comp, data.readonly);
+          }
+        }
+      }
+    });
+
     const item = disabled => Disabling.config({
       disabled,
       disableClass: 'tox-collection__item--state-disabled'
@@ -11932,62 +11971,6 @@
     });
     const onControlDetached = (getApi, editorOffCell) => runOnDetached(comp => runWithApi(getApi, comp)(editorOffCell.get()));
 
-    const UiStateChannel = 'silver.uistate';
-    const broadcastEvents = (uiRefs, data) => {
-      const outerContainer = uiRefs.mainUi.outerContainer;
-      const target = outerContainer.element;
-      const motherships = [
-        uiRefs.mainUi.mothership,
-        ...uiRefs.uiMotherships
-      ];
-      if (data === 'setDisabled') {
-        each$1(motherships, m => {
-          m.broadcastOn([dismissPopups()], { target });
-        });
-      }
-      each$1(motherships, m => {
-        m.broadcastOn([UiStateChannel], data);
-      });
-    };
-    const setupEventsForUi = (editor, uiRefs) => {
-      editor.on('init SwitchMode', e => {
-        broadcastEvents(uiRefs, e.type);
-      });
-      editor.on('NodeChange', e => {
-        if (!editor.ui.isEnabled()) {
-          broadcastEvents(uiRefs, 'setDisabled');
-        } else {
-          broadcastEvents(uiRefs, e.type);
-        }
-      });
-      if (isReadOnly(editor)) {
-        editor.mode.set('readonly');
-      }
-    };
-    const toggleOnReceive = getContext => Receiving.config({
-      channels: {
-        [UiStateChannel]: {
-          onReceive: (comp, buttonStateData) => {
-            if (buttonStateData === 'setDisabled' || buttonStateData === 'setEnabled') {
-              Disabling.set(comp, buttonStateData === 'setDisabled');
-              return;
-            }
-            const {
-              contextType,
-              shouldDisable: contextShouldDisable
-            } = getContext();
-            if (contextType === 'mode' && !contains$2([
-                'switchmode',
-                'init'
-              ], buttonStateData)) {
-              return;
-            }
-            Disabling.set(comp, contextShouldDisable);
-          }
-        }
-      }
-    });
-
     const onMenuItemExecute = (info, itemResponse) => runOnExecute$1((comp, simulatedEvent) => {
       runWithApi(info, comp)(info.onAction);
       if (!info.triggersSubmenu && itemResponse === ItemResponse$1.CLOSE_ON_EXECUTE) {
@@ -12022,8 +12005,8 @@
             onControlAttached(spec, editorOffCell),
             onControlDetached(spec, editorOffCell)
           ]),
-          DisablingConfigs.item(() => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          DisablingConfigs.item(() => !spec.enabled || providersBackstage.isDisabled()),
+          receivingConfig(),
           Replacing.config({})
         ].concat(spec.itemBehaviours))
       };
@@ -12287,7 +12270,6 @@
       }, sharedBackstage.providers, renderIcons, spec.icon);
       const tooltipString = spec.text.filter(text => !useText && text !== '');
       return renderCommonItem({
-        context: 'mode:design',
         data: buildData(spec),
         enabled: spec.enabled,
         getApi: constant$1({}),
@@ -12338,7 +12320,6 @@
           })]
       };
       return renderCommonItem({
-        context: 'mode:design',
         data: buildData({
           text: Optional.none(),
           ...spec
@@ -12374,7 +12355,6 @@
       }, providersBackstage, renderIcons);
       const optTooltipping = spec.text.filter(constant$1(!useText)).map(t => Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate(t) })));
       return deepMerge(renderCommonItem({
-        context: spec.context,
         data: buildData(spec),
         enabled: spec.enabled,
         getApi,
@@ -12737,7 +12717,7 @@
     };
     const option$1 = name => editor => editor.options.get(name);
     const fallbackColor = '#000000';
-    const register$e = editor => {
+    const register$d = editor => {
       const registerOption = editor.options.register;
       const colorProcessor = value => {
         if (isArrayOf(value, isString)) {
@@ -13094,7 +13074,7 @@
         }
       });
     };
-    const register$d = editor => {
+    const register$c = editor => {
       registerCommands(editor);
       const fallbackColorForeground = getDefaultForegroundColor(editor);
       const fallbackColorBackground = getDefaultBackgroundColor(editor);
@@ -13360,7 +13340,6 @@
         shortcutContent: spec.shortcut
       }, providersBackstage, renderIcons);
       return renderCommonItem({
-        context: spec.context,
         data: buildData(spec),
         getApi,
         enabled: spec.enabled,
@@ -13387,7 +13366,6 @@
         shortcutContent: spec.shortcut
       }, providersBackstage, renderIcons);
       return renderCommonItem({
-        context: spec.context,
         data: buildData(spec),
         getApi,
         enabled: spec.enabled,
@@ -13431,7 +13409,6 @@
         meta: spec.meta
       }, providersBackstage, renderIcons);
       return deepMerge(renderCommonItem({
-        context: spec.context,
         data: buildData(spec),
         enabled: spec.enabled,
         getApi,
@@ -14121,7 +14098,7 @@
     };
 
     const rangeToSimRange = r => SimRange.create(SugarElement.fromDom(r.startContainer), r.startOffset, SugarElement.fromDom(r.endContainer), r.endOffset);
-    const register$c = (editor, sharedBackstage) => {
+    const register$b = (editor, sharedBackstage) => {
       const autocompleterId = generate$6('autocompleter');
       const processingAction = Cell(false);
       const activeState = Cell(false);
@@ -14250,7 +14227,7 @@
       };
       AutocompleterEditorEvents.setup(autocompleterUiApi, editor);
     };
-    const Autocompleter = { register: register$c };
+    const Autocompleter = { register: register$b };
 
     const closest = (scope, selector, isRoot) => closest$1(scope, selector, isRoot).isSome();
 
@@ -14954,8 +14931,6 @@
         });
       };
       const setContents = (comp, items) => {
-        const disabled = providersBackstage.checkUiComponentContext('mode:design').shouldDisable || providersBackstage.isDisabled();
-        const disabledClass = disabled ? ' tox-collection__item--state-disabled' : '';
         const htmlLines = map$2(items, item => {
           const itemText = global$5.translate(item.text);
           const textContent = spec.columns === 1 ? `<div class="tox-collection__item-label">${ itemText }</div>` : '';
@@ -14966,6 +14941,7 @@
             '-': ' '
           };
           const ariaLabel = itemText.replace(/\_| \- |\-/g, match => mapItemName[match]);
+          const disabledClass = providersBackstage.isDisabled() ? ' tox-collection__item--state-disabled' : '';
           return `<div data-mce-tooltip="${ ariaLabel }" class="tox-collection__item${ disabledClass }" tabindex="-1" data-collection-item-value="${ global$3.encodeAllRaw(item.value) }" aria-label="${ ariaLabel }">${ iconContent }${ textContent }</div>`;
         });
         const chunks = spec.columns !== 'auto' && spec.columns > 1 ? chunk$1(htmlLines, spec.columns) : [htmlLines];
@@ -14974,7 +14950,7 @@
       };
       const onClick = runOnItem((comp, se, tgt, itemValue) => {
         se.stop();
-        if (!(providersBackstage.checkUiComponentContext('mode:design').shouldDisable || providersBackstage.isDisabled())) {
+        if (!providersBackstage.isDisabled()) {
           emitWith(comp, formActionEvent, {
             name: spec.name,
             value: itemValue
@@ -14983,7 +14959,7 @@
       });
       const collectionEvents = [
         run$1(mouseover(), runOnItem((comp, se, tgt) => {
-          focus$3(tgt, true);
+          focus$3(tgt);
         })),
         run$1(click(), onClick),
         run$1(tap(), onClick),
@@ -15016,7 +14992,7 @@
         factory: { sketch: identity },
         behaviours: derive$1([
           Disabling.config({
-            disabled: () => providersBackstage.checkUiComponentContext(spec.context).shouldDisable,
+            disabled: providersBackstage.isDisabled,
             onDisabled: comp => {
               iterCollectionItems(comp, childElm => {
                 add$2(childElm, 'tox-collection__item--state-disabled');
@@ -15030,7 +15006,7 @@
               });
             }
           }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          receivingConfig(),
           Replacing.config({}),
           Tooltipping.config({
             ...providersBackstage.tooltips.getConfig({
@@ -15243,8 +15219,8 @@
       components: spec.components,
       toggleClass: 'mce-active',
       dropdownBehaviours: derive$1([
-        DisablingConfigs.button(() => sharedBackstage.providers.isDisabled() || sharedBackstage.providers.checkUiComponentContext(spec.context).shouldDisable),
-        toggleOnReceive(() => sharedBackstage.providers.checkUiComponentContext(spec.context)),
+        DisablingConfigs.button(sharedBackstage.providers.isDisabled),
+        receivingConfig(),
         Unselecting.config({}),
         Tabstopping.config({})
       ]),
@@ -15267,8 +15243,8 @@
         data: initialData,
         onSetValue: c => Invalidating.run(c).get(noop),
         inputBehaviours: derive$1([
-          Disabling.config({ disabled: () => sharedBackstage.providers.isDisabled() || sharedBackstage.providers.checkUiComponentContext(spec.context).shouldDisable }),
-          toggleOnReceive(() => sharedBackstage.providers.checkUiComponentContext(spec.context)),
+          Disabling.config({ disabled: sharedBackstage.providers.isDisabled }),
+          receivingConfig(),
           Tabstopping.config({}),
           Invalidating.config({
             invalidClass: 'tox-textbox-field-invalid',
@@ -15338,8 +15314,7 @@
         fetch: getFetch$1(colorInputBackstage.getColors(spec.storageKey), spec.storageKey, colorInputBackstage.hasCustomColors()),
         columns: colorInputBackstage.getColorCols(spec.storageKey),
         presets: 'color',
-        onItemAction,
-        context: spec.context
+        onItemAction
       }, sharedBackstage));
       return FormField.sketch({
         dom: {
@@ -16936,7 +16911,6 @@
 
     var global$1 = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
-    const browseFilesEvent = generate$6('browse.files.event');
     const filterByExtension = (files, providersBackstage) => {
       const allowedImageFileTypes = global$1.explode(providersBackstage.getOption('images_file_types'));
       const isFileInAllowedTypes = file => exists(allowedImageFileTypes, type => endsWith(file.name.toLowerCase(), `.${ type.toLowerCase() }`));
@@ -16955,12 +16929,12 @@
         var _a;
         if (!Disabling.isDisabled(comp)) {
           const transferEvent = se.event.raw;
-          emitWith(comp, browseFilesEvent, { files: (_a = transferEvent.dataTransfer) === null || _a === void 0 ? void 0 : _a.files });
+          handleFiles(comp, (_a = transferEvent.dataTransfer) === null || _a === void 0 ? void 0 : _a.files);
         }
       };
       const onSelect = (component, simulatedEvent) => {
         const input = simulatedEvent.event.raw.target;
-        emitWith(component, browseFilesEvent, { files: input.files });
+        handleFiles(component, input.files);
       };
       const handleFiles = (component, files) => {
         if (files) {
@@ -16982,41 +16956,16 @@
             cutter(tap())
           ])])
       });
-      const pLabel = spec.label.map(label => renderLabel$3(label, providersBackstage));
-      const pField = FormField.parts.field({
-        factory: Button,
-        dom: {
-          tag: 'button',
-          styles: { position: 'relative' },
-          classes: [
-            'tox-button',
-            'tox-button--secondary'
-          ]
-        },
-        components: [
-          text$2(providersBackstage.translate('Browse for an image')),
-          memInput.asSpec()
-        ],
-        action: comp => {
-          const inputComp = memInput.get(comp);
-          inputComp.element.dom.click();
-        },
-        buttonBehaviours: derive$1([
-          ComposingConfigs.self(),
-          memory(initialData.getOr([])),
-          Tabstopping.config({}),
-          DisablingConfigs.button(() => providersBackstage.checkUiComponentContext(spec.context).shouldDisable),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context))
-        ])
-      });
-      const wrapper = {
+      const renderField = s => ({
+        uid: s.uid,
         dom: {
           tag: 'div',
           classes: ['tox-dropzone-container']
         },
         behaviours: derive$1([
-          Disabling.config({ disabled: () => providersBackstage.checkUiComponentContext(spec.context).shouldDisable }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          memory(initialData.getOr([])),
+          ComposingConfigs.self(),
+          Disabling.config({}),
           Toggling.config({
             toggleClass: 'dragenter',
             toggleOnExecute: false
@@ -17049,15 +16998,35 @@
                 dom: { tag: 'p' },
                 components: [text$2(providersBackstage.translate('Drop an image here'))]
               },
-              pField
+              Button.sketch({
+                dom: {
+                  tag: 'button',
+                  styles: { position: 'relative' },
+                  classes: [
+                    'tox-button',
+                    'tox-button--secondary'
+                  ]
+                },
+                components: [
+                  text$2(providersBackstage.translate('Browse for an image')),
+                  memInput.asSpec()
+                ],
+                action: comp => {
+                  const inputComp = memInput.get(comp);
+                  inputComp.element.dom.click();
+                },
+                buttonBehaviours: derive$1([
+                  Tabstopping.config({}),
+                  DisablingConfigs.button(providersBackstage.isDisabled),
+                  receivingConfig()
+                ])
+              })
             ]
           }]
-      };
-      return renderFormFieldWith(pLabel, wrapper, ['tox-form__group--stretched'], [config('handle-files', [run$1(browseFilesEvent, (comp, se) => {
-            FormField.getField(comp).each(field => {
-              handleFiles(field, se.event.files);
-            });
-          })])]);
+      });
+      const pLabel = spec.label.map(label => renderLabel$3(label, providersBackstage));
+      const pField = FormField.parts.field({ factory: { sketch: renderField } });
+      return renderFormFieldWith(pLabel, pField, ['tox-form__group--stretched'], []);
     };
 
     const renderGrid = (spec, backstage) => ({
@@ -17575,8 +17544,8 @@
         },
         dropdownBehaviours: derive$1([
           ...spec.dropdownBehaviours,
-          DisablingConfigs.button(() => spec.disabled || sharedBackstage.providers.checkUiComponentContext(spec.context).shouldDisable),
-          toggleOnReceive(() => sharedBackstage.providers.checkUiComponentContext(spec.context)),
+          DisablingConfigs.button(() => spec.disabled || sharedBackstage.providers.isDisabled()),
+          receivingConfig(),
           Unselecting.config({}),
           Replacing.config({}),
           ...spec.tooltip.map(t => Tooltipping.config(sharedBackstage.providers.tooltips.getConfig({ tooltipText: sharedBackstage.providers.translate(t) }))).toArray(),
@@ -17584,12 +17553,7 @@
             onControlAttached(spec, editorOffCell),
             onControlDetached(spec, editorOffCell)
           ]),
-          config(fixWidthBehaviourName, [runOnAttached((comp, _se) => {
-              if (spec.listRole !== 'listbox') {
-                forceInitialSize(comp);
-              }
-            })]),
-          config('update-dropdown-width-variable', [run$1(windowResize(), (comp, _se) => Dropdown.close(comp))]),
+          config(fixWidthBehaviourName, [runOnAttached((comp, _se) => spec.listRole === 'listbox' ? noop : forceInitialSize(comp))]),
           config('menubutton-update-display-text', [
             run$1(updateMenuText, (comp, se) => {
               optMemDisplayText.bind(mem => mem.getOpt(comp)).each(displayText => {
@@ -17796,7 +17760,6 @@
         dom: {},
         factory: {
           sketch: sketchSpec => renderCommonDropdown({
-            context: spec.context,
             uid: sketchSpec.uid,
             text: initialItem.map(item => item.text),
             icon: Optional.none(),
@@ -17845,7 +17808,7 @@
           [listBoxWrap]
         ]),
         fieldBehaviours: derive$1([Disabling.config({
-            disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable,
+            disabled: constant$1(!spec.enabled),
             onDisabled: comp => {
               FormField.getField(comp).each(Disabling.disable);
             },
@@ -17932,7 +17895,7 @@
         options: translatedOptions,
         factory: HtmlSelect,
         selectBehaviours: derive$1([
-          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable }),
+          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.isDisabled() }),
           Tabstopping.config({}),
           config('selectbox-change', [run$1(change(), (component, _) => {
               emitWith(component, formChangeEvent, { name: spec.name });
@@ -17964,7 +17927,7 @@
         ]),
         fieldBehaviours: derive$1([
           Disabling.config({
-            disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable,
+            disabled: () => !spec.enabled || providersBackstage.isDisabled(),
             onDisabled: comp => {
               FormField.getField(comp).each(Disabling.disable);
             },
@@ -17972,7 +17935,7 @@
               FormField.getField(comp).each(Disabling.enable);
             }
           }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context))
+          receivingConfig()
         ])
       });
     };
@@ -18178,8 +18141,8 @@
           makeIcon('unlock')
         ],
         buttonBehaviours: derive$1([
-          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.isDisabled() }),
+          receivingConfig(),
           Tabstopping.config({}),
           Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: translatedLabel }))
         ])
@@ -18195,8 +18158,8 @@
         factory: Input,
         inputClasses: ['tox-textfield'],
         inputBehaviours: derive$1([
-          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.isDisabled() }),
+          receivingConfig(),
           Tabstopping.config({}),
           config('size-input-events', [
             run$1(focusin(), (component, _simulatedEvent) => {
@@ -18256,7 +18219,7 @@
         },
         coupledFieldBehaviours: derive$1([
           Disabling.config({
-            disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable,
+            disabled: () => !spec.enabled || providersBackstage.isDisabled(),
             onDisabled: comp => {
               FormCoupledInputs.getField1(comp).bind(FormField.getField).each(Disabling.disable);
               FormCoupledInputs.getField2(comp).bind(FormField.getField).each(Disabling.disable);
@@ -18268,7 +18231,7 @@
               FormCoupledInputs.getLock(comp).each(Disabling.enable);
             }
           }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext('mode:design')),
+          receivingConfig(),
           config('size-input-events2', [run$1(ratioEvent, (component, simulatedEvent) => {
               const isField1 = simulatedEvent.event.isField1;
               const optCurrent = isField1 ? FormCoupledInputs.getField1(component) : FormCoupledInputs.getField2(component);
@@ -18386,8 +18349,8 @@
     const renderTextField = (spec, providersBackstage) => {
       const pLabel = spec.label.map(label => renderLabel$3(label, providersBackstage));
       const baseInputBehaviours = [
-        Disabling.config({ disabled: () => spec.disabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable }),
-        toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+        Disabling.config({ disabled: () => spec.disabled || providersBackstage.isDisabled() }),
+        receivingConfig(),
         Keying.config({
           mode: 'execution',
           useEnter: spec.multiline !== true,
@@ -18451,7 +18414,7 @@
       const extraClasses2 = extraClasses.concat(spec.maximized ? ['tox-form-group--maximize'] : []);
       const extraBehaviours = [
         Disabling.config({
-          disabled: () => spec.disabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable,
+          disabled: () => spec.disabled || providersBackstage.isDisabled(),
           onDisabled: comp => {
             FormField.getField(comp).each(Disabling.disable);
           },
@@ -18459,7 +18422,7 @@
             FormField.getField(comp).each(Disabling.enable);
           }
         }),
-        toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context))
+        receivingConfig()
       ];
       return renderFormFieldWith(pLabel, pTextField, extraClasses2, extraBehaviours);
     };
@@ -18474,8 +18437,7 @@
       classname: 'tox-textfield',
       validation: Optional.none(),
       maximized: spec.maximized,
-      data: initialData,
-      context: spec.context
+      data: initialData
     }, providersBackstage);
     const renderTextarea = (spec, providersBackstage, initialData) => renderTextField({
       name: spec.name,
@@ -18488,8 +18450,7 @@
       classname: 'tox-textarea',
       validation: Optional.none(),
       maximized: spec.maximized,
-      data: initialData,
-      context: spec.context
+      data: initialData
     }, providersBackstage);
 
     const getAnimationRoot = (component, slideConfig) => slideConfig.getAnimationRoot.fold(() => component.element, get => get(component));
@@ -18741,8 +18702,7 @@
         columns: 1,
         presets: 'normal',
         classes: [],
-        dropdownBehaviours: [...tabstopping ? [Tabstopping.config({})] : []],
-        context: spec.context
+        dropdownBehaviours: [...tabstopping ? [Tabstopping.config({})] : []]
       }, prefix, backstage.shared, btnName);
     };
     const getFetch = (items, getButton, backstage) => {
@@ -18770,7 +18730,6 @@
             type: item.type,
             active: false,
             ...text,
-            context: item.context,
             onAction: getMenuItemAction(item),
             onSetup: getMenuItemSetup(item)
           };
@@ -18786,14 +18745,10 @@
       },
       components: [text$2(text)]
     });
-    const renderCustomStateIcon = (container, components, backstage) => {
-      container.customStateIcon.each(icon => components.push(renderIcon(icon, backstage.shared.providers.icons, container.customStateIconTooltip.fold(() => [], tooltip => [Tooltipping.config(backstage.shared.providers.tooltips.getConfig({ tooltipText: tooltip }))]), ['tox-icon-custom-state'], container.customStateIconTooltip.fold(() => ({}), tooltip => ({ title: tooltip })))));
-    };
     const leafLabelEventsId = generate$6('leaf-label-event-id');
     const renderLeafLabel = ({leaf, onLeafAction, visible, treeId, selectedId, backstage}) => {
       const internalMenuButton = leaf.menu.map(btn => renderMenuButton(btn, 'tox-mbtn', backstage, Optional.none(), visible));
       const components = [renderLabel(leaf.title)];
-      renderCustomStateIcon(leaf, components, backstage);
       internalMenuButton.each(btn => components.push(btn));
       return Button.sketch({
         dom: {
@@ -18858,14 +18813,13 @@
         ])
       });
     };
-    const renderIcon = (iconName, iconsProvider, behaviours, extraClasses, extraAttributes) => render$3(iconName, {
+    const renderIcon = (iconName, iconsProvider, behaviours) => render$3(iconName, {
       tag: 'span',
       classes: [
         'tox-tree__icon-wrap',
         'tox-icon'
-      ].concat(extraClasses || []),
-      behaviours,
-      attributes: extraAttributes
+      ],
+      behaviours
     }, iconsProvider);
     const renderIconFromPack = (iconName, iconsProvider) => renderIcon(iconName, iconsProvider, []);
     const directoryLabelEventsId = generate$6('directory-label-event-id');
@@ -18881,7 +18835,6 @@
         },
         renderLabel(directory.title)
       ];
-      renderCustomStateIcon(directory, components, backstage);
       internalMenuButton.each(btn => {
         components.push(btn);
       });
@@ -19595,8 +19548,8 @@
       const action = actionOpt.fold(() => ({}), action => ({ action }));
       const common = {
         buttonBehaviours: derive$1([
-          DisablingConfigs.item(() => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          DisablingConfigs.button(() => !spec.enabled || providersBackstage.isDisabled()),
+          receivingConfig(),
           Tabstopping.config({}),
           ...tooltip.map(t => Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate(t) }))).toArray(),
           config('button press', [preventDefault('click')])
@@ -19758,7 +19711,6 @@
         const action = getAction(spec.name, buttonType);
         const buttonSpec = {
           ...spec,
-          context: buttonType === 'cancel' ? 'any' : spec.context,
           borderless: false
         };
         return renderButton$1(buttonSpec, action, backstage.shared.providers, []);
@@ -19901,7 +19853,7 @@
               validateOnLoad: false
             }
           })).toArray(),
-          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable }),
+          Disabling.config({ disabled: () => !spec.enabled || providersBackstage.isDisabled() }),
           Tabstopping.config({}),
           config('urlinput-events', [
             run$1(input(), comp => {
@@ -19983,10 +19935,9 @@
           pField,
           memStatus.asSpec()
         ],
-        behaviours: derive$1([Disabling.config({ disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable })])
+        behaviours: derive$1([Disabling.config({ disabled: () => !spec.enabled || providersBackstage.isDisabled() })])
       });
       const memUrlPickerButton = record(renderButton$1({
-        context: spec.context,
         name: spec.name,
         icon: Optional.some('browse'),
         text: spec.picker_text.or(spec.label).getOr(''),
@@ -20025,7 +19976,7 @@
         components: pLabel.toArray().concat([controlHWrapper()]),
         fieldBehaviours: derive$1([
           Disabling.config({
-            disabled: () => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable,
+            disabled: () => !spec.enabled || providersBackstage.isDisabled(),
             onDisabled: comp => {
               FormField.getField(comp).each(Disabling.disable);
               memUrlPickerButton.getOpt(comp).each(Disabling.disable);
@@ -20035,7 +19986,7 @@
               memUrlPickerButton.getOpt(comp).each(Disabling.enable);
             }
           }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context)),
+          receivingConfig(),
           config('url-input-events', [run$1(browseUrlEvent, openUrlPicker)])
         ])
       });
@@ -20109,7 +20060,7 @@
         behaviours: derive$1([
           ComposingConfigs.self(),
           Disabling.config({
-            disabled: () => !spec.enabled || providerBackstage.checkUiComponentContext(spec.context).shouldDisable,
+            disabled: () => !spec.enabled || providerBackstage.isDisabled(),
             onDisabled: component => {
               parentElement(component.element).each(element => add$2(element, 'tox-checkbox--disabled'));
             },
@@ -20170,8 +20121,8 @@
           pLabel
         ],
         fieldBehaviours: derive$1([
-          Disabling.config({ disabled: () => !spec.enabled || providerBackstage.checkUiComponentContext(spec.context).shouldDisable }),
-          toggleOnReceive(() => providerBackstage.checkUiComponentContext(spec.context))
+          Disabling.config({ disabled: () => !spec.enabled || providerBackstage.isDisabled() }),
+          receivingConfig()
         ])
       });
     };
@@ -20714,7 +20665,7 @@
       isSelected: isSelectedFor(item.format),
       getStylePreview: getPreviewFor(item.format)
     });
-    const register$b = (editor, formats, isSelectedFor, getPreviewFor) => {
+    const register$a = (editor, formats, isSelectedFor, getPreviewFor) => {
       const enrichSupported = item => processBasic(item, isSelectedFor, getPreviewFor);
       const enrichMenu = item => {
         const newItems = doEnrich(item.items);
@@ -20768,11 +20719,11 @@
       const replaceSettings = Cell(false);
       editor.on('PreInit', _e => {
         const formats = getStyleFormats(editor);
-        const enriched = register$b(editor, formats, isSelectedFor, getPreviewFor);
+        const enriched = register$a(editor, formats, isSelectedFor, getPreviewFor);
         settingsFormats.set(enriched);
       });
       editor.on('addStyleModifications', e => {
-        const modifications = register$b(editor, e.items, isSelectedFor, getPreviewFor);
+        const modifications = register$a(editor, e.items, isSelectedFor, getPreviewFor);
         eventsFormats.set(modifications);
         replaceSettings.set(e.replace);
       });
@@ -21038,18 +20989,9 @@
         icons: () => editor.ui.registry.getAll().icons,
         menuItems: () => editor.ui.registry.getAll().menuItems,
         translate: global$5.translate,
-        isDisabled: () => !editor.ui.isEnabled(),
+        isDisabled: () => editor.mode.isReadOnly() || !editor.ui.isEnabled(),
         getOption: editor.options.get,
-        tooltips: TooltipsBackstage(lazySinks.dialog),
-        checkUiComponentContext: specContext => {
-          const [key, value = ''] = specContext.split(':');
-          const contexts = editor.ui.registry.getAll().contexts;
-          const enabledInContext = get$h(contexts, key).fold(() => get$h(contexts, 'mode').map(pred => pred('design')).getOr(false), pred => value.charAt(0) === '!' ? !pred(value.slice(1)) : pred(value));
-          return {
-            contextType: key,
-            shouldDisable: !enabledInContext
-          };
-        }
+        tooltips: TooltipsBackstage(lazySinks.dialog)
       };
       const urlinput = UrlInputBackstage(editor);
       const styles = init$6(editor);
@@ -21593,8 +21535,7 @@
         }
       })),
       requiredFunction('fetch'),
-      defaultedFunction('onSetup', () => noop),
-      defaultedString('context', 'mode:design')
+      defaultedFunction('onSetup', () => noop)
     ];
 
     const MenuButtonSchema = objOf([
@@ -21618,8 +21559,7 @@
       ]),
       defaultedColumns(1),
       onAction,
-      onItemAction,
-      defaultedString('context', 'mode:design')
+      onItemAction
     ]);
     const createSplitButton = spec => asRaw('SplitButton', splitButtonSchema, spec);
 
@@ -21631,8 +21571,7 @@
             text: m.text,
             fetch: callback => {
               callback(m.getItems());
-            },
-            context: 'any'
+            }
           };
           const internal = createMenuButton(buttonSpec).mapError(errInfo => formatError(errInfo)).getOrDie();
           return renderMenuButton(internal, 'tox-mbtn', spec.backstage, Optional.some('menuitem'));
@@ -21850,8 +21789,7 @@
             return () => {
               editor.off('ToggleSidebar', handleToggle);
             };
-          },
-          context: 'any'
+          }
         });
       });
     };
@@ -22848,8 +22786,8 @@
         Toolbar.setGroups(component, groups);
       });
       return derive$1([
-        DisablingConfigs.toolbarButton(() => toolbarSpec.providers.checkUiComponentContext('any').shouldDisable),
-        toggleOnReceive(() => toolbarSpec.providers.checkUiComponentContext('any')),
+        DisablingConfigs.toolbarButton(toolbarSpec.providers.isDisabled),
+        receivingConfig(),
         Keying.config({
           mode: modeName,
           onEscape: toolbarSpec.onEscape,
@@ -22872,7 +22810,6 @@
             items: []
           }),
           'overflow-button': renderIconButtonSpec({
-            context: 'any',
             name: 'more',
             icon: Optional.some('more-drawer'),
             enabled: true,
@@ -22980,8 +22917,7 @@
         'secondary'
       ]),
       defaultedBoolean('borderless', false),
-      requiredFunction('onAction'),
-      defaultedString('context', 'mode:design')
+      requiredFunction('onAction')
     ];
     const normalButtonFields = [
       ...baseButtonFields,
@@ -23034,13 +22970,11 @@
           }
         };
         const isActive = () => has(comp.element, 'tox-button--enabled');
-        const focus = () => focus$3(comp.element);
         if (isToggleButton) {
           return spec.onAction({
             setIcon,
             setActive,
-            isActive,
-            focus
+            isActive
           });
         }
         if (spec.type === 'button') {
@@ -23898,7 +23832,6 @@
         })(api), () => editor.off(textUpdateEventName, handler));
       };
       return renderCommonDropdown({
-        context: 'mode:design',
         text: spec.icon.isSome() ? Optional.none() : spec.text,
         icon: spec.icon,
         ariaLabel: Optional.some(spec.tooltip),
@@ -24894,7 +24827,7 @@
     });
     const getTooltipAttributes = (tooltip, providersBackstage) => tooltip.map(tooltip => ({ 'aria-label': providersBackstage.translate(tooltip) })).getOr({});
     const focusButtonEvent = generate$6('focus-button');
-    const renderCommonStructure = (optIcon, optText, tooltip, behaviours, providersBackstage, context, btnName) => {
+    const renderCommonStructure = (optIcon, optText, tooltip, behaviours, providersBackstage, btnName) => {
       const optMemDisplayText = optText.map(text => record(renderLabel$1(text, 'tox-tbtn', providersBackstage)));
       const optMemDisplayIcon = optIcon.map(icon => record(renderReplaceableIconFromPack(icon, providersBackstage.icons)));
       return {
@@ -24922,8 +24855,8 @@
           ]
         },
         buttonBehaviours: derive$1([
-          DisablingConfigs.toolbarButton(() => providersBackstage.checkUiComponentContext(context).shouldDisable),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext(context)),
+          DisablingConfigs.toolbarButton(providersBackstage.isDisabled),
+          receivingConfig(),
           config(commonButtonDisplayEvent, [
             runOnAttached((comp, _se) => forceInitialSize(comp)),
             run$1(updateMenuText, (comp, se) => {
@@ -24963,7 +24896,7 @@
         }),
         markers: { toggledClass: 'tox-tbtn--enabled' },
         parts: {
-          button: renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.some(behaviours), sharedBackstage.providers, spec.context, btnName),
+          button: renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.some(behaviours), sharedBackstage.providers, btnName),
           toolbar: {
             dom: {
               tag: 'div',
@@ -24977,7 +24910,7 @@
     const renderCommonToolbarButton = (spec, specialisation, providersBackstage, btnName) => {
       var _d;
       const editorOffCell = Cell(noop);
-      const structure = renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.none(), providersBackstage, spec.context, btnName);
+      const structure = renderCommonStructure(spec.icon, spec.text, spec.tooltip, Optional.none(), providersBackstage, btnName);
       return Button.sketch({
         dom: structure.dom,
         components: structure.components,
@@ -24993,8 +24926,8 @@
               onControlDetached(specialisation, editorOffCell)
             ]),
             ...spec.tooltip.map(t => Tooltipping.config(providersBackstage.tooltips.getConfig({ tooltipText: providersBackstage.translate(t) + spec.shortcut.map(shortcut => ` (${ convertText(shortcut) })`).getOr('') }))).toArray(),
-            DisablingConfigs.toolbarButton(() => !spec.enabled || providersBackstage.checkUiComponentContext(spec.context).shouldDisable),
-            toggleOnReceive(() => providersBackstage.checkUiComponentContext(spec.context))
+            DisablingConfigs.toolbarButton(() => !spec.enabled || providersBackstage.isDisabled()),
+            receivingConfig()
           ].concat(specialisation.toolbarButtonBehaviours)),
           [commonButtonDisplayEvent]: (_d = structure.buttonBehaviours) === null || _d === void 0 ? void 0 : _d[commonButtonDisplayEvent]
         }
@@ -25078,14 +25011,14 @@
         onItemExecute: (_a, _b, _c) => {
         },
         splitDropdownBehaviours: derive$1([
+          DisablingConfigs.splitButton(sharedBackstage.providers.isDisabled),
+          receivingConfig(),
           config('split-dropdown-events', [
             runOnAttached((comp, _se) => forceInitialSize(comp)),
             run$1(focusButtonEvent, Focusing.focus),
             onControlAttached(specialisation, editorOffCell),
             onControlDetached(specialisation, editorOffCell)
           ]),
-          DisablingConfigs.splitButton(() => sharedBackstage.providers.isDisabled() || sharedBackstage.providers.checkUiComponentContext(spec.context).shouldDisable),
-          toggleOnReceive(() => sharedBackstage.providers.checkUiComponentContext(spec.context)),
           Unselecting.config({}),
           ...spec.tooltip.map(tooltip => {
             return Tooltipping.config({
@@ -25117,17 +25050,10 @@
         fetch: fetchChoices(getApi, spec, sharedBackstage.providers),
         parts: { menu: part(false, spec.columns, spec.presets) },
         components: [
-          SplitDropdown.parts.button(renderCommonStructure(spec.icon, spec.text, Optional.none(), Optional.some([
-            Toggling.config({
+          SplitDropdown.parts.button(renderCommonStructure(spec.icon, spec.text, Optional.none(), Optional.some([Toggling.config({
               toggleClass: 'tox-tbtn--enabled',
               toggleOnExecute: false
-            }),
-            DisablingConfigs.toolbarButton(never),
-            toggleOnReceive(constant$1({
-              contextType: 'any',
-              shouldDisable: false
-            }))
-          ]), sharedBackstage.providers, spec.context)),
+            })]), sharedBackstage.providers)),
           SplitDropdown.parts.arrow({
             dom: {
               tag: 'button',
@@ -25138,11 +25064,9 @@
               innerHtml: get$3('chevron-down', sharedBackstage.providers.icons)
             },
             buttonBehaviours: derive$1([
-              DisablingConfigs.splitButton(never),
-              toggleOnReceive(constant$1({
-                contextType: 'any',
-                shouldDisable: false
-              }))
+              DisablingConfigs.splitButton(sharedBackstage.providers.isDisabled),
+              receivingConfig(),
+              addFocusableBehaviour()
             ])
           }),
           SplitDropdown.parts['aria-descriptor']({ text: sharedBackstage.providers.translate('To open the popup, press Shift+Enter') })
@@ -25373,10 +25297,8 @@
       const uiRoot = getContentContainer(getRootNode(eTargetNode));
       attachSystemAfter(eTargetNode, mainUi.mothership);
       attachUiMotherships(editor, uiRoot, uiRefs);
-      editor.on('PostRender', () => {
-        OuterContainer.setSidebar(outerContainer, rawUiConfig.sidebar, getSidebarShow(editor));
-      });
       editor.on('SkinLoaded', () => {
+        OuterContainer.setSidebar(outerContainer, rawUiConfig.sidebar, getSidebarShow(editor));
         setToolbar(editor, uiRefs, rawUiConfig, backstage);
         lastToolbarWidth.set(editor.getWin().innerWidth);
         OuterContainer.setMenubar(outerContainer, identifyMenus(editor, rawUiConfig));
@@ -25395,7 +25317,7 @@
         const unbinder = bind(socket.element, 'scroll', limit.throttle);
         editor.on('remove', unbinder.unbind);
       }
-      setupEventsForUi(editor, uiRefs);
+      setupReadonlyModeSwitch(editor, uiRefs);
       editor.addCommand('ToggleSidebar', (_ui, value) => {
         OuterContainer.toggleSidebar(outerContainer, value);
         fireToggleSidebar(editor);
@@ -25438,8 +25360,7 @@
       }
       const api = {
         setEnabled: state => {
-          const eventType = state ? 'setEnabled' : 'setDisabled';
-          broadcastEvents(uiRefs, eventType);
+          broadcastReadonly(uiRefs, !state);
         },
         isEnabled: () => !Disabling.isDisabled(outerContainer)
       };
@@ -25794,13 +25715,12 @@
           render();
         }
       });
-      setupEventsForUi(editor, uiRefs);
+      setupReadonlyModeSwitch(editor, uiRefs);
       const api = {
         show: render,
         hide: ui.hide,
         setEnabled: state => {
-          const eventType = state ? 'setEnabled' : 'setDisabled';
-          broadcastEvents(uiRefs, eventType);
+          broadcastReadonly(uiRefs, !state);
         },
         isEnabled: () => !Disabling.isDisabled(mainUi.outerContainer)
       };
@@ -25901,10 +25821,7 @@
         data: ctx.initValue(),
         inputAttributes,
         selectOnFocus: true,
-        inputBehaviours: derive$1([
-          Disabling.config({ disabled: () => providers.checkUiComponentContext('mode:design').shouldDisable }),
-          toggleOnReceive(() => providers.checkUiComponentContext('mode:design')),
-          Keying.config({
+        inputBehaviours: derive$1([Keying.config({
             mode: 'special',
             onEnter: input => commands.findPrimary(input).map(primary => {
               emitExecute(primary);
@@ -25918,8 +25835,7 @@
               se.cut();
               return Optional.none();
             }
-          })
-        ])
+          })])
       }));
       const commands = generate(memInput, ctx.commands, providers);
       return [
@@ -26369,7 +26285,7 @@
     };
 
     const transitionClass = 'tox-pop--transition';
-    const register$a = (editor, registryContextToolbars, sink, extras) => {
+    const register$9 = (editor, registryContextToolbars, sink, extras) => {
       const backstage = extras.backstage;
       const sharedBackstage = backstage.shared;
       const isTouch = detect$1().deviceType.isTouch;
@@ -26564,7 +26480,7 @@
       });
     };
 
-    const register$9 = editor => {
+    const register$8 = editor => {
       const alignToolbarButtons = [
         {
           name: 'alignleft',
@@ -26703,33 +26619,17 @@
         onMenuSetup: onSetupEditableToggle(editor)
       }));
     };
-    const register$8 = editor => {
+    const register$7 = editor => {
       registerController(editor, lineHeightSpec(editor));
       languageSpec(editor).each(spec => registerController(editor, spec));
     };
 
-    const register$7 = (editor, backstage) => {
+    const register$6 = (editor, backstage) => {
       createAlignMenu(editor, backstage);
       createFontFamilyMenu(editor, backstage);
       createStylesMenu(editor, backstage);
       createBlocksMenu(editor, backstage);
       createFontSizeMenu(editor, backstage);
-    };
-
-    const register$6 = editor => {
-      editor.ui.registry.addContext('editable', () => {
-        return editor.selection.isEditable();
-      });
-      editor.ui.registry.addContext('mode', mode => {
-        return editor.mode.get() === mode;
-      });
-      editor.ui.registry.addContext('any', always);
-      editor.ui.registry.addContext('formatting', format => {
-        return editor.formatter.canApply(format);
-      });
-      editor.ui.registry.addContext('insert', child => {
-        return editor.schema.isValidChild(editor.selection.getNode().tagName, child);
-      });
     };
 
     const onSetupOutdentState = editor => onSetupEvent(editor, 'NodeChange', api => {
@@ -26845,24 +26745,21 @@
           name: 'copy',
           text: 'Copy',
           action: 'Copy',
-          icon: 'copy',
-          context: 'any'
+          icon: 'copy'
         },
         {
           name: 'help',
           text: 'Help',
           action: 'mceHelp',
           icon: 'help',
-          shortcut: 'Alt+0',
-          context: 'any'
+          shortcut: 'Alt+0'
         },
         {
           name: 'selectall',
           text: 'Select all',
           action: 'SelectAll',
           icon: 'select-all',
-          shortcut: 'Meta+A',
-          context: 'any'
+          shortcut: 'Meta+A'
         },
         {
           name: 'newdocument',
@@ -26875,16 +26772,14 @@
           text: 'Print',
           action: 'mcePrint',
           icon: 'print',
-          shortcut: 'Meta+P',
-          context: 'any'
+          shortcut: 'Meta+P'
         }
       ], btn => {
         editor.ui.registry.addButton(btn.name, {
           tooltip: btn.text,
           icon: btn.icon,
           onAction: onActionExecCommand(editor, btn.action),
-          shortcut: btn.shortcut,
-          context: btn.context
+          shortcut: btn.shortcut
         });
       });
       global$1.each([
@@ -26960,32 +26855,28 @@
           text: 'Copy',
           action: 'Copy',
           icon: 'copy',
-          shortcut: 'Meta+C',
-          context: 'any'
+          shortcut: 'Meta+C'
         },
         {
           name: 'selectall',
           text: 'Select all',
           action: 'SelectAll',
           icon: 'select-all',
-          shortcut: 'Meta+A',
-          context: 'any'
+          shortcut: 'Meta+A'
         },
         {
           name: 'print',
           text: 'Print...',
           action: 'mcePrint',
           icon: 'print',
-          shortcut: 'Meta+P',
-          context: 'any'
+          shortcut: 'Meta+P'
         }
       ], menuitem => {
         editor.ui.registry.addMenuItem(menuitem.name, {
           text: menuitem.text,
           icon: menuitem.icon,
           shortcut: menuitem.shortcut,
-          onAction: onActionExecCommand(editor, menuitem.action),
-          context: menuitem.context
+          onAction: onActionExecCommand(editor, menuitem.action)
         });
       });
       global$1.each([
@@ -27124,16 +27015,14 @@
       editor.ui.registry.addToggleMenuItem('visualaid', {
         text: 'Visual aids',
         onSetup: onSetupVisualAidState(editor),
-        onAction: onActionExecCommand(editor, 'mceToggleVisualAid'),
-        context: 'any'
+        onAction: onActionExecCommand(editor, 'mceToggleVisualAid')
       });
     };
     const registerToolbarButton = editor => {
       editor.ui.registry.addButton('visualaid', {
         tooltip: 'Visual aids',
         text: 'Visual aids',
-        onAction: onActionExecCommand(editor, 'mceToggleVisualAid'),
-        context: 'any'
+        onAction: onActionExecCommand(editor, 'mceToggleVisualAid')
       });
     };
     const register$1 = editor => {
@@ -27142,16 +27031,15 @@
     };
 
     const setup$6 = (editor, backstage) => {
-      register$9(editor);
+      register$8(editor);
       register$3(editor);
-      register$7(editor, backstage);
+      register$6(editor, backstage);
       register$2(editor);
-      register$d(editor);
+      register$c(editor);
       register$1(editor);
       register$5(editor);
-      register$8(editor);
+      register$7(editor);
       register$4(editor);
-      register$6(editor);
     };
 
     const patchPipeConfig = config => isString(config) ? config.split(/[ ,]/) : config;
@@ -28238,7 +28126,7 @@
             })
           }),
           DisablingConfigs.button(providersBackstage.isDisabled),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext('any'))
+          receivingConfig()
         ])
       });
       const renderDivider = () => ({
@@ -28292,7 +28180,7 @@
             selector: 'div[role=button]'
           }),
           Disabling.config({ disabled: providersBackstage.isDisabled }),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext('any')),
+          receivingConfig(),
           Tabstopping.config({}),
           Replacing.config({}),
           config('elementPathEvents', [runOnAttached((comp, _e) => {
@@ -28395,7 +28283,7 @@
         components: [],
         buttonBehaviours: derive$1([
           DisablingConfigs.button(providersBackstage.isDisabled),
-          toggleOnReceive(() => providersBackstage.checkUiComponentContext('any')),
+          receivingConfig(),
           Tabstopping.config({}),
           Replacing.config({}),
           Representing.config({
@@ -28821,7 +28709,7 @@
             partThrobber
           ],
           behaviours: derive$1([
-            toggleOnReceive(() => backstages.popup.shared.providers.checkUiComponentContext('any')),
+            receivingConfig(),
             Disabling.config({ disableClass: 'tox-tinymce--disabled' }),
             Keying.config({
               mode: 'cyclic',
@@ -28891,7 +28779,7 @@
         setup$5(editor, backstages.popup.shared.getSink, backstages.popup);
         setup$8(editor);
         setup$7(editor, lazyThrobber, backstages.popup.shared);
-        register$a(editor, contextToolbars, popupUi.sink, { backstage: backstages.popup });
+        register$9(editor, contextToolbars, popupUi.sink, { backstage: backstages.popup });
         setup$4(editor, popupUi.sink);
         const elm = editor.getElement();
         const height = setEditorSize(mainUi.outerContainer);
@@ -29139,8 +29027,7 @@
       optionStringEnum('buttonType', [
         'primary',
         'secondary'
-      ]),
-      defaultedString('context', 'mode:design')
+      ])
     ];
     const dialogFooterButtonFields = [
       ...baseFooterButtonFields,
@@ -29209,8 +29096,7 @@
         'secondary',
         'toolbar'
       ]),
-      primary,
-      defaultedString('context', 'mode:design')
+      primary
     ];
     const buttonSchema = objOf(buttonFields);
 
@@ -29222,16 +29108,12 @@
 
     const checkboxFields = formComponentFields.concat([
       label,
-      enabled,
-      defaultedString('context', 'mode:design')
+      enabled
     ]);
     const checkboxSchema = objOf(checkboxFields);
     const checkboxDataProcessor = boolean;
 
-    const collectionFields = formComponentWithLabelFields.concat([
-      defaultedColumns('auto'),
-      defaultedString('context', 'mode:design')
-    ]);
+    const collectionFields = formComponentWithLabelFields.concat([defaultedColumns('auto')]);
     const collectionSchema = objOf(collectionFields);
     const collectionDataProcessor = arrOfObj([
       value$1,
@@ -29239,10 +29121,7 @@
       icon
     ]);
 
-    const colorInputFields = formComponentWithLabelFields.concat([
-      defaultedString('storageKey', 'default'),
-      defaultedString('context', 'mode:design')
-    ]);
+    const colorInputFields = formComponentWithLabelFields.concat([defaultedString('storageKey', 'default')]);
     const colorInputSchema = objOf(colorInputFields);
     const colorInputDataProcessor = string;
 
@@ -29264,7 +29143,7 @@
     const customEditorSchema = valueOf(v => asRaw('customeditor.old', objOfOnly(customEditorFieldsOld), v).orThunk(() => asRaw('customeditor.new', objOfOnly(customEditorFields), v)));
     const customEditorDataProcessor = string;
 
-    const dropZoneFields = formComponentWithLabelFields.concat([defaultedString('context', 'mode:design')]);
+    const dropZoneFields = formComponentWithLabelFields;
     const dropZoneSchema = objOf(dropZoneFields);
     const dropZoneDataProcessor = arrOfVal();
 
@@ -29307,8 +29186,7 @@
       optionString('inputMode'),
       optionString('placeholder'),
       defaultedBoolean('maximized', false),
-      enabled,
-      defaultedString('context', 'mode:design')
+      enabled
     ]);
     const inputSchema = objOf(inputFields);
     const inputDataProcessor = string;
@@ -29339,8 +29217,7 @@
     ]);
     const listBoxFields = formComponentWithLabelFields.concat([
       requiredArrayOf('items', listBoxItemSchema),
-      enabled,
-      defaultedString('context', 'mode:design')
+      enabled
     ]);
     const listBoxSchema = objOf(listBoxFields);
     const listBoxDataProcessor = string;
@@ -29351,16 +29228,14 @@
         value$1
       ]),
       defaultedNumber('size', 1),
-      enabled,
-      defaultedString('context', 'mode:design')
+      enabled
     ]);
     const selectBoxSchema = objOf(selectBoxFields);
     const selectBoxDataProcessor = string;
 
     const sizeInputFields = formComponentWithLabelFields.concat([
       defaultedBoolean('constrain', true),
-      enabled,
-      defaultedString('context', 'mode:design')
+      enabled
     ]);
     const sizeInputSchema = objOf(sizeInputFields);
     const sizeInputDataProcessor = objOf([
@@ -29386,8 +29261,7 @@
     const textAreaFields = formComponentWithLabelFields.concat([
       optionString('placeholder'),
       defaultedBoolean('maximized', false),
-      enabled,
-      defaultedString('context', 'mode:design')
+      enabled
     ]);
     const textAreaSchema = objOf(textAreaFields);
     const textAreaDataProcessor = string;
@@ -29399,9 +29273,7 @@
       ]),
       title,
       requiredString('id'),
-      optionOf('menu', MenuButtonSchema),
-      optionString('customStateIcon'),
-      optionString('customStateIconTooltip')
+      optionOf('menu', MenuButtonSchema)
     ];
     const treeItemLeafFields = baseTreeItemFields;
     const treeItemLeafSchema = objOf(treeItemLeafFields);
@@ -29433,8 +29305,7 @@
         'file'
       ]),
       enabled,
-      optionString('picker_text'),
-      defaultedString('context', 'mode:design')
+      optionString('picker_text')
     ]);
     const urlInputSchema = objOf(urlInputFields);
     const urlInputDataProcessor = objOf([
@@ -31175,7 +31046,6 @@
           callback();
         };
         const memFooterClose = record(renderFooterButton({
-          context: 'any',
           name: 'close-alert',
           text: 'OK',
           primary: true,
@@ -31213,7 +31083,6 @@
           callback(state);
         };
         const memFooterYes = record(renderFooterButton({
-          context: 'any',
           name: 'yes',
           text: 'Yes',
           primary: true,
@@ -31223,7 +31092,6 @@
           icon: Optional.none()
         }, 'submit', backstage));
         const footerNo = renderFooterButton({
-          context: 'any',
           name: 'no',
           text: 'No',
           primary: false,
@@ -31507,8 +31375,8 @@
     };
 
     const registerOptions = editor => {
-      register$f(editor);
       register$e(editor);
+      register$d(editor);
       register(editor);
     };
     var Theme = () => {

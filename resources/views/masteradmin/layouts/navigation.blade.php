@@ -28,7 +28,7 @@
           <!-- <img src="{{url('public/dist/img/user2-160x160.jpg')}}" class="elevation-2 user_img" alt="User Image"> -->
            <?php //dd(Auth::guard('masteradmins')->user()); ?>
           @if(Auth::guard('masteradmins')->user()->users_image)
-            <img src="{{ url(env('IMAGE_URL').'masteradmin/profile_image/' . Auth::guard('masteradmins')->user()->users_image) }} " class="elevation-2 user_img" target="_blank">
+            <img src="{{ url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/' . Auth::guard('masteradmins')->user()->users_image)) }}" class="elevation-2 user_img" target="_blank">
           @else
             <img src="{{url('public/dist/img/user2-160x160.jpg')}}" class="elevation-2 user_img" alt="User Image">
           @endif

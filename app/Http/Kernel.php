@@ -41,6 +41,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\MasterAdminLogCleaner::class,
             \App\Http\Middleware\PlanAccessMiddleware::class,
+            \App\Http\Middleware\SetUserFolder::class,
             
         ],
 
@@ -74,6 +75,7 @@ class Kernel extends HttpKernel
         'set.user.details' => \App\Http\Middleware\SetUserDetails::class,
         'guard.session' => \App\Http\Middleware\ManageGuardSession::class,
         'prevent.back.history' => \App\Http\Middleware\PreventBackHistory::class,
+        'setUserFolder' => \App\Http\Middleware\SetUserFolder::class,
         
     ];
 }

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Trip;
 use App\Models\TripType;
 use App\Models\TripTravelingMember;
+use App\Models\TaskCategory;
+use App\Models\DocumentType;
 class TripController extends Controller
 {
     //
@@ -68,8 +70,6 @@ class TripController extends Controller
             'items.*.trtm_dob.required' => 'Birthdate is required',
             'items.*.trtm_age.required' => 'Age is required',
         ]);
-
-    
 
        // dd('data');
 
@@ -140,7 +140,7 @@ class TripController extends Controller
 
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
 
-        $request->validate([
+        $validatedData = $request->validate([
             'tr_name' => 'required|string',
             'tr_agent_id' => 'required|string',
             'tr_traveler_name' => 'required|string',
@@ -154,15 +154,6 @@ class TripController extends Controller
             'tr_end_date' => 'nullable|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
-            'items.*.trtm_type' => 'required|string',
-            'items.*.trtm_first_name' => 'required|string',
-            'items.*.trtm_middle_name' => 'nullable|string',
-            'items.*.trtm_last_name' => 'nullable|string',
-            'items.*.trtm_nick_name' => 'nullable|string',
-            'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
-            'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
-            'items.*.trtm_dob' => 'required|string',
-            'items.*.trtm_age' => 'nullable|string',
         ], [
             'tr_name.required' => 'Traveler name is required',
             'tr_agent_id.required' => 'Agent ID is required',
@@ -172,7 +163,7 @@ class TripController extends Controller
         ]);
 
     
-        $trip->update($request->all());
+        $trip->where(['tr_id' => $id])->update($validatedData);
 
         TripTravelingMember::where('tr_id', $id)->delete();
 
@@ -223,9 +214,15 @@ class TripController extends Controller
     public function view($id): View
     {
         // dd()
+        $user = Auth::guard('masteradmins')->user();
         $trip = Trip::where('tr_id', $id)->firstOrFail();
+        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+        $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
+        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+        $documentType = DocumentType::get();
+
         // dd($trip);
-        return view('masteradmin.trip.view',compact('trip'));
+        return view('masteradmin.trip.view',compact('trip','taskCategory','tripTraveling','documentType'));
     }
 
 }

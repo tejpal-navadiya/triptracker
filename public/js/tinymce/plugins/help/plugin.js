@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.4.0 (2024-10-09)
+ * TinyMCE version 7.3.0 (2024-08-07)
  */
 
 (function () {
@@ -59,15 +59,13 @@
       editor.ui.registry.addButton('help', {
         icon: 'help',
         tooltip: 'Help',
-        onAction: dialogOpener,
-        context: 'any'
+        onAction: dialogOpener
       });
       editor.ui.registry.addMenuItem('help', {
         text: 'Help',
         icon: 'help',
         shortcut: 'Alt+0',
-        onAction: dialogOpener,
-        context: 'any'
+        onAction: dialogOpener
       });
     };
 
