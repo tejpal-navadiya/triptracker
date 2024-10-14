@@ -182,12 +182,19 @@ Route::group(['prefix' => $busadminRoute], function () {
 
        //Library View 
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+       
 
         //trip traveler document 
         Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
         Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
+        Route::get('traveler-document-edit/{id}/{trip_id}', [TravelerDocumentController::class, 'edit'])->name('masteradmin.document.edit');
+        Route::delete('/traveler-document/{id}/image/{image}', [TravelerDocumentController::class, 'deleteImage'])->name('document.image.delete');
+
+        Route::patch('/traveler-document-update/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'update'])->name('masteradmin.document.update');
 
 
+
+        //email template 
         Route::get('/email', [EmailTemplateController::class, 'index'])->name('masteradmin.emailtemplate.index');
         Route::get('/email-create', [EmailTemplateController::class, 'create'])->name('masteradmin.emailtemplate.create');
 
@@ -203,7 +210,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
        
        //Agency
-       Route::resource( 'agency', AgencyController::class);
+    //    Route::resource( 'agency', AgencyController::class);
 
       
 

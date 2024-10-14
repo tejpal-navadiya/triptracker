@@ -12,8 +12,9 @@
                 <table id="example13" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
-                            <th>Document</th>
+                            <th>Traveler Name</th>
                             <th>Type</th>
+                            <th>Document</th>
                             <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
                         </tr>
                     </thead>
@@ -75,10 +76,11 @@
                             <div class="form-group">
                             <label for="trvd_document">Upload Documents</label>
                                 <div class="d-flex">
-                                    <x-text-input type="file" name="trvd_document" id="trvd_document" accept="image/*" class="" />
+                                    <!-- <x-text-input type="file" name="trvd_document" id="trvd_document" accept="image/*" class="" /> -->
+                                    <x-text-input type="file" class="form-control" id="trvd_document" name="trvd_document[]" accept="image/*" multiple />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvd_document')" />
-                                <p id="task_document"></p>
+                                <p id="document_images"></p>
                             </div>
                         </div>
                     </div>
@@ -99,24 +101,53 @@
     $(document).ready(function () {
 
      
+        //datatable list
+        var table = $('#example13').DataTable();
+        table.destroy()
 
-        var table12 = $('#example13').DataTable({
-
-            processing: true,
-            serverSide: true,
+        table = $('#example13').DataTable({
+            processing: true, 
+            serverSide: true, 
             ajax: {
-                url: "{{ route('masteradmin.document.index', $trip->tr_id) }}",
+                url: "{{ route('masteradmin.document.index', $trip->tr_id) }}", 
                 type: 'GET',
                 data: function(d) {
                     d._token = "{{ csrf_token() }}";
                 }
             },
             columns: [
-                {data: 'trvd_document', name: 'trvd_document'},
-                {data: 'trvd_name', name: 'trvd_name'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
+                {data: 'traveler_name', name: 'traveler_name'}, 
+                {data: 'document_type', name: 'document_type'},  
+                {
+                    data: 'trvd_document', 
+                    name: 'trvd_document',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        // console.log(data);
+
+                        if (data && Array.isArray(data)) {
+                            var imageLinks = '';
+                            var userFolder = "{{ session('userFolder') }}"; 
+                            var baseUrl = "{{ config('app.image_url') }}"; 
+
+                            data.forEach(function(image) {
+                                var imageUrl = baseUrl + userFolder + '/document_image/' + image;
+                                imageLinks += '<a href="' + imageUrl + '" target="_blank">' + image + '</a>, ';
+                            });
+
+                            return imageLinks.slice(0, -2);
+                        } else {
+                            console.error("Expected array but got:", data); 
+                        }
+                        return ''; 
+                    }
+                },
+                {data: 'action', name: 'action', orderable: false, searchable: false}, 
             ]
         });
+
+
 
         //create task
         $('#createNewDocument').click(function () {
@@ -125,7 +156,7 @@
             $('#FormDocument')[0].reset();
             $('#modelHeadingDocument').html("Add Document");
             $('body').addClass('modal-open');
-            $('#task_document').html('');
+            $('#document_images').html('');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModelDocument'));
             editModal.show();
         });
@@ -148,7 +179,7 @@
                 } else {
                     // Update existing
                     var trvd_id = $('#trvd_id').val();
-                    url = "{{ route('masteradmin.task.update', [$trip->tr_id, ':trvd_id']) }}";
+                    url = "{{ route('masteradmin.document.update', [$trip->tr_id, ':trvd_id']) }}";
                     url = url.replace(':trvd_id', trvd_id);
                     formData.append('_method', 'PATCH');
                 }
@@ -178,75 +209,85 @@
         });
 
         //edit popup open
-        $(document).on('click', '.editTask', function (e) {
+        $(document).on('click', '.editDocument', function (e) {
             e.preventDefault();
         
     
             var id = $(this).data('id'); 
             // alert(id);
-            $.get("{{ route('masteradmin.task.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}".replace('id', id).replace('{{$trip->tr_id}}', '{{ $trip->tr_id }}'), function (data) {
+            $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}".replace('id', id).replace('{{$trip->tr_id}}', '{{ $trip->tr_id }}'), function (data) {
 
                 // console.log(data);
-                $('#modelHeadingTask').html("Edit Task");
-                $('#saveBtnTask').val("edit-user");
+                $('#modelHeadingDocument').html("Edit Task");
+                $('#saveBtnDocument').val("edit-user");
 
                 var editModal = new bootstrap.Modal(document.getElementById('ajaxModelDocument'));
                 editModal.show();
 
-                $('#trvt_id').val(data.trvt_id);
-                $('#trvt_name').val(data.trvt_name);
-                $('#trvt_agent_id').val(data.trvt_agent_id);
-                $('#trvt_category').val(data.trvt_category).trigger('change.select2');
-                $('#trvt_date').val(data.trvt_date);
-                $('#trvt_due_date').val(data.trvt_due_date);
-                
-                $('#trvt_date_hidden').val(data.trvt_date);
-                $('#trvt_due_date_hidden').val(data.trvt_due_date);
-
-                $('#trvt_priority').val(data.trvt_priority).trigger('change.select2');
-             
-                $('#task_document').html('');
+                $('#trvd_id').val(data.trvd_id);
+               
+                $('#trvd_name').val(data.trvd_name).trigger('change.select2');
+                $('#trvm_id').val(data.trvm_id).trigger('change.select2');
+           
+                $('#document_images').html('');
                 var baseUrl = "{{ config('app.image_url') }}";
-                if (data.trvt_document) {
-                    $('#task_document').append(
-                        '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' + data.trvt_document + '" target="_blank">' +
-                        data.trvt_document + 
-                        '</a>'
-                    );
+                var userFolder = "{{ session('userFolder') }}";
+                if (data.trvd_document) {
+                    var images = JSON.parse(data.trvd_document);
+                    var imageHtml = '';
+                    imageHtml += '<table class="table table-bordered">';
+                    imageHtml += '<thead>';
+                    imageHtml += '<tr>';
+                    imageHtml += '<th>Image Preview</th>';
+                    imageHtml += '<th>Actions</th>';
+                    imageHtml += '</tr>';
+                    imageHtml += '</thead>';
+
+                    $.each(images, function(index, image) {
+                        imageHtml += '<tbody>';
+                        imageHtml += '<tr>';
+                        imageHtml += '<td>';
+                        imageHtml += '<img src="' + baseUrl + userFolder + '/document_image/' + image + '" alt="Uploaded Image" class="img-thumbnail" style="max-width: 100px; height: auto;">';
+                        imageHtml += '</td>';
+                        
+                        var routeUrl = "{{ route('document.image.delete', ['id' => ':trvd_id', 'image' => ':image']) }}";
+                        routeUrl = routeUrl.replace(':trvd_id', data.trvd_id).replace(':image', image);
+
+                        imageHtml += '<td>';
+                        // Replace the form with a button and attach a click event
+                        imageHtml += '<button class="btn btn-danger btn-sm delete-image" data-url="' + routeUrl + '" data-image="' + image + '">Delete</button>';
+                        imageHtml += '</td>';
+                        imageHtml += '</tr>';
+                        imageHtml += '</tbody>';
+                    });
+                    imageHtml += '</table>';
+                    $('#document_images').html(imageHtml);
+
+                    $('.delete-image').on('click', function(event) {
+                        event.preventDefault();
+                        var url = $(this).data('url');
+                        var image = $(this).data('image');
+                        var $button = $(this);
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                _method: 'DELETE'
+                            },
+                            success: function(response) {
+                                
+                                $button.closest('tr').remove(); 
+                                table.draw();
+                               alert('Image deleted successfully'); 
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error deleting image:', error);
+                            }
+                        });
+                    });
                 }
                                 
-                var trvt_date_hidden = document.getElementById('trvt_date_hidden');
-                var trvt_due_date_hidden = document.getElementById('trvt_due_date_hidden');
-
-                if (trvt_date_hidden && trvt_due_date_hidden) {
-                var completed_date = flatpickr("#create_date", {
-                locale: 'en',
-                altInput: true,
-                dateFormat: "m/d/Y",
-                altFormat: "m/d/Y",
-                allowInput: true,
-                defaultDate: trvt_date_hidden.value || null,
-                });
-
-                var todatepicker = flatpickr("#due_date", {
-                locale: 'en',
-                altInput: true,
-                dateFormat: "m/d/Y",
-                altFormat: "m/d/Y",
-                allowInput: true,
-                defaultDate: trvt_due_date_hidden.value || null,
-                });
-
-                document.getElementById('create-date-icon').addEventListener('click', function () {
-                fromdatepicker.open();
-                });
-
-                document.getElementById('due-date-icon').addEventListener('click', function () {
-                todatepicker.open();
-                });
-            }
-           
-            
             });
         });
 

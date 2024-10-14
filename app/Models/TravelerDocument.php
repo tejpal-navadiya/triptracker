@@ -20,4 +20,16 @@ class TravelerDocument extends Model
         $uniq_id = $user->user_id;
         $this->setTable($uniq_id . '_tc_traveling_document');
     }
+
+    public function traveler()
+    {
+        return $this->belongsTo(TripTravelingMember::class, 'trvm_id', 'trtm_id');
+    }
+
+    public function documenttype()
+    {
+        return $this->belongsTo(DocumentType::class, 'trvd_name', 'docty_id');
+    }
+
+
 }

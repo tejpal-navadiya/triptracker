@@ -167,7 +167,7 @@
                     <ul class="nav nav-treeview">
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
-                                <a href="{{ route('agency.index') }}"
+                                <a href=""
                                     class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Add library Item</p>
