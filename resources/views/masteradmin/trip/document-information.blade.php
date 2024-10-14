@@ -157,6 +157,8 @@
             $('#modelHeadingDocument').html("Add Document");
             $('body').addClass('modal-open');
             $('#document_images').html('');
+            $('#trvd_name').trigger('change.select2');
+            $('#trvm_id').trigger('change.select2');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModelDocument'));
             editModal.show();
         });
@@ -218,7 +220,7 @@
             $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}".replace('id', id).replace('{{$trip->tr_id}}', '{{ $trip->tr_id }}'), function (data) {
 
                 // console.log(data);
-                $('#modelHeadingDocument').html("Edit Task");
+                $('#modelHeadingDocument').html("Edit Document");
                 $('#saveBtnDocument').val("edit-user");
 
                 var editModal = new bootstrap.Modal(document.getElementById('ajaxModelDocument'));
@@ -292,12 +294,12 @@
         });
 
         //delete record
-        $('body').on('click', '.deleteTaskbtn', function (e) {
+        $('body').on('click', '.deleteDocumentbtn', function (e) {
             e.preventDefault();
-            var trvt_id = $(this).data("id");
+            var trvd_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.task.destroy', [$trip->tr_id, ':trvt_id']) }}";
-            url = url.replace(':trvt_id', trvt_id);
+            var url = "{{ route('masteradmin.document.destroy', [$trip->tr_id, ':trvd_id']) }}";
+            url = url.replace(':trvd_id', trvd_id);
             // alert(url);
             $.ajax({
                 type: "DELETE",
@@ -305,10 +307,10 @@
                 success: function (data) {
                     alert(data.success);
                   
-                    $('.ajaxModelTask').modal('hide');
+                    $('.ajaxModelDocument').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
-                    $('.ajaxModelTask').css('display', 'none');
+                    $('.ajaxModelDocument').css('display', 'none');
                     
                     table.draw();
 

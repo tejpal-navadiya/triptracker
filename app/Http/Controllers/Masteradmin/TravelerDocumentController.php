@@ -32,11 +32,15 @@ class TravelerDocumentController extends Controller
             return Datatables::of($document)
                     ->addIndexColumn()
                     ->addColumn('traveler_name', function($document) {
-                        $middleName = $document->traveler->trtm_middle_name ? $document->traveler->trtm_middle_name : '';
-                        return $document->traveler->trtm_first_name . ' ' . $middleName . ' ' . $document->traveler->trtm_last_name;
+                        $firstName = $document->traveler->trtm_first_name ?? '';
+                        $middleName = $document->traveler->trtm_middle_name ?? '';
+                        $lastName = $document->traveler->trtm_last_name ?? '';
+                        
+                        return $firstName . ' ' . $middleName . ' ' . $lastName;
                     })
                     ->addColumn('document_type', function($document) {
-                        return $document->documenttype->docty_name;
+                        return $document->documenttype->docty_name ?? 'Unknown Document Type';
+
                     })
             
                     ->addColumn('trvd_document', function($document) {
@@ -47,9 +51,39 @@ class TravelerDocumentController extends Controller
                 
                     ->addColumn('action', function($document) use ($access){
                         $btn = '';
-                        
+
                         if(isset($access['edit_role']) && $access['edit_role']) {
                             $btn .= '<a data-id="'.$document->trvd_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editDocument"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                        }
+
+                        if(isset($access['edit_role']) && $access['edit_role']) {
+
+                            $images = json_decode($document->trvd_document, true);
+
+                            $userFolder = session('userFolder');
+                            $baseUrl = config('app.image_url');
+
+                            
+                            $btn .= '
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-download download_icon_grid"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
+                                        foreach ($images as $image) {
+                                            $imagePath = $userFolder . '/document_image/' . $image;
+                                            $imageUrl = ($imagePath);
+                                            
+                                            // Ensure the base URL doesn't have a trailing slash
+                                            $baseUrl = rtrim($baseUrl, '/');
+                                            
+                                            // Combine the base URL with the image URL
+                                            $fullImageUrl = $baseUrl . '/'.$imageUrl;
+                                            
+                                            $btn .= '<a class="dropdown-item" href="' . $fullImageUrl . '" download>' . $image . '</a>';
+                                        }
+                            $btn .= '</div>
+                                    </div>';
                         }
                         
                         if(isset($access['delete_role']) && $access['delete_role']) {
@@ -60,10 +94,10 @@ class TravelerDocumentController extends Controller
                                                 <div class="modal-content">
                                                     <div class="modal-body pad-1 text-center">
                                                         <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                        <p class="company_business_name px-10"><b>Delete Traveling Member </b></p>
-                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This Traveling Member ?</p>
+                                                        <p class="company_business_name px-10"><b>Delete Document </b></p>
+                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This Document ?</p>
                                                         <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="delete_btn px-15 deleteMemberbtn" data-id='.$document->trvd_id.'>Delete</button>
+                                                        <button type="submit" class="delete_btn px-15 deleteDocumentbtn" data-id='.$document->trvd_id.'>Delete</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -138,14 +172,14 @@ class TravelerDocumentController extends Controller
     
     public function edit($id, $trip_id)
     {   
-        
+
         $document = TravelerDocument::where(['trvd_id' => $id, 'tr_id' => $trip_id])->firstOrFail();
 
         return response()->json($document);
     }
 
     public function deleteImage(Request $request, $id, $image)
-        {
+    {
 
             // dd($image);
             $document = TravelerDocument::where('trvd_id', $id)->firstOrFail();
@@ -186,31 +220,36 @@ class TravelerDocumentController extends Controller
             $validatedData = $request->validate([
                 'trvd_name' => 'required|string',
                 'trvm_id' => 'required|string',
-                'trvd_document' => 'required',
-                'trvd_document.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'trvd_document' => 'nullable',
+                'trvd_document.*' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ], [
                 'trvd_name.required' => 'Documents Type is required',
                 'trvm_id.required' => 'Traveler is required',
-                'trvd_document.required' => 'The Document is required.',
+                'trvd_document.nullable' => 'The Document is required.',
                 'trvd_document.*.image' => 'The Document must be an image.',
                 'trvd_document.*.mimes' => 'The Document must be a file of type: jpeg, png, jpg, gif, svg.',
                 'trvd_document.*.max' => 'The Document may not be greater than 2048 kilobytes.',
             ]);
 
-            $document->where('trvd_id' , $trvd_id)->update($validatedData);
+            
+            $document_images = [];
 
-            if ($request->hasFile('trvd_document')) {
-
-                if (is_array($request->file('trvd_document'))) {
-                     
-                    $userFolder = session('userFolder');
-                    $documents_images =  $this->handleImageUpload($request, 'trvd_document', null, 'document_image', $userFolder);
-    
-                    $document->trvd_document = json_encode($documents_images);
-    
+            if ($document->trvd_document) {
+                $existingImages = json_decode($document->trvd_document, true);
+                if (is_array($existingImages)) {
+                    $document_images = $existingImages;
                 }
-            } 
+            }
 
+            $userFolder = session('userFolder');
+
+            if (is_array($request->file('trvd_document'))) {
+                // Upload multiple images
+                $newImages = $this->handleImageUpload($request, 'trvd_document', null, 'document_image', $userFolder);
+                $document_images = array_merge($document_images, $newImages); 
+            }
+            $validatedData['trvd_document'] = $document_images;
+            $document->where('trvd_id' , $trvd_id)->update($validatedData);
             $document->save();
 
             \MasterLogActivity::addToLog('Master Admin Trip Traveller Document is Updated.');
@@ -218,5 +257,28 @@ class TravelerDocumentController extends Controller
             return response()->json(['success'=>'Record updated successfully.']);
         }
     }
+
+    public function destroy($tr_id,$trvd_id)
+    {
+        // dd($trvd_id);
+        $document = TravelerDocument::where('trvd_id', $trvd_id)->firstOrFail();
+        $images = json_decode($document->trvd_document, true);
+
+        $userFolder = session('userFolder');
+
+        foreach ($images as $image) {
+            $imagePath = storage_path('app/' . $userFolder . '/document_image/' . $image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
+        $document->where('trvd_id', $trvd_id)->delete();
+
+        \MasterLogActivity::addToLog('Master Admin Trip Traveller Document is Deleted.');
+
+        return response()->json(['success'=>'Record deleted successfully.']);
+    }
+
     
 }

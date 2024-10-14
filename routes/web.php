@@ -189,8 +189,8 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
         Route::get('traveler-document-edit/{id}/{trip_id}', [TravelerDocumentController::class, 'edit'])->name('masteradmin.document.edit');
         Route::delete('/traveler-document/{id}/image/{image}', [TravelerDocumentController::class, 'deleteImage'])->name('document.image.delete');
-
         Route::patch('/traveler-document-update/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'update'])->name('masteradmin.document.update');
+        Route::delete('/traveler-document-delete/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'destroy'])->name('masteradmin.document.destroy');
 
 
 
