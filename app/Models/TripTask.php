@@ -22,4 +22,17 @@ class TripTask extends Model
         $this->setTable($uniq_id . '_tc_traveling_task');
     }
 
+    public function trip()
+    {
+        return $this->belongsTo(Trip::class, 'tr_id', 'tr_id');
+    }
+
+    public function tripCategory()
+    {
+        return $this->belongsTo(TaskCategory::class, 'trvt_category', 'task_cat_id');
+    }
+
+
+    
+
 }

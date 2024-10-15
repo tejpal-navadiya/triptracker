@@ -74,10 +74,8 @@ class TravelerDocumentController extends Controller
                                             $imagePath = $userFolder . '/document_image/' . $image;
                                             $imageUrl = ($imagePath);
                                             
-                                            // Ensure the base URL doesn't have a trailing slash
                                             $baseUrl = rtrim($baseUrl, '/');
                                             
-                                            // Combine the base URL with the image URL
                                             $fullImageUrl = $baseUrl . '/'.$imageUrl;
                                             
                                             $btn .= '<a class="dropdown-item" href="' . $fullImageUrl . '" download>' . $image . '</a>';

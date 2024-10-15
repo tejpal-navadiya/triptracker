@@ -212,9 +212,11 @@ Route::group(['prefix' => $busadminRoute], function () {
        //Agency
     //    Route::resource( 'agency', AgencyController::class);
 
-      
 
-
+        //Task list
+        Route::get('task-details/', [TripTaskController::class, 'allDetails'])->name('masteradmin.task.all');
+        Route::get('task-incomplete-details/', [TripTaskController::class, 'incompleteDetails'])->name('masteradmin.task.incomplete');
+        Route::get('/load-tab-content', [TripTaskController::class, 'loadTabContent'])->name('load-tab-content');
 
 
     });
