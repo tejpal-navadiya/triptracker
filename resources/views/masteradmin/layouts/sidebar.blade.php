@@ -86,6 +86,46 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="#" class="nav-link {{ request()->is($busadminRoutes.'/dashboard*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-envelope"></i>
+                        <p>Travelers
+                        <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+
+                    @if (isset($access['book_trip']) && $access['book_trip'])
+                        <li class="nav-item">
+                            <a href="{{ route('masteradmin.travelers.travelersDetails') }}"
+                                class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
+                                request()->is($busadminRoutes . '/usercreate*') ||
+                                request()->is($busadminRoutes . '/useredit/*')
+                                    ? 'active'
+                                    : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>View All Traveler</p>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (isset($access['book_trip']) && $access['book_trip'])
+                        <li class="nav-item">
+                            <a href="{{ route('masteradmin.travelers.create') }}"
+                                class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
+                                request()->is($busadminRoutes . '/usercreate*') ||
+                                request()->is($busadminRoutes . '/useredit/*')
+                                    ? 'active'
+                                    : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Add Traveler</p>
+                            </a>
+                        </li>
+                    @endif
+
+                        </ul>
+                </li>
+
+                <li class="nav-item">
                     <a href="{{ route('masteradmin.home') }}" class="nav-link {{ request()->is($busadminRoutes.'/dashboard*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-envelope"></i>
                         <p>Email Template

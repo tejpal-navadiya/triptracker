@@ -216,8 +216,11 @@ Route::group(['prefix' => $busadminRoute], function () {
         //Task list
         Route::get('task-details/', [TripTaskController::class, 'allDetails'])->name('masteradmin.task.all');
         Route::get('task-incomplete-details/', [TripTaskController::class, 'incompleteDetails'])->name('masteradmin.task.incomplete');
-        Route::get('/load-tab-content', [TripTaskController::class, 'loadTabContent'])->name('load-tab-content');
 
+
+         //Travelers  
+         Route::get('/travelers-details', [TripController::class, 'travelersDetails'])->name('masteradmin.travelers.travelersDetails');
+         Route::get('/travelers-create', [TripController::class, 'createTravelers'])->name('masteradmin.travelers.create');
 
     });
      

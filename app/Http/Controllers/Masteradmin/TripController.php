@@ -225,4 +225,19 @@ class TripController extends Controller
         return view('masteradmin.trip.view',compact('trip','taskCategory','tripTraveling','documentType'));
     }
 
+    public function travelersDetails(): View
+    {
+        $user = Auth::guard('masteradmins')->user();
+        $trip = Trip::where(['tr_status' => 1, 'id' => $user->id])->get();
+        return view('masteradmin.traveler.index', compact('trip'));
+    }
+
+    public function createTravelers(): View
+    {
+        $triptype = TripType::all();
+        return view('masteradmin.traveler.create',compact('triptype'));
+    }
+    
+    
+
 }
