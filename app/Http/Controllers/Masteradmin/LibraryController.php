@@ -103,11 +103,13 @@ class LibraryController extends Controller
         }
 
         $library = new Library();
+
         $tableName = $library->getTable();
         $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "lib_id", $chars = 6);
         
         $library->lib_id = $uniqueId1;
         $library->id = $dynamicId;
+        
         $library->lib_category = $validatedData['lib_category'];
         $library->lib_name = $validatedData['lib_name'];
         $library->lib_currency = $validatedData['lib_currency'];

@@ -489,6 +489,78 @@ class Controller extends BaseController
                 });
             }
 
+            //Library 
+            if (!Schema::hasTable($storeId.'_tc_library')){   
+                Schema::create($storeId.'_tc_library', function (Blueprint $table) use ($storeId) {
+
+                    $table->string('lib_id')->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('lib_category')->constrained('tc_lib_categories', 'lib_id')->onDelete('cascade');
+                    $table->string('lib_name')->nullable();
+                    $table->string(column: 'lib_currency')->nullable();
+                    $table->string('lib_country')->nullable();
+                    $table->string('lib_state')->nullable();
+                    $table->string('lib_city')->nullable();
+                    $table->string('lib_zip')->nullable();
+                    $table->text('lib_basic_information')->nullable();
+                    $table->text('lib_sightseeing_information')->nullable();
+                    $table->text('lib_image')->nullable();
+                    $table->tinyInteger('lib_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+            }
+
+            //library Category
+            if (!Schema::hasTable($storeId.'_tc_library_category')){   
+                Schema::create($storeId.'_tc_library_category', function (Blueprint $table) use ($storeId) {
+                    $table->string('lib_cat_id')->unique()->primary();
+                    $table->string('lib_cat_name')->nullable();
+                    $table->tinyInteger('lib_cat_status')->default(0)->nullable();
+                    $table->timestamps();
+                });
+
+            }
+
+            //agency
+            if (!Schema::hasTable($storeId.'_tc_agency')){   
+            Schema::create($storeId.'_tc_agency', function (Blueprint $table) use ($storeId) {
+
+                $table->string('age_id')->unique()->primary();
+                $table->string('id')->nullable()->default(0);
+
+                $table->string('age_user_id')->unique();
+                $table->string('age_user_first_name')->nullable();
+                $table->string('age_user_last_name')->nullable();
+                $table->string('age_user_qualification')->nullable();
+                $table->string('age_user_work_email')->nullable()->unique();
+                $table->string('age_user_personal_email')->nullable()->unique();
+                $table->string('age_user_dob')->nullable();
+                $table->string('age_user_type')->nullable();
+                $table->string('age_user_password')->nullable();
+                $table->string('age_user_emergency_contact')->nullable();
+                $table->string('age_user_phone_number')->nullable();
+                $table->string('age_user_emergency_email')->nullable()->unique();
+                $table->text('age_user_address')->nullable();
+                $table->string('age_user_city')->nullable();
+                $table->string('age_user_state_type')->nullable();
+                $table->string('age_user_zip')->nullable();
+                $table->timestamps();
+            });
+        }
+
+            //Agency Dynamic input Phone
+            if (!Schema::hasTable($storeId.'_tc_users_agency_phone')){   
+            Schema::create($storeId.'_tc_users_agency_phone', function (Blueprint $table) use ($storeId) {
+
+                $table->string('age_user_phone_id')->unique()->primary();
+                $table->string('age_id')->nullable();
+                $table->string('id')->nullable();
+                $table->string('age_user_phone_number')->nullable();
+                $table->string('age_user_type')->nullable();
+                $table->timestamps();
+            });
+        }
+
 
 
         

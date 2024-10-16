@@ -217,10 +217,7 @@
 
 
 
-                <!-- edited by ravi -->
-
-                <li
-                    class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fas fa-plus"></i>
                         <p>
@@ -235,7 +232,19 @@
                                 <a href="{{ route('library.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Add library Item</p>
+                                    <p>View All Library</p>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+
+                    <ul class="nav nav-treeview">
+                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+                            <li class="nav-item">
+                                <a href="{{ route('library.create') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Library</p>
                                 </a>
                             </li>
                         @endif
@@ -243,8 +252,7 @@
                 </li>
 
 
-                <li
-                    class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fas fa-user"></i>
                         <p>
@@ -256,21 +264,27 @@
                     <ul class="nav nav-treeview">
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
-                                <a href=""
+                                <a href="{{ route('agency.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Add library Item</p>
+                                    <p>View All Agencies</p>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+
+                    <ul class="nav nav-treeview">
+                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+                            <li class="nav-item">
+                                <a href="{{ route('agency.create') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Agencies</p>
                                 </a>
                             </li>
                         @endif
                     </ul>
                 </li>
-
-                <!-- edited by ravi -->
-
-
-
-
 
                 <li class="nav-item">
                     <form id="logout-form" method="POST" action="{{ route('masteradmin.logout') }}"

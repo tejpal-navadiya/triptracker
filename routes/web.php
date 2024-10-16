@@ -24,6 +24,7 @@ use App\Http\Controllers\Masteradmin\TripTaskController;
 use App\Http\Controllers\Masteradmin\LibraryController;
 use App\Http\Controllers\Masteradmin\TravelerDocumentController;
 use App\Http\Controllers\Masteradmin\EmailTemplateController;
+use App\Http\Controllers\Masteradmin\AgencyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -209,8 +210,8 @@ Route::group(['prefix' => $busadminRoute], function () {
 
 
        
-       //Agency
-    //    Route::resource( 'agency', AgencyController::class);
+        //Agency
+        Route::resource( 'agency', AgencyController::class);
 
 
         //Task list

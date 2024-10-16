@@ -1,7 +1,7 @@
 @extends('masteradmin.layouts.app')
 
 
-<title>Library Details | Trip Tracker</title>
+<title>Agency Details | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
@@ -11,17 +11,17 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Library') }}</h1>
+                            <h1 class="m-0">{{ __('Agency') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Library') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Agency') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['book_trip']) && $access['book_trip'])
-                                    <a href="{{ route('library.create') }}" id="createNew"><button class="add_btn"><i
-                                                class="fas fa-plus add_plus_icon"></i>Add Library Item</button></a>
+                                    <a href="{{ route('agency.create') }}" id="createNew"><button class="add_btn"><i
+                                                class="fas fa-plus add_plus_icon"></i>Add Agency</button></a>
                                 @endif
                             </ol>
                         </div><!-- /.col -->
@@ -51,45 +51,54 @@
                                 <table id="example1" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
-                                            <th>Category</th>
+                                            <th>ID Number</th>
                                             <th>Name</th>
-                                            <th>Location</th>
-                                            <th>Currency</th>
-                                            <th>Infomation</th>
+                                            <th>Email Address</th>
+                                            <th>Phone Number</th>
+                                            <th>User Role</th>
+                                            <th>Status</th>
                                             <th class="sorting_disabled" data-orderable="false">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($library as $value)
+
+                                        @foreach ($agency as $value)
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>{{ $value->age_user_id }}</td>
+                                                <td>{{ $value->age_user_first_name }}</td>
+                                                <td>{{ $value->age_user_personal_email }}</td>
+                                                <td>{{ $value->age_user_phone_number }}</td>
+                                                <td>{{ $value->age_user_type }}
+                                                <td>{{ $value->age_user_state_type }}</td>
 
                                                 <td>
 
                                                     <a href=""><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                                                    <a href=""><i
+                                                    <a href="{{ route('agency.edit', $value->age_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
+                                                    <a href=""><i
+                                                            class="fas fa-regular fa-user edit_icon_grid"></i></a>
 
 
-                                                    <a data-toggle="modal" data-target="#delete-library-modal-">
+                                                    <a data-toggle="modal"
+                                                        data-target="#delete-library-modal-{{ $value->age_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
 
-                                                    <div class="modal fade" id="delete-library-modal-" tabindex="-1"
-                                                        role="dialog" aria-labelledby="exampleModalCenterTitle"
-                                                        aria-hidden="true">
+                                                    <div class="modal fade" id="delete-library-modal-{{ $value->age_id }}"
+                                                        tabindex="-1" role="dialog"
+                                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
                                                         <div class="modal-dialog modal-sm modal-dialog-centered"
                                                             role="document">
                                                             <div class="modal-content">
 
-                                                                <form id="delete-plan-form" action="" method="POST">
+                                                                <form id="delete-plan-form"
+                                                                    action="{{ route('agency.destroy', $value->age_id) }}"
+                                                                    method="POST">
                                                                     @csrf
                                                                     @method('DELETE') <!-- Spoofing DELETE method -->
 
@@ -108,7 +117,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
 
                                                 </td>
                                             </tr>
