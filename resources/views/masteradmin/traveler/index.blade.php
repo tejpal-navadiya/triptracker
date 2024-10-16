@@ -1,5 +1,5 @@
 @extends('masteradmin.layouts.app')
-<title>Trip Details | Trip Tracker</title>
+<title>Traveler Details | Trip Tracker</title>
 @if(isset($access['book_trip']) && $access['book_trip']) 
 @section('content')
   <!-- Content Wrapper. Contains page content -->
@@ -18,7 +18,7 @@
           <div class="col-auto">
             <ol class="breadcrumb float-sm-right">
             @if(isset($access['book_trip']) && $access['book_trip']) 
-              <a href="{{ route('trip.create') }}" id="createNew"><button class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Traveler</button></a>
+              <a href="{{ route('masteradmin.travelers.create') }}" id="createNew"><button class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Traveler</button></a>
               @endif
             </ol>
           </div><!-- /.col -->
@@ -48,11 +48,10 @@
                 <table id="example1" class="table table-hover text-nowrap data-table">
                     <thead>
                         <tr>
-                            <th>Trip Name</th>
-                            <th>Agent Name</th>
-                            <th>Traveler Name</th>
-                            <th>Price</th>
-                            <th>Start to End Date</th>
+                            <th>Name</th>
+                            <th>Email Address</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
                             <th>Status</th>
                             <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
                         </tr>
@@ -60,17 +59,16 @@
                     <tbody>
                       @foreach ($trip as $value)
                         <tr>
-                            <td>{{ $value->tr_name }}</td>
-                            <td>{{ $value->tr_agent_id }}</td>
                             <td>{{ $value->tr_traveler_name }}</td>
-                            <td>{{ $value->tr_value_trip }}</td>
-                            <td>{{ \Carbon\Carbon::parse($value->tr_start_date)->format('M d, Y') }} - {{ \Carbon\Carbon::parse($value->tr_end_date)->format('M d, Y') }}</td>
+                            <td>{{ $value->tr_email }}</td>
+                            <td>{{ $value->tr_phone }}</td>
+                            <td>{{ $value->tr_email }}</td>
                             <td>{{ $value->status }}</td>
                             <td>
 
-                              <a href="{{ route('trip.view',$value->tr_id) }}"><i class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                              <a href="{{ route('masteradmin.travelers.view',$value->tr_id) }}"><i class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                              <a href="{{ route('trip.edit',$value->tr_id) }}"><i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                              <a href="{{ route('masteradmin.travelers.edit',$value->tr_id) }}"><i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
                               <a data-toggle="modal" data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i class="fas fa-solid fa-trash delete_icon_grid"></i></a>
 

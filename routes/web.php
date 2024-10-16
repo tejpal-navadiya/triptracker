@@ -221,6 +221,11 @@ Route::group(['prefix' => $busadminRoute], function () {
          //Travelers  
          Route::get('/travelers-details', [TripController::class, 'travelersDetails'])->name('masteradmin.travelers.travelersDetails');
          Route::get('/travelers-create', [TripController::class, 'createTravelers'])->name('masteradmin.travelers.create');
+         Route::post('/travelers-store', [TripController::class, 'store'])->name('masteradmin.travelers.store');
+         Route::get('travelers-edit/{id}', [TripController::class, 'editDetails'])->name('masteradmin.travelers.edit');
+         Route::put('/travelers-update/{id}', [TripController::class, 'update'])->name('masteradmin.travelers.update');
+         Route::get('/view-travelers/{id}', [TripController::class, 'viewDetails'])->name('masteradmin.travelers.view');
+         
 
     });
      

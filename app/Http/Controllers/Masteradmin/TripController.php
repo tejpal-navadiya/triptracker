@@ -31,7 +31,7 @@ class TripController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        //dd($request->all());
+        //  dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
         $validatedData = $request->validate([
@@ -82,23 +82,24 @@ class TripController extends Controller
             $traveler->tr_name = $validatedData['tr_name'];
             $traveler->tr_agent_id = $validatedData['tr_agent_id'];
             $traveler->tr_traveler_name = $validatedData['tr_traveler_name'];
-            $traveler->tr_dob = $validatedData['tr_dob'];
-            $traveler->tr_age = $validatedData['tr_age'];
-            $traveler->tr_number = $validatedData['tr_number'];
-            $traveler->tr_email = $validatedData['tr_email'];
-            $traveler->tr_phone = $validatedData['tr_phone'];
-            $traveler->tr_num_people = $validatedData['tr_num_people'];
+            $traveler->tr_dob = $validatedData['tr_dob'] ?? null; // Use null if not set
+            $traveler->tr_age = $validatedData['tr_age'] ?? null; // Use null if not set
+            $traveler->tr_number = $validatedData['tr_number'] ?? null; // Use null if not set
+            $traveler->tr_email = $validatedData['tr_email'] ?? null; // Use null if not set
+            $traveler->tr_phone = $validatedData['tr_phone'] ?? null; // Use null if not set
+            $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
             $traveler->tr_start_date = $validatedData['tr_start_date'];
-            $traveler->tr_end_date = $validatedData['tr_end_date'];
-            $traveler->tr_value_trip = $validatedData['tr_value_trip'];
+            $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
+            $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
             $traveler->tr_type_trip = json_encode($request->input('tr_type_trip'));
-            $traveler->tr_desc = $validatedData['tr_desc'];
+            $traveler->tr_desc = $validatedData['tr_desc'] ?? null; // Use null if not set
             $traveler->status = 'Trip Request';
             $traveler->tr_status = 1;
             $traveler->save();
 
 
             $rawItems = $request->input('items');           
+            if (isset($rawItems) && is_array($rawItems) && count($rawItems) > 0) {
 
             foreach ($rawItems as $item) {
                 $travelerItem = new TripTravelingMember();
@@ -114,10 +115,22 @@ class TripController extends Controller
 
                 $travelerItem->save();
             }
+        }
 
+        if($request->travelers == "travelers")
+        {
+            \MasterLogActivity::addToLog('Master Admin Travelers Created.');
+
+            return redirect()->route('masteradmin.travelers.travelersDetails')
+            ->with('success','Travelers created successfully.');
+        }else{
             \MasterLogActivity::addToLog('Master Admin Trip Created.');
-        return redirect()->route('trip.index')
-        ->with('success','Trip created successfully.');
+
+            return redirect()->route('trip.index')
+            ->with('success','Trip created successfully.');
+        }
+
+        
 
     }
 
@@ -167,27 +180,38 @@ class TripController extends Controller
 
         TripTravelingMember::where('tr_id', $id)->delete();
 
-        $rawItems = $request->input('items');           
+        $rawItems = $request->input('items');    
+        
+        if (isset($rawItems) && is_array($rawItems) && count($rawItems) > 0) {
+            foreach ($rawItems as $item) {
+                $travelerItem = new TripTravelingMember();
+                $tableName = $travelerItem->getTable();
+                $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trtm_id", $chars = 6);
+                
+                $travelerItem->fill($item);
 
-        foreach ($rawItems as $item) {
-            $travelerItem = new TripTravelingMember();
-            $tableName = $travelerItem->getTable();
-            $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trtm_id", $chars = 6);
-            
-            $travelerItem->fill($item);
+                $travelerItem->tr_id = $id;
+                $travelerItem->id = $user->id;
+                $travelerItem->trtm_status = 1;
+                $travelerItem->trtm_id = $uniqueId1;
 
-            $travelerItem->tr_id = $id;
-            $travelerItem->id = $user->id;
-            $travelerItem->trtm_status = 1;
-            $travelerItem->trtm_id = $uniqueId1;
+                $travelerItem->save();
+            }
+        }
+        if($request->travelers == "travelers")
+        {
+            \MasterLogActivity::addToLog('Master Admin Travelers Updated.');
 
-            $travelerItem->save();
+            return redirect()->route('masteradmin.travelers.travelersDetails')
+            ->with('success','Travelers updated successfully.');
+        }else{
+            \MasterLogActivity::addToLog('Master Admin Trip Updated.');
+            return redirect()->route('trip.index')
+    
+            ->with('success','Trip updated successfully');
         }
 
-        \MasterLogActivity::addToLog('Master Admin Trip Updated.');
-        return redirect()->route('trip.index')
-
-                        ->with('success','Trip updated successfully');
+        
 
     }
 
@@ -237,7 +261,31 @@ class TripController extends Controller
         $triptype = TripType::all();
         return view('masteradmin.traveler.create',compact('triptype'));
     }
+
+    public function editDetails($id)
+    {
+        // dd($id);
+        $trip = Trip::where('tr_id', $id)->firstOrFail();
+        $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
+        // dd($tripmember);
+        $triptype = TripType::all();
+        return view('masteradmin.traveler.edit',compact('trip','triptype', 'tripmember'));
+
+    }
     
+    public function viewDetails($id): View
+    {
+        // dd()
+        $user = Auth::guard('masteradmins')->user();
+        $trip = Trip::where('tr_id', $id)->firstOrFail();
+        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+        $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
+        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+        $documentType = DocumentType::get();
+
+        // dd($trip);
+        return view('masteradmin.traveler.view',compact('trip','taskCategory','tripTraveling','documentType'));
+    }
     
 
 }
