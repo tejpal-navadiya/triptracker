@@ -37,7 +37,7 @@
             </div>            
             <!-- /.tab-pane -->
             <div class="tab-pane" id="Documentsinfo">
-                @include('masteradmin.trip.document-information')
+                @include('masteradmin.traveler.document-information')
             </div>
           <!-- /.tab-pane -->
           </div>
