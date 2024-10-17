@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Agency;
 use App\Models\AgencyPhones;
 use App\Models\StaticAgentPhone;
+use App\Models\UserRole;
+
+
 
 
 
@@ -27,8 +30,10 @@ class AgencyController extends Controller
 {
     $phones_type = StaticAgentPhone::all();
 
+    $users_role = UserRole::all();
+
     // dd($phones_type);
-    return view('masteradmin.agency.create', compact('phones_type'));
+    return view('masteradmin.agency.create', compact('phones_type','users_role'));
 }
 
 
@@ -91,7 +96,9 @@ class AgencyController extends Controller
       $agency->age_user_work_email = $validatedData['age_user_work_email'];
       $agency->age_user_personal_email = $validatedData['age_user_personal_email'];
       $agency->age_user_dob = $validatedData['age_user_dob'];
+
       $agency->age_user_type = $validatedData['age_user_type'];
+
       $agency->age_user_password = bcrypt($validatedData['age_user_password']); 
       $agency->age_user_emergency_contact = $validatedData['age_user_emergency_contact'];
       $agency->age_user_phone_number = $validatedData['age_user_phone_number'];
@@ -105,9 +112,16 @@ class AgencyController extends Controller
 
 
       
-      $rawItems = $request->input('items');           
+      //$rawItems = $request->input('items');    
+      
+      
+    $rawItems = $request->input('items', []);   
 
       foreach ($rawItems as $item) {
+
+        if (empty($item) || !is_array($item)) {
+          continue;
+      }
         
           $travelerItem = new AgencyPhones();
 
@@ -143,20 +157,17 @@ class AgencyController extends Controller
     $status = Agency::select('id', 'age_user_state_type')->get();
 
 
-    $agent = AgencyPhones::all();
+    //$agent = AgencyPhones::all();
+    $agent = AgencyPhones::where('age_id', $agency->age_id)->get();
 
-    //$agent = StaticAgentPhone::where('age_id', $agency->age_id)->get();
+    $users_role = UserRole::all();
 
     $phones_type = StaticAgentPhone::all();
 
-
-
-    //$phones = StaticAgentPhone::all();
-
+    //$phones= StaticAgentPhone::all();
     //dd($agent);
-
     
-    return view('masteradmin.agency.edit', compact('agency', 'user', 'status','agent','phones_type'));
+    return view('masteradmin.agency.edit', compact('agency', 'user', 'status','agent','phones_type','users_role'));
     } 
 
    public function update(Request $request, $id)
@@ -194,7 +205,7 @@ class AgencyController extends Controller
       'age_user_password.min' => 'Password must be at least 4 characters long',
       'age_user_emergency_contact.required' => 'Emergency Contact is required',
       'age_user_phone_number.required' => 'Phone number is required',
-      'age_user_dobs.required' => 'Birthdate is required',
+      'age_user_dob.required' => 'Birthdate is required',
       'age_user_address.required' => 'Address is required',
       'age_user_city.required' => 'City is required',
       'age_user_state_type.required' => 'State type is required',
@@ -207,9 +218,16 @@ class AgencyController extends Controller
   AgencyPhones::where('age_id', $id)->delete();
 
 
-  $rawItems = $request->input('items');           
+  //$rawItems = $request->input('items');  
+  
+    $rawItems = $request->input('items', []);   
 
   foreach ($rawItems as $item) {
+
+      if (empty($item) || !is_array($item)) {
+        continue;
+    }
+
         
     $travelerItem = new AgencyPhones();
 

@@ -164,9 +164,10 @@
                                                     class="text-danger">*</span></x-input-label>
                                             <select class="form-control" id="tr_category" name="age_user_type" autofocus>
                                                 <option value="" disabled selected>Select Category</option>
-                                                <option value="superAdmin">SuperAdmin</option>
-                                                <option value="admin">Admin</option>
-                                                <option value="user">User</option>
+                                                @foreach ($users_role as $user)
+                                                    <option value="{{ $user->role_id }}">{{ $user->role_name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_type')" />
                                         </div>
