@@ -20,7 +20,11 @@ use App\Models\MasterUserDetails;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\UserRegistered;
 use App\Models\States;
+use App\Models\Countries;
 use Illuminate\Support\Facades\Storage;
+
+use App\Models\Cities;
+
 
 
 class RegisterController extends Controller
@@ -30,8 +34,13 @@ class RegisterController extends Controller
     {     
         $states = States::get();
         $plan = Plan::get();
+        $country = Countries::all();
+
+        $librarycurrency = Countries::all();
+        $librarystate = States::all();
+      
         
-        return view('masteradmin.auth.register',compact('states','plan'));
+        return view('masteradmin.auth.register',compact('states','plan','country','librarycurrency','librarystate'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -48,6 +57,7 @@ class RegisterController extends Controller
             'user_iata_number' => ['nullable', 'string', 'max:255'],
             'user_image' => ['nullable', 'string', 'max:255'],
             'user_address' => ['nullable', 'string', 'max:255'],
+            'user_country' => ['nullable', 'string', 'max:255'],
             'user_state' => ['nullable', 'string', 'max:255'],
             'user_city' => ['nullable', 'string', 'max:255'],
             'user_zip' => ['nullable', 'string', 'max:255'],
@@ -94,6 +104,7 @@ class RegisterController extends Controller
             'user_clia_number' => $request->user_clia_number,
             'user_iata_number' => $request->user_iata_number,
             'user_address' => $request->user_address,
+            'user_country' => $request->user_country,
             'user_state' => $request->user_state,
             'user_image' => '',
             'buss_unique_id' => '',
@@ -110,7 +121,7 @@ class RegisterController extends Controller
         $buss_unique_id = $this->generateUniqueId(trim($request->user_franchise_name), $admin->id );
         //dd($buss_unique_id);
         // Set buss_unique_id and updated_at fields
-        $admin->buss_unique_id = $buss_unique_id;
+        $admin->buss_unique_id = strtolower($buss_unique_id);
         $admin->updated_at = now();  // Or \Carbon\Carbon::now() for the current timestamp
 
         //create own image floder 
@@ -156,13 +167,14 @@ class RegisterController extends Controller
             'users_iata_number' => $request->user_iata_number,
             'users_address' => $request->user_address,
             'users_state' => $request->user_state,
+            'users_country' => $request->user_country,
             'users_city' => $request->user_city,
             'users_zip' => $request->user_zip,
             'users_image' => $users_image,
             'id' => $admin->id,
             'role_id' => 0,
             'users_password' => Hash::make($request->user_password),
-            'user_id' => $buss_unique_id,
+            'user_id' => strtolower($buss_unique_id),
             'users_status' => '1',
             'users_id' => $users_id
         ]);
@@ -219,7 +231,19 @@ class RegisterController extends Controller
     
         return $uniqueId;
     }
-    
 
+
+
+    public function getStates($countryId)
+{
+    $states = States::where('country_id', $countryId)->get();
+    return response()->json($states);
+}
+
+public function getCities($stateId)
+{
+    $cities = Cities::where('state_id', $stateId)->get();  // Fetch cities by state_id
+    return response()->json($cities);
+}
     
 }

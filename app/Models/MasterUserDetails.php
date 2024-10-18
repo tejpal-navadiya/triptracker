@@ -31,6 +31,7 @@ class MasterUserDetails extends Authenticatable
         'users_phone',
         'users_image',
         'users_address',
+        'users_country',
         'users_state',
         'users_city',
         'users_zip',
@@ -38,6 +39,13 @@ class MasterUserDetails extends Authenticatable
         'user_id',
         'user_status',
         'users_bio',
+        'user_agency_numbers',
+        'user_qualification',
+        'user_work_email',
+        'user_dob',
+        'user_emergency_contact_person',
+        'user_emergency_phone_number',
+        'user_emergency_email',
     ];
 
     

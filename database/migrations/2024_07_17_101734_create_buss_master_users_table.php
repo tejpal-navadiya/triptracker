@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('user_image')->nullable();
             $table->string('user_address')->nullable();
             $table->string('buss_unique_id')->nullable();
+            $table->string('user_country')->nullable();
             $table->integer('user_state')->nullable();
             $table->string('user_city')->nullable();
             $table->string('user_zip')->nullable();

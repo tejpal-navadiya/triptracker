@@ -32,6 +32,7 @@ class MasterUser extends Authenticatable
         'user_password',
         'user_image',
         'user_address',
+        'user_country',
         'user_state',
         'user_city',
         'user_zip',

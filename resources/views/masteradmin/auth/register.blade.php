@@ -20,12 +20,11 @@
                     id="user_agencies_name" name="user_agencies_name" placeholder="Enter Agencies Name *"
                     value="{{ old('user_agencies_name') }}">
             </div>
-
             @error('user_agencies_name')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
-
         </div>
+
         <div>
             <div class="input-group mb-2">
                 <div class="input-group-append">
@@ -37,12 +36,11 @@
                     id="user_franchise_name" name="user_franchise_name" placeholder="Enter Host of Franchise Name"
                     value="{{ old('user_franchise_name') }}">
             </div>
-
             @error('user_franchise_name')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
-
         </div>
+
         <div>
             <div class="input-group mb-2">
                 <div class="input-group-append">
@@ -54,11 +52,9 @@
                     id="user_consortia_name" name="user_consortia_name" placeholder="Enter Consortia Name"
                     value="{{ old('user_consortia_name') }}">
             </div>
-
             @error('user_consortia_name')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
-
         </div>
 
         <div>
@@ -72,12 +68,11 @@
                     id="user_first_name" name="user_first_name" placeholder="Enter First Name*"
                     value="{{ old('user_first_name') }}">
             </div>
-
             @error('user_first_name')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
-
         </div>
+
         <div>
             <div class="input-group mb-2">
                 <div class="input-group-append">
@@ -89,13 +84,10 @@
                     id="user_last_name" name="user_last_name" placeholder="Enter Last Name"
                     value="{{ old('user_last_name') }}">
             </div>
-
             @error('user_last_name')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
-
         </div>
-
 
         <div>
             <div class="input-group mb-2">
@@ -164,7 +156,8 @@
             <div class="input-group mb-2">
                 <div class="input-group-append">
                     <div class="input-group-text">
-                        <span class="fas fa-regular fa-phone"></span>
+                        <span class="fas fa-map-marker-alt"></span>
+
                     </div>
                 </div>
                 <input type="text" class="form-control @error('user_address') is-invalid @enderror"
@@ -176,17 +169,22 @@
             @enderror
         </div>
 
+
         <div>
             <div class="input-group mb-2">
                 <div class="input-group-append">
                     <div class="input-group-text">
-                        <span class="fas fa-regular fa-phone"></span>
+                        <span class="fas fa-globe"></span> <!-- Icon for Country -->
                     </div>
                 </div>
-                <input type="text" class="form-control @error('user_city') is-invalid @enderror" id="user_city"
-                    name="user_city" placeholder="Enter City" value="{{ old('user_city') }}">
+                <select id="tr_country" name="user_country" class="form-control" style="width: 100%;">
+                    <option>Select Country</option>
+                    @foreach ($country as $value)
+                        <option value="{{ $value->id }}">{{ $value->name }}</option>
+                    @endforeach
+                </select>
             </div>
-            @error('user_city')
+            @error('user_state')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
         </div>
@@ -195,19 +193,31 @@
             <div class="input-group mb-2">
                 <div class="input-group-append">
                     <div class="input-group-text">
-                        <span class="fas fa-regular fa-phone"></span>
+                        <span class="fas fa-regular fa-flag"></span>
                     </div>
                 </div>
-                <select id="user_state" name="user_state" class="form-control select2" style="width: 100%;">
+                <select id="tr_state" name="user_state" class="form-control" style="width: 100%;">
                     <option>Select State</option>
-                    @foreach ($states as $value)
-                        <option value="{{ $value->id }}" {{ $value->id == old('user_state') ? 'selected' : '' }}>
-                            {{ $value->name }}
-                        </option>
-                    @endforeach
                 </select>
             </div>
             @error('user_state')
+                <div class="invalid-feedback mb-2">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div>
+            <div class="input-group mb-2">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-regular fa-city"></span>
+                    </div>
+                </div>
+                <select class="form-control form-control select2" id="lib_city" name="user_city" autofocus>
+                    <option value="" selected>Select City</option>
+                    <!-- Cities will be populated here based on the selected state -->
+                </select>
+            </div>
+            @error('user_city')
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
         </div>
@@ -247,6 +257,7 @@
                 <div class="invalid-feedback mb-2">{{ $message }}</div>
             @enderror
         </div>
+
 
         <div>
             <div class="input-group">
@@ -300,5 +311,83 @@
         <p class="text-center font_18 mb-0">Already' Have An Account? <a href="{{ route('masteradmin.login') }}"
                 class="back_text">Login</a></p>
     </form>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Handle change event for the country dropdown
+            $('#tr_country').change(function() {
+                var countryId = $(this).val();
+
+                if (countryId) {
+                    $.ajax({
+                        url: '{{ route('getStates', ':countryId') }}'.replace(':countryId',
+                            countryId),
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            // Clear the existing state options
+                            $('#tr_state').empty();
+                            $('#tr_state').append(
+                                '<option value="">Select a State...</option>');
+
+                            // Populate the state dropdown with new options
+                            $.each(data, function(key, value) {
+                                $('#tr_state').append('<option value="' + value.id +
+                                    '">' + value.name + '</option>');
+                            });
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log('Error fetching states: ' + textStatus);
+                        }
+                    });
+                } else {
+                    // Reset the state dropdown if no country is selected
+                    $('#tr_state').empty();
+                    $('#tr_state').append('<option value="">Select a State...</option>');
+                }
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#tr_state').change(function() {
+                var stateId = $(this).val();
+                if (stateId) {
+                    $.ajax({
+                        url: '{{ route('getRegisterCities', ':stateId') }}'.replace(':stateId',
+                            stateId),
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            // Clear the existing city options
+                            $('#lib_city').empty();
+                            $('#lib_city').append('<option value="">Select a City...</option>');
+
+                            // Populate the city dropdown with new options
+                            $.each(data, function(key, value) {
+                                $('#lib_city').append('<option value="' + value.id +
+                                    '">' + value.name + '</option>');
+                            });
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log('Error fetching cities: ' + textStatus);
+                        }
+                    });
+                } else {
+                    // Reset the city dropdown if no state is selected
+                    $('#lib_city').empty();
+                    $('#lib_city').append('<option value="">Select a City...</option>');
+                }
+            });
+        });
+    </script>
+
+
 
 </x-guest-layout>
