@@ -64,19 +64,19 @@
 
                                         @foreach ($agency as $value)
                                             <tr>
-                                                <td>{{ $value->age_user_id }}</td>
-                                                <td>{{ $value->age_user_first_name }}</td>
-                                                <td>{{ $value->age_user_personal_email }}</td>
-                                                <td>{{ $value->age_user_phone_number }}</td>
-                                                <td>{{ $value->age_user_type }}
-                                                <td>{{ $value->age_user_state_type }}</td>
+                                                <td>{{ $value->user_agency_numbers }}</td>
+                                                <td>{{ $value->users_first_name }}</td>
+                                                <td>{{ $value->users_email }}</td>
+                                                <td>{{ $value->users_phone }}</td>
+                                                <td>{{ $value->role_id }}
+                                                <td>{{ $value->users_state }}</td>
 
                                                 <td>
 
                                                     <a href=""><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                                                    <a href="{{ route('agency.edit', $value->age_id) }}"><i
+                                                    <a href="{{ route('agency.edit', $value->users_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
                                                     <a href=""><i
@@ -84,20 +84,21 @@
 
 
                                                     <a data-toggle="modal"
-                                                        data-target="#delete-library-modal-{{ $value->age_id }}">
+                                                        data-target="#delete-library-modal-{{ $value->users_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
 
-                                                    <div class="modal fade" id="delete-library-modal-{{ $value->age_id }}"
-                                                        tabindex="-1" role="dialog"
-                                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal fade"
+                                                        id="delete-library-modal-{{ $value->users_id }}" tabindex="-1"
+                                                        role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                                        aria-hidden="true">
 
                                                         <div class="modal-dialog modal-sm modal-dialog-centered"
                                                             role="document">
                                                             <div class="modal-content">
 
                                                                 <form id="delete-plan-form"
-                                                                    action="{{ route('agency.destroy', $value->age_id) }}"
+                                                                    action="{{ route('agency.destroy', $value->users_id) }}"
                                                                     method="POST">
                                                                     @csrf
                                                                     @method('DELETE') <!-- Spoofing DELETE method -->
