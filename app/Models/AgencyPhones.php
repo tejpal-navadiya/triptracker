@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class AgencyPhones extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
+        'age_user_phone_id',
+        'age_id',
+        'id',
         'age_user_phone_number',
         'age_user_type',
     ];

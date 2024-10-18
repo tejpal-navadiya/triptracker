@@ -180,6 +180,7 @@ class LibraryController extends Controller
 
         // Get cities related to the selected state (if you want to pre-load cities, you can use the library's lib_state)
         $selectedStateId = $library->lib_state;
+        
         $cities = Cities::where('state_id', $selectedStateId)->get();
 
         // If you want to get all countries for the dropdown

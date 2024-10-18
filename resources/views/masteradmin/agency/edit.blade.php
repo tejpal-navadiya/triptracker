@@ -172,12 +172,13 @@
                                             <select class="form-control" id="tr_category" name="age_user_type" autofocus>
                                                 <option value="" disabled selected>Select Category</option>
 
-                                                @foreach ($user as $type)
-                                                    <option value="{{ $type->age_user_type }}"
-                                                        {{ old('age_user_type', $agency->age_user_type ?? '') == $type->age_user_type ? 'selected' : '' }}>
-                                                        {{ $type->age_user_type }}
+                                                @foreach ($users_role as $type)
+                                                    <option value="{{ $type->role_id }}"
+                                                        {{ old('age_user_type', $agency->age_user_type ?? '') == $type->role_id ? 'selected' : '' }}>
+                                                        {{ $type->role_name }}
                                                     </option>
                                                 @endforeach
+
 
                                             </select>
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_type')" />
