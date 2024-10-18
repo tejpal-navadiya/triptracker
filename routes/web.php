@@ -100,6 +100,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         
         Route::post('/users/store-password/{user_id}', [UserController::class, 'storePassword'])
         ->name('masteradmin.userdetail.storePassword');
+
+        Route::get('register_state/{countryId}', [RegisterController::class, 'getStates'])->name('getStates');
+        Route::get('register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('getRegisterCities');
         
     });
 
@@ -115,6 +118,9 @@ Route::group(['prefix' => $busadminRoute], function () {
 
         Route::put('password', [MasterPasswordController::class, 'update'])->name('masteradmin.password.update');
         Route::post('logout', [LoginController::class, 'destroy'])->name('masteradmin.logout');
+       
+        Route::get('register_state/{countryId}', [RegisterController::class, 'getStates'])->name('getStates');
+        Route::get('register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('getRegisterCities');
         
         //create alter database
         Route::get('/create-table', [Controller::class, 'createTableRoute'])->name('create.table');

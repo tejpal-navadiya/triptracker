@@ -220,6 +220,8 @@ class Controller extends BaseController
             if (!Schema::hasTable($storeId.'_tc_users_details')){   
                 Schema::create($storeId.'_tc_users_details', function (Blueprint $table) {
                     $table->string('users_id')->unique()->primary();
+
+
                     $table->string('users_agencies_name')->nullable();
                     $table->string('users_franchise_name')->nullable();
                     $table->string('users_consortia_name')->nullable();
@@ -230,13 +232,21 @@ class Controller extends BaseController
                     $table->string('users_clia_number')->nullable();
                     $table->string('users_iata_number')->nullable();
                     $table->string('users_address')->nullable();
-                    $table->string('users_city')->nullable();
+                    $table->integer('users_country')->nullable()->default(0);
                     $table->integer('users_state')->nullable()->default(0);
+                    $table->string('users_city')->nullable();
                     $table->integer('users_zip')->nullable()->default(0);
                     $table->string('email_verified_at')->nullable()->unique();
                     $table->string('users_password')->nullable();
                     $table->string('users_phone')->nullable();
                     $table->string('users_bio')->nullable();
+                    $table->string('user_agency_numbers')->nullable();
+                    $table->string('user_qualification')->nullable();
+                    $table->string('user_work_email')->nullable()->unique();
+                    $table->string('user_dob')->nullable();
+                    $table->string('user_emergency_contact_person')->nullable();
+                    $table->string('user_emergency_phone_number')->nullable();
+                    $table->string('user_emergency_email')->nullable()->unique();
                     $table->string('users_image')->nullable();
                     $table->string('role_id')->nullable()->default(0);
                     $table->string('id')->nullable()->default(0);
@@ -257,7 +267,76 @@ class Controller extends BaseController
                         $table->string('users_bio')->nullable();
                     }
                 });
+
+                // Modified User Details
+                
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_agency_numbers')) {
+
+                        $table->string('user_agency_numbers')->nullable();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_qualification')) {
+
+                        $table->string('user_qualification')->nullable();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_work_email')) {
+
+                        $table->string('user_work_email')->nullable()->unique();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_dob')) {
+
+                        $table->string('user_dob')->nullable();
+    
+                    }
+                });
+
+                
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_emergency_contact_person')) {
+
+                        $table->string('user_emergency_contact_person')->nullable();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_emergency_phone_number')) {
+
+                        $table->string('user_emergency_phone_number')->nullable();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'user_emergency_email')) {
+
+                        $table->string('user_emergency_email')->nullable()->unique();
+    
+                    }
+                });
             }
+
+            // End Modified User Details
+
 
             // master user access
             if (!Schema::hasTable($storeId.'_tc_master_user_access')){   
@@ -520,32 +599,6 @@ class Controller extends BaseController
                 });
 
             }
-
-            //agency
-            if (!Schema::hasTable($storeId.'_tc_agency')){   
-            Schema::create($storeId.'_tc_agency', function (Blueprint $table) use ($storeId) {
-
-                $table->string('age_id')->unique()->primary();
-                $table->string('id')->nullable()->default(0);
-                $table->string('age_user_id')->unique();
-                $table->string('age_user_first_name')->nullable();
-                $table->string('age_user_last_name')->nullable();
-                $table->string('age_user_qualification')->nullable();
-                $table->string('age_user_work_email')->nullable()->unique();
-                $table->string('age_user_personal_email')->nullable()->unique();
-                $table->string('age_user_dob')->nullable();
-                $table->string('age_user_type')->nullable();
-                $table->string('age_user_password')->nullable();
-                $table->string('age_user_emergency_contact')->nullable();
-                $table->string('age_user_phone_number')->nullable();
-                $table->string('age_user_emergency_email')->nullable()->unique();
-                $table->text('age_user_address')->nullable();
-                $table->string('age_user_city')->nullable();
-                $table->string('age_user_state_type')->nullable();
-                $table->string('age_user_zip')->nullable();
-                $table->timestamps();
-            });
-        }
 
             //Agency Dynamic input Phone
             if (!Schema::hasTable($storeId.'_tc_users_agency_phone')){   
