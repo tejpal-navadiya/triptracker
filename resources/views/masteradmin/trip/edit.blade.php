@@ -192,7 +192,9 @@
             <x-input-label for="tr_type_trip" :value="__('Type of Trip')" />
             <div>
             @foreach ($triptype as $value)
-            @php $decodedTripTypes = json_decode($trip->tr_type_trip, true); @endphp
+            @php 
+              $decodedTripTypes = json_decode($trip->tr_type_trip, true) ?? []; 
+            @endphp
                 @if(in_array($value->ty_name, $decodedTripTypes))
                     <input class="checkbox-inputbox" type="checkbox" id="{{$value->ty_id}}" name="tr_type_trip[]" value="{{ $value->ty_name }}" checked>
                 @else

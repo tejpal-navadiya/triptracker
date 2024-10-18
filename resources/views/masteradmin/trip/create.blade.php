@@ -197,8 +197,7 @@
           </div>
 
           <div class="col-md-12">
-          <button type="button" id="add" class="add_tripmembertbtn"><i class="fas fa-plus add_plus_icon"></i>Add
-            Traveling Member</button>
+          <button type="button" id="add" class="add_tripmembertbtn"><i class="fas fa-plus add_plus_icon"></i>Add Traveling Member</button>
           </div>
           <div class="col-md-12" id="dynamic_field">
           @if ($errors->any())
@@ -211,7 +210,30 @@
           </div>
           @endif
           </div>
+          <div class="container mt-4">
+            <h4>Type of Trip</h4>
 
+            <!-- Nav tabs -->
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" id="tab-list">
+                <!-- Dynamic tab links will be added here -->
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="tab-content">
+                <!-- Dynamic tab panels will be added here -->
+            </div>
+            <div class="dynamic-fields" id="Itinerary-fields">
+                <div class="row align-items-center mb-3">
+                <div class="col-md-4">
+                    <input type="text" name="itinerary[0][trit_text]" class="form-control" placeholder="Itinerary Link">
+                </div>
+                <div class="col-md-2">
+                  <button type="button" class="btn btn-primary btn-sm add-btn2 w-100" data-target="Itinerary">+ Add Another</button>
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
 
         <div class="row py-20 px-10">
@@ -482,5 +504,178 @@
 
   </script>
 
+
+<script>
+    $(document).ready(function() {
+        // Function to add new fields
+        var  rowCountItinerary = 0;
+        $('.add-btn2').click(function() {
+          rowCountItinerary++;
+            var target = $(this).data('target');
+            var newRow = `
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="itinerary[${rowCountItinerary}][trit_text]" placeholder="${target.charAt(0).toUpperCase() + target.slice(1)} Link">
+                    </div>
+                   
+                    <div class="col-md-2">
+                        <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+                    </div>
+                </div>
+            `;
+            $('#'+target+'-fields').append(newRow);
+        });
+
+        // Function to delete fields
+        $(document).on('click', '.delete-btn', function() {
+            $(this).closest('.row').remove();
+        });
+    });
+
+
+
+    $(document).ready(function() {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var activeTab = $(e.target).text(); // Get active tab text
+        $('#trip_type_text').val(activeTab); // Set it to hidden field
+    });
+});
+
+</script>
+<script>
+    $(document).ready(function() {
+        // When a tab is clicked, update the hidden input field with the tab's text
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            var tripTypeName = $(e.target).text();  // Get the tab text (Cruise, Excursion, etc.)
+            $('#trip_type_name').val(tripTypeName);  // Set the hidden field value
+        });
+    });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('input[name="tr_type_trip[]"]');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateTabs();
+        });
+    });
+
+    function updateTabs() {
+        const tabList = document.getElementById('tab-list');
+        const tabContent = document.getElementById('tab-content');
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const tripTypeName = checkbox.value;
+                // alert(tripTypeName);
+                const tripTypeId = checkbox.id;
+
+                // Check if the tab already exists
+                if (!document.getElementById(`${tripTypeId}-tab`)) {
+
+                    // Create tab link
+                    const tabLink = document.createElement('li');
+                    tabLink.className = 'nav-item';
+                    tabLink.innerHTML = `
+                        <a class="nav-link" id="${tripTypeId}-tab" data-toggle="tab" href="#tab-${tripTypeId}" role="tab" aria-controls="tab-${tripTypeId}" aria-selected="false">${tripTypeName}</a>
+                    `;
+                    tabList.appendChild(tabLink);
+
+                    // Create tab panel
+                    const tabPanel = document.createElement('div');
+                    tabPanel.className = 'tab-pane fade';
+                    tabPanel.id = `tab-${tripTypeId}`;
+                    tabPanel.role = 'tabpanel';
+                    tabPanel.ariaLabelledby = `${tripTypeId}-tab`;
+                    tabPanel.innerHTML = `
+                        <div class="dynamic-fields" id="${tripTypeId}-fields">
+                            <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_name]" value="${tripTypeName}">
+                            <div class="row align-items-center mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" name="trip_types[${tripTypeId}][0][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" name="trip_types[${tripTypeId}][0][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary btn-sm add-btn w-100" data-target="${tripTypeId}">+ Add Another</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    tabContent.appendChild(tabPanel);
+
+                    // Activate the new tab
+                    const allTabs = tabList.querySelectorAll('.nav-link');
+                    allTabs.forEach(t => {
+                        t.classList.remove('active');
+                        const panelId = t.getAttribute('href').substring(1);
+                        document.getElementById(panelId).classList.remove('show', 'active');
+                    });
+
+                    tabLink.querySelector('a').classList.add('active');
+                    tabPanel.classList.add('show', 'active');
+
+                    // Add event listener to "Add Another" button
+                    let entryIndex = 1; // Track the index for the dynamic fields
+                    const addButton = tabPanel.querySelector('.add-btn');
+                    addButton.addEventListener('click', function() {
+                        const targetId = addButton.getAttribute('data-target');
+                        const fieldsContainer = document.getElementById(`${targetId}-fields`);
+
+                        // Create a new row for dynamic fields with incrementing indices
+                        const newRow = `
+                            <input type="hidden" name="trip_types[${targetId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
+
+                            <div class="row align-items-center mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" name="trip_types[${targetId}][${entryIndex}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" name="trip_types[${targetId}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                        fieldsContainer.insertAdjacentHTML('beforeend', newRow);
+
+                        // Add event listener to the delete button in the new row
+                        const deleteButton = fieldsContainer.lastElementChild.querySelector('.delete-btn');
+                        deleteButton.addEventListener('click', function() {
+                            fieldsContainer.removeChild(deleteButton.closest('.row'));
+                        });
+
+                        entryIndex++; // Increment the index for the next dynamic row
+                    });
+
+                    // Add event listener to the delete button in the initial row
+                    const deleteButton = tabPanel.querySelector('.delete-btn');
+                    deleteButton.addEventListener('click', function() {
+                        tabPanel.remove(); // Remove the entire tab panel
+                        tabLink.remove(); // Remove the corresponding tab link
+                    });
+                }
+            } else {
+                // If unchecked, remove the corresponding tab and panel
+                const tabLink = document.getElementById(`${checkbox.id}-tab`);
+                const tabPanel = document.getElementById(`tab-${checkbox.id}`);
+                if (tabLink && tabPanel) {
+                    tabLink.remove();
+                    tabPanel.remove();
+                }
+            }
+        });
+    }
+});
+
+
+</script>
   @endsection
 @endif

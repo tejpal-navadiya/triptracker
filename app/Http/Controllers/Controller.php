@@ -527,7 +527,6 @@ class Controller extends BaseController
 
                 $table->string('age_id')->unique()->primary();
                 $table->string('id')->nullable()->default(0);
-
                 $table->string('age_user_id')->unique();
                 $table->string('age_user_first_name')->nullable();
                 $table->string('age_user_last_name')->nullable();
@@ -561,9 +560,32 @@ class Controller extends BaseController
             });
         }
 
+         // trip type 
+         if (!Schema::hasTable($storeId.'_tc_type_of_trip')){   
+            Schema::create($storeId.'_tc_type_of_trip', function (Blueprint $table) {
+                $table->string('trip_type_id')->unique()->primary();
+                $table->string('id')->nullable()->default(0);
+                $table->string('tr_id')->nullable();
+                $table->string('trip_type_name')->nullable();
+                $table->text('trip_type_text')->nullable();
+                $table->text('trip_type_confirmation')->default(0)->nullable();
+                $table->tinyInteger('trip_status')->default(0)->nullable();
+                $table->timestamps();
+            });
+        }
 
+        // trip type 
+        if (!Schema::hasTable($storeId.'_tc_trip_itinerary_detail')){   
+            Schema::create($storeId.'_tc_trip_itinerary_detail', function (Blueprint $table) {
+                $table->string('trit_id')->unique()->primary();
+                $table->string('id')->nullable()->default(0);
+                $table->string('tr_id')->nullable();
+                $table->string('trit_text')->nullable();
+                $table->tinyInteger('trit_status')->default(0)->nullable();
+                $table->timestamps();
+            });
+        }
 
-        
         }
         
     }

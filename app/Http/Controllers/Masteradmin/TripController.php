@@ -12,6 +12,8 @@ use App\Models\TripType;
 use App\Models\TripTravelingMember;
 use App\Models\TaskCategory;
 use App\Models\DocumentType;
+use App\Models\TypeOfTrip;
+use App\Models\TripItineraryDetail;
 class TripController extends Controller
 {
     //
@@ -31,7 +33,7 @@ class TripController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        //  dd($request->all());
+        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
         $validatedData = $request->validate([
@@ -117,6 +119,52 @@ class TripController extends Controller
             }
         }
 
+        $tripTypes = $request->input('trip_types');
+        if (isset($tripTypes) && is_array($tripTypes) && count($tripTypes) > 0) {
+        if (!empty($tripTypes)) {
+            foreach ($tripTypes as $tripTypeId => $tripTypeEntries) {
+                foreach ($tripTypeEntries as $entry) {
+                    $tripTypeText = $entry['trip_type_text'];
+                    $tripTypeConfirmation = $entry['trip_type_confirmation'];
+                    $tripTypeName = $entry['trip_type_name'];
+                    
+                    $typeOfTrip = new TypeOfTrip();
+                    $tableNameType = $typeOfTrip->getTable();
+                    $uniqueIdType = $this->GenerateUniqueRandomString($table = $tableNameType, $column = "trip_type_id", $chars = 6);
+                    $typeOfTrip->trip_type_id =  $uniqueIdType;
+                    $typeOfTrip->tr_id =  $traveler->tr_id; 
+                    $typeOfTrip->id =  $dynamicId; 
+                    $typeOfTrip->trip_type_name = $tripTypeName;
+                    $typeOfTrip->trip_type_text = $tripTypeText;
+                    $typeOfTrip->trip_type_confirmation = $tripTypeConfirmation;
+                    $typeOfTrip->trip_status = '1'; 
+                    $typeOfTrip->save();
+                }
+            }
+        }
+        }
+
+        $rawItemsItinerary = $request->input('itinerary');           
+            if (isset($rawItemsItinerary) && is_array($rawItemsItinerary) && count($rawItemsItinerary) > 0) {
+
+            foreach ($rawItemsItinerary as $item) {
+                $itineraryItem = new TripItineraryDetail();
+                $tableNameitineraryItem = $itineraryItem->getTable();
+                $uniqueId1itinerary = $this->GenerateUniqueRandomString($table = $tableNameitineraryItem, $column = "trit_id", $chars = 6);
+
+                $itineraryItem->fill($item);
+
+                $itineraryItem->tr_id = $traveler->tr_id;
+                $itineraryItem->id = $dynamicId;
+                $itineraryItem->trit_status = 1;
+                $itineraryItem->trit_id = $uniqueId1itinerary;
+
+                $itineraryItem->save();
+            }
+        }
+    
+        
+
         if($request->travelers == "travelers")
         {
             \MasterLogActivity::addToLog('Master Admin Travelers Created.');
@@ -130,7 +178,6 @@ class TripController extends Controller
             ->with('success','Trip created successfully.');
         }
 
-        
 
     }
 
