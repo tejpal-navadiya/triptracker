@@ -20,6 +20,9 @@ use App\Models\Countries;
 use App\Models\States;
 use App\Models\Cities;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Notifications\ResetPasswordMail;
 
 class AuthController extends Controller
 {
@@ -255,22 +258,354 @@ class AuthController extends Controller
         }
     }
 
-    public  function getAllCountry(Request $request) 
+    public function getAllCountry(Request $request) 
     {
         try
         {
-                $input = $request->all();         
-                $page           = $input['page'];   
-                $countries = Countries::orderBy('id', 'desc')->get();
-                $result = $this->ResponseWithPagination($page,$countries);
-                return $this->sendResponse($result, __('messages.api.state.state_get_success'));          
+            $page = $request->input('page');
+            $perPage = env('PER_PAGE', 10); // Default to 10 if not set
+
+            $countries = Countries::orderBy('id', 'desc')->paginate($perPage);
+
+            if ($countries->isEmpty()) {
+                return $this->sendError('No countries found.', [], 404);
+            }
+
+            $response = [
+                'total_records' => $countries->total(),
+                'per_page' => $countries->perPage(),
+                'current_page' => $countries->currentPage(),
+                'total_page' => $countries->lastPage(),
+                'data' => $countries->items(),
+            ];
+
+            return $this->sendResponse($response, __('messages.api.country.country_get_success'));          
         }
         catch(\Exception $e)
         {
             $auth_user = Auth::guard('api')->user();
-            $this->serviceLogError($service_name = 'StateList',$user_id = 0,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
-            return $this->sendError($e->getMessage(), config('global.null_object'),401,false);
+            $this->serviceLogError('getAllCountry', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
         }    
     }
 
+    public function getState(Request $request) 
+    {
+        try
+        {
+            $page = $request->input('page');
+            $country = $request->input('country_id');
+            $perPage = env('PER_PAGE', 10); // Default to 10 if not set
+
+            $state = States::where('country_id',$country)->orderBy('id', 'desc')->paginate($perPage);
+
+            if ($state->isEmpty()) {
+                return $this->sendError('No state found.', [], 404);
+            }
+
+            $response = [
+                'total_records' => $state->total(),
+                'per_page' => $state->perPage(),
+                'current_page' => $state->currentPage(),
+                'total_page' => $state->lastPage(),
+                'data' => $state->items(),
+            ];
+
+            return $this->sendResponse($response, __('messages.api.state.state_get_success'));          
+        }
+        catch(\Exception $e)
+        {
+            $this->serviceLogError('getState', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
+        }    
+    }
+
+    public function getCity(Request $request) 
+    {
+        try
+        {
+            $page = $request->input('page');
+            $country = $request->input('country_id');
+            $state = $request->input('state_id');
+            $perPage = env('PER_PAGE', 10); // Default to 10 if not set
+
+            $city = Cities::where(['country_id' => $country, 'state_id' => $state])->orderBy('id', 'desc')->paginate($perPage);
+
+            if ($city->isEmpty()) {
+                return $this->sendError('No city found.', [], 404);
+            }
+
+            $response = [
+                'total_records' => $city->total(),
+                'per_page' => $city->perPage(),
+                'current_page' => $city->currentPage(),
+                'total_page' => $city->lastPage(),
+                'data' => $city->items(),
+            ];
+
+            return $this->sendResponse($response, __('messages.api.city.city_get_success'));          
+        }
+        catch(\Exception $e)
+        {
+            $this->serviceLogError('getCity', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
+        }    
+    }
+
+    public function getPlan(Request $request) 
+    {
+        try
+        {
+            $page = $request->input('page');
+            $perPage = env('PER_PAGE', 10); // Default to 10 if not set
+
+            $plan = Plan::orderBy('created_at', 'asc')->paginate($perPage);
+
+            if ($plan->isEmpty()) {
+                return $this->sendError('No Subscription Plans found.', [], 404);
+            }
+
+            $response = [
+                'total_records' => $plan->total(),
+                'per_page' => $plan->perPage(),
+                'current_page' => $plan->currentPage(),
+                'total_page' => $plan->lastPage(),
+                'data' => $plan->items(),
+            ];
+
+            return $this->sendResponse($response, __('messages.api.subscription_plans.plan_get_success'));          
+        }
+        catch(\Exception $e)
+        {
+            $this->serviceLogError('getPlan', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
+        }    
+    }
+
+    public function forgotPassword(Request $request) 
+    {
+        try
+        {
+            $request->validate([
+                'user_email' => 'required|string|email|max:255',
+            ]);
+
+            $email = $request->input('user_email');
+            $token = Str::random(64);
+            $existingToken = DB::table('master_password_reset_tokens')->where('email', $email)->first();
+
+            if ($existingToken) {
+                // Update the existing record
+                DB::table('master_password_reset_tokens')
+                    ->where('email', $email)
+                    ->update([
+                        'token' => $token,
+                        'created_at' => Carbon::now()
+                    ]);
+            } else {
+                // Insert a new record
+                DB::table('master_password_reset_tokens')->insert([
+                    'email' => $email,
+                    'token' => $token,
+                    'created_at' => Carbon::now()
+                ]);
+            }
+
+            $users = MasterUser::where('user_email', $email)->first();
+
+            if (!$users) {
+                return $this->sendError('User Email  not found.', config('global.null_object'), 404);
+            }
+
+            $userDetails = new MasterUserDetails();
+            $userDetails->setTableForUniqueId($users->buss_unique_id);
+            $user = $userDetails->where('users_email', $email)->first();
+
+            try {
+                Mail::to($email)->send(new ResetPasswordMail($token, $email));
+                return $this->sendResponse([], __('messages.masteradmin.forgot-password.link_send_success'));     
+            } catch (\Exception $e) {
+                return $this->sendError(__('messages.masteradmin.forgot-password.link_send_error'), config('global.null_object'),401,false);
+            }
+
+
+                 
+        }
+        catch(\Exception $e)
+        {
+            $this->serviceLogError('getPlan', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
+        }    
+    }
+
+    public function updateUserProfile(Request $request)
+    {
+        try
+        {
+            if(Auth::guard('api')->check())
+            {
+                
+                $input = $request->all();
+                $auth_user = Auth::guard('api')->user();
+                // dd($auth_user);
+                $request->validate([
+                    'users_first_name' => ['required', 'string', 'max:255'],
+                    'users_last_name' => ['required', 'string', 'max:255'],
+                    'users_email' => ['required', 'string', 'max:255'],
+                    'users_phone' => ['nullable', 'string', 'max:255'],
+                    'users_bio' => ['required', 'string', 'max:255']
+                ]);
+
+            
+                $userDetails = new MasterUserDetails();
+                $userDetails->setTableForUniqueId($auth_user->buss_unique_id);
+                $existingUser = $userDetails->find($auth_user->id);
+
+                if (!$existingUser) {
+                    return $this->sendError('User not found.', config('global.null_object'), 404);
+                }
+
+                $users_image = '';
+                if ($request->hasFile('users_image')) {
+
+                    $userFolder = 'masteradmin/' .$auth_user->buss_unique_id.'_'.$auth_user->user_first_name;
+                    $users_image = $this->handleImageUpload($request, 'users_image', null, 'profile_image', $userFolder);
+
+                }
+
+                if ($users_image) {
+                    $input['users_image'] = $users_image; 
+                } else {
+                    $input['users_image'] = $existingUser ->users_image;
+                }
+
+                $existingUser->where('users_id',$existingUser->users_id)->update($input);
+                $updatedUser = $userDetails->find($auth_user->id);
+                // session(['user_details' => $updatedUser]);
+                $token = $request->bearerToken();
+                $updatedUser->token = $token;
+                
+                $country = Countries::where('id', $updatedUser->users_country)->first();
+                $state = States::where('id', $updatedUser->users_state)->first();
+                $city = Cities::where('id', $updatedUser->users_city)->first();
+                $plan = Plan::where('sp_id', $auth_user->sp_id)->first();
+                
+                $updatedUser->country = $country ? $country->name : null; 
+                $updatedUser->state = $state ? $state->name : null; 
+                $updatedUser->city = $city ? $city->name : null; 
+                $updatedUser->sp_id = $auth_user ? $auth_user->sp_id : null; 
+                $updatedUser->plan = $plan ? $plan->sp_name : null; 
+                $updatedUser->sp_expiry_date = $auth_user ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
+                $updatedUser->isActive = $auth_user ? $auth_user->isActive : null; 
+
+                $user_data = $this->UserResponse($updatedUser);
+
+                //dd($userDetails->getTable());
+                return $this->sendResponse($user_data, __('messages.api.user.profile_setup_success'));              
+            }
+            else
+            {                
+                return $this->sendError(__('messages.api.authentication_err_message'), config('global.null_object'),401,false);
+            }
+        }
+        catch(\Exception $e)
+        {
+            $auth_user = Auth::guard('api')->user();
+            $this->serviceLogError($service_name = 'GetUserProfile',$user_id = $auth_user->id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
+            return $this->sendError($e->getMessage(), config('global.null_object'),401,false);
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        try
+        {
+            if(Auth::guard('api')->check())
+            {
+                
+                    $input = $request->all();
+                    $auth_user = Auth::guard('api')->user();
+                
+                    $credentials = $request->only('old_password', 'new_password', 'confirm_password');
+                
+                    $validator = \Validator::make($credentials, [
+                        'old_password' => ['required', 'string'],
+                        'new_password' => ['required', 'string', Password::min(8)
+                            ->mixedCase()
+                            ->letters()
+                            ->numbers()
+                            ->symbols()],
+                        'confirm_password' => ['required', 'string', 'same:new_password'],
+                    ], [
+                        'old_password.required' => 'The old password field is required.',
+                        'new_password.required' => 'The new password field is required.',
+                        'confirm_password.required' => 'The confirm password field is required.',
+                        'confirm_password.same' => 'The confirm password must match the new password.',
+                    ]);
+                
+                    if ($validator->fails()) {
+                        return $this->sendError('Validation Error.', $validator->errors());
+                    }
+                
+                    
+                
+                    $userDetails = new MasterUserDetails();
+                    $userDetails->setTableForUniqueId($auth_user->buss_unique_id);
+                
+                    try {
+                        $existingUser  = $userDetails->find($auth_user->id);
+
+                        if (!Hash::check($credentials['old_password'], $existingUser->users_password)) {
+                            return $this->sendError('The old password is incorrect.', [], 401);
+                        }
+                
+                        if (!$existingUser ) {
+                            return $this->sendError('User not found.', config('global.null_object'), 404);
+                        }
+                        
+                        $existingUser ->where('users_id', $auth_user->id)->update(['users_password' => Hash::make($credentials['new_password'])]);
+                
+                        $updatedUser  = $userDetails->find($auth_user->id);
+
+                        $token = $request->bearerToken();
+                        $updatedUser->token = $token;
+                        
+                        $country = Countries::where('id', $updatedUser->users_country)->first();
+                        $state = States::where('id', $updatedUser->users_state)->first();
+                        $city = Cities::where('id', $updatedUser->users_city)->first();
+                        $plan = Plan::where('sp_id', $auth_user->sp_id)->first();
+                        
+                        $updatedUser->country = $country ? $country->name : null; 
+                        $updatedUser->state = $state ? $state->name : null; 
+                        $updatedUser->city = $city ? $city->name : null; 
+                        $updatedUser->sp_id = $auth_user ? $auth_user->sp_id : null; 
+                        $updatedUser->plan = $plan ? $plan->sp_name : null; 
+                        $updatedUser->sp_expiry_date = $auth_user ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
+                        $updatedUser->isActive = $auth_user ? $auth_user->isActive : null; 
+
+
+
+                
+                        $user_data = $this->UserResponse($updatedUser);
+                        return $this->sendResponse($user_data, __('messages.api.user.password_change_success'));
+                    } catch (\Exception $e) {
+                        return $this->sendError('Error updating password.', [], 500);
+                    }
+                           
+            
+                
+            }else
+            {                
+                return $this->sendError(__('messages.api.authentication_err_message'), config('global.null_object'),401,false);
+            }
+        }
+        catch(\Exception $e)
+        {
+            $auth_user = Auth::guard('api')->user();
+            $this->serviceLogError($service_name = 'GetUserProfile',$user_id = $auth_user->id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
+            return $this->sendError($e->getMessage(), config('global.null_object'),401,false);
+        }    
+    }
+    
+    
 }

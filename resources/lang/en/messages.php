@@ -112,9 +112,21 @@ return [
         'user'  => [
             'user_get_profile_success' => 'User profile get successfully.',
             'user_not_found' => 'User not found.',
+            'profile_setup_success' => 'profile updated successfully.',
+            'password_change_success' => 'Change Password updated successfully.',
+            
         ],
         'country'=> [
             'country_get_success' => 'Country data get successfully.',
+        ],
+        'state'=> [
+            'state_get_success' => 'State data get successfully.',
+        ],
+        'city'=> [
+            'city_get_success' => 'City data get successfully.',
+        ],
+        'subscription_plans'=> [
+            'plan_get_success' => 'Subscription Plans data get successfully.',
         ],
     ]
     

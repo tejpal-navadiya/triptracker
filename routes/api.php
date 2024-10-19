@@ -25,9 +25,16 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('login', 'login');
 });
 Route::get('country_list',            [AuthController::class,'getAllCountry']);
+Route::post('state_list',            [AuthController::class,'getState']);
+Route::post('city_list',            [AuthController::class,'getCity']);
+Route::get('subscription_plans_list',            [AuthController::class,'getPlan']);
+Route::post('forgot_password',            [AuthController::class,'forgotPassword']);
 
 
 Route::middleware(['handleAuthErrors'])->group( function (): void {
     Route::get('GetUserProfile',     [AuthController::class,'GetUserProfile']);
+    Route::post('update_profile',     [AuthController::class,'updateUserProfile']);
+    Route::post('change_password',     [AuthController::class,'changePassword']);
+    
     Route::get('Logout',            [AuthController::class,'Logout']);
 });

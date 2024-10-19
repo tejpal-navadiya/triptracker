@@ -573,14 +573,19 @@ class Controller extends BaseController
         }
     }
 
-    public function ResponseWithPagination($page,$data)
+    public function getUserFolder()
     {
-        $per_page = env('PER_PAGE');
-        $current_page = ($page == 0) ? 1 : $page;
-        // $response['total_page'] = round(count($data)/10,2);
-        $response['total_record'] = count($data);
-        $response['data_list'] = array_slice($data , ($current_page * $per_page) - $per_page, $per_page);
-        return $response;
+        // Check if the user is authenticated
+        if (Auth::guard('api')->check()) {
+            $auth_user = Auth::guard('api')->user();
+            
+            // Construct the folder path dynamically based on the authenticated user
+            $userFolder = 'masteradmin/' . $auth_user->buss_unique_id . '_' . $auth_user->user_first_name;
+            
+            return $userFolder;
+        }
+        
+        return null; // In case the user is not authenticated
     }
 
     public function UserResponse($response)
@@ -588,7 +593,8 @@ class Controller extends BaseController
         // dd($response);
         if(!empty($response->users_image))
         {
-            $userFolder = session('userFolder');
+            $userFolder = $this->getUserFolder();
+        //    dd($userFolder);
             $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$response->users_image));
         }else{
             $imageurl="";
