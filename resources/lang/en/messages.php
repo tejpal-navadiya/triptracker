@@ -103,6 +103,19 @@ return [
             'edit_success' => 'Bill updated successfully.',
         ],
 
+    ],
+    // API messages
+
+    'api' => [
+        'authentication_err_message'    => 'Authentication token has expired.',
+        'logout'                        => 'Account logged out successfully.',
+        'user'  => [
+            'user_get_profile_success' => 'User profile get successfully.',
+            'user_not_found' => 'User not found.',
+        ],
+        'country'=> [
+            'country_get_success' => 'Country data get successfully.',
+        ],
     ]
     
 ];

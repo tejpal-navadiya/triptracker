@@ -44,6 +44,11 @@ return [
             'driver' => 'session',
             'provider' => 'masteradmin',
         ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'apimasteradmin',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -73,6 +78,12 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\MasterUser::class,
         ],
+
+        'apimasteradmin' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\MasterUser::class,
+        ],
+        
 
         // 'users' => [
         //     'driver' => 'database',

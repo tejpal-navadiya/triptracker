@@ -36,62 +36,6 @@ class Controller extends BaseController
         return $randomStr;
     }
 
-
-    // protected function handleImageUpload(Request $request, $currentImage = null, $directory = 'default_directory')
-    // {
-
-    //     if ($request->hasFile('image')) {
-    //         // Delete the old image if it exists
-    //         if ($currentImage) {
-    //             Storage::delete($directory . '/' . $currentImage);
-    //         }
-
-    //         // Generate a unique filename
-    //         $extension = $request->file('image')->getClientOriginalExtension();
-    //         $uniqueFilename = Str::uuid() . '.' . $extension;
-
-    //         // Store the new image
-    //         $request->file('image')->storeAs($directory, $uniqueFilename);
-
-    //         return $uniqueFilename;
-    //     }
-
-    //     return $currentImage;
-    // }
-
-
-    //Main handleImageUpload /************* */
-
-
-    // protected function handleImageUpload(Request $request, $type, $currentImage = null, $directory = 'default_directory', $userFolder = '')
-    // {
-    //     if ($userFolder) {
-    //         $directory = $userFolder . '/' . $directory;
-    //     }
-
-    //     if ($request->hasFile($type)) {
-    //         // Delete the old image if it exists
-    //         if ($currentImage) {
-    //             Storage::delete($directory . '/' . $currentImage);
-    //         }
-
-    //         // Generate a unique filename
-    //         $extension = $request->file($type)->getClientOriginalExtension();
-    //         $uniqueFilename = Str::uuid() . '.' . $extension;
-
-    //         // Store the new image
-    //         $request->file($type)->storeAs($directory, $uniqueFilename);
-
-    //         return $uniqueFilename;
-    //     }
-
-    //     return $currentImage;
-    // }
-
-
-    //end Main handleImageUpload /************* */
-
-
     protected function handleImageUpload(Request $request, $type, $currentImages = null, $directory = 'default_directory', $userFolder = '')
     {
         if ($userFolder) {
@@ -144,38 +88,6 @@ class Controller extends BaseController
     
         return $currentImages; // Return current images if no new file is uploaded
     }
-
-
-
-
-
-
-    // public function handlemultiImageUpload(Request $request, $userFolder = ''){
-
-    //     if ($request->hasFile('image') && count($request->file('image')) > 0) {
-    //         foreach ($request->file('image') as $file) {
-                   
-    //          //dd($file);
-    //          //Log::info('Processing image: ', ['originalName' => $file->getClientOriginalName(), 'size' => $file->getSize()]);
-
-
-    //             if ($file instanceof \Illuminate\Http\UploadedFile) {
-    //                 // Generate a unique file name
-    //                 $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-    //                 // Define the path to store the image
-    //                 $path = storage_path('app/' . $userFolder . '/library_image/');
-                    
-    //                 // Move the uploaded file to the specified path
-    //                 $file->move($path, $fileName);
-                    
-    //                 // Store the image path in the array
-    //                 $library_images[] = 'storage/' . $userFolder . '/library_image/' . $fileName;
-    //             }
-    //         }
-    //     }
-
-    
-    
 
     public function CreateTable($id)
     {
@@ -643,7 +555,6 @@ class Controller extends BaseController
         
     }
     
-
     public function createTableRoute(Request $request)
     {
         
@@ -662,6 +573,68 @@ class Controller extends BaseController
         }
     }
 
+    public function ResponseWithPagination($page,$data)
+    {
+        $per_page = env('PER_PAGE');
+        $current_page = ($page == 0) ? 1 : $page;
+        // $response['total_page'] = round(count($data)/10,2);
+        $response['total_record'] = count($data);
+        $response['data_list'] = array_slice($data , ($current_page * $per_page) - $per_page, $per_page);
+        return $response;
+    }
+
+    public function UserResponse($response)
+    {
+        // dd($response);
+        if(!empty($response->users_image))
+        {
+            $userFolder = session('userFolder');
+            $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$response->users_image));
+        }else{
+            $imageurl="";
+        }
+       
+        $data = [
+       
+            'users_id'           => (string)$response->users_id,
+            'users_agencies_name'         => (isset($response->users_agencies_name) && $response->users_agencies_name != null) ? $response->users_agencies_name : '',
+            'users_franchise_name'             => (isset($response->users_franchise_name) && $response->users_franchise_name != null) ? $response->users_franchise_name : '',
+            'users_consortia_name'        => (isset($response->users_consortia_name) && $response->users_consortia_name != null) ? $response->users_consortia_name : '',
+            'users_first_name'             => (isset($response->users_first_name) && $response->users_first_name != null) ? $response->users_first_name : '',
+            'users_last_name'             => (isset($response->users_last_name) && $response->users_last_name != null) ? $response->users_last_name :'',                    
+            'users_email'             => (isset($response->users_email) && $response->users_email != null) ? $response->users_email : '',
+            'users_iata_clia_number'             => (isset($response->users_iata_clia_number) && $response->users_iata_clia_number != null) ? $response->users_iata_clia_number : '',
+            'users_clia_number'             => (isset($response->users_clia_number) && $response->users_clia_number != null) ? $response->users_clia_number : 0,
+            'users_iata_number'             => (isset($response->users_iata_number) && $response->users_iata_number != null) ? $response->users_iata_number : 0,
+            'users_address'             => (isset($response->users_address) && $response->users_address != null) ? $response->users_address : 0,
+            'users_country'             => (isset($response->users_country) && $response->users_country != null) ? $response->users_country : 0,
+            'country_name'             => (isset($response->country) && $response->country != null) ? $response->country :'',
+            'users_state'             => (isset($response->users_state) && $response->users_state != null) ? $response->users_state : 0,
+
+            'state_name'             => (isset($response->state) && $response->state != null) ? $response->state : '',
+
+            'users_city'             => (isset($response->users_city) && $response->users_city != null) ? $response->users_city : 0,
+
+            'city_name'             => (isset($response->city) && $response->city != null) ? $response->city : '',
+
+            'users_image'     => $imageurl,
+
+            'users_zip'             => (isset($response->users_zip) && $response->users_zip != null) ? $response->users_zip : '',
+            'Authorization'     => (isset($response->token) &&$response->token != null) ? 'Bearer '.$response->token : '',
+            'users_password'        => (isset($response->users_password) && $response->users_password != null) ? $response->users_password : '',
+            'users_phone'             => (isset($response->users_phone) && $response->users_phone != null) ? $response->users_phone : 0,
+            'users_bio'        => (isset($response->users_bio) && $response->users_bio != null) ? $response->users_bio : '',
+            'role_id'        => (isset($response->role_id) && $response->role_id != null) ? $response->role_id : '',
+            'remember_token'=> (isset($response->remember_token) && $response->remember_token != null) ? $response->remember_token : '',
+            'users_status'=> (isset($response->users_status) && $response->users_status != null) ? $response->users_status : '',
+            'sp_id'=> (isset($response->sp_id) && $response->sp_id != null) ? $response->sp_id : 0,
+            'plan_name'=> (isset($response->plan) && $response->plan != null) ? $response->plan : '',
+            'sp_expiry_date'=> (isset($response->sp_expiry_date) && $response->sp_expiry_date != null) ? $response->sp_expiry_date : '',
+            'isActive'=> (isset($response->isActive) && $response->isActive != null) ? $response->isActive : '',
+            
+        ];
+        return $data;
+    }
 
 }
     
