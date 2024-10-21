@@ -5,6 +5,7 @@
 <title>Edit Agency | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')
+        <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -30,13 +31,13 @@
                     <!-- card -->
                     <div class="card">
 
-                        {{-- @if ($errors->any())
+                        @if ($errors->any())
                             <ul>
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        @endif --}}
+                        @endif
 
 
                         <div class="card-header">
@@ -45,7 +46,7 @@
 
 
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('agency.update', $agency->age_id) }}"
+                        <form method="POST" action="{{ route('agency.update', $agency->users_id) }}"
                             enctype="multipart/form-data">
                             @csrf
 
@@ -64,8 +65,8 @@
                                                 <span class="text-danger">* </span></x-input-label>
 
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Select Agent" name="age_user_id" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_id ?? '')" />
+                                                placeholder="Select Agent" name="user_agency_numbers" autofocus
+                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_agency_numbers ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_id')" />
                                         </div>
@@ -77,8 +78,8 @@
                                             <x-input-label for="tr_agent_id" :value="__('First Name')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter First Name" name="age_user_first_name" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_first_name ?? '')" />
+                                                placeholder="Enter First Name" name="users_first_name" autofocus
+                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_first_name ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_first_name')" />
                                         </div>
@@ -90,8 +91,8 @@
                                             <x-input-label for="tr_agent_id" :value="__('Last Name')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Last Name" name="age_user_last_name" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_last_name ?? '')" />
+                                                placeholder="Enter Last Name" name="users_last_name" autofocus
+                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_last_name ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_last_name')" />
                                         </div>
@@ -111,8 +112,8 @@
                                             <x-input-label for="tr_agent_id" :value="__('Qualification')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Qualification" name="age_user_qualification" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_qualification ?? '')" />
+                                                placeholder="Enter Qualification" name="user_qualification" autofocus
+                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_qualification ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_qualification')" />
                                         </div>
@@ -123,8 +124,8 @@
                                             <x-input-label for="tr_agent_id" :value="__('Work Email Address')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Work Email Address" name="age_user_work_email" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_work_email ?? '')" />
+                                                placeholder="Enter Work Email Address" name="user_work_email" autofocus
+                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_work_email ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_work_email')" />
                                         </div>
@@ -136,8 +137,8 @@
                                             <x-input-label for="tr_agent_id" :value="__('Personal Email Address')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Personal Email Address" name="age_user_personal_email"
-                                                autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_personal_email ?? '')" />
+                                                placeholder="Enter Personal Email Address" name="users_email" autofocus
+                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_email ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_personal_email')" />
                                         </div>
@@ -152,34 +153,42 @@
 
                                 <div class="row pxy-15 px-10">
 
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Birthdate')"> <span
-                                                    class="text-danger">*</span></x-input-label>
-                                            <x-text-input type="date" class="form-control" id="tr_agent_id"
-                                                placeholder="Select Birthdate" name="age_user_dob" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_dob ?? '')" />
-
-                                            <x-input-error class="mt-2" :messages="$errors->get('age_user_dob')" />
+                                            <x-input-label for="tr_start_date" :value="__('Birthday')" />
+                                            <div class="input-group date" id="tr_start_date" data-target-input="nearest">
+                                                <x-flatpickr id="completed_date" name="user_dob" placeholder="mm/dd/yyyy" />
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text" id="completed-date-icon">
+                                                        <i class="fa fa-calendar-alt"></i>
+                                                        <input type="hidden" id="tr_start_date_hidden"
+                                                            value="{{ $agency->user_dob ?? '' }}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" />
                                         </div>
                                     </div>
+
+
+
+
 
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_agent_id" :value="__('User Role')">
                                                 <span class="text-danger">*</span>
                                             </x-input-label>
-                                            <select class="form-control" id="tr_category" name="age_user_type" autofocus>
+                                            <select class="form-control" id="tr_category" name="role_id" autofocus>
                                                 <option value="" disabled selected>Select Category</option>
 
                                                 @foreach ($users_role as $type)
                                                     <option value="{{ $type->role_id }}"
-                                                        {{ old('age_user_type', $agency->age_user_type ?? '') == $type->role_id ? 'selected' : '' }}>
+                                                        {{ old('age_user_type', $agency->role_id ?? '') == $type->role_id ? 'selected' : '' }}>
                                                         {{ $type->role_name }}
                                                     </option>
                                                 @endforeach
-
-
                                             </select>
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_type')" />
                                         </div>
@@ -190,14 +199,14 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_agent_id" :value="__('Password')"> <span
                                                     class="text-danger">*</span></x-input-label>
+
                                             <x-text-input type="password" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Password" name="age_user_password" autofocus
-                                                autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_password ?? '')" />
+                                                placeholder="Enter Password" name="users_password" autofocus
+                                                autocomplete="tr_agent_id" :value="old('users_password', $agency->users_password ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_password')" />
                                         </div>
                                     </div>
-
                                 </div>
 
                                 {{-- Dynamic Input Row --}}
@@ -285,195 +294,206 @@
                                                 @endforeach
                                             </div>
                                         </div>
-
-
-
-
                                     </div>
+                                </div>
+                            </div>
+                            {{-- </div> --}}
 
+                            {{-- End  Dynamic Input Row --}}
+
+
+                            {{-- Fourth Row --}}
+
+                            <div class="row pxy-15 px-10">
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('Emergency Contact Person')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
+                                            placeholder="Contact Person Name" name="user_emergency_contact_person"
+                                            autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_contact_person ?? '')" />
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_contact')" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('Emergency Phone Number')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
+                                            placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
+                                            autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_phone_number ?? '')" />
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_phone_number')" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('Emergency Email Address')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <x-text-input type="email" class="form-control" id="tr_agent_id"
+                                            placeholder="Enter Emergency Email Address" name="user_emergency_email"
+                                            autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_email ?? '')" />
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_email')" />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {{-- End Fourths Row --}}
+
+
+                            {{-- Fourth Row --}}
+
+                            <div class="row pxy-15 px-10">
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('Address')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
+                                            placeholder="Select Agent" name="users_address" autofocus
+                                            autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_address ?? '')" />
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_address')" />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {{-- End Fourths Row --}}
+
+
+                            {{-- Fifth Row --}}
+
+                            <div class="row pxy-15 px-10">
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('country')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <select id="tr_country" name="users_country" class="form-control select2"
+                                            style="width: 100%;">
+                                            <option>Select Country</option>
+                                            @foreach ($country as $value)
+                                                <option value="{{ $value->id }}"
+                                                    {{ old('users_country', $agency->users_country ?? '') == $value->id ? 'selected' : '' }}>
+                                                    {{ $value->name }} ({{ $value->iso2 }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <x-input-error class="mt-2" :messages="$errors->get('users_state')" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('state')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <select id="tr_state" name="users_state" class="form-control select2"
+                                            style="width: 100%;">
+                                            <option>Select State</option>
+
+                                            @foreach ($states as $value)
+                                                <option value="{{ $value->id }}"
+                                                    {{ old('users_states', $agency->users_state ?? '') == $value->id ? 'selected' : '' }}>
+                                                    {{ $value->name }} ({{ $value->iso2 }})
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                        <x-input-error class="mt-2" :messages="$errors->get('users_state')" />
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('City')"> <span
+                                                class="text-danger">*</span></x-input-label>
+
+                                        <select class="form-control form-control select2" id="lib_city"
+                                            name="users_city" autofocus>
+                                            <option value="" selected>Select City</option>
+
+                                            @foreach ($city as $value)
+                                                <option value="{{ $value->id }}"
+                                                    {{ old('users_city', $agency->users_city ?? '') == $value->id ? 'selected' : '' }}>
+                                                    {{ $value->name }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('users_city')" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_agent_id" :value="__('zip')"> <span
+                                                class="text-danger">*</span></x-input-label>
+                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
+                                            placeholder="Enter Zip" name="users_zip" :value="old('age_user_id', $agency->users_address ?? '')" autofocus
+                                            autocomplete="tr_agent_id" />
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('users_zip')" />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            {{-- End Fifth Row --}}
+
+                            <div class="row py-20 px-10">
+                                <div class="col-md-12 text-center">
+                                    <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <button type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>
                     </div>
-
-                    {{-- End  Dynamic Input Row --}}
-
-
-                    {{-- Fourth Row --}}
-
-                    <div class="row pxy-15 px-10">
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('Emergency Contact Person')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                    placeholder="Contact Person Name" name="age_user_emergency_contact" autofocus
-                                    autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_emergency_contact ?? '')" />
-
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_contact')" />
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('Emergency Phone Number')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                    placeholder="Enter Emergency Phone" name="age_user_phone_number" autofocus
-                                    autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_phone_number ?? '')" />
-
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_phone_number')" />
-                            </div>
-                        </div>
+                    </form>
 
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('Emergency Email Address')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <x-text-input type="email" class="form-control" id="tr_agent_id"
-                                    placeholder="Enter Emergency Email Address" name="age_user_emergency_email" autofocus
-                                    autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_emergency_email ?? '')" />
-
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_email')" />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {{-- End Fourths Row --}}
-
-
-                    {{-- Fourth Row --}}
-
-                    <div class="row pxy-15 px-10">
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('Address')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                    placeholder="Select Agent" name="age_user_address" autofocus
-                                    autocomplete="tr_agent_id" :value="old('age_user_id', $agency->age_user_address ?? '')" />
-
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_address')" />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {{-- End Fourths Row --}}
-
-
-                    {{-- Fifth Row --}}
-
-                    <div class="row pxy-15 px-10">
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('City')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <x-text-input type="date" class="form-control" id="tr_agent_id"
-                                    placeholder="Enter City" name="age_user_city" autofocus autocomplete="tr_agent_id"
-                                    :value="old('age_user_id', $agency->age_user_city ?? '')" />
-
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_city')" />
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('state')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <select class="form-control" id="tr_category" name="age_user_state_type" autofocus>
-                                    <option value="" disabled selected>Select Category</option>
-
-                                    @foreach ($status as $state)
-                                        <option value="{{ $state->age_user_state_type }}"
-                                            {{ old('age_user_type', $agency->age_user_state_type ?? '') == $state->age_user_state_type ? 'selected' : '' }}>
-                                            {{ $state->age_user_state_type }}
-                                        </option>
-                                    @endforeach
-
-                                </select>
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_state_type')" />
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-input-label for="tr_agent_id" :value="__('zip')"> <span
-                                        class="text-danger">*</span></x-input-label>
-                                <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                    placeholder="Enter Zip" name="age_user_zip" autofocus autocomplete="tr_agent_id"
-                                    :value="old('age_user_id', $agency->age_user_zip ?? '')" />
-
-                                <x-input-error class="mt-2" :messages="$errors->get('age_user_zip')" />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {{-- End Fifth Row --}}
-
-                    <div class="row py-20 px-10">
-                        <div class="col-md-12 text-center">
-                            <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
-                            <button type="submit" class="add_btn px-10">Save</button>
-                        </div>
-                    </div>
-                </div>
-                </form>
-        </div>
-        <!-- /.card -->
-        </div><!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
-        </div>
-        <!-- ./wrapper -->
-
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 
-        <script>
-            $(document).ready(function() {
-                $('.trtm_type_hidden').each(function() {
-                    var rowId = $(this).closest('.item-row').attr('id');
+                    <script>
+                        $(document).ready(function() {
+                            $('.trtm_type_hidden').each(function() {
+                                var rowId = $(this).closest('.item-row').attr('id');
 
-                    if ($(this).val() == 1) {
+                                if ($(this).val() == 1) {
 
-                        $(`#${rowId} .family-member-field`).show();
-                        $(`#${rowId} .trip-member-field`).hide();
-                    } else if ($(this).val() == 2) {
-                        $(`#${rowId} .family-member-field`).hide();
-                        $(`#${rowId} .trip-member-field`).show();
-                    }
-                });
-            });
-        </script>
+                                    $(`#${rowId} .family-member-field`).show();
+                                    $(`#${rowId} .trip-member-field`).hide();
+                                } else if ($(this).val() == 2) {
+                                    $(`#${rowId} .family-member-field`).hide();
+                                    $(`#${rowId} .trip-member-field`).show();
+                                }
+                            });
+                        });
+                    </script>
+
+                    <script>
+                        $(document).ready(function() {
+
+                            var rowCount = 0;
+
+                            $('#add').click(function() {
+                                rowCount++;
 
 
-        <script>
-            $(document).ready(function() {
-
-                var rowCount = 0;
-
-                $('#add').click(function() {
-                    rowCount++;
-
-
-                    $('#dynamic_field').append(` 
+                                $('#dynamic_field').append(` 
                 <div class="item-row row" id="row${rowCount}">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -514,13 +534,110 @@
                 </div>
             `);
 
-                });
+                            });
 
-                $(document).on('click', '.delete-item', function() {
-                    var rowId = $(this).attr("id");
-                    $('#row' + rowId).remove();
-                });
-            });
-        </script>
-    @endsection
+                            $(document).on('click', '.delete-item', function() {
+                                var rowId = $(this).attr("id");
+                                $('#row' + rowId).remove();
+                            });
+                        });
+                    </script>
+
+                    <script>
+                        $(document).ready(function() {
+                            // Handle change event for the country dropdown
+                            $('#tr_country').change(function() {
+                                var countryId = $(this).val();
+
+                                if (countryId) {
+                                    $.ajax({
+                                        url: '{{ route('getStates', ':countryId') }}'.replace(':countryId',
+                                            countryId),
+                                        type: 'GET',
+                                        dataType: 'json',
+                                        success: function(data) {
+                                            // Clear the existing state options
+                                            $('#tr_state').empty();
+                                            $('#tr_state').append(
+                                                '<option value="">Select a State...</option>');
+
+                                            // Populate the state dropdown with new options
+                                            $.each(data, function(key, value) {
+                                                $('#tr_state').append('<option value="' + value.id +
+                                                    '">' + value.name + '</option>');
+                                            });
+                                        },
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            console.log('Error fetching states: ' + textStatus);
+                                        }
+                                    });
+                                } else {
+                                    // Reset the state dropdown if no country is selected
+                                    $('#tr_state').empty();
+                                    $('#tr_state').append('<option value="">Select a State...</option>');
+                                }
+                            });
+                        });
+                    </script>
+
+                    <script>
+                        $(document).ready(function() {
+                            $('#tr_state').change(function() {
+                                var stateId = $(this).val();
+                                if (stateId) {
+                                    $.ajax({
+                                        url: '{{ route('getRegisterCities', ':stateId') }}'.replace(':stateId',
+                                            stateId),
+                                        type: 'GET',
+                                        dataType: 'json',
+                                        success: function(data) {
+                                            // Clear the existing city options
+                                            $('#lib_city').empty();
+                                            $('#lib_city').append('<option value="">Select a City...</option>');
+
+                                            // Populate the city dropdown with new options
+                                            $.each(data, function(key, value) {
+                                                $('#lib_city').append('<option value="' + value.id +
+                                                    '">' + value.name + '</option>');
+                                            });
+                                        },
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            console.log('Error fetching cities: ' + textStatus);
+                                        }
+                                    });
+                                } else {
+                                    // Reset the city dropdown if no state is selected
+                                    $('#lib_city').empty();
+                                    $('#lib_city').append('<option value="">Select a City...</option>');
+                                }
+                            });
+                        });
+                    </script>
+
+
+
+
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+
+                            var fromdatepicker = document.getElementById('tr_start_date_hidden');
+
+                            var fromdatepicker = flatpickr("#completed_date", {
+                                locale: 'en',
+                                altInput: true,
+                                dateFormat: "m/d/Y",
+                                altFormat: "d/m/Y",
+                                allowInput: true,
+                                defaultDate: fromdatepicker.value || null,
+                            });
+                            document.getElementById('completed-date-icon').addEventListener('click', function() {
+                                fromdatepicker.open();
+                            });
+
+                        });
+                    </script>
+                @endsection
 @endif

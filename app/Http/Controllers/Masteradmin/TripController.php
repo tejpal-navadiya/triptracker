@@ -14,6 +14,9 @@ use App\Models\TaskCategory;
 use App\Models\DocumentType;
 use App\Models\TypeOfTrip;
 use App\Models\TripItineraryDetail;
+use App\Models\Countries;
+use App\Models\States;
+use App\Models\Cities;
 class TripController extends Controller
 {
     //
@@ -21,6 +24,7 @@ class TripController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
         $trip = Trip::where(['tr_status' => 1, 'id' => $user->id])->get();
+
         return view('masteradmin.trip.index', compact('trip'));
     }
 
@@ -28,7 +32,6 @@ class TripController extends Controller
     {
         $triptype = TripType::all();
         return view('masteradmin.trip.create',compact('triptype'));
-
     }
 
     public function store(Request $request): RedirectResponse
@@ -50,6 +53,14 @@ class TripController extends Controller
             'tr_end_date' => 'nullable|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
+
+             'tr_country' => 'nullable|string',       
+             'tr_state'=>'nullable|string',
+             'tr_city'=>'nullable|string',
+             'tr_address'=>'nullable|string',
+             'tr_zip'=>'nullable|string',
+
+
             'items.*.trtm_type' => 'required|string',
             'items.*.trtm_first_name' => 'required|string',
             'items.*.trtm_middle_name' => 'nullable|string',
@@ -60,11 +71,19 @@ class TripController extends Controller
             'items.*.trtm_dob' => 'required|string',
             'items.*.trtm_age' => 'nullable|string',
         ], [
+
             'tr_name.required' => 'Traveler name is required',
             'tr_agent_id.required' => 'Agent ID is required',
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
             'tr_start_date.required' => 'Start date is required',
+
+            'tr_country.required' => 'Country is required',       
+            'tr_state.required'=>'State is required',
+            'tr_city.required'=>'City is required',
+            'tr_address.required'=>'Address is required',
+            'tr_zip.required'=>'Zip is required',
+
             'items.*.trtm_type.required' => 'Traveling member type is required',
             'items.*.trtm_first_name.required' => 'First name is required',
             'items.*.trtm_last_name.required' => 'Last name is required',
@@ -95,6 +114,13 @@ class TripController extends Controller
             $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
             $traveler->tr_type_trip = json_encode($request->input('tr_type_trip'));
             $traveler->tr_desc = $validatedData['tr_desc'] ?? null; // Use null if not set
+
+            $traveler->tr_country = $validatedData['tr_country'];
+            $traveler->tr_state = $validatedData['tr_state'];
+            $traveler->tr_city = $validatedData['tr_city'];
+            $traveler->tr_address = $validatedData['tr_address'];
+            $traveler->tr_zip = $validatedData['tr_zip'];
+
             $traveler->status = 'Trip Request';
             $traveler->tr_status = 1;
             $traveler->save();
@@ -188,6 +214,7 @@ class TripController extends Controller
         $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
         // dd($tripmember);
         $triptype = TripType::all();
+
         return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember'));
 
     }
@@ -214,12 +241,25 @@ class TripController extends Controller
             'tr_end_date' => 'nullable|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
+
+            'tr_country' => 'nullable|string',       
+            'tr_state'=>'nullable|string',
+            'tr_city'=>'nullable|string',
+            'tr_address'=>'nullable|string',
+            'tr_zip'=>'nullable|string',
+
         ], [
             'tr_name.required' => 'Traveler name is required',
             'tr_agent_id.required' => 'Agent ID is required',
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
             'tr_start_date.required' => 'Start date is required',
+            
+            'tr_country.required' => 'Country is required',       
+            'tr_state.required'=>'State is required',
+            'tr_city.required'=>'City is required',
+            'tr_address.required'=>'Address is required',
+            'tr_zip.required'=>'Zip is required',
         ]);
 
     
@@ -306,7 +346,9 @@ class TripController extends Controller
     public function createTravelers(): View
     {
         $triptype = TripType::all();
-        return view('masteradmin.traveler.create',compact('triptype'));
+        $country = Countries::all();
+
+        return view('masteradmin.traveler.create',compact('triptype','country'));
     }
 
     public function editDetails($id)
@@ -316,7 +358,20 @@ class TripController extends Controller
         $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
         // dd($tripmember);
         $triptype = TripType::all();
-        return view('masteradmin.traveler.edit',compact('trip','triptype', 'tripmember'));
+
+               
+    $country = Countries::all();
+        
+    $selectedCountryId = $trip->tr_country;
+
+    $states = States::where('country_id', $selectedCountryId)->get();
+
+    $selectedStateId = $trip->tr_state;
+
+    $city = Cities::where('state_id', $selectedStateId)->get();
+
+
+        return view('masteradmin.traveler.edit',compact('trip','triptype', 'tripmember','country','states','city'));
 
     }
     

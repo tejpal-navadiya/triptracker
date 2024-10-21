@@ -306,115 +306,126 @@
 
         <script>
             $(document).ready(function() {
+                // Handle change event for the country dropdown
                 $('#tr_country').change(function() {
                     var countryId = $(this).val();
-                    if (countryId) {
-                        // Fetch currencies related to the selected country
-                        $.ajax({
-                            url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/currencies/' +
-                                countryId,
-                            type: 'GET',
-                            success: function(currencies) {
-                                $('#tr_currency').empty();
-                                $('#tr_currency').append(
-                                    '<option value="" selected>Select Currency</option>');
-                                $.each(currencies, function(index, currency) {
-                                    $('#tr_currency').append('<option value="' + currency
-                                        .id + '">' + currency.currency + ' (' + currency
-                                        .currency_symbol + ') - ' + currency
-                                        .currency_name + '</option>');
-                                });
-                                $('#tr_currency').select2(); // Re-initialize Select2
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.log('Error fetching currencies: ' + textStatus);
-                            }
-                        });
 
-                        // Fetch states related to the selected country
+                    if (countryId) {
                         $.ajax({
-                            url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/states/' +
-                                countryId,
+                            url: '{{ route('getStates', ':countryId') }}'.replace(':countryId',
+                                countryId),
                             type: 'GET',
-                            success: function(states) {
+                            dataType: 'json',
+                            success: function(data) {
+                                // Clear the existing state options
                                 $('#tr_state').empty();
                                 $('#tr_state').append(
-                                    '<option value="" selected>Select State</option>');
-                                $.each(states, function(index, state) {
-                                    $('#tr_state').append('<option value="' + state.id +
-                                        '">' + state.name + '</option>');
+                                    '<option value="">Select a State...</option>');
+
+                                // Populate the state dropdown with new options
+                                $.each(data, function(key, value) {
+                                    $('#tr_state').append('<option value="' + value.id +
+                                        '">' + value.name + '</option>');
                                 });
-                                $('#tr_state').select2(); // Re-initialize Select2
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 console.log('Error fetching states: ' + textStatus);
                             }
                         });
                     } else {
-                        $('#tr_currency').empty().append('<option value="" selected>Select Currency</option>');
-                        $('#tr_state').empty().append('<option value="" selected>Select State</option>');
-                    }
-                });
-
-                // Load cities when the state changes
-                $('#tr_state').change(function() {
-                    var stateId = $(this).val();
-                    if (stateId) {
-                        $.ajax({
-                            url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/cities/' +
-                                stateId,
-                            type: 'GET',
-                            success: function(cities) {
-                                $('#lib_city').empty();
-                                $('#lib_city').append(
-                                    '<option value="" selected>Select City</option>');
-                                $.each(cities, function(index, city) {
-                                    $('#lib_city').append('<option value="' + city.id +
-                                        '">' + city.name + '</option>');
-                                });
-                                $('#lib_city').select2(); // Re-initialize Select2
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.log('Error fetching cities: ' + textStatus);
-                            }
-                        });
-                    } else {
-                        $('#lib_city').empty().append('<option value="" selected>Select City</option>');
+                        // Reset the state dropdown if no country is selected
+                        $('#tr_state').empty();
+                        $('#tr_state').append('<option value="">Select a State...</option>');
                     }
                 });
             });
         </script>
+
+
+
 
         <script>
             $(document).ready(function() {
-                // Trigger state selection to load cities
+                // Initialize Select2 for both country and currency select elements
+                $('#tr_country').select2();
+                $('#tr_currency').select2();
+
+                $('#tr_country').change(function() {
+                    var countryId = $(this).val();
+                    if (countryId) {
+                        $.ajax({
+                            url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/currencies/' +
+                                countryId,
+                            type: 'GET',
+                            success: function(currencies) {
+                                $('#tr_currency').empty(); // Clear existing options
+                                $('#tr_currency').append(
+                                    '<option value="" selected>Select Currency</option>');
+                                $.each(currencies, function(index, currency) {
+                                    $('#tr_currency').append('<option value="' + currency
+                                        .id + '">' + currency.currency + ' (' +
+                                        currency.currency_symbol + ') - ' + currency
+                                        .currency_name + '</option>');
+                                });
+
+                                // Re-initialize Select2 after populating options
+                                $('#tr_currency').select2({
+                                    width: '100%' // Ensure it takes full width
+                                });
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.log('Error fetching currencies: ' + textStatus);
+                            }
+                        });
+                    } else {
+                        $('#tr_currency').empty(); // Clear the currency dropdown if no country is selected
+                        $('#tr_currency').append('<option value="" selected>Select Currency</option>');
+
+                        // Re-initialize Select2 after clearing options
+                        $('#tr_currency').select2({
+                            width: '100%'
+                        });
+                    }
+                });
+            });
+        </script>
+
+
+        <script>
+            $(document).ready(function() {
                 $('#tr_state').change(function() {
                     var stateId = $(this).val();
                     if (stateId) {
                         $.ajax({
-                            url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/cities/' +
-                                stateId,
+                            url: '{{ route('getRegisterCities', ':stateId') }}'.replace(':stateId',
+                                stateId),
                             type: 'GET',
-                            success: function(cities) {
+                            dataType: 'json',
+                            success: function(data) {
+                                // Clear the existing city options
                                 $('#lib_city').empty();
-                                $('#lib_city').append(
-                                    '<option value="" selected>Select City</option>');
-                                $.each(cities, function(index, city) {
-                                    $('#lib_city').append('<option value="' + city.id +
-                                        '">' + city.name + '</option>');
+                                $('#lib_city').append('<option value="">Select a City...</option>');
+
+                                // Populate the city dropdown with new options
+                                $.each(data, function(key, value) {
+                                    $('#lib_city').append('<option value="' + value.id +
+                                        '">' + value.name + '</option>');
                                 });
-                                $('#lib_city').select2(); // Re-initialize Select2
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 console.log('Error fetching cities: ' + textStatus);
                             }
                         });
                     } else {
+                        // Reset the city dropdown if no state is selected
                         $('#lib_city').empty();
-                        $('#lib_city').append('<option value="" selected>Select City</option>');
+                        $('#lib_city').append('<option value="">Select a City...</option>');
                     }
                 });
             });
         </script>
+
+
+
     @endsection
 @endif

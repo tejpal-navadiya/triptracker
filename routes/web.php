@@ -189,6 +189,10 @@ Route::group(['prefix' => $busadminRoute], function () {
 
        //Library View 
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+
+       //Library Show
+       Route::get('/library/show/{id}', [LibraryController::class, 'show'])->name('masteradmin.library.show');
+
        
 
         //trip traveler document 
@@ -218,6 +222,9 @@ Route::group(['prefix' => $busadminRoute], function () {
        
         //Agency
         Route::resource( 'agency', AgencyController::class);
+        Route::get('/agency/view/{id}', [AgencyController::class, 'view'])->name('masteradmin.agency.view');
+        Route::get('/agency/rolemodel/{id}', [AgencyController::class, 'rolemodel'])->name('rolemodel');
+
 
 
         //Task list
