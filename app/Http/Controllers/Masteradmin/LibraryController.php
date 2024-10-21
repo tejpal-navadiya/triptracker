@@ -165,7 +165,7 @@ class LibraryController extends Controller
 
     public function edit($id)
     {
-        $library = Library::where('lib_id', $id)->firstOrFail();
+        $library = Library::where( 'lib_id', $id)->firstOrFail();
 
         // Get the selected country's ID
         $selectedCountryId = $library->lib_country;
@@ -337,5 +337,16 @@ class LibraryController extends Controller
 
         // dd($trip);
         return view('masteradmin.library.view', compact('library', 'libraries'));
+    }
+
+    public function show($id){
+
+        $library = Library::where('lib_id', $id)->firstOrFail();
+        $libraries = Library::all();
+
+        // dd($trip);
+        return view('masteradmin.library.details', compact('library', 'libraries','library'));
+
+
     }
 }
