@@ -282,7 +282,7 @@ class Controller extends BaseController
             }
 
             //Trip
-            if (!Schema::hasTable($storeId.'_tc_trip')){   
+             if (!Schema::hasTable($storeId.'_tc_trip')){   
                 Schema::create($storeId.'_tc_trip', function (Blueprint $table) {
                     $table->string('tr_id')->unique()->primary();
                     $table->string('id')->nullable()->default(0);
@@ -310,6 +310,32 @@ class Controller extends BaseController
                         $table->string('status')->nullable();
                     }
                 });
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_country')) {
+                        $table->string('tr_country')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_state')) {
+                        $table->string('tr_state')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_city')) {
+                        $table->string('tr_city')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_address')) {
+                        $table->string('tr_address')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_zip')) {
+                        $table->string('tr_zip')->nullable();
+                    }
+                });
+                
             }
 
             //Trip Traveling Member

@@ -527,7 +527,7 @@ class AuthController extends Controller
                     $auth_user = Auth::guard('api')->user();
                 
                     $credentials = $request->only('old_password', 'new_password', 'confirm_password');
-                
+                    // dd($credentials);
                     $validator = \Validator::make($credentials, [
                         'old_password' => ['required', 'string'],
                         'new_password' => ['required', 'string', Password::min(8)
@@ -547,15 +547,18 @@ class AuthController extends Controller
                         return $this->sendError('Validation Error.', $validator->errors());
                     }
                 
-                    
+                    // dd($auth_user);
                 
                     $userDetails = new MasterUserDetails();
                     $userDetails->setTableForUniqueId($auth_user->buss_unique_id);
                 
                     try {
-                        $existingUser  = $userDetails->find($auth_user->id);
+                        $existingUser = $userDetails->where('id', $auth_user->id)->first();
 
-                        if (!Hash::check($credentials['old_password'], $existingUser->users_password)) {
+        
+
+                        //  dd($existingUser);
+                        if (!Hash::check($request->old_password, $existingUser->users_password)) {
                             return $this->sendError('The old password is incorrect.', [], 401);
                         }
                 
@@ -563,7 +566,13 @@ class AuthController extends Controller
                             return $this->sendError('User not found.', config('global.null_object'), 404);
                         }
                         
-                        $existingUser ->where('users_id', $auth_user->id)->update(['users_password' => Hash::make($credentials['new_password'])]);
+                        $updateData = [
+                            'users_password' => Hash::make($request->new_password),
+                        ];
+                
+                        $userDetails->where('id', $auth_user->id)->update($updateData);
+
+                        // dd($existingUser);
                 
                         $updatedUser  = $userDetails->find($auth_user->id);
 
@@ -582,16 +591,13 @@ class AuthController extends Controller
                         $updatedUser->plan = $plan ? $plan->sp_name : null; 
                         $updatedUser->sp_expiry_date = $auth_user ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
                         $updatedUser->isActive = $auth_user ? $auth_user->isActive : null; 
-
-
-
                 
                         $user_data = $this->UserResponse($updatedUser);
                         return $this->sendResponse($user_data, __('messages.api.user.password_change_success'));
+
                     } catch (\Exception $e) {
                         return $this->sendError('Error updating password.', [], 500);
                     }
-                           
             
                 
             }else
