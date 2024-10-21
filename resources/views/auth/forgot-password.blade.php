@@ -18,6 +18,6 @@
         <x-input-error :messages="$errors->get('email')" class="mt-1 mb-1" />
 
         <button type="submit" class="btn login_btn">Send Password Reset Link</button>
-        <p class="text-center font_18 mb-0 mt-2">Back to <a href="{{ route('login') }}" class="back_text">Login</a></p>
+        <p class="text-center mb-0 mt-2"><a href="{{ route('login') }}" class="back_text">Back to Login</a></p>
     </form>
 </x-guest-layout>

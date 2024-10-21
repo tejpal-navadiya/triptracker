@@ -29,16 +29,14 @@
 
 <body class="hold-transition login-page">
     <div class="login-box">
-        <div class="card">
-            <div class="login-card-body">
-                <div class="login-logo">
-                    <img src="{{url('public/dist/img/logo.png')}}" alt="Trip Tracker Logo" class="brand-image">
-                </div>
-                <div class="">
-                    {{ $slot }}
-                </div>
-            </div>
+    <div class="login-box-main">        
+        <div class="login-logo">
+            <img src="{{url('public/dist/img/logo.png')}}" alt="Trip Tracker Logo" class="brand-image">
         </div>
+        <div class="">
+            {{ $slot }}
+        </div>        
+    </div>
     </div>
 <script src="{{url('public/plugins/jquery/jquery.min.js')}}"></script>
 <!-- Bootstrap 4 -->

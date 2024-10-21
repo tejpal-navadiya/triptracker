@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 <title>Login | Trip Tracker</title>
 <x-guest-layout>
     
-    <h5 class="login-box-msg">Login !</h5>
+    <h5 class="login-box-msg">Login Your Account</h5>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

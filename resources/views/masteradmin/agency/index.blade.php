@@ -30,6 +30,7 @@
             </div>
             <!-- /.content-header -->
             <!-- Main content -->
+
             <section class="content px-10">
                 <div class="container-fluid">
                     @if (Session::has('success'))
@@ -64,23 +65,102 @@
 
                                         @foreach ($agency as $value)
                                             <tr>
-                                                <td>{{ $value->user_agency_numbers }}</td>
-                                                <td>{{ $value->users_first_name }}</td>
+                                                <td>{{ $value->user_agency_numbers ?? '' }}
+                                                </td>
+                                                <td>{{ $value->users_first_name ?? ('' . ' ' . $value->users_first_name ?? '') }}
+                                                </td>
                                                 <td>{{ $value->users_email }}</td>
-                                                <td>{{ $value->users_phone }}</td>
-                                                <td>{{ $value->role_id }}
-                                                <td>{{ $value->users_state }}</td>
+                                                <td>{{ $value->user_emergency_phone_number ?? ($value->users_phone ?? '') }}
+                                                </td>
+                                                <td>{{ $value->userRole->role_name ?? config('global.default_user_role') }}
+                                                </td>
 
                                                 <td>
+                                                    @if ($value->users_status == 1)
+                                                        <button class="btn btn-success btn-sm toggle-status"
+                                                            data-id="{{ $value->id }}" data-status="0">Active</button>
+                                                    @else
+                                                        <button class="btn btn-danger btn-sm toggle-status"
+                                                            data-id="{{ $value->id }}" data-status="1">Inactive</button>
+                                                    @endif
+                                                </td>
+                                                <td>
 
-                                                    <a href=""><i
+                                                    <a href="{{ route('masteradmin.agency.view', $value->users_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                                                    <a href="{{ route('agency.edit', $value->users_id) }}"><i
-                                                            class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                                    @if ($value->userRole->role_name ?? '')
+                                                        <a href="{{ route('agency.edit', $value->users_id) }}">
+                                                            <i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i>
+                                                        </a>
+                                                    @else
+                                                        <i class="fas fa-solid fa-pen-to-square edit_icon_grid"
+                                                            style="color: gray; cursor: not-allowed;"></i>
+                                                    @endif
 
-                                                    <a href=""><i
-                                                            class="fas fa-regular fa-user edit_icon_grid"></i></a>
+
+                                                    <a data-toggle="modal"
+                                                        data-target="#agency_user-modal-{{ $value->users_id }}">
+                                                        <i class="fas fa-regular fa-user edit_icon_grid"></i>
+                                                    </a>
+
+
+                                                    <div class="modal fade" id="agency_user-modal-{{ $value->users_id }}"
+                                                        tabindex="-1" role="dialog"
+                                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                                                        <div class="modal-dialog modal-sm modal-dialog-centered"
+                                                            role="document">
+                                                            <div class="modal-content">
+                                                                <form id="delete-plan-form"
+                                                                    action="{{ route('rolemodel', $value->users_id) }}""
+                                                                    method="get">
+                                                                    {{-- @csrf --}}
+                                                                    @method('POST') <!-- Spoofing DELETE method -->
+
+
+                                                                    <div class="modal-body pad-1 text-center">
+                                                                        <i
+                                                                            class="fas fa-solid fa-user-plus delete_icon"></i>
+                                                                        <!-- Add user icon -->
+                                                                        <p class="company_business_name px-10"><b>Assign
+                                                                                User</b></p>
+                                                                        <p class="company_details_text"></p>
+
+
+                                                                        <div class="form-group">
+
+
+                                                                            @if ($value->userRole->role_name ?? '')
+                                                                                <label for="user_select">Select
+                                                                                    User:</label>
+                                                                                <select id="user_select"
+                                                                                    class="form-control">
+
+                                                                                    @foreach ($users_role as $user)
+                                                                                        <option
+                                                                                            value="{{ $user->role_id }}">
+                                                                                            {{ $user->role_name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                    <!-- Add more users as needed -->
+                                                                                </select>
+                                                                            @else
+                                                                                {{ config('global.default_user_role_alert_msg') }}
+                                                                            @endif
+                                                                            @if ($value->userRole->role_name ?? '')
+                                                                                <button type="button" class="add_btn px-15"
+                                                                                    data-dismiss="modal">Cancel</button>
+                                                                                <button type="submit"
+                                                                                    class="delete_btn px-15">Assign</button>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
 
 
                                                     <a data-toggle="modal"
@@ -95,8 +175,8 @@
 
                                                         <div class="modal-dialog modal-sm modal-dialog-centered"
                                                             role="document">
-                                                            <div class="modal-content">
 
+                                                            <div class="modal-content">
                                                                 <form id="delete-plan-form"
                                                                     action="{{ route('agency.destroy', $value->users_id) }}"
                                                                     method="POST">
@@ -105,20 +185,30 @@
 
                                                                     <div class="modal-body  pad-1 text-center">
                                                                         <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                                        <p class="company_business_name px-10"> <b>Delete
-                                                                                Library</b></p>
-                                                                        <p class="company_details_text">Are You Sure You
-                                                                            Want to Delete This Library?</p>
-                                                                        <button type="button" class="add_btn px-15"
-                                                                            data-dismiss="modal">Cancel</button>
-                                                                        <button type="submit"
-                                                                            class="delete_btn px-15">Delete</button>
+                                                                        <p class="company_business_name px-10">
+                                                                            <b>Delete
+                                                                                Library</b>
+                                                                        </p>
+
+                                                                        @if ($value->userRole->role_name ?? '')
+                                                                            <p class="company_details_text px-10"> Are
+                                                                                You
+                                                                                Sure You Want to Delete This User? </p>
+                                                                        @else
+                                                                            {{ config('global.default_user_role_alert_msg') }}
+                                                                        @endif
+                                                                        @if ($value->userRole->role_name ?? '')
+                                                                            <button type="button" class="add_btn px-15"
+                                                                                data-dismiss="modal">Cancel</button>
+                                                                            <button type="submit"
+                                                                                class="delete_btn px-15">Delete</button>
+                                                                        @endif
                                                                     </div>
+
                                                                 </form>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -152,8 +242,9 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="role_name">Role Name</label>
-                                        <input type="text" class="form-control @error('role_name') is-invalid @enderror"
-                                            id="role_name" name="role_name" placeholder="Enter Role Name"
+                                        <input type="text"
+                                            class="form-control @error('role_name') is-invalid @enderror" id="role_name"
+                                            name="role_name" placeholder="Enter Role Name"
                                             value="{{ old('role_name') }}" />
                                         @error('role_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
