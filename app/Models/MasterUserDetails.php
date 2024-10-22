@@ -46,6 +46,7 @@ class MasterUserDetails extends Authenticatable
         'user_emergency_contact_person',
         'user_emergency_phone_number',
         'user_emergency_email',
+        'api_token',
     ];
 
     

@@ -13,15 +13,37 @@ class Trip extends Model
 
     protected $fillable = ['tr_id','id','tr_name', 'tr_agent_id', 'tr_traveler_name', 'tr_dob', 'tr_age', 'tr_number', 'tr_email', 'tr_phone', 'tr_num_people','tr_start_date' ,'tr_end_date' ,'tr_value_trip' , 'tr_type_trip','tr_desc','tr_status'];
 
+    // public function __construct(array $attributes = [])
+    // {
+    //     parent::__construct($attributes);
+
+    //     $user = Auth::guard('masteradmins')->user();
+    //     // dd($user);
+    //     $uniq_id = $user->user_id;
+    //     $this->setTable($uniq_id . '_tc_trip');
+    // }
+    
+    protected $tableSetManually = false; // To track if the table is already set manually
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
+        // Check if the user is authenticated via 'masteradmins' guard and set the table dynamically
         $user = Auth::guard('masteradmins')->user();
-        // dd($user);
-        $uniq_id = $user->user_id;
-        $this->setTable($uniq_id . '_tc_trip');
+        if ($user && !$this->tableSetManually) { // Only set table if it hasn't been manually set
+            $uniq_id = $user->user_id;
+            $this->setTable($uniq_id . '_tc_trip');
+        }
     }
 
-
+    /**
+     * Dynamically set the table using the unique ID from the request header
+     */
+    public function setTableForUniqueId($uniqueId)
+    {
+        $this->setTable($uniqueId . '_tc_trip');
+        $this->tableSetManually = true; // Mark the table as set manually
+    }
+    
 }

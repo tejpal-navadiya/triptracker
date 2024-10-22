@@ -260,43 +260,6 @@
             });
         </script>
 
-
-
-        {{-- <script>
-            $(document).ready(function() {
-                $('#tr_country').change(function() {
-                    var countryId = $(this).val();
-                    if (countryId) {
-                        $.ajax({
-                            url: '{{ env('APP_URL') }}{{ config('global.businessAdminURL') }}/currencies/' +
-                                countryId,
-                            type: 'GET',
-                            success: function(currencies) {
-                                $('#tr_currency').empty(); // Clear existing options
-                                $('#tr_currency').append(
-                                    '<option value="" selected>Select Currency</option>');
-                                $.each(currencies, function(index, currency) {
-                                    $('#tr_currency').append('<option value="' + currency
-                                        .id + '">' + currency.currency + ' (' + currency
-                                        .currency_symbol + ') - ' + currency
-                                        .currency_name + '</option>');
-                                });
-                                $('#tr_currency')
-                                    .select2(); // Re-initialize Select2 on the currency dropdown
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.log('Error fetching currencies: ' + textStatus);
-                            }
-                        });
-                    } else {
-                        $('#tr_currency').empty(); // Clear the currency dropdown if no country is selected
-                        $('#tr_currency').append('<option value="" selected>Select Currency</option>');
-                    }
-                });
-            });
-        </script> --}}
-
-
         <script>
             $(document).ready(function() {
                 // Handle change event for the country dropdown
@@ -334,6 +297,7 @@
             });
         </script>
 
+        
         <script>
             $(document).ready(function() {
                 // Initialize Select2 for both country and currency select elements

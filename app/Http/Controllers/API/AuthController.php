@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\ResetPasswordMail;
+use App\Models\CustomPersonalAccessToken;
+
 
 class AuthController extends Controller
 {
@@ -156,91 +158,110 @@ class AuthController extends Controller
         return $uniqueId;
     }
 
-
     public function login(Request $request)
     {
+        // Validate the input fields
         $request->validate([
             'user_email' => 'required|string|email',
             'user_password' => 'required|string|min:8',
             'user_id' => 'required|string',
         ]);
     
-        // Fetch the user
-        $user = MasterUser::where('buss_unique_id', $request->user_id)->first();
-    
-        if (!$user || !Hash::check($request->user_password, $user->user_password)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-    
-        // Create a token
-        $token = $user->createToken('loginUser')->plainTextToken;
-    
-        return response()->json(['token' => $token, 'user' => $user], 200);
-    }
+        $masterUser = MasterUser::where('buss_unique_id', $request->user_id)->first();
 
+        $userDetails = new MasterUserDetails();
+        $userDetails->setTableForUniqueId($masterUser->buss_unique_id);
+
+        $userDetailRecord = $userDetails->where(['user_id'=> $request->user_id, 'users_email' => $request->user_email])->first();
+        
+        if ($userDetailRecord && Hash::check($request->user_password, $userDetailRecord->users_password)) {
+
+            $tokenResult = $userDetailRecord->createToken('MasterUserToken');
+            $token = $tokenResult->plainTextToken; 
+
+            $tokenEntry = $tokenResult->accessToken; 
+            $tokenEntry->tokenable_id = $userDetailRecord->users_id; 
+            $tokenEntry->tokenable_type = MasterUserDetails::class;
+            $tokenEntry->save(); 
+
+            $newApiToken = bin2hex(random_bytes(30)); // Generate a new random token
+           
+            $userDetailRecord->where(['user_id'=> $request->user_id, 'users_email' => $request->user_email])
+                ->update(['api_token' => $newApiToken]);
+            // $userDetailRecord->save();
+
+            // $userDetailRecord->api_token = $newApiToken;
+            $userDetails = new MasterUserDetails();
+            $userDetails->setTableForUniqueId($masterUser->buss_unique_id);
+    
+            $userDetailRecord = $userDetails->where(['user_id'=> $request->user_id, 'users_email' => $request->user_email])->first();
+
+                return response()->json([
+                    'message' => 'Login successfully',
+                    'data' => $userDetailRecord,
+                ], 200);
+            }
+    
+        return response()->json(['error' => 'Unauthorized: Invalid credentials'], 401);
+    }
+    
     public function GetUserProfile(Request $request)
     {
-        try
-        {
-            if(Auth::guard('api')->check())
-            {
-                $input = $request->all();
-                $auth_user = Auth::guard('api')->user();
-                // dd($auth_user);
-                
-                //dd($userDetails->getTable());
+   
 
-               
-                $userDetails = new MasterUserDetails();
-                $userDetails->setTableForUniqueId($auth_user->buss_unique_id);
-                $user = $userDetails->where('id', $auth_user->id)->first();
-
-                if ($user) {
-                    // Manually fetch related country, state, and city based on the foreign keys
-                    $country = Countries::where('id', $user->users_country)->first();
-                    $state = States::where('id', $user->users_state)->first();
-                    $city = Cities::where('id', $user->users_city)->first();
-                    $plan = Plan::where('sp_id', $auth_user->sp_id)->first();
-                    
-                    $user->country = $country ? $country->name : null; 
-                    $user->state = $state ? $state->name : null; 
-                    $user->city = $city ? $city->name : null; 
-                    $user->sp_id = $auth_user ? $auth_user->sp_id : null; 
-                    $user->plan = $plan ? $plan->sp_name : null; 
-                    $user->sp_expiry_date = $auth_user ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
-                    $user->isActive = $auth_user ? $auth_user->isActive : null; 
-                }
-
-                $token = $request->bearerToken();
-                $user->token = $token;
-               
-                $user_data = $this->UserResponse($user);
-
-              
-                
-                return $this->sendResponse($user_data, __('messages.api.user.user_get_profile_success'));              
+        try {
+            $user = $request->attributes->get('authenticated_user');
+      
+            if (!$user) {
+                return $this->sendError(__('messages.api.user.not_found'), config('global.null_object'), 404, false);
             }
-            else
-            {                
-                return $this->sendError(__('messages.api.authentication_err_message'), config('global.null_object'),401,false);
-            }
-        }
-        catch(\Exception $e)
-        {
-            $auth_user = Auth::guard('api')->user();
-            $this->serviceLogError($service_name = 'GetUserProfile',$user_id = $auth_user->id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
-            return $this->sendError($e->getMessage(), config('global.null_object'),401,false);
+
+            $country = Countries::where('id', $user->users_country)->first();
+            $state = States::where('id', $user->users_state)->first();
+            $city = Cities::where('id', $user->users_city)->first();
+            $auth_user = MasterUser::where('id', $user->id)->first();
+            $plan = Plan::where('sp_id', $auth_user->sp_id)->first();
+
+            // Populate user details
+            $user->country = $country ? $country->name : null; 
+            $user->state = $state ? $state->name : null; 
+            $user->city = $city ? $city->name : null; 
+            $user->sp_id = $auth_user->sp_id; 
+            $user->plan = $plan ? $plan->sp_name : null; 
+            $user->sp_expiry_date = $auth_user->sp_expiry_date ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
+            $user->isActive = $auth_user->isActive; 
+            $user->user_first_name = $auth_user->user_first_name;
+
+            // $user->token = $request->bearerToken();
+
+            $user_data = $this->UserResponse($user);
+            
+            return $this->sendResponse($user_data, __('messages.api.user.user_get_profile_success'));
+        } catch (\Exception $e) {
+            $user = $request->attributes->get('authenticated_user');
+            $this->serviceLogError('GetUserProfile', $user->users_id ?? null, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
         }
     }
+
 
     public function Logout(Request $request)
     {
         // echo 'in';die;
         try
         {
-            if (Auth::guard('api')->check()) {
-                
-                Auth::guard('api')->user()->currentAccessToken()->delete();
+            $user = $request->attributes->get('authenticated_user');
+            $uniqueId = $request->header('X-UniqueId');
+            // dd($uniqueId);
+            if ($user) {
+                $currentToken = $user->currentAccessToken();
+                $userDetails = new MasterUserDetails();
+                $userDetails->setTableForUniqueId($uniqueId);
+        
+                $updateResult = $userDetails->where('user_id', $uniqueId)
+                ->update(['api_token' => null]); 
+
+            //  dd($currentToken);
           
                 return $this->sendResponse(config('global.null_object'), __('messages.api.logout'));
                 
@@ -252,8 +273,8 @@ class AuthController extends Controller
         }
         catch(\Exception $e)
         {
-            $auth_user = Auth::guard('api')->user();
-            $this->serviceLogError($service_name = 'Logout',$user_id = $auth_user->id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
+            $user = $request->attributes->get('authenticated_user');
+            $this->serviceLogError($service_name = 'Logout',$user_id = $user->users_id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
             return $this->sendError($e->getMessage(), config('global.null_object'),401,false);
         }
     }
@@ -442,12 +463,16 @@ class AuthController extends Controller
     {
         try
         {
-            if(Auth::guard('api')->check())
+            $auth_user = $request->attributes->get('authenticated_user');
+            $uniqueId = $request->header('X-UniqueId');
+            $token = $request->bearerToken();
+            $user = MasterUser::where('id', $auth_user->id)->first();
+           // dd($user->user_first_name);
+            if($auth_user)
             {
                 
                 $input = $request->all();
-                $auth_user = Auth::guard('api')->user();
-                // dd($auth_user);
+   
                 $request->validate([
                     'users_first_name' => ['required', 'string', 'max:255'],
                     'users_last_name' => ['required', 'string', 'max:255'],
@@ -458,9 +483,9 @@ class AuthController extends Controller
 
             
                 $userDetails = new MasterUserDetails();
-                $userDetails->setTableForUniqueId($auth_user->buss_unique_id);
-                $existingUser = $userDetails->find($auth_user->id);
-
+                $userDetails->setTableForUniqueId($uniqueId);
+                $existingUser = $userDetails->where(['user_id' => $uniqueId, 'api_token' => $token ])->firstOrFail();
+                // dd($existingUser);
                 if (!$existingUser) {
                     return $this->sendError('User not found.', config('global.null_object'), 404);
                 }
@@ -468,7 +493,7 @@ class AuthController extends Controller
                 $users_image = '';
                 if ($request->hasFile('users_image')) {
 
-                    $userFolder = 'masteradmin/' .$auth_user->buss_unique_id.'_'.$auth_user->user_first_name;
+                    $userFolder = 'masteradmin/' .$auth_user->user_id.'_'.$user->user_first_name;
                     $users_image = $this->handleImageUpload($request, 'users_image', null, 'profile_image', $userFolder);
 
                 }
@@ -479,24 +504,23 @@ class AuthController extends Controller
                     $input['users_image'] = $existingUser ->users_image;
                 }
 
-                $existingUser->where('users_id',$existingUser->users_id)->update($input);
-                $updatedUser = $userDetails->find($auth_user->id);
-                // session(['user_details' => $updatedUser]);
-                $token = $request->bearerToken();
-                $updatedUser->token = $token;
+                $existingUser->where(['user_id' => $uniqueId, 'api_token' => $token ])->update($input);
+                $updatedUser = $userDetails->where(['user_id' => $uniqueId, 'api_token' => $token ])->firstOrFail();
+             
                 
                 $country = Countries::where('id', $updatedUser->users_country)->first();
                 $state = States::where('id', $updatedUser->users_state)->first();
                 $city = Cities::where('id', $updatedUser->users_city)->first();
-                $plan = Plan::where('sp_id', $auth_user->sp_id)->first();
+                $plan = Plan::where('sp_id', $user->sp_id)->first();
                 
                 $updatedUser->country = $country ? $country->name : null; 
                 $updatedUser->state = $state ? $state->name : null; 
                 $updatedUser->city = $city ? $city->name : null; 
-                $updatedUser->sp_id = $auth_user ? $auth_user->sp_id : null; 
+                $updatedUser->sp_id = $user ? $user->sp_id : null; 
                 $updatedUser->plan = $plan ? $plan->sp_name : null; 
-                $updatedUser->sp_expiry_date = $auth_user ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
-                $updatedUser->isActive = $auth_user ? $auth_user->isActive : null; 
+                $updatedUser->sp_expiry_date = $user ? Carbon::parse($user->sp_expiry_date)->format('M d, Y') : null; 
+                $updatedUser->isActive = $user ? $user->isActive : null; 
+                $updatedUser->user_first_name = $user->user_first_name;
 
                 $user_data = $this->UserResponse($updatedUser);
 
@@ -510,8 +534,8 @@ class AuthController extends Controller
         }
         catch(\Exception $e)
         {
-            $auth_user = Auth::guard('api')->user();
-            $this->serviceLogError($service_name = 'GetUserProfile',$user_id = $auth_user->id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
+            $auth_user = $request->attributes->get('authenticated_user');
+            $this->serviceLogError($service_name = 'GetUserProfile',$user_id = $auth_user->users_id,$message = $e->getMessage(),$requested_field = json_encode($request->all()),$response_data=$e);
             return $this->sendError($e->getMessage(), config('global.null_object'),401,false);
         }
     }
@@ -520,11 +544,15 @@ class AuthController extends Controller
     {
         try
         {
-            if(Auth::guard('api')->check())
+            $auth_user = $request->attributes->get('authenticated_user');
+            $uniqueId = $request->header('X-UniqueId');
+            $token = $request->bearerToken();
+            $user = MasterUser::where('id', $auth_user->id)->first();
+
+            if($auth_user)
             {
                 
                     $input = $request->all();
-                    $auth_user = Auth::guard('api')->user();
                 
                     $credentials = $request->only('old_password', 'new_password', 'confirm_password');
                     // dd($credentials);
@@ -550,12 +578,10 @@ class AuthController extends Controller
                     // dd($auth_user);
                 
                     $userDetails = new MasterUserDetails();
-                    $userDetails->setTableForUniqueId($auth_user->buss_unique_id);
+                    $userDetails->setTableForUniqueId($uniqueId);
                 
                     try {
-                        $existingUser = $userDetails->where('id', $auth_user->id)->first();
-
-        
+                        $existingUser = $userDetails->where(['user_id' => $uniqueId, 'api_token' => $token ])->first();
 
                         //  dd($existingUser);
                         if (!Hash::check($request->old_password, $existingUser->users_password)) {
@@ -574,23 +600,21 @@ class AuthController extends Controller
 
                         // dd($existingUser);
                 
-                        $updatedUser  = $userDetails->find($auth_user->id);
-
-                        $token = $request->bearerToken();
-                        $updatedUser->token = $token;
+                        $updatedUser  = $userDetails->where(['user_id' => $uniqueId, 'api_token' => $token ])->first();
                         
                         $country = Countries::where('id', $updatedUser->users_country)->first();
                         $state = States::where('id', $updatedUser->users_state)->first();
                         $city = Cities::where('id', $updatedUser->users_city)->first();
-                        $plan = Plan::where('sp_id', $auth_user->sp_id)->first();
+                        $plan = Plan::where('sp_id', $user->sp_id)->first();
                         
                         $updatedUser->country = $country ? $country->name : null; 
                         $updatedUser->state = $state ? $state->name : null; 
                         $updatedUser->city = $city ? $city->name : null; 
-                        $updatedUser->sp_id = $auth_user ? $auth_user->sp_id : null; 
+                        $updatedUser->sp_id = $user ? $user->sp_id : null; 
                         $updatedUser->plan = $plan ? $plan->sp_name : null; 
-                        $updatedUser->sp_expiry_date = $auth_user ? Carbon::parse($auth_user->sp_expiry_date)->format('M d, Y') : null; 
-                        $updatedUser->isActive = $auth_user ? $auth_user->isActive : null; 
+                        $updatedUser->sp_expiry_date = $user ? Carbon::parse($user->sp_expiry_date)->format('M d, Y') : null; 
+                        $updatedUser->isActive = $user ? $user->isActive : null; 
+                        $updatedUser->user_first_name = $user->user_first_name;
                 
                         $user_data = $this->UserResponse($updatedUser);
                         return $this->sendResponse($user_data, __('messages.api.user.password_change_success'));

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\TripController;
 
 
 /*
@@ -31,10 +32,14 @@ Route::get('subscription_plans_list',            [AuthController::class,'getPlan
 Route::post('forgot_password',            [AuthController::class,'forgotPassword']);
 
 
-Route::middleware(['handleAuthErrors'])->group( function (): void {
+Route::middleware(['handleAuthErrors'])->group( function () {
+    //user profile
     Route::get('GetUserProfile',     [AuthController::class,'GetUserProfile']);
     Route::post('update_profile',     [AuthController::class,'updateUserProfile']);
     Route::post('change_password',     [AuthController::class,'changePassword']);
+
+    //trip
+    Route::get('trip_list',     [TripController::class,'GetTripList']);
     
     Route::get('Logout',            [AuthController::class,'Logout']);
 });

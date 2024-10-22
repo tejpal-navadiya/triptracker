@@ -15,6 +15,8 @@ class MasterUser extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, Billable;
     protected $guard = 'masteradmin';
 
+    protected $guarded = [];
+
     public $table = "buss_master_users";
     protected $primaryKey = 'id';
     public $incrementing = false;

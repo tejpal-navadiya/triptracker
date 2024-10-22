@@ -128,6 +128,9 @@ return [
         'subscription_plans'=> [
             'plan_get_success' => 'Subscription Plans data get successfully.',
         ],
+        'trip' => [
+            'list_success' => 'Trip data get successfully.',
+        ]
     ]
     
 ];

@@ -165,12 +165,19 @@ class Controller extends BaseController
                     $table->string('user_id')->nullable();
                     $table->string('remember_token')->nullable();
                     $table->tinyInteger('users_status')->default(0)->nullable();
+                    $table->text('api_token')->nullable();
                     $table->timestamps();
                 });
             }else{
                 Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
                     if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_phone')) {
                         $table->string('users_phone')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_country')) {
+                        $table->integer('users_country')->nullable()->default(0);
                     }
                 });
 
@@ -245,6 +252,17 @@ class Controller extends BaseController
     
                     }
                 });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'api_token')) {
+
+                        $table->text('api_token')->nullable();
+    
+                    }
+                });
+
+                
             }
 
             // End Modified User Details
@@ -581,6 +599,13 @@ class Controller extends BaseController
         
     }
     
+    public function getLocalTime($str, $timezone) {
+        $datetime = date("Y-m-d H:i:s" , $str);
+        $given = new \DateTime($datetime, new \DateTimeZone("UTC"));
+        $given->setTimezone(new \DateTimeZone($timezone));
+        return $given->format("Y-m-d H:i:s");
+    }
+
     public function createTableRoute(Request $request)
     {
         
@@ -599,27 +624,12 @@ class Controller extends BaseController
         }
     }
 
-    public function getUserFolder()
-    {
-        // Check if the user is authenticated
-        if (Auth::guard('api')->check()) {
-            $auth_user = Auth::guard('api')->user();
-            
-            // Construct the folder path dynamically based on the authenticated user
-            $userFolder = 'masteradmin/' . $auth_user->buss_unique_id . '_' . $auth_user->user_first_name;
-            
-            return $userFolder;
-        }
-        
-        return null; // In case the user is not authenticated
-    }
-
     public function UserResponse($response)
     {
-        // dd($response);
+       //  dd($response);
         if(!empty($response->users_image))
         {
-            $userFolder = $this->getUserFolder();
+            $userFolder = 'masteradmin/' .$response->user_id.'_'.$response->user_first_name;
         //    dd($userFolder);
             $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$response->users_image));
         }else{
@@ -652,7 +662,6 @@ class Controller extends BaseController
             'users_image'     => $imageurl,
 
             'users_zip'             => (isset($response->users_zip) && $response->users_zip != null) ? $response->users_zip : '',
-            'Authorization'     => (isset($response->token) &&$response->token != null) ? 'Bearer '.$response->token : '',
             'users_password'        => (isset($response->users_password) && $response->users_password != null) ? $response->users_password : '',
             'users_phone'             => (isset($response->users_phone) && $response->users_phone != null) ? $response->users_phone : 0,
             'users_bio'        => (isset($response->users_bio) && $response->users_bio != null) ? $response->users_bio : '',
@@ -663,10 +672,37 @@ class Controller extends BaseController
             'plan_name'=> (isset($response->plan) && $response->plan != null) ? $response->plan : '',
             'sp_expiry_date'=> (isset($response->sp_expiry_date) && $response->sp_expiry_date != null) ? $response->sp_expiry_date : '',
             'isActive'=> (isset($response->isActive) && $response->isActive != null) ? $response->isActive : '',
-            
+            'api_token'=> (isset($response->api_token) && $response->api_token != null) ? $response->api_token : '',
         ];
         return $data;
     }
 
+    public function TripListResponse($response)
+    {
+        $data = [];
+        if(count($response) > 0)
+        {
+            foreach($response as $key=>$value)
+            { 
+                // dd($value);
+                $created_at =$this->getLocalTime(strtotime($value->created_at), 'Asia/Kolkata');
+                $updated_at =  $this->getLocalTime(strtotime($value->updated_at), 'Asia/Kolkata'); 
+
+                $arr = [
+                    'category_id'           => ($value->category_id ) ? $value->category_id  : '',
+                    'category_image'  =>$category_image,    
+                    'category_name'        => ($value->category_name) ? $value->category_name : '',
+                    'created_at'            => $created_at,
+                    'updated_at'            => $updated_at,
+                    'category_status'            => ($value->category_status) ? $value->category_status:0,
+                ];
+                array_push($data,$arr);
+            }
+        }
+        return $data;
+    }
+
+
+    
 }
     
