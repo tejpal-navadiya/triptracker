@@ -196,6 +196,22 @@
           </div>
           </div>
 
+          <div class="container mt-4">
+            <h4>Type of Trip</h4>
+
+            <!-- Nav tabs -->
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" id="tab-list">
+                <!-- Dynamic tab links will be added here -->
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="tab-content">
+                <!-- Dynamic tab panels will be added here -->
+            </div>
+            
+        </div>
+
           <div class="col-md-12">
           <button type="button" id="add" class="add_tripmembertbtn"><i class="fas fa-plus add_plus_icon"></i>Add Traveling Member</button>
           </div>
@@ -211,19 +227,7 @@
           @endif
           </div>
           <div class="container mt-4">
-            <h4>Type of Trip</h4>
-
-            <!-- Nav tabs -->
-            <!-- Tab Navigation -->
-            <ul class="nav nav-tabs" id="tab-list">
-                <!-- Dynamic tab links will be added here -->
-            </ul>
-
-            <!-- Tab Content -->
-            <div class="tab-content" id="tab-content">
-                <!-- Dynamic tab panels will be added here -->
-            </div>
-            <div class="dynamic-fields" id="Itinerary-fields">
+          <div class="dynamic-fields" id="Itinerary-fields">
                 <div class="row align-items-center mb-3">
                 <div class="col-md-4">
                     <input type="text" name="itinerary[0][trit_text]" class="form-control" placeholder="Itinerary Link">
@@ -233,7 +237,7 @@
               </div>
             </div>
           </div>
-        </div>
+          </div>
         </div>
 
         <div class="row py-20 px-10">

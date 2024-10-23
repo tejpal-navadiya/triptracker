@@ -17,7 +17,7 @@
                with font-awesome or any other icon font library -->
                 <li class="nav-item">
                     <a href="{{ route('masteradmin.home') }}"
-                        class="nav-link {{ request()->is($busadminRoutes . '/dashboard*') ? 'active' : '' }}">
+                        class="nav-link {{ request()->is($busadminRoutes . '/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
@@ -25,7 +25,7 @@
 
                 <li class="nav-item">
                     <a href="#"
-                        class="nav-link {{ request()->is($busadminRoutes . '/dashboard*') ? 'active' : '' }}">
+                        class="nav-link ">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Trips
                             <i class="fas fa-angle-right right"></i>
@@ -36,9 +36,9 @@
                         @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('trip.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -51,9 +51,9 @@
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="#"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -64,9 +64,9 @@
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.EmailTemplate') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -78,9 +78,9 @@
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.task.all') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -94,7 +94,7 @@
 
                 <li class="nav-item">
                     <a href="#"
-                        class="nav-link {{ request()->is($busadminRoutes . '/dashboard*') ? 'active' : '' }}">
+                        class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Travelers
                             <i class="fas fa-angle-right right"></i>
@@ -105,9 +105,9 @@
                         @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.travelers.travelersDetails') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -119,9 +119,9 @@
                         @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.travelers.create') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -135,7 +135,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('masteradmin.home') }}"
-                        class="nav-link {{ request()->is($busadminRoutes . '/dashboard*') ? 'active' : '' }}">
+                        class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Email Templates
                             <i class="fas fa-angle-right right"></i>
@@ -145,7 +145,7 @@
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.create') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Add Email Template</p>
                                 </a>
@@ -155,9 +155,9 @@
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/*') ||
+                                    request()->is($busadminRoutes . '//*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -168,9 +168,9 @@
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.EmailTemplate') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/*') ||
+                                    request()->is($busadminRoutes . '//*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -182,7 +182,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fas fa-cog"></i>
                         <p>
@@ -194,7 +194,7 @@
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.profile.edit') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Profile</p>
                                 </a>
@@ -204,9 +204,9 @@
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('user-role-details.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/userdetails*') ||
-                                    request()->is($busadminRoutes . '/usercreate*') ||
-                                    request()->is($busadminRoutes . '/useredit/*')
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
@@ -230,7 +230,7 @@
 
 
 
-                <li class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fas fa-plus"></i>
                         <p>
@@ -243,7 +243,7 @@
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
                                 <a href="{{ route('library.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>View All Libraries
                                     </p>
@@ -256,7 +256,7 @@
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
                                 <a href="{{ route('library.create') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Add Library
                                     </p>
@@ -267,7 +267,7 @@
                 </li>
 
 
-                <li class="nav-item {{ request()->is($busadminRoutes . '/profile*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fas fa-user"></i>
                         <p>
@@ -280,7 +280,7 @@
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
                                 <a href="{{ route('agency.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>View All Users</p>
                                 </a>
@@ -292,7 +292,7 @@
                         @if (isset($access['edit_profile']) && $access['edit_profile'])
                             <li class="nav-item">
                                 <a href="{{ route('agency.create') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Add User</p>
                                 </a>

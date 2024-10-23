@@ -37,22 +37,5 @@ class Trip extends Model
         'id' => 'string',
     ];
 
-   // Trip.php
-
-    public function travelingMembers($uniqueId = null)
-    {
-        // Create a new TripTravelingMember instance
-        $tripTravelingMember = new TripTravelingMember();
-
-        // If a unique ID is provided, set the table dynamically
-        if ($uniqueId) {
-            $tripTravelingMember->setTableForUniqueId($uniqueId);
-        }
-
-        // Return the relationship
-        return $this->hasMany(get_class($tripTravelingMember), 'tr_id', 'tr_id');
-    }
-
-
     
 }

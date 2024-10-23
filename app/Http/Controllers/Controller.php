@@ -709,20 +709,18 @@ class Controller extends BaseController
     public function TripListResponse($trips)
     {
         $data = [];
-        dd($trips);
+        
         if (count($trips) > 0) {
             foreach ($trips as $trip) {
                 // dd($trip);
+               // dd($trip->uniqueId);
+                
                 $created_at = $this->getLocalTime($trip->created_at, 'Asia/Kolkata');
                 $updated_at = $this->getLocalTime($trip->updated_at, 'Asia/Kolkata');
 
                 $tr_start_date = $this->getDate($trip->tr_start_date, 'Asia/Kolkata');
                 $tr_end_date = $this->getDate($trip->tr_end_date, 'Asia/Kolkata');
-
-                $uniqueId = $trip->unique_id;  
-
-                $tripMemberCount = $trip->travelingMembers($uniqueId)->count();
-
+                $tr_dob = $this->getDate($trip->tr_dob, 'Asia/Kolkata');
 
                 $tripData = [
                     'tr_id'            => $trip->tr_id,
@@ -731,7 +729,7 @@ class Controller extends BaseController
                     'tr_agent_id'      => $trip->tr_agent_id,
                     'agent_name'      => '',
                     'tr_traveler_name' => $trip->tr_traveler_name,
-                    'tr_dob'           => $trip->tr_dob,
+                    'tr_dob'           => $tr_dob,
                     'tr_age'           => $trip->tr_age,
                     'tr_number'        => $trip->tr_number,
                     'tr_email'         => $trip->tr_email,
@@ -745,7 +743,11 @@ class Controller extends BaseController
                     'tr_status'        => $trip->tr_status,
                     'created_at'       => $created_at,    
                     'updated_at'       => $updated_at,   
-                    'member_count'    => $tripMemberCount
+                    'member_count'    => $trip->member_count,
+                    'workflow_days' => '',
+                    'task_low' => $trip->low_count,
+                    'task_medium' => $trip->medium_count,
+                    'task_high' => $trip->high_count,
                 ];
 
                 array_push($data, $tripData);
@@ -755,9 +757,39 @@ class Controller extends BaseController
         return $data;
     }
 
+    public function TripTaskListResponse($tasks)
+    {
+        $data = [];
+        
+        if (count($tasks) > 0) {
+            foreach ($tasks as $task) {
+                // dd($trip);
+               // dd($trip->uniqueId);
+            
+                $trvt_date = $this->getDate($task->trvt_date, 'Asia/Kolkata');
+                $trvt_due_date = $this->getDate($task->trvt_due_date, 'Asia/Kolkata');
 
+                $taskData = [
+                    'trvt_id'            => $task->trvt_id,
+                    'id'               => $task->id,
+                    'tr_id'          => $task->tr_id,
+                    'tr_name'          => $task->tr_name,
+                    'trvt_name'      => $task->trvt_name,
+                    'trvt_category'           => $task->trvt_category,
+                    'category_name'           => $task->task_cat_name,
+                    'trvt_priority'        => $task->trvt_priority,
+                    'trvt_date'         => $trvt_date,
+                    'trvt_due_date'         => $trvt_due_date,
+                    'status'        => $task->status                    
+                ];
 
+                array_push($data, $taskData);
+            }
+        }
 
+        return $data;
+    }
+    
     
 }
     

@@ -64,13 +64,11 @@ class TripController extends Controller
             'tr_end_date' => 'nullable|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
-
             'tr_country' => 'nullable|string',
             'tr_state' => 'nullable|string',
             'tr_city' => 'nullable|string',
             'tr_address' => 'nullable|string',
             'tr_zip' => 'nullable|string',
-
 
             'items.*.trtm_type' => 'required|string',
             'items.*.trtm_first_name' => 'required|string',
@@ -88,7 +86,6 @@ class TripController extends Controller
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
             'tr_start_date.required' => 'Start date is required',
-
             'tr_country.required' => 'Country is required',
             'tr_state.required' => 'State is required',
             'tr_city.required' => 'City is required',

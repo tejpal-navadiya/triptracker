@@ -26,6 +26,8 @@ use App\Http\Controllers\Masteradmin\TravelerDocumentController;
 use App\Http\Controllers\Masteradmin\EmailTemplateController;
 use App\Http\Controllers\Masteradmin\AgencyController;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes 
@@ -46,13 +48,17 @@ global $adminRoute;
 $adminRoute = config('global.superAdminURL');
 $busadminRoute = config('global.businessAdminURL');
 
-// Route::get('/', function () {
-//     return view('website.index');
-// });
+    // dd(resource_path('views/website/wp-load.php'));
+    // require_once resource_path('views/website/wp-load.php');
 
-Route::get('/website/', function ($path = null) {
-    return view('website.index');
-});
+    // Route::get('/', function () {
+    //     return view('website.index'); // Laravel view
+    // });
+
+    // Route::get('/', function () {
+    //     // Load WordPress front page
+    //     include_once resource_path('website/wp-admin/admin-header.php');
+    // });
 
 
 Route::group(['prefix' => $adminRoute], function () {
