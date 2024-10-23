@@ -32,6 +32,15 @@ class TripTask extends Model
         return $this->belongsTo(TaskCategory::class, 'trvt_category', 'task_cat_id');
     }
 
+    public function taskstatus()
+    {
+        return $this->belongsTo(TaskStatus::class, 'status', 'ts_status_id');
+    }
+
+
+
+
+
 
     
 

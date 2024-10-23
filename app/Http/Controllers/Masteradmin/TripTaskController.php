@@ -19,17 +19,33 @@ class TripTaskController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $member = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id])->latest()->get();
-        // dd($roles);
+
+
+
+        $member = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
+
+        // dd($member);
+
     
         if ($request->ajax()) {
             $member = TripTask::where(['id' => $user->id, 'tr_id' => $id])->latest()->get();
             //  dd($access);
             return Datatables::of($member)
+
                     ->addIndexColumn()
+                    ->addColumn('status_name', function($status) {
+                        return $status->taskstatus->ts_status_name ?? '';
+                    })
+
+                    ->addColumn('trvt_category', function($category) {
+                        return $category->tripCategory->task_cat_name ?? '';
+                    })
+
+
+
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
-                        
+                       
                         if(isset($access['edit_role']) && $access['edit_role']) {
                             $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
@@ -109,6 +125,9 @@ class TripTaskController extends Controller
                 $tripTask->trvt_id = $uniqueId1;
 
                 $tripTask->save();
+
+
+             
           
             \MasterLogActivity::addToLog('Master Admin Trip Task is Created.');
     
@@ -142,6 +161,7 @@ class TripTaskController extends Controller
                 'trvt_date' => 'required|string',
                 'trvt_due_date' => 'required|string',
                 'trvt_document' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'status' => 'nullable|in:1,2,3,4,5,6',
             ], [
                 'trvt_name.required' => 'Task Name is required',
                 'trvt_agent_id.required' => 'Assign Agent is required',

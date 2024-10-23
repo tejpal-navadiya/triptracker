@@ -51,6 +51,7 @@ class AgencyController extends Controller
 
       $dynamicId = $user->id;
 
+      // dd($user);
      // dd($request->all());
     
       $validatedData = $request->validate([
@@ -99,9 +100,13 @@ class AgencyController extends Controller
     
     $users_id = $this->GenerateUniqueRandomString($table= $tableName, $column="users_id", $chars=6);
 
+    //dd($agency);
+
         $agency->users_id = $users_id;
         $agency->id = $dynamicId;
-  
+
+        $agency->user_id = $user->user_id;   
+
       $agency->user_agency_numbers = $validatedData['user_agency_numbers'];
       $agency->user_qualification = $validatedData['user_qualification'];
       $agency->user_work_email = $validatedData['user_work_email'];
@@ -118,7 +123,7 @@ class AgencyController extends Controller
       $agency->users_email  = $validatedData['users_email'];
       $agency->users_address = $validatedData['users_address'];
       $agency->users_zip = $validatedData['users_zip'];
-      $agency->users_password = bcrypt($validatedData['users_password']); 
+      $agency->users_password = bcrypt($validatedData['users_password']);  
       $agency->save();
 
       
@@ -138,6 +143,7 @@ class AgencyController extends Controller
             $travelerItem->age_user_phone_id = $ageid;
 
           $travelerItem->fill($item);
+
           $travelerItem->save();
       }
 

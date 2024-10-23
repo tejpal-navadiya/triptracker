@@ -23,11 +23,11 @@ class TravelerDocumentController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $document = TravelerDocument::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id])->with(['traveler', 'documenttype'])->latest()->get();
+        $document = TravelerDocument::where(['id' => $user->users_id,'tr_id' => $id])->with(['traveler', 'documenttype'])->latest()->get();
         //  dd($document);
     
         if ($request->ajax()) {
-            $document = TravelerDocument::where(['id' => $user->id, 'tr_id' => $id])->with(['traveler', 'documenttype'])->latest()->get();
+            $document = TravelerDocument::where(['id' => $user->users_id, 'tr_id' => $id])->with(['traveler', 'documenttype'])->latest()->get();
             //  dd($access);
             return Datatables::of($document)
                     ->addIndexColumn()
@@ -118,7 +118,7 @@ class TravelerDocumentController extends Controller
     {
     //  dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id; 
+        $dynamicId = $user->users_id; 
 
             $validatedData = $request->validate([
                 'trvd_name' => 'required|string',
@@ -154,7 +154,7 @@ class TravelerDocumentController extends Controller
                 $tripDocument->fill($validatedData);
 
                 $tripDocument->tr_id = $id;
-                $tripDocument->id = $dynamicId;
+                $tripDocument->id = $user->users_id;
                 $tripDocument->trvd_document = $documentimg; 
                 $tripDocument->trvd_status = 1;
                 $tripDocument->trvd_id = $uniqueId1;
@@ -210,7 +210,7 @@ class TravelerDocumentController extends Controller
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
-        $document = TravelerDocument::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $tr_id, 'trvd_id' => $trvd_id])->firstOrFail();
+        $document = TravelerDocument::where(['id' =>$user->users_id, 'tr_id' => $tr_id, 'trvd_id' => $trvd_id])->firstOrFail();
 
         // dd($task);
         if($document)

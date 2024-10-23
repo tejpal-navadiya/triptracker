@@ -17,7 +17,7 @@ class EmailTemplateController extends Controller
     public function index(): View
     {
         $user = Auth::guard('masteradmins')->user();
-        $EmailTemplate = EmailTemplate::where(['id' => $user->id])->get();
+        $EmailTemplate = EmailTemplate::where(['id' =>$user->users_id])->get();
         return view('masteradmin.emailtemplate.index', compact('EmailTemplate'));
     }
     public function create(): View
@@ -105,13 +105,14 @@ public function destroy($email_tid): RedirectResponse
 public function EmailTemplate(): View
 {
     $user = Auth::guard('masteradmins')->user();
-    $EmailTemplate = EmailTemplateDetails::where(['id' => $user->id])->get();
+    $EmailTemplate = EmailTemplateDetails::where(['id' => $user->users_id])->get();
     $user = Auth::guard('masteradmins')->user();
     $categories = EmailTemplate::select('category')->distinct()->get();
     $travellers = Trip::select('tr_traveler_name','tr_id')->distinct()->get();
     // dd($traveller);
     return view('masteradmin.emailtemplate.details', compact('categories' ,'travellers'));
 }
+
 public function fetchEmailText(Request $request)
 {
     // Get the selected category from the AJAX request
