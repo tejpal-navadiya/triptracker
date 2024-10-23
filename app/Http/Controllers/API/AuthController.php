@@ -182,12 +182,12 @@ class AuthController extends Controller
             $tokenEntry = $tokenResult->accessToken; 
             $tokenEntry->tokenable_id = $userDetailRecord->users_id; 
             $tokenEntry->tokenable_type = MasterUserDetails::class;
-            $tokenEntry->save(); 
+            $tokenEntry->save();  
 
-            $newApiToken = bin2hex(random_bytes(30)); // Generate a new random token
+            // $newApiToken = bin2hex(random_bytes(30)); // Generate a new random token
            
             $userDetailRecord->where(['user_id'=> $request->user_id, 'users_email' => $request->user_email])
-                ->update(['api_token' => $newApiToken]);
+                ->update(['api_token' => $token]);
             // $userDetailRecord->save();
 
             // $userDetailRecord->api_token = $newApiToken;
@@ -195,6 +195,8 @@ class AuthController extends Controller
             $userDetails->setTableForUniqueId($masterUser->buss_unique_id);
     
             $userDetailRecord = $userDetails->where(['user_id'=> $request->user_id, 'users_email' => $request->user_email])->first();
+
+            // $userDetailRecord->Authorization = $token;
 
                 return response()->json([
                     'message' => 'Login successfully',
@@ -232,7 +234,7 @@ class AuthController extends Controller
             $user->isActive = $auth_user->isActive; 
             $user->user_first_name = $auth_user->user_first_name;
 
-            // $user->token = $request->bearerToken();
+            $user->token = $request->bearerToken();
 
             $user_data = $this->UserResponse($user);
             
@@ -255,6 +257,7 @@ class AuthController extends Controller
             // dd($uniqueId);
             if ($user) {
                 $currentToken = $user->currentAccessToken();
+                
                 $userDetails = new MasterUserDetails();
                 $userDetails->setTableForUniqueId($uniqueId);
         
@@ -521,7 +524,7 @@ class AuthController extends Controller
                 $updatedUser->sp_expiry_date = $user ? Carbon::parse($user->sp_expiry_date)->format('M d, Y') : null; 
                 $updatedUser->isActive = $user ? $user->isActive : null; 
                 $updatedUser->user_first_name = $user->user_first_name;
-
+                $user->token = $request->bearerToken();
                 $user_data = $this->UserResponse($updatedUser);
 
                 //dd($userDetails->getTable());

@@ -101,8 +101,8 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/users/store-password/{user_id}', [UserController::class, 'storePassword'])
         ->name('masteradmin.userdetail.storePassword');
 
-        Route::get('register_state/{countryId}', [RegisterController::class, 'getStates'])->name('getStates');
-        Route::get('register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('getRegisterCities');
+        Route::get('getStates/{countryId}', [RegisterController::class, 'getStates'])->name('getStates');
+        Route::get('getCities/{stateId}', [RegisterController::class, 'getCities'])->name('getCities');
         
     });
 

@@ -44,6 +44,8 @@ class TripController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->paginate($perPage);
 
+                        $trips->uniqueId = $uniqueId;
+          dd($trips);
 
             if ($trips->isEmpty()) {
                 return $this->sendError('No Trip found.', [], 404);
@@ -57,9 +59,9 @@ class TripController extends Controller
                 'data' => $trips->items(), 
             ];
 
-            $result = $this->TripListResponse($response);
+            $formattedResponse = $this->TripListResponse($response['data']);
 
-            return $this->sendResponse($response, __('messages.api.trip.list_success'));          
+            return $this->sendResponse($formattedResponse, __('messages.api.trip.list_success'));          
         }
         catch(\Exception $e)
         {

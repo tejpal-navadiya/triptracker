@@ -14,7 +14,7 @@ use Illuminate\Database\Schema\Blueprint;
 use App\Models\MasterUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
  
 class Controller extends BaseController
 {
@@ -353,6 +353,11 @@ class Controller extends BaseController
                         $table->string('tr_zip')->nullable();
                     }
                 });
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'status')) {
+                        $table->string('status')->nullable();
+                    }
+                });
                 
             }
 
@@ -599,11 +604,35 @@ class Controller extends BaseController
         
     }
     
-    public function getLocalTime($str, $timezone) {
-        $datetime = date("Y-m-d H:i:s" , $str);
-        $given = new \DateTime($datetime, new \DateTimeZone("UTC"));
-        $given->setTimezone(new \DateTimeZone($timezone));
-        return $given->format("Y-m-d H:i:s");
+    public function getLocalTime($date, $timezone) 
+    {
+
+       // return Carbon::parse($date)
+        //          ->setTimezone($timezone)   // Set the timezone
+        //          ->format('M d, Y');  
+
+   
+            $carbonDate = Carbon::parse($date)->setTimezone($timezone);
+        
+            $formattedDate = $carbonDate->format('M d, Y \a\t h:i A');
+        
+            $offsetMinutes = $carbonDate->offsetMinutes; 
+            $offsetHours = intdiv($offsetMinutes, 60); 
+            $offsetMinutes = abs($offsetMinutes % 60); 
+        
+            $formattedOffset = sprintf('GMT%+d:%02d', $offsetHours, $offsetMinutes);
+        
+            return $formattedDate . ' ' . $formattedOffset; 
+
+    }
+
+    public function getDate($date, $timezone) 
+    {
+
+       return Carbon::parse($date)
+                 ->setTimezone($timezone) 
+                 ->format('M d, Y');  
+        
     }
 
     public function createTableRoute(Request $request)
@@ -672,35 +701,61 @@ class Controller extends BaseController
             'plan_name'=> (isset($response->plan) && $response->plan != null) ? $response->plan : '',
             'sp_expiry_date'=> (isset($response->sp_expiry_date) && $response->sp_expiry_date != null) ? $response->sp_expiry_date : '',
             'isActive'=> (isset($response->isActive) && $response->isActive != null) ? $response->isActive : '',
-            'api_token'=> (isset($response->api_token) && $response->api_token != null) ? $response->api_token : '',
+            'Authorization'     => (isset($response->token) &&$response->token != null) ? 'Bearer '.$response->token : '',
         ];
         return $data;
     }
 
-    public function TripListResponse($response)
+    public function TripListResponse($trips)
     {
         $data = [];
-        if(count($response) > 0)
-        {
-            foreach($response as $key=>$value)
-            { 
-                // dd($value);
-                $created_at =$this->getLocalTime(strtotime($value->created_at), 'Asia/Kolkata');
-                $updated_at =  $this->getLocalTime(strtotime($value->updated_at), 'Asia/Kolkata'); 
+        dd($trips);
+        if (count($trips) > 0) {
+            foreach ($trips as $trip) {
+                // dd($trip);
+                $created_at = $this->getLocalTime($trip->created_at, 'Asia/Kolkata');
+                $updated_at = $this->getLocalTime($trip->updated_at, 'Asia/Kolkata');
 
-                $arr = [
-                    'category_id'           => ($value->category_id ) ? $value->category_id  : '',
-                    'category_image'  =>$category_image,    
-                    'category_name'        => ($value->category_name) ? $value->category_name : '',
-                    'created_at'            => $created_at,
-                    'updated_at'            => $updated_at,
-                    'category_status'            => ($value->category_status) ? $value->category_status:0,
+                $tr_start_date = $this->getDate($trip->tr_start_date, 'Asia/Kolkata');
+                $tr_end_date = $this->getDate($trip->tr_end_date, 'Asia/Kolkata');
+
+                $uniqueId = $trip->unique_id;  
+
+                $tripMemberCount = $trip->travelingMembers($uniqueId)->count();
+
+
+                $tripData = [
+                    'tr_id'            => $trip->tr_id,
+                    'id'               => $trip->id,
+                    'tr_name'          => $trip->tr_name,
+                    'tr_agent_id'      => $trip->tr_agent_id,
+                    'agent_name'      => '',
+                    'tr_traveler_name' => $trip->tr_traveler_name,
+                    'tr_dob'           => $trip->tr_dob,
+                    'tr_age'           => $trip->tr_age,
+                    'tr_number'        => $trip->tr_number,
+                    'tr_email'         => $trip->tr_email,
+                    'tr_phone'         => $trip->tr_phone,
+                    'tr_num_people'    => $trip->tr_num_people,
+                    'tr_start_date'    => $tr_start_date,
+                    'tr_end_date'      => $tr_end_date,
+                    'tr_value_trip'    => $trip->tr_value_trip,
+                    'tr_type_trip'     => $trip->tr_type_trip,
+                    'tr_desc'          => $trip->tr_desc,
+                    'tr_status'        => $trip->tr_status,
+                    'created_at'       => $created_at,    
+                    'updated_at'       => $updated_at,   
+                    'member_count'    => $tripMemberCount
                 ];
-                array_push($data,$arr);
+
+                array_push($data, $tripData);
             }
         }
+
         return $data;
     }
+
+
 
 
     
