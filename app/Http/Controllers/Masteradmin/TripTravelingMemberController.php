@@ -21,11 +21,11 @@ class TripTravelingMemberController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $member = TripTravelingMember::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id])->latest()->get();
+        $member = TripTravelingMember::where(['id' =>$user->users_id, 'tr_id' => $id])->latest()->get();
         // dd($roles);
     
         if ($request->ajax()) {
-            $member = TripTravelingMember::where(['id' => $user->id, 'tr_id' => $id])->latest()->get();
+            $member = TripTravelingMember::where(['id' => $user->users_id, 'tr_id' => $id])->latest()->get();
             //  dd($access);
             return Datatables::of($member)
                     ->addIndexColumn()
@@ -70,9 +70,9 @@ class TripTravelingMemberController extends Controller
     {
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id; 
+        $dynamicId = $user->users_id; 
 
-        $trip = Trip::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id])->firstOrFail();
+        $trip = Trip::where(['id' =>$user->users_id, 'tr_id' => $id])->firstOrFail();
         if($trip)
         {
             $validatedData = $request->validate([
@@ -129,8 +129,8 @@ class TripTravelingMemberController extends Controller
     {
         // dd($trtm_id);
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id; 
-        $member = TripTravelingMember::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id, 'trtm_id' => $trtm_id])->firstOrFail();
+        $dynamicId = $user->users_id;
+        $member = TripTravelingMember::where(['id' => $user->users_id, 'tr_id' => $id, 'trtm_id' => $trtm_id])->firstOrFail();
 
         // dd($member);
         if($member)

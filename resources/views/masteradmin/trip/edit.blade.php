@@ -202,6 +202,27 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_desc" :value="__('Status')" />
+                                            <select id="status" name="status" class="form-control select2">
+                                                <option disabled selected>Select Status</option>
+
+                                                @foreach ($tripstatus as $value)
+                                                    <option value="{{ $value->tr_status_id }}"
+                                                        {{ old('status', $selectedStatus) == $value->tr_status_id ? 'selected' : '' }}>
+                                                        {{ $value->tr_status_name }}
+                                                    </option>
+                                                @endforeach
+
+
+                                            </select>
+                                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
+                                        </div>
+                                    </div>
+
+
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <x-input-label for="tr_type_trip" :value="__('Type of Trip')" />
@@ -358,29 +379,29 @@
                                                 </div>
 
                                                 <!-- <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="trtm_dob_{{ $index }}">Birthdate</label>
-                            <div class="d-flex">
-                                <div class="input-group date" id="trtm_dob_{{ $index }}" data-target-input="nearest">
-                                    <x-flatpickr id="traveler_date_{{ $index }}" name="items[{{ $index }}][trtm_dob]" placeholder="mm/dd/yyyy" />
-                                    <div class="input-group-append">
-                                        <div class="input-group-text" id="traveler-date-icon_{{ $index }}">
-                                            <i class="fa fa-calendar-alt"></i>
-                                            <input type="hidden" id="trtm_dob_hidden_{{ $index }}" value="{{ $item->trtm_dob ?? '' }}" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                          <label for="trtm_age">Age</label>
-                          <div class="d-flex">
-                              <input type="text" name="items[{{ $rowCount }}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_ages_{{ $rowCount }}" value="{{ $item->trtm_age ?? '' }}" readonly>
-                          </div>
-                      </div>
-                  </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="form-group">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="trtm_dob_{{ $index }}">Birthdate</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="d-flex">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="input-group date" id="trtm_dob_{{ $index }}" data-target-input="nearest">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                <x-flatpickr id="traveler_date_{{ $index }}" name="items[{{ $index }}][trtm_dob]" placeholder="mm/dd/yyyy" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="input-group-append">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="input-group-text" id="traveler-date-icon_{{ $index }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="fa fa-calendar-alt"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="hidden" id="trtm_dob_hidden_{{ $index }}" value="{{ $item->trtm_dob ?? '' }}" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-md-3">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="form-group">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                      <label for="trtm_age">Age</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div class="d-flex">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                          <input type="text" name="items[{{ $rowCount }}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_ages_{{ $rowCount }}" value="{{ $item->trtm_age ?? '' }}" readonly>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                              </div> -->
 
                                                 <!-- Dynamic Row Example -->
                                                 <div class="col-md-3">

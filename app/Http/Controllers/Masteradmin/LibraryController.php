@@ -22,7 +22,7 @@ class LibraryController extends Controller
     public function index(): View
     {
         $user = Auth::guard('masteradmins')->user();
-        $library = Library::where(['lib_status' => 1, 'id' => $user->id])->get();
+        $library = Library::where(['lib_status' => 1, 'id' => $user->users_id])->get();
 
         return view('masteradmin.library.index', compact('library'));
     }
@@ -51,7 +51,7 @@ class LibraryController extends Controller
 
         //dd($request->all());
 
-        $dynamicId = $user->id;
+        $dynamicId = $user->users_id;
 
         // Validate the request data
         $validatedData = $request->validate([
@@ -108,7 +108,7 @@ class LibraryController extends Controller
         $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "lib_id", $chars = 6);
         
         $library->lib_id = $uniqueId1;
-        $library->id = $dynamicId;
+        $library->id = $$user->users_id;
         
         $library->lib_category = $validatedData['lib_category'];
         $library->lib_name = $validatedData['lib_name'];

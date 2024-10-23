@@ -46,6 +46,15 @@ global $adminRoute;
 $adminRoute = config('global.superAdminURL');
 $busadminRoute = config('global.businessAdminURL');
 
+// Route::get('/', function () {
+//     return view('website.index');
+// });
+
+Route::get('/website/', function ($path = null) {
+    return view('website.index');
+});
+
+
 Route::group(['prefix' => $adminRoute], function () {
   
     Route::middleware(['auth', 'guard.session:web', 'prevent.back.history'])->group(function () {
@@ -193,7 +202,6 @@ Route::group(['prefix' => $busadminRoute], function () {
        //Library Show
        Route::get('/library/show/{id}', [LibraryController::class, 'show'])->name('masteradmin.library.show');
 
-       
 
         //trip traveler document 
         Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
@@ -202,7 +210,6 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::delete('/traveler-document/{id}/image/{image}', [TravelerDocumentController::class, 'deleteImage'])->name('document.image.delete');
         Route::patch('/traveler-document-update/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'update'])->name('masteradmin.document.update');
         Route::delete('/traveler-document-delete/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'destroy'])->name('masteradmin.document.destroy');
-
 
 
         //email template 
@@ -219,12 +226,10 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/email-template/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
 
 
-       
         //Agency
         Route::resource( 'agency', AgencyController::class);
         Route::get('/agency/view/{id}', [AgencyController::class, 'view'])->name('masteradmin.agency.view');
         Route::get('/agency/rolemodel/{id}', [AgencyController::class, 'rolemodel'])->name('rolemodel');
-
 
 
         //Task list

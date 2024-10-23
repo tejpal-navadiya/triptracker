@@ -1,7 +1,7 @@
 @extends('masteradmin.layouts.app')
 
 
-<title>Agency Details | Trip Tracker</title>
+<title>User Details | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
@@ -11,7 +11,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Agency') }}</h1>
+                            <h1 class="m-0">{{ __('Agency Users') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
                                 <li class="breadcrumb-item active">{{ __('Agency') }}</li>
@@ -21,7 +21,7 @@
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['book_trip']) && $access['book_trip'])
                                     <a href="{{ route('agency.create') }}" id="createNew"><button class="add_btn"><i
-                                                class="fas fa-plus add_plus_icon"></i>Add Agency</button></a>
+                                                class="fas fa-plus add_plus_icon"></i>Add User</button></a>
                                 @endif
                             </ol>
                         </div><!-- /.col -->

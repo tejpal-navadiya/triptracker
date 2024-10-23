@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<title>Add Agency | Trip Tracker</title>
+<title>Add User | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')
         <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
@@ -17,7 +17,7 @@
                             <h1 class="m-0">{{ __('Agency Users') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Add Agency') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Add User') }}</li>
                             </ol>
                         </div><!-- /.col -->
 
@@ -42,7 +42,7 @@
 
 
                         <div class="card-header">
-                            <h3 class="card-title">Add Agency</h3>
+                            <h3 class="card-title">Add User</h3>
                         </div>
 
 
@@ -171,7 +171,7 @@
                                             <x-input-label for="tr_agent_id" :value="__('User Role')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <select class="form-control" id="tr_category" name="role_id" autofocus>
-                                                <option value="" disabled selected>Select Category</option>
+                                                <option value="" disabled selected>Select Role</option>
                                                 @foreach ($users_role as $user)
                                                     <option value="{{ $user->role_id }}">{{ $user->role_name }}
                                                     </option>
