@@ -40,6 +40,9 @@ Route::middleware(['handleAuthErrors'])->group( function () {
 
     //trip
     Route::get('trip_list',     [TripController::class,'GetTripList']);
+    Route::post('task_list',     [TripController::class,'GetTaskList']);
+    Route::post('reminder_task_list',     [TripController::class,'GetTaskReminderList']);
+    Route::post('add_trip',     [TripController::class,'AddTrip']);
     
     Route::get('Logout',            [AuthController::class,'Logout']);
 });

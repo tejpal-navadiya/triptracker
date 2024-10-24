@@ -36,7 +36,9 @@ class TripTask extends Model
     {
         return $this->belongsTo(TaskStatus::class, 'status', 'ts_status_id');
     }
-
+    protected $casts = [
+        'id' => 'string',
+    ];
 
 
 

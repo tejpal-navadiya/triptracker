@@ -37,6 +37,7 @@ class Trip extends Model
         'id' => 'string',
     ];
 
+<<<<<<< HEAD
    // Trip.php
 
     public function travelingMembers($uniqueId = null)
@@ -60,5 +61,7 @@ class Trip extends Model
     }
 
 
+=======
+>>>>>>> 1288d60d5e49fa7bfda7e6a4623e3f0a7ae92012
     
 }

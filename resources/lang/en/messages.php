@@ -130,6 +130,9 @@ return [
         ],
         'trip' => [
             'list_success' => 'Trip data get successfully.',
+        ],
+        'task' => [
+            'list_success' => 'Task data get successfully.',
         ]
     ]
     

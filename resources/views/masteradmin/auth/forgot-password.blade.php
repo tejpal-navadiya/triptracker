@@ -24,6 +24,6 @@
         </div>
         <x-input-error :messages="$errors->get('user_email')" class="mb-1 mt-1" />
         <button type="submit" class="btn login_btn mb-3">Send Password Reset Link</button>
-        <p class="text-center font_18 mb-0">Back to <a href="{{ route('masteradmin.login') }}" class="back_text">Login</a></p>
+        <p class="text-center mb-0">Back to <a href="{{ route('masteradmin.login') }}" class="back_text">Login</a></p>
     </form>
 </x-guest-layout>

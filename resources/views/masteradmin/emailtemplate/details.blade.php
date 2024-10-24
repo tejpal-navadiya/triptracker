@@ -25,51 +25,53 @@
     <!-- Main content -->
     <section class="content px-10">
       <div class="container-fluid">
-        <div class="row">
-          
-          <!-- Category Dropdown Field -->
-          <form action="{{ route('email-template.store') }}" method="POST">
-            @csrf <!-- For CSRF protection -->
+        <div class="card customcard">
+          <div class="row">
             
-            <!-- Category Dropdown -->
-            <div class="form-group">
-                <label for="category">Category</label>
-                <select class="form-control" id="category" name="category_id">
+            <!-- Category Dropdown Field -->
+            <form action="{{ route('email-template.store') }}" method="POST">
+              @csrf <!-- For CSRF protection -->
+              
+              <!-- Category Dropdown -->
+              <div class="form-group">
+                  <label for="category">Category</label>
+                  <select class="form-control" id="category" name="category_id">
+                  <option>Select</option>
+                      @foreach($categories as $category)
+                      
+                          <option value="{{ $category->category }}" {{ isset($emailTemplate) && $emailTemplate->category == $category->category ? 'selected' : '' }}>
+                              {{ $category->category }}
+                          </option>
+                      @endforeach
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="category">Traveller</label>
+                <!-- <label for="category">Category</label> -->
+                <select class="form-control" id="traveller_id" name="traveller_id">
                 <option>Select</option>
-                    @foreach($categories as $category)
-                    
-                        <option value="{{ $category->category }}" {{ isset($emailTemplate) && $emailTemplate->category == $category->category ? 'selected' : '' }}>
-                            {{ $category->category }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                  @foreach($travellers as $travel) <!-- Ensure the variable name is correct -->
+                  
+                      <option value="{{ $travel->tr_id }}" {{ isset($emailTemplate) && $emailTemplate->traveller_id == $travel->traveller_id ? 'selected' : '' }}>
+                          {{ $travel->tr_traveler_name }} <!-- Display the traveller name or other attribute -->
+                      </option>
+                  @endforeach
+              </select>
 
-            <div class="form-group">
-              <label for="category">Traveller</label>
-              <!-- <label for="category">Category</label> -->
-              <select class="form-control" id="traveller_id" name="traveller_id">
-              <option>Select</option>
-                @foreach($travellers as $travel) <!-- Ensure the variable name is correct -->
-                
-                    <option value="{{ $travel->tr_id }}" {{ isset($emailTemplate) && $emailTemplate->traveller_id == $travel->traveller_id ? 'selected' : '' }}>
-                        {{ $travel->tr_traveler_name }} <!-- Display the traveller name or other attribute -->
-                    </option>
-                @endforeach
-            </select>
+              </div>
+              <!-- </div> -->
 
-            </div>
-            <!-- </div> -->
+              <!-- Basic Information Textarea -->
+              <x-input-label for="email_text" :value="__('Basic Information')" />
+              <textarea class="form-control" id="email_text" name="email_text" placeholder="Enter Basic Information"></textarea>
+              <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" />
 
-            <!-- Basic Information Textarea -->
-            <x-input-label for="email_text" :value="__('Basic Information')" />
-            <textarea class="form-control" id="email_text" name="email_text" placeholder="Enter Basic Information"></textarea>
-            <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" />
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary mt-3">Save</button>
-          </form>
-          
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary mt-3">Save</button>
+            </form>
+            
+          </div>
         </div>
       </div><!-- /.container-fluid -->
     </section>

@@ -456,6 +456,16 @@ class General extends Widget_Base {
 			]
 		);
 
+		/**
+		 * TODO: It should be removed after 3.18.0 release
+		 */
+        $repeater->add_control(
+            'social_link',
+            [ 
+                'label'   => __( 'Link', 'bdthemes-prime-slider' ),
+                'type'    => Controls_Manager::HIDDEN,
+            ]
+        );
         $repeater->add_control(
             'social_icon_link',
             [ 
@@ -2341,6 +2351,14 @@ class General extends Widget_Base {
 
                 if ( isset($link['social_icon_link']['url']) && ! empty($link['social_icon_link']['url']) ) {
                     $this->add_link_attributes($link_key, $link['social_icon_link']);
+                } else { // TODO: Condition should be removed after 3.18.0 
+                    $this->add_render_attribute(
+                        [
+                            $link_key => [
+                                'href' => esc_attr($link['social_link']),
+                                'target' => '_blank',
+                            ]
+                        ], '', '', true );
                 }
                 
                 ?>
