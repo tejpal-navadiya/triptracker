@@ -108,7 +108,7 @@ class LibraryController extends Controller
         $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "lib_id", $chars = 6);
         
         $library->lib_id = $uniqueId1;
-        $library->id = $$user->users_id;
+        $library->id = $user->users_id;
         
         $library->lib_category = $validatedData['lib_category'];
         $library->lib_name = $validatedData['lib_name'];

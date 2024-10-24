@@ -480,7 +480,7 @@
 
                     if (countryId) {
                         $.ajax({
-                            url: '{{ route('getStates', ':countryId') }}'.replace(':countryId',
+                            url: '{{ route('agencyStates', ':countryId') }}'.replace(':countryId',
                                 countryId),
                             type: 'GET',
                             dataType: 'json',
@@ -517,7 +517,7 @@
                     var stateId = $(this).val();
                     if (stateId) {
                         $.ajax({
-                            url: '{{ route('getRegisterCities', ':stateId') }}'.replace(':stateId',
+                            url: '{{ route('agencyCities', ':stateId') }}'.replace(':stateId',
                                 stateId),
                             type: 'GET',
                             dataType: 'json',

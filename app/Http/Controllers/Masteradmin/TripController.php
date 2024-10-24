@@ -22,27 +22,59 @@ use App\Models\TripStatus;
 use App\Models\TaskStatus;
 use App\Models\TripTask;
 use App\Models\PredefineTask;
-
-
+use App\Models\MasterUserDetails;
 
 
 class TripController extends Controller
 {
-    //
+    
     public function index(): View
     {
         $user = Auth::guard('masteradmins')->user();
         // dd($user);
         $trip = Trip::where(['tr_status' => 1, 'id' => $user->users_id])->get();
+ 
+       // Dynamically set the table name for the MasterUserDetails model
+    // $masterUserDetails = new MasterUserDetails();
+    // $masterUserDetails->setTableForUniqueId($user->user_id);
+    // $dynamicUserDetailsTable = $masterUserDetails->getTable(); // Get the dynamic table name for user details
 
+    // Dynamically set the table name for the Trip model
+    // $trip = new Trip();
+    // $trip->setTableForUniqueId($user->user_id);
+    // $dynamicTripTable = $trip->getTable(); // Get the dynamic table name for trips
+
+    // // Perform the query with a left join using the dynamic table
+    // $trips = DB::table($dynamicTripTable) // Use the dynamic trip table name
+    //             ->where('tr_status', 1)
+    //             ->where("{$dynamicTripTable}.id", $user->users_id)
+    //             ->leftJoin($dynamicUserDetailsTable, "{$dynamicUserDetailsTable}.users_id", '=', "{$dynamicTripTable}.tr_agent_id")
+    //             ->select("{$dynamicTripTable}.*", "{$dynamicUserDetailsTable}.users_first_name", "{$dynamicUserDetailsTable}.users_last_name")
+    //             ->get();
+
+    // Check the output
+    // dd($trips);
 
         return view('masteradmin.trip.index', compact('trip'));
     }
 
+
     public function create(): View
     {
+
+        $user = Auth::guard('masteradmins')->user();
+        //$dynamicId = $user->id;
+
         $triptype = TripType::all();
-        return view('masteradmin.trip.create', compact('triptype'));
+
+       $agency_users = new MasterUserDetails();
+       $agency_users->setTableForUniqueId($user->user_id);
+       $tableName = $agency_users->getTable();
+       $agency_user = $agency_users->get(); 
+       
+    //    dd($aency_user);
+
+        return view('masteradmin.trip.create', compact('triptype','agency_user'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -241,6 +273,16 @@ class TripController extends Controller
 
         $tripstatus = TripStatus::all();
 
+
+        $user = Auth::guard('masteradmins')->user();
+
+        $agency_users = new MasterUserDetails();
+        $agency_users->setTableForUniqueId($user->user_id);
+        $tableName = $agency_users->getTable();
+        $agency_user = $agency_users->get(); 
+
+       // $selecteduserId = $agency->users_country;
+
         //dd($tripstatus);
 
         $selectedStatus = $trip->status;
@@ -370,6 +412,15 @@ class TripController extends Controller
         $documentType = DocumentType::get();
 
 
+        
+   $agency_users = new MasterUserDetails();
+   $agency_users->setTableForUniqueId($user->user_id);
+   $tableName = $agency_users->getTable();
+
+   $agency_user = $agency_users->get(); 
+
+
+
         //$tripstatus = TripStatus::all();
         $taskstatus = TaskStatus::all();
 
@@ -395,13 +446,15 @@ class TripController extends Controller
 
         //dd($tripTraveling);
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus'));
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user'));
     }
 
     public function travelersDetails(): View
     {
         $user = Auth::guard('masteradmins')->user();
         $trip = Trip::where(['tr_status' => 1, 'id' => $user->users_id])->get();
+
+        
         return view('masteradmin.traveler.index', compact('trip'));
     }
 
@@ -410,7 +463,14 @@ class TripController extends Controller
         $triptype = TripType::all();
         $country = Countries::all();
 
-        return view('masteradmin.traveler.create', compact('triptype', 'country'));
+       $user = Auth::guard('masteradmins')->user();
+        $agency_users = new MasterUserDetails();
+        $agency_users->setTableForUniqueId($user->user_id);
+        $tableName = $agency_users->getTable();
+ 
+        $agency_user = $agency_users->get(); 
+
+        return view('masteradmin.traveler.create', compact('triptype', 'country','agency_user'));
     }
 
     public function editDetails($id)

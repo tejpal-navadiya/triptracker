@@ -37,5 +37,31 @@ class Trip extends Model
         'id' => 'string',
     ];
 
+<<<<<<< HEAD
+   // Trip.php
+
+    public function travelingMembers($uniqueId = null)
+    {
+        // Create a new TripTravelingMember instance
+        $tripTravelingMember = new TripTravelingMember();
+
+        // If a unique ID is provided, set the table dynamically
+        if ($uniqueId) {
+            $tripTravelingMember->setTableForUniqueId($uniqueId);
+        }
+
+        // Return the relationship
+        return $this->hasMany(get_class($tripTravelingMember), 'tr_id', 'tr_id');
+    }
+
+
+    public function masterUserDetails()
+    {
+        return $this->belongsTo(MasterUserDetails::class, 'tr_agent_id', 'users_id');
+    }
+
+
+=======
+>>>>>>> 1288d60d5e49fa7bfda7e6a4623e3f0a7ae92012
     
 }
