@@ -50,8 +50,9 @@
                                 <div class="row pad-5">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planname">Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('sp_name') is-invalid @enderror"
+                                            <label for="planname">Plan Name <span class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control @error('sp_name') is-invalid @enderror"
                                                 id="planname" name="sp_name" placeholder="Enter Name"
                                                 value="{{ old('sp_name') }}">
                                             @error('sp_name')
@@ -61,11 +62,12 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planamount">Amount <span class="text-danger">*</span></label>
-                                            <input type="text"
+                                            <label for="planamount">Amount Monthy <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="number"
                                                 class="form-control @error('sp_amount') is-invalid @enderror"
                                                 id="planamount" name="sp_amount" placeholder="Enter Amount"
-                                                value="{{ old('sp_amount') }}">
+                                                value="{{ old('sp_amount') }}" min="0">
                                             @error('sp_amount')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -73,11 +75,26 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planvalidity">Validity <span class="text-danger">*</span></label>
+                                            <label for="planamount">Amount Yearly <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="number"
+                                                class="form-control @error('sp_year_amount') is-invalid @enderror"
+                                                id="planamount" name="sp_year_amount" placeholder="Enter Amount"
+                                                value="{{ old('sp_year_amount') }}" min="0" required>
+                                            @error('sp_year_amount')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="planvalidity">Validity <span
+                                                    class="text-danger">*</span></label>
                                             <input type="number"
                                                 class="form-control @error('sp_month') is-invalid @enderror"
                                                 id="planvalidity" name="sp_month" placeholder="Enter Validity"
-                                                value="{{ old('sp_month') }}">
+                                                value="{{ old('sp_month') }}" min="0">
                                             @error('sp_month')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -87,8 +104,9 @@
                                         <div class="form-group">
                                             <label for="planvalidity">User</label>
                                             <input type="number"
-                                                class="form-control @error('sp_user') is-invalid @enderror" id="sp_user"
-                                                name="sp_user" placeholder="Enter Users" value="{{ old('sp_user') }}">
+                                                class="form-control @error('sp_user') is-invalid @enderror"
+                                                id="sp_user" name="sp_user" placeholder="Enter Users"
+                                                value="{{ old('sp_user') }}">
                                             @error('sp_user')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -97,9 +115,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="plandescription">Description</label>
-                                            <textarea id="plandescription"
-                                                class="form-control @error('sp_desc') is-invalid @enderror"
-                                                name="sp_desc" rows="3"
+                                            <textarea id="plandescription" class="form-control @error('sp_desc') is-invalid @enderror" name="sp_desc" rows="3"
                                                 placeholder="Description">{{ old('sp_desc') }}</textarea>
                                             @error('sp_desc')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -108,7 +124,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 text-center py-20">
-                                    <a href="{{route('plans.index')}}"  class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('plans.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>

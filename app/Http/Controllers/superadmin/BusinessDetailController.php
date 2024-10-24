@@ -17,16 +17,24 @@ class BusinessDetailController extends Controller
     {
         $MasterUser = MasterUser::with('plan')->get();
 
+        //dd($MasterUser);
+
         $MasterUser->each(function ($user) {
+
             $userDetails = new MasterUserDetails();
             $userDetails->setTableForUniqueId($user->buss_unique_id);
             $totalUserCount = $userDetails->where('users_email', '!=', $user->user_email)->count();
+
+            $tableName = $userDetails->getTable();
+
             $user->totalUserCount = $totalUserCount;
+
 
         });
         // dd($MasterUser);
         return view('superadmin.businessdetails.index')->with('MasterUser', $MasterUser);
     }
+
     public function show($id)
     {
         $user = MasterUser::findOrFail($id);
@@ -35,6 +43,9 @@ class BusinessDetailController extends Controller
         $userDetails->setTableForUniqueId($user->buss_unique_id);
 
         $udetail = $userDetails->where('users_email', '!=', $user->user_email)->get();
+
+        //dd($udetail);
+
         $totalUserCount = $userDetails->where('users_email', '!=', $user->user_email)->count();
         $user->totalUserCount = $totalUserCount;
 

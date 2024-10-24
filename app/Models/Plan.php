@@ -13,6 +13,7 @@ class Plan extends Model
         'sp_id',
         'sp_name',
         'sp_amount',
+        'sp_year_amount',
         'sp_month',
         'sp_desc',
         'sp_user',

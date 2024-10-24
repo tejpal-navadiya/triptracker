@@ -37,11 +37,12 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request);
         // $value  = $request->authenticate();
         $validatedData = $request->validate([
             'sp_name' => 'required|string|max:255',
             'sp_amount' => 'required|numeric',
+            'sp_year_amount' => 'required|numeric',
             'sp_month' => 'required|integer',
             'sp_desc' => 'nullable|string',
             'sp_user' => 'nullable|integer',
@@ -51,6 +52,7 @@ class PlanController extends Controller
             'sp_month.required' => 'The validity field is required.',
             'sp_desc.string' => 'The description must be a string.',
             'sp_user.integer' => 'The user field must be an integer.',
+            'sp_year_amount.required' => 'The user Field is required',
         ]);
         $id = $this->GenerateUniqueRandomString($table='ta_subscription_plans', $column="sp_id", $chars=6);
         $validatedData['sp_id'] = $id;
@@ -90,7 +92,7 @@ class PlanController extends Controller
         // Validate incoming request data
         $validatedData = $request->validate([
             'sp_name' => 'required|string|max:255',
-            'sp_amount' => 'required|numeric',
+            'sp_amount' => 'required|',
             'sp_month' => 'required|integer',
             'sp_desc' => 'nullable|string',
             'sp_user' => 'nullable|integer',
@@ -107,7 +109,7 @@ class PlanController extends Controller
         \LogActivity::addToLog('Admin Plan Edited.');
 
         // Redirect back to the edit form with a success message
-        return redirect()->route('plans.edit', ['plan' => $plan->sp_id])
+        return redirect()->route('plans.index', ['plan' => $plan->sp_id])
                         ->with('plan-edit', __('messages.admin.plan.edit_plan_success'));
     }
 

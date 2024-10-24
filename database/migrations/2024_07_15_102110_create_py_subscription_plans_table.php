@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('sp_name')->nullable();
             $table->string('sp_amount')->nullable()->default('0');
             $table->string('sp_month')->nullable()->default('0');
+            $table->string('sp_year_amount')->nullable()->default('0');
             $table->text('sp_desc')->nullable();
             $table->string('sp_user')->nullable();
             $table->tinyInteger('sp_status')->default('0');

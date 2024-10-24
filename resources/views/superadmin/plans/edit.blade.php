@@ -40,15 +40,15 @@
             <section class="content px-10">
                 <div class="container-fluid">
                     <!-- card -->
-                    @if(Session::has('plan-edit'))
+                    @if (Session::has('plan-edit'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ Session::get('plan-edit') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                            {{ Session::get('plan-edit') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         @php
-                        Session::forget('plan-edit');
+                            Session::forget('plan-edit');
                         @endphp
                     @endif
 
@@ -56,7 +56,8 @@
                         <div class="card-header">
                             <h3 class="card-title">Add Subscription Plans</h3>
                         </div>
-                        <?php //dd($plan); ?>
+                        <?php //dd($plan);
+                        ?>
                         <form method="POST" action="{{ route('plans.update', ['plan' => $plan->sp_id]) }}">
                             @csrf
                             @method('PUT')
@@ -65,9 +66,10 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="planname">Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('sp_name') is-invalid @enderror"
+                                            <input type="text"
+                                                class="form-control @error('sp_name') is-invalid @enderror"
                                                 id="planname" name="sp_name" placeholder="Enter Name"
-                                                value="{{ $plan->sp_name }}" >
+                                                value="{{ $plan->sp_name }}">
                                             @error('sp_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -76,10 +78,10 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="planamount">Amount <span class="text-danger">*</span></label>
-                                            <input type="text"
+                                            <input type="number"
                                                 class="form-control @error('sp_amount') is-invalid @enderror"
                                                 id="planamount" name="sp_amount" placeholder="Enter Amount"
-                                                value="{{ $plan->sp_amount }}" >
+                                                value="{{ $plan->sp_amount }}" min="0">
                                             @error('sp_amount')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -87,11 +89,25 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planvalidity">Validity <span class="text-danger">*</span></label>
+                                            <label for="planamount">Amount Yearly <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="number"
+                                                class="form-control @error('sp_year_amount') is-invalid @enderror"
+                                                id="planamount" name="sp_year_amount" placeholder="Enter Amount"
+                                                value="{{ $plan->sp_year_amount }}" min="0" required>
+                                            @error('sp_year_amount')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="planvalidity">Validity <span
+                                                    class="text-danger">*</span></label>
                                             <input type="number"
                                                 class="form-control @error('sp_month') is-invalid @enderror"
                                                 id="planvalidity" name="sp_month" placeholder="Enter Validity"
-                                                value="{{ $plan->sp_month }}" >
+                                                value="{{ $plan->sp_month }}" min="0">
                                             @error('sp_month')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -101,8 +117,9 @@
                                         <div class="form-group">
                                             <label for="planvalidity">User</label>
                                             <input type="number"
-                                                class="form-control @error('sp_user') is-invalid @enderror" id="user"
-                                                name="sp_user" placeholder="Enter Users" value="{{ $plan->sp_user }}">
+                                                class="form-control @error('sp_user') is-invalid @enderror"
+                                                id="user" name="sp_user" placeholder="Enter Users"
+                                                value="{{ $plan->sp_user }}" min="0">
                                             @error('sp_user')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -111,10 +128,8 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="plandescription">Description</label>
-                                            <textarea id="plandescription"
-                                                class="form-control @error('sp_desc') is-invalid @enderror"
-                                                name="sp_desc" rows="3"
-                                                placeholder="Description">{{ $plan->sp_desc }}</textarea>
+                                            <textarea id="plandescription" class="form-control @error('sp_desc') is-invalid @enderror" name="sp_desc"
+                                                rows="3" placeholder="Description">{{ $plan->sp_desc }}</textarea>
                                             @error('sp_desc')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -122,7 +137,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 text-center py-20">
-                                    <a href="{{route('plans.index')}}"  class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('plans.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>
