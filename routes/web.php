@@ -55,6 +55,9 @@ Route::get('/website/', function ($path = null) {
 });
 
 
+     
+
+
 Route::group(['prefix' => $adminRoute], function () {
   
     Route::middleware(['auth', 'guard.session:web', 'prevent.back.history'])->group(function () {
@@ -82,11 +85,19 @@ Route::group(['prefix' => $adminRoute], function () {
 
         //logs
         Route::get('/logActivity', [ProfileController::class, 'logActivity'])->name('adminlog.index');
+
         
     });
 });
 
 Route::group(['prefix' => $busadminRoute], function () {
+
+
+
+       Route::get('auth_register_state/{countryId}', [RegisterController::class, 'getStates'])->name('authregisterStates');
+       Route::get('auth_register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('authregisterCities');
+
+
     
     Route::middleware(['masteradmin'])->group(function () {
         //login and register
@@ -110,9 +121,6 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/users/store-password/{user_id}', [UserController::class, 'storePassword'])
         ->name('masteradmin.userdetail.storePassword');
 
-        Route::get('getStates/{countryId}', [RegisterController::class, 'getStates'])->name('getStates');
-        Route::get('getCities/{stateId}', [RegisterController::class, 'getCities'])->name('getCities');
-        
     });
 
     Route::middleware(['auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
@@ -127,9 +135,6 @@ Route::group(['prefix' => $busadminRoute], function () {
 
         Route::put('password', [MasterPasswordController::class, 'update'])->name('masteradmin.password.update');
         Route::post('logout', [LoginController::class, 'destroy'])->name('masteradmin.logout');
-       
-        Route::get('register_state/{countryId}', [RegisterController::class, 'getStates'])->name('getStates');
-        Route::get('register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('getRegisterCities');
         
         //create alter database
         Route::get('/create-table', [Controller::class, 'createTableRoute'])->name('create.table');
@@ -186,11 +191,12 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::resource( 'library', LibraryController::class);
 
        //Library Add Dropdown
-       Route::get('states/{countryId}', [LibraryController::class, 'getStates']);
+       Route::get('states/{countryId}', [LibraryController::class, 'getStates'])->name('getStates');
        Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
-       Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities']);
-      //Library Edit Dropdown
-       Route::get('/cities/{stateId}', [LibraryController::class, 'getCities']);
+       Route::get('/get-cities/{stateId}', [LibraryController::class, 'getCities'])->name('getRegisterCities');
+
+
+
        Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
 
        //Library Delete Image
@@ -231,6 +237,11 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/agency/view/{id}', [AgencyController::class, 'view'])->name('masteradmin.agency.view');
         Route::get('/agency/rolemodel/{id}', [AgencyController::class, 'rolemodel'])->name('rolemodel');
 
+         
+        //Agency dropdown
+         Route::get('register_state/{countryId}', [AgencyController::class, 'getStates'])->name('agencyStates');
+         Route::get('register_cities/{stateId}', [AgencyController::class, 'getCities'])->name('agencyCities');
+ 
 
         //Task list
         Route::get('task-details/', [TripTaskController::class, 'allDetails'])->name('masteradmin.task.all');
@@ -244,7 +255,8 @@ Route::group(['prefix' => $busadminRoute], function () {
          Route::get('travelers-edit/{id}', [TripController::class, 'editDetails'])->name('masteradmin.travelers.edit');
          Route::put('/travelers-update/{id}', [TripController::class, 'update'])->name('masteradmin.travelers.update');
          Route::get('/view-travelers/{id}', [TripController::class, 'viewDetails'])->name('masteradmin.travelers.view');
-         
+
+
 
     });
      

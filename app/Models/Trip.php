@@ -54,5 +54,11 @@ class Trip extends Model
     }
 
 
+    public function masterUserDetails()
+    {
+        return $this->belongsTo(MasterUserDetails::class, 'tr_agent_id', 'users_id');
+    }
+
+
     
 }

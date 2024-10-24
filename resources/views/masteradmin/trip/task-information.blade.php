@@ -63,9 +63,15 @@
                             <div class="form-group">
                                 <label for="trvt_agent_id">Assign Agent</label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trvt_agent_id" name="trvt_agent_id"
-                                        placeholder="Enter Assign Agent">
-                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_agent_id')" />
+                                    <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
+                                        class="form-control select2">
+                                        <option disabled selected>Select Agent</option>
+                                        @foreach ($agency_user as $value)
+                                            <option value="{{ $value->users_id }}">
+                                                {{ $value->users_first_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
