@@ -55,17 +55,23 @@
                                                 autocomplete="tr_name" :value="old('tr_name', $trip->tr_name ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
                                         </div>
-
-
-
                                     </div>
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_agent_id" :value="__('Agent Name')"> <span
                                                     class="text-danger">*</span></x-input-label>
-                                            <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Select Agent" name="tr_agent_id" required autofocus
-                                                autocomplete="tr_agent_id" :value="old('tr_agent_id', $trip->tr_agent_id ?? '')" />
+                                            <select id="tr_agent_id" name="tr_agent_id" class="form-control select2">
+                                                <option disabled selected>Select Agent</option>
+                                                @foreach ($agency_users as $value)
+                                                    <option value="{{ $value->users_id }}"
+                                                        {{ old('tr_agent_id', $trip->tr_agent_id ?? '') == $value->users_id ? 'selected' : '' }}>
+                                                        {{ $value->users_first_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+
+                                            </select>
 
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
                                         </div>

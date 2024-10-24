@@ -275,20 +275,17 @@ class TripController extends Controller
 
 
         $user = Auth::guard('masteradmins')->user();
-
         $agency_users = new MasterUserDetails();
         $agency_users->setTableForUniqueId($user->user_id);
         $tableName = $agency_users->getTable();
-        $agency_user = $agency_users->get(); 
-
-       // $selecteduserId = $agency->users_country;
+        $agency_users = $agency_users->get();
 
         //dd($tripstatus);
 
         $selectedStatus = $trip->status;
         //$status = Trip::where('status', $selectedStatus)->get();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus'));
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 
@@ -493,7 +490,15 @@ class TripController extends Controller
         $city = Cities::where('state_id', $selectedStateId)->get();
 
 
-        return view('masteradmin.traveler.edit', compact('trip', 'triptype', 'tripmember', 'country', 'states', 'city'));
+        $user = Auth::guard('masteradmins')->user();
+        $agency_users = new MasterUserDetails();
+        $agency_users->setTableForUniqueId($user->user_id);
+        $tableName = $agency_users->getTable();
+        $agency_users = $agency_users->get();
+
+
+
+        return view('masteradmin.traveler.edit', compact('trip', 'triptype', 'tripmember', 'country', 'states', 'city','agency_users'));
     }
 
     public function viewDetails($id): View
