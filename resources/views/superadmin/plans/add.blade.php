@@ -22,7 +22,7 @@
                         <div class="col-sm-6">
                             <h1 class="m-0">Add Subscription Plans</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">Add Subscription Plans</li>
                             </ol>
                         </div><!-- /.col -->

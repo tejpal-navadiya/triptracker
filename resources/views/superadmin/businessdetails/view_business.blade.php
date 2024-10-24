@@ -22,7 +22,7 @@
             <div class="col-auto">
               <h1 class="m-0">Company Detail</h1>
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                 <li class="breadcrumb-item active">Company Detail</li>
               </ol>
             </div><!-- /.col -->

@@ -24,7 +24,7 @@
             <div class="col-sm-6">
               <h1 class="m-0">Company</h1>
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                 <li class="breadcrumb-item active">Company</li>
               </ol>
             </div><!-- /.col -->
