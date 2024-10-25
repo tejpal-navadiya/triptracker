@@ -28,34 +28,35 @@ use App\Models\MasterUserDetails;
 class TripController extends Controller
 {
     
-    public function index(): View
+    public function index(Request $request)
     {
+        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         // dd($user);
-        $trip = Trip::where(['tr_status' => 1, 'id' => $user->users_id])->get();
- 
-       // Dynamically set the table name for the MasterUserDetails model
-    // $masterUserDetails = new MasterUserDetails();
-    // $masterUserDetails->setTableForUniqueId($user->user_id);
-    // $dynamicUserDetailsTable = $masterUserDetails->getTable(); // Get the dynamic table name for user details
 
-    // Dynamically set the table name for the Trip model
-    // $trip = new Trip();
-    // $trip->setTableForUniqueId($user->user_id);
-    // $dynamicTripTable = $trip->getTable(); // Get the dynamic table name for trips
+       $masterUserDetails = new MasterUserDetails();
+       $masterUserDetails->setTableForUniqueId($user->user_id); 
+       $masterUserTable = $masterUserDetails->getTable();
+       $agency = $masterUserDetails->get();
 
-    // // Perform the query with a left join using the dynamic table
-    // $trips = DB::table($dynamicTripTable) // Use the dynamic trip table name
-    //             ->where('tr_status', 1)
-    //             ->where("{$dynamicTripTable}.id", $user->users_id)
-    //             ->leftJoin($dynamicUserDetailsTable, "{$dynamicUserDetailsTable}.users_id", '=', "{$dynamicTripTable}.tr_agent_id")
-    //             ->select("{$dynamicTripTable}.*", "{$dynamicUserDetailsTable}.users_first_name", "{$dynamicUserDetailsTable}.users_last_name")
-    //             ->get();
+        $trip_status = TripStatus::get();
+        // dd($agency);
+        $trips = new Trip();
+        $tripTable = $trips->getTable();
 
-    // Check the output
-    // dd($trips);
+        $trip = Trip::where('tr_status', 1)
+              ->from($tripTable)  
+              ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+              ->where($tripTable . '.id', $user->users_id)
+              ->select([
+                  $tripTable . '.*', 
+                  $masterUserTable . '.users_first_name', 
+                  $masterUserTable . '.users_last_name' 
+              ])
+              ->get();
 
-        return view('masteradmin.trip.index', compact('trip'));
+
+        return view('masteradmin.trip.index', compact('trip','agency','trip_status'));
     }
 
 
@@ -161,7 +162,7 @@ class TripController extends Controller
         $traveler->tr_address = $validatedData['tr_address'] ?? null;
         $traveler->tr_zip = $validatedData['tr_zip'] ?? null;
 
-        $traveler->status = 'Trip Request';
+        $traveler->status = 1;
         $traveler->tr_status = 1;
         $traveler->save();
 
@@ -261,7 +262,6 @@ class TripController extends Controller
         }
     }
 
-
     public function edit($id)
     {
         // dd($id);
@@ -318,7 +318,7 @@ class TripController extends Controller
             'tr_city' => 'nullable|string',
             'tr_address' => 'nullable|string',
             'tr_zip' => 'nullable|string',
-            'status' => 'nullable|in:1,2,3,4,5,6',
+            'status' => 'nullable',
 
 
         ], [
@@ -410,35 +410,46 @@ class TripController extends Controller
 
 
         
-   $agency_users = new MasterUserDetails();
-   $agency_users->setTableForUniqueId($user->user_id);
-   $tableName = $agency_users->getTable();
+            $agency_users = new MasterUserDetails();
+            $agency_users->setTableForUniqueId($user->user_id);
+            $tableName = $agency_users->getTable();
 
-   $agency_user = $agency_users->get(); 
+            $agency_user = $agency_users->get(); 
 
 
+            $masterUserDetails = new MasterUserDetails();
+            $masterUserDetails->setTableForUniqueId($user->user_id); 
+            $masterUserTable = $masterUserDetails->getTable();
+             $trips = new Trip();
+             $tripTable = $trips->getTable();  
+     
+             $trip = Trip::where('tr_status', 1) 
+                   ->from($tripTable)  
+                   ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+                   ->where($tripTable . '.id', $user->users_id)
+                   ->select([
+                       $tripTable . '.*',  
+                       $masterUserTable . '.users_first_name', 
+                       $masterUserTable . '.users_last_name'  
+                   ])
+                   ->firstOrFail();
+                   
+            $taskstatus = TaskStatus::all();
 
-        //$tripstatus = TripStatus::all();
-        $taskstatus = TaskStatus::all();
+            $tripTraveling = new TripTravelingMember();
+            $tableName = $tripTraveling->getTable();
 
-        //$status = Trip::where('status', $selectedStatus)->get();
+            $uniq_id = $user->user_id; // Ensure this is set based on your authentication logic
 
-        //$tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
+            $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
+                ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
+                ->where('trtm_status', 1) // Ensure you're filtering by status
+                ->get();
 
-        $tripTraveling = new TripTravelingMember();
-        $tableName = $tripTraveling->getTable();
-
-        $uniq_id = $user->user_id; // Ensure this is set based on your authentication logic
-
-        $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
-            ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
-            ->where('trtm_status', 1) // Ensure you're filtering by status
-            ->get();
-
-        $tripData = DB::table($uniq_id . '_tc_trip')
-            ->select('tr_id', 'tr_name')
-            ->where('tr_id', $id)
-            ->get();
+            $tripData = DB::table($uniq_id . '_tc_trip')
+                ->select('tr_id', 'tr_name')
+                ->where('tr_id', $id)
+                ->get();
 
 
         //dd($tripTraveling);

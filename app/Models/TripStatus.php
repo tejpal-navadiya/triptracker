@@ -11,8 +11,8 @@ class TripStatus extends Model
 
     public $table = "trip_status";
     protected $fillable = [
-        'tr_id',
-        'tr_name',
-        'tr_status'
+        'tr_status_id',
+        'tr_status_name',
+        'status'
     ];
 }

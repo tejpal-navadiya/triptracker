@@ -91,4 +91,9 @@ class MasterUserDetails extends Authenticatable
         return $this->belongsTo(Cities::class, 'users_city', 'id');
     }
 
+    public function masterUserDetails()
+    {
+        return $this->belongsTo(MasterUserDetails::class, 'id', 'users_id');
+    }
+
 }
