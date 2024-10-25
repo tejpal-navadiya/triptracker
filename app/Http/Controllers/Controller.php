@@ -422,6 +422,12 @@ class Controller extends BaseController
                     // $table->string('is_access')->nullable();
                     $table->timestamps();
                 });
+            }else{
+                Schema::table($storeId.'_tc_email_template', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_email_template', 'title')) {
+                        $table->string('title')->nullable();
+                    }
+                });
             }
 
             //Library 

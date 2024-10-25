@@ -39,7 +39,7 @@
                             <h3 class="card-title">Add Trip</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('trip.store') }}">
+                        <form id="tripForm" method="POST" action="{{ route('trip.store') }}">
                             @csrf
                             <div class="card-body2">
                                 <div class="row pxy-15 px-10">
@@ -63,7 +63,7 @@
                                                 <option disabled selected>Select Agent</option>
                                                 @foreach ($agency_user as $value)
                                                     <option value="{{ $value->users_id }}">
-                                                        {{ $value->users_first_name }}
+                                                        {{ $value->users_first_name }} {{ $value->users_last_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -260,7 +260,7 @@
                                 <div class="row py-20 px-10">
                                     <div class="col-md-12 text-center">
                                         <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
-                                        <button type="submit" class="add_btn px-10">Save</button>
+                                        <button type="submit" id="submitButton" class="add_btn px-10">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -282,6 +282,26 @@
         <!-- ./wrapper -->
         <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+        <script>
+            document.getElementById('tripForm').addEventListener('submit', function(e) {
+                const submitButton = document.getElementById('submitButton');
+                if (submitButton.disabled) {
+                    // Prevent further form submission attempts
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Disable the submit button to prevent multiple submissions
+                submitButton.disabled = true;
+
+                // Optionally show some feedback, like changing button text
+                submitButton.innerText = 'Submitting...';
+            });
+        </script>
+
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
