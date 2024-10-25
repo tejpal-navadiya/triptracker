@@ -31,7 +31,8 @@
                             <h3 class="card-title">Add Library Item</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('library.store') }}" enctype="multipart/form-data">
+                        <form id="libraryForm" method="POST" action="{{ route('library.store') }}"
+                            enctype="multipart/form-data">
                             @csrf
 
                             <div class="card-body2">
@@ -60,7 +61,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Name')"> <span
+                                            <x-input-label for="tr_agent_id" :value="__('Name*')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Select Agent" name="lib_name" autofocus
@@ -174,7 +175,7 @@
                                 </div>
 
 
-                                <div class="col-md-12" id="dynamic_field">
+                                {{-- <div class="col-md-12" id="dynamic_field">
                                     @if ($errors->any())
                                         <div class="alert alert-danger">
                                             <ul>
@@ -184,14 +185,14 @@
                                             </ul>
                                         </div>
                                     @endif
-                                </div>
+                                </div> --}}
 
                             </div>
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
                                     <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
-                                    <button type="submit" class="add_btn px-10">Save</button>
+                                    <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>
                     </div>
@@ -215,6 +216,26 @@
         <script src="{{ url('public/js/tinymce/tinymce.min.js') }}"></script>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+        <script>
+            document.getElementById('libraryForm').addEventListener('submit', function(e) {
+                const submitButton = document.getElementById('submitButton');
+                if (submitButton.disabled) {
+                    // Prevent further form submission attempts
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Disable the submit button to prevent multiple submissions
+                submitButton.disabled = true;
+
+                // Optionally show some feedback, like changing button text
+                submitButton.innerText = 'Submitting...';
+            });
+        </script>
+
+
 
         <script>
             tinymce.init({
@@ -297,7 +318,7 @@
             });
         </script>
 
-        
+
         <script>
             $(document).ready(function() {
                 // Initialize Select2 for both country and currency select elements

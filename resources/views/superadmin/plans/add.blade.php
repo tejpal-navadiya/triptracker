@@ -44,7 +44,8 @@
                         <div class="card-header">
                             <h3 class="card-title">Add Subscription Plans</h3>
                         </div>
-                        <form method="POST" action="{{ route('plans.store') }}">
+
+                        <form id="yourForm" method="POST" action="{{ route('plans.store') }}">
                             @csrf
                             <div class="card-body2">
                                 <div class="row pad-5">
@@ -125,7 +126,7 @@
                                 </div>
                                 <div class="col-md-12 text-center py-20">
                                     <a href="{{ route('plans.index') }}" class="add_btn_br px-10">Cancel</a>
-                                    <button type="submit" class="add_btn px-10">Save</button>
+                                    <button type="submit" id="submitButton" class="add_btn px-10">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -147,6 +148,23 @@
 
 
     @include('layouts.footerlink')
+
+    <script>
+        document.getElementById('yourForm').addEventListener('submit', function(e) {
+            const submitButton = document.getElementById('submitButton');
+            if (submitButton.disabled) {
+                // Prevent further form submission attempts
+                e.preventDefault();
+                return false;
+            }
+
+            // Disable the submit button to prevent multiple submissions
+            submitButton.disabled = true;
+
+            // Optionally show some feedback, like changing button text
+            submitButton.innerText = 'Submitting...';
+        });
+    </script>
 
 </body>
 

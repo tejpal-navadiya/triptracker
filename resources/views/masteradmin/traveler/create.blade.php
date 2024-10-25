@@ -39,7 +39,7 @@
                             <h3 class="card-title">Add Traveler</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('masteradmin.travelers.store') }}">
+                        <form id="travelerForm" method="POST" action="{{ route('masteradmin.travelers.store') }}">
                             @csrf
                             <input type="hidden" value="travelers" name="travelers">
                             <div class="card-body2">
@@ -233,7 +233,7 @@
                                     <div class="col-md-12 text-center">
                                         <a href="{{ route('masteradmin.travelers.travelersDetails') }}"
                                             class="add_btn_br px-10">Cancel</a>
-                                        <button type="submit" class="add_btn px-10">Save</button>
+                                        <button type="submit" id="submitButton" class="add_btn px-10">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -255,6 +255,23 @@
         <!-- ./wrapper -->
         <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            document.getElementById('travelerForm').addEventListener('submit', function(e) {
+                const submitButton = document.getElementById('submitButton');
+                if (submitButton.disabled) {
+                    // Prevent further form submission attempts
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Disable the submit button to prevent multiple submissions
+                submitButton.disabled = true;
+
+                // Optionally show some feedback, like changing button text
+                submitButton.innerText = 'Submitting...';
+            });
+        </script>
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {

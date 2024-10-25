@@ -11,7 +11,24 @@ class Trip extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tr_id','id','tr_name', 'tr_agent_id', 'tr_traveler_name', 'tr_dob', 'tr_age', 'tr_number', 'tr_email', 'tr_phone', 'tr_num_people','tr_start_date' ,'tr_end_date' ,'tr_value_trip' , 'tr_type_trip','tr_desc','tr_status'];
+    protected $fillable = [
+            'tr_id',
+            'id',
+            'tr_name',
+            'tr_agent_id', 
+            'tr_traveler_name', 
+            'tr_dob', 'tr_age', 
+            'tr_number', 
+            'tr_email',
+            'tr_phone',
+            'tr_num_people',
+            'tr_start_date' ,
+            'tr_end_date' ,
+            'tr_value_trip' ,
+            'tr_type_trip',
+            'tr_desc',
+            'tr_status'
+            ];
 
     
     protected $tableSetManually = false; 
@@ -37,28 +54,11 @@ class Trip extends Model
         'id' => 'string',
     ];
 
-   // Trip.php
 
-    public function travelingMembers($uniqueId = null)
+    public function trip_status()
     {
-        // Create a new TripTravelingMember instance
-        $tripTravelingMember = new TripTravelingMember();
-
-        // If a unique ID is provided, set the table dynamically
-        if ($uniqueId) {
-            $tripTravelingMember->setTableForUniqueId($uniqueId);
-        }
-
-        // Return the relationship
-        return $this->hasMany(get_class($tripTravelingMember), 'tr_id', 'tr_id');
+        return $this->belongsTo(TripStatus::class, 'status', 'tr_status_id');
     }
-
-
-    public function masterUserDetails()
-    {
-        return $this->belongsTo(MasterUserDetails::class, 'tr_agent_id', 'users_id');
-    }
-
 
     
 }
