@@ -63,7 +63,7 @@
                                                 <option disabled selected>Select Agent</option>
                                                 @foreach ($agency_user as $value)
                                                     <option value="{{ $value->users_id }}">
-                                                        {{ $value->users_first_name }}
+                                                        {{ $value->users_first_name }} {{ $value->users_last_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
