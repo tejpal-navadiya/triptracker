@@ -329,16 +329,6 @@ class LibraryController extends Controller
     }
 
 
-    public function view($id): View
-    {
-        // dd()
-        $library = Library::where('lib_id', $id)->firstOrFail();
-        $libraries = Library::all();
-
-        // dd($trip);
-        return view('masteradmin.library.view', compact('library', 'libraries'));
-    }
-
     public function show($id){
 
         $library = Library::where('lib_id', $id)->firstOrFail();
@@ -346,7 +336,32 @@ class LibraryController extends Controller
 
         // dd($trip);
         return view('masteradmin.library.details', compact('library', 'libraries','library'));
+    }
 
+    public function view(){
+
+             //$library = Library::where('lib_id', $id)->firstOrFail();
+             $libraries = Library::all(); 
+    
+             return view('masteradmin.library.view', compact('libraries'));
 
     }
+
+    
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+       $libraries = Library::where('lib_name', 'LIKE', "%{$query}%")
+                            ->orWhere('lib_basic_information', 'LIKE', "%{$query}%")
+                            ->get();
+      
+    
+        return view('masteradmin.library.view', compact('libraries'));
+    }
+    
+    
+
+    
+
 }

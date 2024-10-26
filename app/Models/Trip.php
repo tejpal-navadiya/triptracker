@@ -60,5 +60,7 @@ class Trip extends Model
         return $this->belongsTo(TripStatus::class, 'status', 'tr_status_id');
     }
 
+
+
     
 }

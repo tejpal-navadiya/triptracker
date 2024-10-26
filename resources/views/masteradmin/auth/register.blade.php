@@ -11,6 +11,8 @@
         @csrf
         <div class="row">
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Agencies Name</label>
+                <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -27,6 +29,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Host Of Franchise Name</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -43,6 +46,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Consortia Name</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -59,6 +63,8 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">First Name</label>
+                <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -75,6 +81,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Last Name</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -91,6 +98,8 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Email Address</label>
+                <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -106,6 +115,8 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">IATA or CLIA Number</label>
+                <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -113,8 +124,8 @@
                         </div>
                     </div>
                     <input type="number" class="form-control @error('user_iata_clia_number') is-invalid @enderror"
-                        id="user_iata_clia_number" name="user_iata_clia_number" placeholder="Enter Personal CLIA Number"
-                        value="{{ old('user_iata_clia_number') }}">
+                        id="user_iata_clia_number" name="user_iata_clia_number"
+                        placeholder="Enter Personal CLIA Number" value="{{ old('user_iata_clia_number') }}">
                 </div>
                 @error('user_iata_clia_number')
                     <div class="invalid-feedback mb-2">{{ $message }}</div>
@@ -122,6 +133,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Personal CLIA Number</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -138,6 +150,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Personal IATA Number</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -154,6 +167,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Address</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -172,6 +186,7 @@
 
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Country</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -191,6 +206,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">State</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -207,6 +223,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">City</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -224,6 +241,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Zip</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -239,6 +257,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Subscription Plan</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -262,6 +281,7 @@
 
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Agencies Logo / Profile Image</label>
                 <div class="input-group">
                     <input type="file" name="image" accept="image/*" class="form-control form-control-file">
                 </div>
@@ -273,6 +293,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Password</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -291,6 +312,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
+                <label for="user_agencies_name" class="form-label">Confirm Password</label>
                 <div class="input-group mb-3">
                     <div class="input-group-append">
                         <div class="input-group-text">

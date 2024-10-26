@@ -10,6 +10,7 @@
     <form method="POST" action="{{ route('masteradmin.register.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="row">
+
         <div class="col-md-6 col-xl-4">
             <div class="input-group mb-2">
                 <div class="input-group-append">

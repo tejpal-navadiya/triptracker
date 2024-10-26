@@ -40,34 +40,26 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_name" :value="__('Category*')"> <span
-                                                    class="text-danger">*</span></x-input-label>
-
+                                            <label for="tr_name">Category <span class="text-danger">*</span></label>
                                             <select class="form-control" id="tr_category" name="lib_category" autofocus>
-
                                                 <option value="" disabled selected>Select Category</option>
-
                                                 @foreach ($librarycategory as $category)
                                                     <option value="{{ $category->lib_cat_name }}">
                                                         {{ $category->lib_cat_name }}</option>
                                                 @endforeach
-
                                             </select>
-
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('lib_category')" />
                                         </div>
                                     </div>
 
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Name*')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Name <span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Select Agent" name="lib_name" autofocus
                                                 autocomplete="tr_agent_id" />
-
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('lib_name')" />
                                         </div>
                                     </div>
 
@@ -139,7 +131,7 @@
                                             <x-input-label for="tr_email" :value="__('Zip')" />
                                             <input type="text" class="form-control" id="tr_zip" name="lib_zip"
                                                 placeholder="Enter Zip" accept=".zip" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('lib_zip')" />
                                         </div>
                                     </div>
                                 </div>

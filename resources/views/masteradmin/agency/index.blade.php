@@ -187,13 +187,14 @@
                                                                         <i class="fas fa-solid fa-trash delete_icon"></i>
                                                                         <p class="company_business_name px-10">
                                                                             <b>Delete
-                                                                                Library</b>
+                                                                                Agency User</b>
                                                                         </p>
 
                                                                         @if ($value->userRole->role_name ?? '')
                                                                             <p class="company_details_text px-10"> Are
                                                                                 You
-                                                                                Sure You Want to Delete This User? </p>
+                                                                                Sure You Want to Delete This Agency User?
+                                                                            </p>
                                                                         @else
                                                                             {{ config('global.default_user_role_alert_msg') }}
                                                                         @endif

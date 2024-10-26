@@ -57,8 +57,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Agent Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+
+                                            <label for="tr_agent_id">Agent Name<span class="text-danger">*</span></label>
 
                                             <select id="tr_agent_id" name="tr_agent_id" class="form-control select2">
                                                 <option disabled selected>Select Agent</option>
@@ -68,13 +68,14 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_traveler_name" :value="__('Traveler Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+
+                                            <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
+
                                             <x-text-input type="text" class="form-control" id="tr_traveler_name"
                                                 placeholder="Traveler Name" name="tr_traveler_name" autofocus
                                                 autocomplete="tr_traveler_name" />
@@ -86,9 +87,8 @@
                                 <div class="row pxy-15 px-10">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_start_date" :value="__('Start Date')" />
+                                            <label for="tr_agent_id">Start Date<span class="text-danger">*</span></label>
                                             <div class="input-group date" id="tr_start_date" data-target-input="nearest">
-
                                                 <x-flatpickr id="completed_date" name="tr_start_date"
                                                     placeholder="mm/dd/yyyy" />
                                                 <div class="input-group-append">
@@ -104,9 +104,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_end_date" :value="__('End Date')" />
+                                            <label for="tr_agent_id">End Date<span class="text-danger">*</span></label>
                                             <div class="input-group date" id="tr_end_date" data-target-input="nearest">
-
                                                 <x-flatpickr id="expiration_date" name="tr_end_date"
                                                     placeholder="mm/dd/yyyy" />
                                                 <div class="input-group-append">
@@ -122,15 +121,17 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_num_people" :value="__('Number of People')" />
-                                            <x-text-input type="text" class="form-control" id="tr_num_people"
-                                                placeholder="Enter Number of People" name="tr_num_people" autofocus
-                                                autocomplete="tr_num_people" />
+                                            <x-text-input type="number" min="0" class="form-control"
+                                                id="tr_num_people" placeholder="Enter Number of People"
+                                                name="tr_num_people" autofocus autocomplete="tr_num_people" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_email" :value="__('Email Address')" />
+
+                                            <label for="tr_agent_id">Email Address<span
+                                                    class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="tr_email"
                                                 placeholder="Enter Email Address" name="tr_email" autofocus
                                                 autocomplete="tr_email" />
@@ -140,8 +141,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Phone Number')" />
-                                            <x-text-input type="text" class="form-control" id="tr_phone"
-                                                placeholder="Enter Phone Number" name="tr_phone" autofocus
+                                            <x-text-input type="number" min="0" class="form-control"
+                                                id="tr_phone" placeholder="Enter Phone Number" name="tr_phone" autofocus
                                                 autocomplete="tr_phone" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
                                         </div>
@@ -171,7 +172,7 @@
                                                     <option value="{{ $value->id }}">{{ $value->name }}</option>
                                                 @endforeach
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('users_state')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_country')" />
                                         </div>
                                     </div>
 
@@ -184,7 +185,7 @@
                                                 style="width: 100%;">
                                                 <option>Select State</option>
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('users_state')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_state')" />
                                         </div>
                                     </div>
 
@@ -200,7 +201,7 @@
                                                 <!-- Cities will be populated here based on the selected state -->
                                             </select>
 
-                                            <x-input-error class="mt-2" :messages="$errors->get('users_city')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_city')" />
                                         </div>
                                     </div>
 
@@ -210,7 +211,7 @@
                                             <x-text-input type="text" class="form-control" id="tr_phone"
                                                 placeholder="Enter Phone Number" name="tr_address" autofocus
                                                 autocomplete="tr_phone" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_address')" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -219,7 +220,7 @@
                                             <x-text-input type="text" class="form-control" id="tr_phone"
                                                 placeholder="Enter Phone Number" name="tr_zip" autofocus
                                                 autocomplete="tr_phone" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_zip')" />
                                         </div>
                                     </div>
 

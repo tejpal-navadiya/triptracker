@@ -64,10 +64,10 @@
                                                 <td>{{ $value->tr_traveler_name }}</td>
                                                 <td>{{ $value->tr_email }}</td>
                                                 <td>{{ $value->tr_phone }}</td>
-                                                <td>{{ $value->tr_email }}</td>
+                                                <td>{{ $value->tr_address }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-info">
-                                                        {{ $value->trip_status->tr_status_name }}</button>
+                                                        {{ $value->trip_status->tr_status_name ?? '' }}</button>
                                                 </td>
 
 

@@ -137,18 +137,19 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Phone Number')" />
-                                            <x-text-input type="text" class="form-control" id="tr_phone"
-                                                placeholder="Enter Phone Number" name="tr_phone" required autofocus
-                                                autocomplete="tr_phone" :value="old('tr_phone', $trip->tr_phone ?? '')" />
+                                            <x-text-input type="number" min="0" class="form-control"
+                                                id="tr_phone" placeholder="Enter Phone Number" name="tr_phone" required
+                                                autofocus autocomplete="tr_phone" :value="old('tr_phone', $trip->tr_phone ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_num_people" :value="__('Number of People')" />
-                                            <x-text-input type="text" class="form-control" id="tr_num_people"
-                                                placeholder="Enter Number of People" name="tr_num_people" required
-                                                autofocus autocomplete="tr_num_people" :value="old('tr_num_people', $trip->tr_num_people ?? '')" />
+                                            <x-text-input type="number" min="0" class="form-control"
+                                                id="tr_num_people" placeholder="Enter Number of People"
+                                                name="tr_num_people" required autofocus autocomplete="tr_num_people"
+                                                :value="old('tr_num_people', $trip->tr_num_people ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
                                         </div>
                                     </div>
