@@ -30,34 +30,68 @@ class TripController extends Controller
     
     public function index(Request $request)
     {
-        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        // dd($user);
 
-       $masterUserDetails = new MasterUserDetails();
-       $masterUserDetails->setTableForUniqueId($user->user_id); 
-       $masterUserTable = $masterUserDetails->getTable();
-       $agency = $masterUserDetails->get();
+        $startDate = $request->input('start_date'); 
+        $endDate = $request->input('end_date');   
+        $trip_agent = $request->input('trip_agent');   
+        $trip_traveler = $request->input('trip_traveler');   
+        $trip_status1 = $request->input('trip_status');   
+
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+        $agency = $masterUserDetails->get();
 
         $trip_status = TripStatus::get();
-        // dd($agency);
+
         $trips = new Trip();
         $tripTable = $trips->getTable();
 
-        $trip = Trip::where('tr_status', 1)
-              ->from($tripTable)  
-              ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-              ->where($tripTable . '.id', $user->users_id)
-              ->select([
-                  $tripTable . '.*', 
-                  $masterUserTable . '.users_first_name', 
-                  $masterUserTable . '.users_last_name' 
-              ])
-              ->get();
+        $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.id', $user->users_id)
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
 
+        // if ($startDate && $endDate) {
+        //     $tripQuery->whereBetween($tripTable . '.trip_date', [$startDate, $endDate]);
+        // }
 
-        return view('masteradmin.trip.index', compact('trip','agency','trip_status'));
+        if ($startDate && !$endDate) {
+            $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+        } elseif ($startDate && $endDate) {
+            $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+                ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+        }
+
+        if ($trip_agent) {
+            $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+        }
+
+        if ($trip_traveler) {
+            $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
+        }
+
+        if ($trip_status1) {
+            $tripQuery->where($tripTable . '.tr_status', $trip_status1);
+        }
+
+        $trip = $tripQuery->get();
+        if ($request->ajax()) {
+            // dd(\DB::getQueryLog()); 
+             // dd($allEstimates);
+             return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status'))->render();
+         }
+        // dd($trip);
+
+        return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status'));
     }
+
 
 
     public function create(): View
@@ -94,7 +128,7 @@ class TripController extends Controller
             'tr_num_people' => 'nullable|string',
             'tr_number' => 'nullable|string',
             'tr_start_date' => 'required',
-            'tr_end_date' => 'nullable|string',
+            'tr_end_date' => 'required|string',
             'tr_value_trip' => 'nullable|string',
             'tr_desc' => 'nullable|string',
             'tr_country' => 'nullable|string',
@@ -116,9 +150,17 @@ class TripController extends Controller
 
             'tr_name.required' => 'Traveler name is required',
             'tr_agent_id.required' => 'Agent ID is required',
+            'tr_dob' => 'DOB Is Required',
+            'tr_age' => 'Age is Required',
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
+            'tr_phone' => 'Phone is Required',
+            'tr_num_people' => 'Total Number Of People Required',
+            'tr_number' => 'Number Is Required',
             'tr_start_date.required' => 'Start date is required',
+            'tr_end_date.required' => 'End Date Is Required',
+            'tr_value_trip' => 'Value Trip Is Required',
+            'tr_desc' => 'Description Is Required',
             'tr_country.required' => 'Country is required',
             'tr_state.required' => 'State is required',
             'tr_city.required' => 'City is required',
@@ -325,14 +367,21 @@ class TripController extends Controller
             'tr_name.required' => 'Traveler name is required',
             'tr_agent_id.required' => 'Agent ID is required',
             'tr_traveler_name.required' => 'Traveler name is required',
+            'tr_dob' => 'DOB Is Required',
+            'tr_age' => 'Age is Required',
             'tr_email.email' => 'Invalid email address',
+            'tr_phone' => 'Phone is Required',
+            'tr_num_people' => 'Total Number Of People Required',
+            'tr_number' => 'Number Is Required',
             'tr_start_date.required' => 'Start date is required',
+            'tr_end_date' => 'End Date Is Required',
+            'tr_value_trip' => 'Value Trip Is Required',
+            'tr_desc' => 'Description Is Required',
             'tr_country.required' => 'Country is required',
             'tr_state.required' => 'State is required',
             'tr_city.required' => 'City is required',
             'tr_address.required' => 'Address is required',
             'tr_zip.required' => 'Zip is required',
-            'status.in' => 'The selected status is invalid.',
 
 
         ]);

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use DataTables;
 use App\Models\TripTask;
 use App\Models\TaskCategory;
+use App\Models\MasterUserDetails;
+use App\Models\Trip;
+
+
 
 class TripTaskController extends Controller
 {
@@ -196,13 +200,20 @@ class TripTaskController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id])->with(['trip','tripCategory'])->latest()->first();
+        // dd($user);
+        $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id])->with(['trip','tripCategory','taskstatus'])->latest()->first();
 
-       
-        // dd($roles);
+        $trip = Trip::where(['tr_status'=> 1,'id'=> $user->users_id])
+        ->get();
+        
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+        $agency = $masterUserDetails->get();
+        // dd($trip);
     
         if ($request->ajax()) {
-            $task = TripTask::where(['id' => $user->id])->with(['trip','tripCategory'])->latest()->get();
+            $task = TripTask::where(['id' => $user->id])->with(['trip','tripCategory','taskstatus'])->latest()->get();
             //    dd($task);
             return Datatables::of($task)
                     ->addIndexColumn()
@@ -220,6 +231,11 @@ class TripTaskController extends Controller
                         $traveler_name = $document->trip->tr_traveler_name ?? '';
                         
                         return $traveler_name;
+                    })
+                    ->addColumn('task_status_name', function($document) {
+                        $task_status_name = $document->taskstatus->ts_status_name ?? '';
+                        
+                        return $task_status_name;
                     })
                     ->addColumn('task_cat_name', function($document) {
                         $task_cat_name = $document->tripCategory->task_cat_name ?? '';
@@ -266,7 +282,7 @@ class TripTaskController extends Controller
       
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => Auth::guard('masteradmins')->user()->id])->get();
 
-        return view('masteradmin.task.index',compact('task','taskCategory'));
+        return view('masteradmin.task.index',compact('task','taskCategory','agency','trip'));
     }
     
     public function incompleteDetails(Request $request)

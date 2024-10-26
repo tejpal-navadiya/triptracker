@@ -5,6 +5,7 @@
     <!-- Brand Logo -->
     <a href="{{ route('masteradmin.home') }}" class="brand-link">
         <img src="{{ url('public/dist/img/logo.png') }}" alt="Trip Tracker Logo" class="brand-image">
+        <img src="{{ url('public/dist/img/small-logo.png') }}" alt="Trip Tracker Logo" class="brand-image-small">
     </a>
 
     <!-- Sidebar -->
@@ -24,7 +25,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link ">
+                    <a href="#"
+                        class="nav-link ">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Trips
                             <i class="fas fa-angle-right right"></i>
@@ -41,7 +43,7 @@
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Workflows</p>
+                                    <p>Workflow</p>
                                 </a>
                             </li>
                         @endif
@@ -69,7 +71,7 @@
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Trip Follow-Ups (After Booked)</p>
+                                    <p>Trip Follow Up (After Booked)</p>
                                 </a>
                             </li>
                         @endif
@@ -92,7 +94,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Travelers
                             <i class="fas fa-angle-right right"></i>
