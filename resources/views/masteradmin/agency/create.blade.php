@@ -59,8 +59,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Agency ID Number')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Agency ID Number <span
+                                                    class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Agency ID Number" name="user_agency_numbers" autofocus
                                                 autocomplete="tr_agent_id" />
@@ -71,12 +71,10 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('First Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">First Name <span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter First Name" name="users_first_name" autofocus
                                                 autocomplete="tr_agent_id" />
-
                                             <x-input-error class="mt-2" :messages="$errors->get('users_first_name')" />
                                         </div>
                                     </div>
@@ -84,8 +82,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Last Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Last Name <span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Last Name" name="users_last_name" autofocus
                                                 autocomplete="tr_agent_id" />
@@ -117,8 +114,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Work Email Address')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Work Email Address <span
+                                                    class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Work Email Address" name="user_work_email" autofocus
                                                 autocomplete="tr_agent_id" />
@@ -130,8 +127,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Personal Email Address')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Personal Email Address<span
+                                                    class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Personal Email Address" name="users_email" autofocus
                                                 autocomplete="tr_agent_id" />
@@ -169,8 +166,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('User Role')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">User Role<span class="text-danger">*</span></label>
                                             <select class="form-control" id="tr_category" name="role_id" autofocus>
                                                 <option value="" disabled selected>Select Role</option>
                                                 @foreach ($users_role as $user)

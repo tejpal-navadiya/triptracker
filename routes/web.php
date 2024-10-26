@@ -25,6 +25,8 @@ use App\Http\Controllers\Masteradmin\LibraryController;
 use App\Http\Controllers\Masteradmin\TravelerDocumentController;
 use App\Http\Controllers\Masteradmin\EmailTemplateController;
 use App\Http\Controllers\Masteradmin\AgencyController;
+use App\Http\Controllers\Masteradmin\BookedTripController;
+
 
 
 
@@ -178,6 +180,10 @@ Route::group(['prefix' => $busadminRoute], function () {
        //trip
        Route::resource('trip', TripController::class);
        Route::get('/view-trip/{userdetail}', [TripController::class, 'view'])->name('trip.view');
+      
+       //Route::get('/booked_trips', [TripController::class, 'view'])->name('trip.booked_trips');
+
+
 
        //trip family member 
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
@@ -203,16 +209,22 @@ Route::group(['prefix' => $busadminRoute], function () {
 
 
 
-       Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
-
        //Library Delete Image
        Route::get('/library/{id}/image/{image}', [LibraryController::class, 'deleteImage'])->name('library.image.delete');
 
        //Library View 
-       Route::get('/library/view/{id}', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+       //Route::get('/library/test', [LibraryController::class, 'view'])->name('masteradmin.library.test');
+       Route::get('view', [LibraryController::class, 'view'])->name('masteradmin.library.view');
+
 
        //Library Show
        Route::get('/library/show/{id}', [LibraryController::class, 'show'])->name('masteradmin.library.show');
+
+       //Library Search
+       Route::get('/library/search', [LibraryController::class, 'search'])->name('masteradmin.library.search');
+
+
+
 
 
         //trip traveler document 
