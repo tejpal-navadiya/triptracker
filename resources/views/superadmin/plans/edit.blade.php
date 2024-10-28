@@ -77,12 +77,12 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planamount">Amount <span class="text-danger">*</span></label>
-                                            <input type="number"
-                                                class="form-control @error('sp_amount') is-invalid @enderror"
-                                                id="planamount" name="sp_amount" placeholder="Enter Amount"
-                                                value="{{ $plan->sp_amount }}" min="0">
-                                            @error('sp_amount')
+                                            <label for="planamount">Amount Monthy<span class="text-danger">*</span></label>
+                                            <input type="text"
+                                                class="form-control @error('sp_month_amount') is-invalid @enderror"
+                                                id="planamount" name="sp_month_amount" placeholder="Enter Amount"
+                                                value="{{ $plan->sp_month_amount }}" min="0">
+                                            @error('sp_month_amount')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -91,10 +91,10 @@
                                         <div class="form-group">
                                             <label for="planamount">Amount Yearly <span
                                                     class="text-danger">*</span></label>
-                                            <input type="number"
+                                            <input type="text"
                                                 class="form-control @error('sp_year_amount') is-invalid @enderror"
                                                 id="planamount" name="sp_year_amount" placeholder="Enter Amount"
-                                                value="{{ $plan->sp_year_amount }}" min="0" required>
+                                                value="{{ $plan->sp_year_amount }}" min="0">
                                             @error('sp_year_amount')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

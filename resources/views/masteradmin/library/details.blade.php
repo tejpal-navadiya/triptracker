@@ -54,11 +54,11 @@
                                     <tbody>
                                         <tr>
                                             <th>Category:</th>
-                                            <td>{{ $library->lib_category }}</td>
+                                            <td>{{ $library->libcategory->lib_cat_name ?? '' }}</td>
                                         </tr>
                                         <tr>
                                             <th>Currency:</th>
-                                            <td>{{ $library->lib_currency }}</td>
+                                            <td>{{ $library->currency->currency_symbol ?? '' }} ({{ $library->currency->currency ?? '' }})</td>
                                         </tr>
 
                                     </tbody>
@@ -77,7 +77,7 @@
                                         </tr>
                                         <tr>
                                             <th>Location:</th>
-                                            <td>{{ $library->lib_country }}</td>
+                                            <td>{{ $library->city->name ?? '' }}, {{ $library->state->name ?? '' }}, {{ $library->country->name ?? '' }}</td>
                                         </tr>
 
                                     </tbody>
@@ -93,7 +93,7 @@
                                 <div class="card m-2 p-3">
                                     Infomation
                                     <p>
-                                        <td>{{ $library->lib_basic_information }}</td>
+                                        <td>{{ strip_tags($library->lib_basic_information ?? '') }}</td>
                                     </p>
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                                     Sightseeing Infomation
                                     <div class="card m-2 p-3">
                                         <p>
-                                            <td>{{ $library->lib_sightseeing_information }}</td>
+                                            <td>{{ strip_tags($library->lib_sightseeing_information ?? '') }}</td>
                                         </p>
                                     </div>
                                 </div>

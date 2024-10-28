@@ -12,7 +12,7 @@ class Plan extends Model
     protected $fillable = [
         'sp_id',
         'sp_name',
-        'sp_amount',
+        'sp_month_amount',
         'sp_year_amount',
         'sp_month',
         'sp_desc',

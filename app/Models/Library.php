@@ -34,6 +34,29 @@ class Library extends Model
         $this->setTable($uniq_id . '_tc_library');
     }
 
+    public function libcategory()
+    {
+        return $this->belongsTo(LibraryCategory::class, 'lib_category', 'lib_cat_id');
+    }
 
+    public function currency()
+    {
+        return $this->belongsTo(Countries::class, 'lib_currency', 'id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(States::class, 'lib_state', 'id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(Cities::class, 'lib_city', 'id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Countries::class, 'lib_country', 'id');
+    }
     
 }

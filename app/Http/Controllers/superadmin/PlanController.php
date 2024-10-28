@@ -41,25 +41,25 @@ class PlanController extends Controller
         // $value  = $request->authenticate();
         $validatedData = $request->validate([
             'sp_name' => 'required|string|max:255',
-            'sp_amount' => 'required|numeric',
-            'sp_year_amount' => 'required|numeric',
-            'sp_month' => 'required|integer',
+            'sp_month_amount' => 'nullable|numeric',
+            'sp_year_amount' => 'nullable|numeric',
+            'sp_month' => 'nullable|integer',
             'sp_desc' => 'nullable|string',
             'sp_user' => 'nullable|integer',
         ], [
             'sp_name.required' => 'The name field is required.',
-            'sp_amount.required' => 'The amount field is required.',
-            'sp_month.required' => 'The validity field is required.',
+            'sp_month_amount.nullable' => 'The amount field is required.',
+            'sp_month.nullable' => 'The validity field is required.',
             'sp_desc.string' => 'The description must be a string.',
             'sp_user.integer' => 'The user field must be an integer.',
-            'sp_year_amount.required' => 'The user Field is required',
+            'sp_year_amount.nullable' => 'The user Field is required',
         ]);
 
         $id = $this->GenerateUniqueRandomString($table='ta_subscription_plans', $column="sp_id", $chars=6);
         $validatedData['sp_id'] = $id;
 
-        $validatedData['sp_amount'] = '$' . $validatedData['sp_amount'];
-        $validatedData['sp_year_amount'] = '$' . $validatedData['sp_year_amount'];
+        // $validatedData['sp_month_amount'] =  $validatedData['sp_month_amount'];
+        // $validatedData['sp_year_amount'] = $validatedData['sp_year_amount'];
 
 
         // Assuming you have a Plan model to handle database interactions
@@ -98,16 +98,18 @@ class PlanController extends Controller
         // Validate incoming request data
         $validatedData = $request->validate([
             'sp_name' => 'required|string|max:255',
-            'sp_amount' => 'required|',
-            'sp_month' => 'required|integer',
+            'sp_month_amount' => 'nullable|numeric',
+            'sp_year_amount' => 'nullable|numeric',
+            'sp_month' => 'nullable|integer',
             'sp_desc' => 'nullable|string',
             'sp_user' => 'nullable|integer',
         ], [
             'sp_name.required' => 'The name field is required.',
-            'sp_amount.required' => 'The amount field is required.',
-            'sp_month.required' => 'The validity field is required.',
+            'sp_amount.nullable' => 'The amount field is required.',
+            'sp_month_amount.nullable' => 'The amount field is required.',
             'sp_desc.string' => 'The description must be a string.',
             'sp_user.integer' => 'The user field must be an integer.',
+            'sp_year_amount.nullable' => 'The user Field is required',
         ]);
 
         // Update the plan attributes based on validated data

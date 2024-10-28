@@ -52,6 +52,17 @@
                             Session::forget('plan-add');
                         @endphp
                     @endif
+                    @if (Session::has('plan-edit'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ Session::get('plan-edit') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        @php
+                            Session::forget('plan-edit');
+                        @endphp
+                    @endif
                     @if (Session::has('plan-delete'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ Session::get('plan-delete') }}
@@ -88,8 +99,8 @@
                                                 <tr>
                                                     <td>{{ $value->sp_name }}</td>
                                                     <td>{{ $value->sp_desc }}</td>
-                                                    <td>{{ $value->sp_amount }}</td>
-                                                    <td>{{ $value->sp_year_amount }}</td>
+                                                    <td>${{ $value->sp_month_amount }}</td>
+                                                    <td>${{ $value->sp_year_amount }}</td>
                                                     <td>{{ $value->sp_month }}</td>
                                                     <td>{{ $value->sp_user }}</td>
 

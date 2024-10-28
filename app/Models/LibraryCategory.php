@@ -12,6 +12,7 @@ class LibraryCategory extends Model
     use HasFactory;
     protected $fillable = [
         'lib_cat_id',
+        'id',
         'lib_cat_name',
         'lib_cat_status'
     ];
