@@ -276,7 +276,9 @@ class LibraryController extends Controller
         }
 
         // Save the updated record to the database
-        $library->save(); // Use save() instead of update()
+        $library->where('lib_id', $id)->update($validatedData);
+
+      //  $library->save(); // Use save() instead of update()
 
         // Log the activity
         \MasterLogActivity::addToLog('Master Admin Library Updated.');
