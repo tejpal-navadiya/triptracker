@@ -99,61 +99,44 @@
                                                     @endif
 
 
+                                                    {{-- start --}}
+
                                                     <a data-toggle="modal"
                                                         data-target="#agency_user-modal-{{ $value->users_id }}">
                                                         <i class="fas fa-regular fa-user edit_icon_grid"></i>
                                                     </a>
 
-
                                                     <div class="modal fade" id="agency_user-modal-{{ $value->users_id }}"
                                                         tabindex="-1" role="dialog"
                                                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-
                                                         <div class="modal-dialog modal-sm modal-dialog-centered"
                                                             role="document">
                                                             <div class="modal-content">
-                                                                <form id="delete-plan-form"
-                                                                    action="{{ route('rolemodel', $value->users_id) }}""
-                                                                    method="get">
-                                                                    {{-- @csrf --}}
-                                                                    @method('POST') <!-- Spoofing DELETE method -->
-
-
+                                                                <form id="assign-user-form"
+                                                                    action="{{ route('rolemodel.assign', $value->users_id) }}"
+                                                                    method="POST">
+                                                                    @csrf <!-- Add CSRF token for security -->
                                                                     <div class="modal-body pad-1 text-center">
                                                                         <i
                                                                             class="fas fa-solid fa-user-plus delete_icon"></i>
-                                                                        <!-- Add user icon -->
                                                                         <p class="company_business_name px-10"><b>Assign
                                                                                 User</b></p>
-                                                                        <p class="company_details_text"></p>
-
-
                                                                         <div class="form-group">
-
-
-                                                                            @if ($value->userRole->role_name ?? '')
-                                                                                <label for="user_select">Select
-                                                                                    User:</label>
-                                                                                <select id="user_select"
-                                                                                    class="form-control">
-
-                                                                                    @foreach ($users_role as $user)
-                                                                                        <option
-                                                                                            value="{{ $user->role_id }}">
-                                                                                            {{ $user->role_name }}
-                                                                                        </option>
-                                                                                    @endforeach
-                                                                                    <!-- Add more users as needed -->
-                                                                                </select>
-                                                                            @else
-                                                                                {{ config('global.default_user_role_alert_msg') }}
-                                                                            @endif
-                                                                            @if ($value->userRole->role_name ?? '')
-                                                                                <button type="button" class="add_btn px-15"
-                                                                                    data-dismiss="modal">Cancel</button>
-                                                                                <button type="submit"
-                                                                                    class="delete_btn px-15">Assign</button>
-                                                                            @endif
+                                                                            <label for="user_select">Select User
+                                                                                Role:</label>
+                                                                            <select id="user_select" name="role_id"
+                                                                                class="form-control">
+                                                                                @foreach ($users_role as $user_role)
+                                                                                    <option
+                                                                                        value="{{ $user_role->role_id }}">
+                                                                                        {{ $user_role->role_name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                            <button type="button" class="add_btn px-15"
+                                                                                data-dismiss="modal">Cancel</button>
+                                                                            <button type="submit"
+                                                                                class="delete_btn px-15">Assign</button>
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -162,6 +145,7 @@
                                                     </div>
 
 
+                                                    {{-- end --}}
 
                                                     <a data-toggle="modal"
                                                         data-target="#delete-library-modal-{{ $value->users_id }}">

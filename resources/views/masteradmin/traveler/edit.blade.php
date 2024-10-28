@@ -239,7 +239,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Zip')" />
-                                            <x-text-input type="text" class="form-control" id="tr_phone"
+                                            <x-text-input type="number" class="form-control" id="tr_phone"
                                                 placeholder="Enter Phone Number" name="tr_zip" autofocus
                                                 autocomplete="tr_zip" :value="old('tr_zip', $trip->tr_zip ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_zip')" />

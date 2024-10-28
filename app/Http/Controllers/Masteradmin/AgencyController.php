@@ -59,13 +59,13 @@ class AgencyController extends Controller
         'users_last_name' => 'required|string|max:255',
         'users_email' => 'required|email|max:255',
         'users_address' => 'required|string|max:255',
-        'users_zip' => 'required|numeric|digits_between:1,10',
+        'users_zip' => 'required|numeric|digits_between:1,6',
         'user_agency_numbers' => 'required|string|max:255',
         'user_qualification' => 'required|string|max:255',
         'user_work_email' => 'required|email|max:255',
         'user_dob' => 'required|date',
         'user_emergency_contact_person' => 'required|string|max:255',
-        'user_emergency_phone_number' =>  'required|string|max:255',
+        'user_emergency_phone_number' => 'required|string|regex:/^[0-9]{1,12}$/',
         'user_emergency_email' => 'nullable|email|max:255',
         'users_country' => 'required|string|max:255',
         'users_state' => 'required|string|max:255',
@@ -84,7 +84,7 @@ class AgencyController extends Controller
         'user_work_email.required' => 'Work email is required',
         'user_dob.required' => 'dob is required',
         'user_emergency_contact_person.required' => 'Emergency Contact is required',
-        'user_emergency_phone_number.required' => 'Emergency phone is required',
+        'user_emergency_phone_number' => 'The phone number must be between 1 to 12 digits.',
         'user_emergency_email.email' => 'Emergency Email is required',
         'users_country.required' => 'Country is required',
         'users_state.required' => 'State is required',
@@ -216,16 +216,17 @@ class AgencyController extends Controller
       'user_qualification' => 'required|string|max:255',
       'user_work_email' => 'nullable|email|max:255',
       'users_email' => 'nullable|email|max:255',
-      'user_dob' => 'required|date_format:m/d/Y', // Assuming the date format is m/d/Y
+      'user_dob' => 'required|date_format:m/d/Y', 
       'role_id' => 'required|string|max:255',
-      'users_password' => 'required|string|min:6', // Assuming min length for password
+      'users_password' => 'required|string|min:6', 
       'user_emergency_contact_person' => 'required|string|max:255',
       'user_emergency_email' => 'nullable|email|max:255',
+      'user_emergency_phone_number' => 'required|string|regex:/^[0-9]{1,12}$/',
       'users_address' => 'required|string|max:255',
       'users_country' => 'required|string|max:255',
       'users_state' => 'required|string|max:255',
       'users_city' => 'required|string|max:255',
-      'users_zip' => 'required|numeric|digits_between:1,10',
+      'users_zip' => 'required|numeric|digits_between:1,6',
       
   
   ], [
@@ -242,6 +243,7 @@ class AgencyController extends Controller
       'users_password.min' => 'Password must be at least 6 characters long',
       'user_emergency_contact_person.required' => 'Emergency contact is required',
       'user_emergency_email.email' => 'Emergency email must be a valid email address',
+      'user_emergency_phone_number' => 'The phone number must be between 1 to 12 digits.',
       'users_address.required' => 'Address is required',
       'users_country.required' => 'Country is required',
       'users_state.required' => 'State is required',
@@ -358,23 +360,33 @@ $userdetailu->users_zip = $validatedData['users_zip'];
     return view('masteradmin.agency.view', compact('agency'));
   }
 
-  public function rolemodel($id){
+
+  public function assignUserRole(Request $request, $userId)
+  {
 
     $user = Auth::guard('masteradmins')->user();
       
-    $agency = new MasterUserDetails();
-    $agency->setTableForUniqueId($user->user_id);
-
-    $agency = $agency->get();
-    
-    $agency->each(function($detail) {
-        $detail->load('userRole');
-    });
-    
-    //dd($agency); 
-    $users_role = UserRole::all(); 
-
-    return view('masteradmin.agency.index',compact('agency','users_role'));
-    
+      $validatedData = $request->validate([
+          'role_id' => 'required|string|max:255',
+      ], [
+          'role_id.required' => 'Role is required',
+      ]);
+  
+      $agency = new MasterUserDetails();
+      $agency->setTableForUniqueId($user->user_id);
+      $tableName = $agency->getTable();
+  
+      $agencyUser = $agency->where('users_id', $userId)->first();
+      if (!$agencyUser) {
+          return redirect()->back()->withErrors(['user' => 'User not found.']);
+      }
+  
+      $agencyUser->where('users_id', $userId)->update($validatedData);
+  
+      \MasterLogActivity::addToLog("User role assigned for user ID: {$userId}");
+  
+      return redirect()->route('agency.index')->with('success', 'User role assigned successfully.');
   }
+  
+
 }

@@ -322,7 +322,7 @@
                                     <div class="form-group">
                                         <x-input-label for="tr_agent_id" :value="__('Emergency Phone Number')"> <span
                                                 class="text-danger">*</span></x-input-label>
-                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
+                                        <x-text-input type="number" class="form-control" id="tr_agent_id"
                                             placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_phone_number ?? '')" />
 
