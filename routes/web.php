@@ -253,7 +253,11 @@ Route::group(['prefix' => $busadminRoute], function () {
         //Agency
         Route::resource( 'agency', AgencyController::class);
         Route::get('/agency/view/{id}', [AgencyController::class, 'view'])->name('masteradmin.agency.view');
-        Route::get('/agency/rolemodel/{id}', [AgencyController::class, 'rolemodel'])->name('rolemodel');
+
+       // Route::get('/agency/rolemodel/{id}', [AgencyController::class, 'rolemodel'])->name('rolemodel');
+
+       Route::post('/rolemodel/assign/{userId}', [AgencyController::class, 'assignUserRole'])->name('rolemodel.assign');
+
 
          
         //Agency dropdown

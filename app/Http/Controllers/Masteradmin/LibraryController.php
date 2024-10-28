@@ -22,7 +22,10 @@ class LibraryController extends Controller
     public function index(): View
     {
         $user = Auth::guard('masteradmins')->user();
-        $library = Library::where(['lib_status' => 1, 'id' => $user->users_id])->get();
+
+        $library = Library::with('libcategory','currency','state','city','country')->where(['lib_status' => 1, 'id' => $user->users_id])->get();
+        
+        //$library = Library::where(['lib_status' => 1, 'id' => $user->users_id])->get();
 
         return view('masteradmin.library.index', compact('library'));
     }
@@ -61,10 +64,10 @@ class LibraryController extends Controller
             'lib_country' => 'required|string',
             'lib_state' => 'required|string',
             'lib_city' => 'required|string',
-            'lib_zip' => 'required|numeric|digits_between:1,10',
+            'lib_zip' => 'required|numeric|digits_between:1,6', 
             'lib_basic_information' => 'required|string',
             'lib_sightseeing_information' => 'required|string',
-            'image' => 'required|array', // Validate that image is an array
+            'image' => 'nullable|array', // Validate that image is an array
             'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'lib_category.required' => 'Category is required',
@@ -101,6 +104,8 @@ class LibraryController extends Controller
                 $userFolder = session('userFolder');
                 $library_image = $this->handleImageUpload($request, 'image', null, 'library_image',$userFolder);
             }
+        }else{
+            $libraryimg = '';
         }
 
         $library = new Library();
@@ -206,7 +211,7 @@ class LibraryController extends Controller
             'lib_country' => 'required|string',
             'lib_state' => 'required|string',
             'lib_city' => 'required|string',
-            'lib_zip' => 'required|numeric|digits_between:1,10',
+            'lib_zip' => 'required|numeric|digits_between:1,6', 
             'lib_basic_information' => 'required|string',
             'lib_sightseeing_information' => 'required|string',
             'image' => 'nullable|array', // Make image optional
@@ -334,10 +339,13 @@ class LibraryController extends Controller
     public function show($id){
 
         $library = Library::where('lib_id', $id)->firstOrFail();
+
+       $user = Auth::guard('masteradmins')->user();
         $libraries = Library::all();
+        $library = Library::with('libcategory','currency','state','city','country')->where(['lib_status' => 1, 'id' => $user->users_id,'lib_id'=>$id])->firstOrFail();
 
         // dd($trip);
-        return view('masteradmin.library.details', compact('library', 'libraries','library'));
+        return view('masteradmin.library.details', compact('library', 'libraries'));
     }
 
     public function view(){

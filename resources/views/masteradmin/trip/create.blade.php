@@ -1,355 +1,375 @@
 @extends('masteradmin.layouts.app')
 <title>Add Trip | Trip Tracker</title>
-@if(isset($access['book_trip']) && $access['book_trip'])
-@section('content')
-<link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
+@if (isset($access['book_trip']) && $access['book_trip'])
+    @section('content')
+        <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2 align-items-center justify-content-between">
-              <div class="col-auto">
-                <h1 class="m-0">{{ __("Add Trip") }}</h1>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">{{ __("Add Trip") }}</li>
-                </ol>
-            </div><!-- /.col -->
-            <div class="col-auto">
-                <ol class="breadcrumb float-sm-right">
-                    <a href="#"><button class="add_btn_br">Cancel</button></a>
-                    <a href="#"><button class="add_btn">Save</button></a>
-                </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div>
-<!-- /.content-header -->
-<!-- Main content -->
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2 align-items-center justify-content-between">
+                        <div class="col-auto">
+                            <h1 class="m-0">{{ __('Add Trip') }}</h1>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">{{ __('Add Trip') }}</li>
+                            </ol>
+                        </div><!-- /.col -->
+                        <div class="col-auto">
+                            <ol class="breadcrumb float-sm-right">
+                                <a href="#"><button class="add_btn_br">Cancel</button></a>
+                                <a href="#"><button class="add_btn">Save</button></a>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+            <!-- Main content -->
 
+            <section class="content px-10">
+                <div class="container-fluid">
+                    <!-- card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Trip</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <form method="POST" action="{{ route('trip.store') }}">
+                            @csrf
+                            <div class="card-body2">
+                                <div class="row pxy-15 px-10">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tr_agent_id">Name of Trip<span class="text-danger">*</span></label>
+                                            <x-text-input type="text" class="form-control" id="tr_name"
+                                                placeholder="Enter Name of Trip" name="tr_name" autofocus
+                                                autocomplete="tr_name" value="{{ old('tr_name') }}" />
 
-
-<section class="content px-10">
-    <div class="container-fluid">
-      <!-- card -->
-      <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Add Trip</h3>
-        </div>
-        <!-- /.card-header -->
-        <form method="POST" action="{{ route('trip.store') }}">
-            @csrf
-            <div class="card-body2">
-                <div class="row pxy-15 px-10">
-                  <div class="col-md-4">
-                      <div class="form-group">
-                          <label for="tr_agent_id">Name of Trip<span class="text-danger">*</span></label>
-                          <x-text-input type="text" class="form-control" id="tr_name" placeholder="Enter Name of Trip"
-                          name="tr_name"  autofocus autocomplete="tr_name" />
-
-                          <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
-                          </div>
-                      </div>
-                      <div class="col-md-4">
-                          <div class="form-group">
-                                <label for="tr_agent_id">Agent Name<span class="text-danger">*</span></label>
-                                <select id="tr_agent_id" name="tr_agent_id" class="form-control select2">
-                                    <option disabled selected>Select Agent</option>
-                                    @foreach ($agency_user as $value)
-                                        <option value="{{ $value->users_id }}">
-                                            {{ $value->users_first_name }} {{ $value->users_last_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                              <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
-                              </div>
-                          </div>
-                          <div class="col-md-4">
-                              <div class="form-group">
-                                    <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
-                                  <x-text-input type="text" class="form-control" id="tr_traveler_name" placeholder="Traveler Name"
-                                  name="tr_traveler_name"  autofocus autocomplete="tr_traveler_name" />
-
-                                  <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row pxy-15 px-10">
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_dob" :value="__('Birthdate')" />
-                                    <div class="input-group date" id="tr_dob" data-target-input="nearest">
-
-                                        <x-flatpickr id="birthdate_date" name="tr_dob" placeholder="mm/dd/yyyy" />
-                                        <div class="input-group-append">
-                                          <div class="input-group-text" id="birthdate-hidden-icon">
-                                              <i class="fa fa-calendar-alt"></i>
-                                              <input type="hidden" id="birthdate_hidden" value="" />
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
-                                  </div>
-                              </div>
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_age" :value="__('Age')" />
-                                    <x-text-input type="text" class="form-control" id="tr_age" placeholder="Enter Age" name="tr_age"
-                                    autofocus autocomplete="users_cert_name" readonly />
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_number" :value="__('Trip Number')" />
-                                    <x-text-input type="number" class="form-control" id="tr_number" placeholder="Enter Trip Number"
-                                    name="tr_number"  autofocus autocomplete="tr_number" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_number')" />
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_email" :value="__('Email Address')" />
-                                    <x-text-input type="email" class="form-control" id="tr_email" placeholder="Enter Email Address"
-                                    name="tr_email"  autofocus autocomplete="tr_email" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_phone" :value="__('Phone Number')" />
-                                    <x-text-input type="text" class="form-control" id="tr_phone" placeholder="Enter Phone Number"
-                                    name="tr_phone"  autofocus autocomplete="tr_phone" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_num_people" :value="__('Number of People')" />
-                                    <x-text-input type="text" class="form-control" id="tr_num_people" placeholder="Enter Number of People"
-                                    name="tr_num_people"  autofocus autocomplete="tr_num_people" readonly />
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_start_date" :value="__('Start Date')" />
-                                    <div class="input-group date" id="tr_start_date" data-target-input="nearest">
-
-                                        <x-flatpickr id="completed_date" name="tr_start_date" placeholder="mm/dd/yyyy" />
-                                        <div class="input-group-append">
-                                          <div class="input-group-text" id="completed-date-icon">
-                                              <i class="fa fa-calendar-alt"></i>
-                                              <input type="hidden" id="tr_start_date_hidden" value="" />
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" />
-                                  </div>
-                              </div>
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_end_date" :value="__('End Date')" />
-                                    <div class="input-group date" id="tr_end_date" data-target-input="nearest">
-
-                                        <x-flatpickr id="expiration_date" name="tr_end_date" placeholder="mm/dd/yyyy" />
-                                        <div class="input-group-append">
-                                          <div class="input-group-text" id="expiration-date-icon">
-                                              <i class="fa fa-calendar-alt"></i>
-                                              <input type="hidden" id="tr_end_date_hidden" value="" />
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" />
-                                  </div>
-                              </div>
-
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_value_trip" :value="__('Value of trip')" />
-                                    <x-text-input type="number" class="form-control" id="tr_value_trip" placeholder="Enter Value of trip"
-                                    name="tr_value_trip"  autofocus autocomplete="tr_value_trip" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_value_trip')" />
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_desc" :value="__('Description')" />
-                                    <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description"
-                                    name="tr_desc"  autofocus autocomplete="tr_desc"></textarea>
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
-                                    </div>
-                                </div>
-
-
-                                
-
-
-
-
-                                
-
-                            </div>
-                            <div class="type-of-trip-main">
-                              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Type of Trip</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Add Traveling Member</button>
-                                </li>    
-                            </ul>
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                 <div class="col-md-12">
-                                  <div class="form-group">
-                                    <x-input-label for="tr_type_trip" :value="__('Type of Trip')" />
-                                    <div class="d-flex"> 
-                                        @foreach ($triptype as $value)
-                                        <div class="custom-control custom-checkbox">
-                                            <input class="checkbox-inputbox custom-control-input" type="checkbox" id="{{$value->ty_id}}" name="tr_type_trip[]" value="{{ $value->ty_name }}">
-                                            <label for="{{ $value->ty_id }}" class="custom-control-label">{{ $value->ty_name }}</label>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
                                         </div>
-                                        @endforeach
                                     </div>
-                                    <x-input-error class="mt-2" :messages="$errors->get('tr_type_trip')" />
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tr_agent_id">Agent Name<span class="text-danger">*</span></label>
+                                            <select id="tr_agent_id" name="tr_agent_id" class="form-control select2">
+                                                <option disabled selected>Select Agent</option>
+                                                @foreach ($agency_user as $value)
+                                                    <option value="{{ $value->users_id }}">
+                                                        {{ $value->users_first_name }} {{ $value->users_last_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
+                                            <x-text-input type="text" class="form-control" id="tr_traveler_name"
+                                                placeholder="Traveler Name" name="tr_traveler_name" autofocus
+                                                autocomplete="tr_traveler_name" value="{{ old('tr_traveler_name') }}" />
+
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row pxy-15 px-10">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_dob" :value="__('Birthdate')" />
+                                            <div class="input-group date" id="tr_dob" data-target-input="nearest">
+
+                                                <x-flatpickr id="birthdate_date" name="tr_dob" placeholder="mm/dd/yyyy" />
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text" id="birthdate-hidden-icon">
+                                                        <i class="fa fa-calendar-alt"></i>
+                                                        <input type="hidden" id="birthdate_hidden" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_age" :value="__('Age')" />
+                                            <x-text-input type="text" class="form-control" id="tr_age"
+                                                placeholder="Enter Age" name="tr_age" autofocus
+                                                autocomplete="users_cert_name" readonly />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_number" :value="__('Trip Number')" />
+                                            <x-text-input type="number" class="form-control" id="tr_number"
+                                                placeholder="Enter Trip Number" name="tr_number" autofocus
+                                                autocomplete="tr_number" value="{{ old('tr_number') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_number')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_email" :value="__('Email Address')" />
+                                            <x-text-input type="email" class="form-control" id="tr_email"
+                                                placeholder="Enter Email Address" name="tr_email" autofocus
+                                                autocomplete="tr_email" value="{{ old('tr_email') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_phone" :value="__('Phone Number')" />
+                                            <x-text-input type="number" class="form-control" id="tr_phone"
+                                                placeholder="Enter Phone Number" name="tr_phone" autofocus
+                                                autocomplete="tr_phone" value="{{ old('tr_phone') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_num_people" :value="__('Number of People')" />
+                                            <x-text-input type="text" class="form-control" id="tr_num_people"
+                                                placeholder="Enter Number of People" name="tr_num_people" autofocus
+                                                autocomplete="tr_num_people" readonly />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_start_date" :value="__('Start Date')" />
+                                            <div class="input-group date" id="tr_start_date" data-target-input="nearest">
+
+                                                <x-flatpickr id="completed_date" name="tr_start_date"
+                                                    placeholder="mm/dd/yyyy" />
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text" id="completed-date-icon">
+                                                        <i class="fa fa-calendar-alt"></i>
+                                                        <input type="hidden" id="tr_start_date_hidden" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" /> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_end_date" :value="__('End Date')" />
+                                            <div class="input-group date" id="tr_end_date" data-target-input="nearest">
+
+                                                <x-flatpickr id="expiration_date" name="tr_end_date"
+                                                    placeholder="mm/dd/yyyy" />
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text" id="expiration-date-icon">
+                                                        <i class="fa fa-calendar-alt"></i>
+                                                        <input type="hidden" id="tr_end_date_hidden" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" /> --}}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_value_trip" :value="__('Value of trip')" />
+                                            <x-text-input type="number" class="form-control" id="tr_value_trip"
+                                                placeholder="Enter Value of trip" name="tr_value_trip" autofocus
+                                                autocomplete="tr_value_trip" value="{{ old('tr_value_trip') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_value_trip')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_desc" :value="__('Description')" />
+                                            <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
+                                                autofocus autocomplete="tr_desc"> {{ old('tr_desc') }}</textarea>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+                                </div>
+                                <div class="type-of-trip-main">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="home-tab" data-toggle="tab"
+                                                data-target="#home" type="button" role="tab" aria-controls="home"
+                                                aria-selected="true">Type of Trip</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="profile-tab" data-toggle="tab"
+                                                data-target="#profile" type="button" role="tab"
+                                                aria-controls="profile" aria-selected="false">Add Traveling
+                                                Member</button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                            aria-labelledby="home-tab">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <x-input-label for="tr_type_trip" :value="__('Type of Trip')" />
+                                                    <div class="d-flex">
+                                                        @foreach ($triptype as $value)
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input class="checkbox-inputbox custom-control-input"
+                                                                    type="checkbox" id="{{ $value->ty_id }}"
+                                                                    name="tr_type_trip[]" value="{{ $value->ty_name }}">
+                                                                <label for="{{ $value->ty_id }}"
+                                                                    class="custom-control-label">{{ $value->ty_name }}</label>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                    <x-input-error class="mt-2" :messages="$errors->get('tr_type_trip')" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col type-of-trip-in">
+                                                <h4>Type of Trip</h4>
+
+                                                <!-- Nav tabs -->
+                                                <!-- Tab Navigation -->
+                                                <ul class="nav nav-tabs" id="tab-list">
+                                                    <!-- Dynamic tab links will be added here -->
+                                                </ul>
+
+                                                <!-- Tab Content -->
+                                                <div class="tab-content" id="tab-content">
+                                                    <!-- Dynamic tab panels will be added here -->
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                            aria-labelledby="profile-tab">
+
+                                            <div class="col-md-12" id="dynamic_field">
+                                                @if ($errors->any())
+                                                    <div class="alert alert-danger">
+                                                        <ul>
+                                                            @foreach ($errors->all() as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-12">
+                                                <button type="button" id="add"
+                                                    class="add_tripmembertbtn add_btn"><i
+                                                        class="fas fa-plus add_plus_icon"></i>Add Traveling Member</button>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="itinerary-link">
+                                        <div class="dynamic-fields" id="Itinerary-fields">
+                                            <div class="row align-items-center mb-3">
+                                                <div class="col-md-4">
+                                                    <input type="text" name="itinerary[0][trit_text]"
+                                                        class="form-control" placeholder="Itinerary Link">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" class="add_btn w-100"
+                                                        data-target="Itinerary">+ Add Another</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col type-of-trip-in">
-                                    <h4>Type of Trip</h4>
-
-                                    <!-- Nav tabs -->
-                                    <!-- Tab Navigation -->
-                                    <ul class="nav nav-tabs" id="tab-list">
-                                        <!-- Dynamic tab links will be added here -->
-                                    </ul>
-
-                                    <!-- Tab Content -->
-                                    <div class="tab-content" id="tab-content">
-                                        <!-- Dynamic tab panels will be added here -->
+                                <div class="row py-20 px-10">
+                                    <div class="col-md-12 text-center">
+                                        <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                        <button type="submit" class="add_btn px-10">Save</button>
                                     </div>
-
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                
-                              <div class="col-md-12" id="dynamic_field">
-                                  @if ($errors->any())
-                                  <div class="alert alert-danger">
-                                      <ul>
-                                          @foreach ($errors->all() as $error)
-                                          <li>{{ $error }}</li>
-                                          @endforeach
-                                      </ul>
-                                  </div>
-                                  @endif
-                              </div>
-                              <div class="col-md-12">
-                                  <button type="button" id="add" class="add_tripmembertbtn add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Traveling Member</button>
-                              </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
 
-                              
-                          </div>    
-                      </div>
-                      <div class="itinerary-link">
-                          <div class="dynamic-fields" id="Itinerary-fields">
-                            <div class="row align-items-center mb-3">
-                                <div class="col-md-4">
-                                    <input type="text" name="itinerary[0][trit_text]" class="form-control" placeholder="Itinerary Link">
-                                </div>
-                                <div class="col-md-2">
-                                  <button type="button" class="add_btn w-100" data-target="Itinerary">+ Add Another</button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        </div>
+        <!-- ./wrapper -->
+        <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-              <div class="row py-20 px-10">
-                  <div class="col-md-12 text-center">
-                      <a href="{{route('trip.index')}}" class="add_btn_br px-10">Cancel</a>
-                      <button type="submit" class="add_btn px-10">Save</button>
-                  </div>
-              </div>
-          </div>
-      </form>
-  </div>
-  <!-- /.card -->
-</div><!-- /.container-fluid -->
-</section>
-<!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
 
-<!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-</aside>
-<!-- /.control-sidebar -->
-</div>
-<!-- ./wrapper -->
-<script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                var fromdatepicker = flatpickr("#completed_date", {
+                    locale: 'en',
+                    altInput: true,
+                    dateFormat: "m/d/Y",
+                    altFormat: "d/m/Y",
+                    allowInput: true,
+                });
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+                var todatepicker = flatpickr("#expiration_date", {
+                    locale: 'en',
+                    altInput: true,
+                    dateFormat: "m/d/Y",
+                    altFormat: "d/m/Y",
+                    allowInput: true,
+                });
 
-        var fromdatepicker = flatpickr("#completed_date", {
-          locale: 'en',
-          altInput: true,
-          dateFormat: "m/d/Y",
-          altFormat: "d/m/Y",
-          allowInput: true,
-      });
+                document.getElementById('completed-date-icon').addEventListener('click', function() {
+                    fromdatepicker.open();
+                });
 
-        var todatepicker = flatpickr("#expiration_date", {
-          locale: 'en',
-          altInput: true,
-          dateFormat: "m/d/Y",
-          altFormat: "d/m/Y",
-          allowInput: true,
-      });
-
-        document.getElementById('completed-date-icon').addEventListener('click', function () {
-          fromdatepicker.open();
-      });
-
-        document.getElementById('expiration-date-icon').addEventListener('click', function () {
-          todatepicker.open();
-      });
+                document.getElementById('expiration-date-icon').addEventListener('click', function() {
+                    todatepicker.open();
+                });
 
 
-        var birthdatedate = flatpickr("#birthdate_date", {
-          locale: 'en',
-          altInput: true,
-          dateFormat: "m/d/Y",
-          altFormat: "d/m/Y",
-          allowInput: true,
-      });
+                var birthdatedate = flatpickr("#birthdate_date", {
+                    locale: 'en',
+                    altInput: true,
+                    dateFormat: "m/d/Y",
+                    altFormat: "d/m/Y",
+                    allowInput: true,
+                });
 
-        document.getElementById('birthdate-hidden-icon').addEventListener('click', function () {
-          birthdatedate.open();
-      });
+                document.getElementById('birthdate-hidden-icon').addEventListener('click', function() {
+                    birthdatedate.open();
+                });
 
-    });
+            });
+        </script>
 
-</script>
+        <script>
+            $(document).ready(function() {
+                var rowCount = 0;
 
-<script>
-
-    $(document).ready(function () {
-      var  rowCount = 0;
-
-      $('#add').click(function () {
-      // alert('add');
-      rowCount++;
-      $('#dynamic_field').append(`
+                $('#add').click(function() {
+                    // alert('add');
+                    rowCount++;
+                    $('#dynamic_field').append(`
          <div class="item-row row" id="row${rowCount}">
          <div class="col-md-3">
          <div class="form-group">
@@ -471,99 +491,98 @@
          <hr />
          `);
 
-$(`#row${rowCount} .family-member-field`).hide();
-$(`#row${rowCount} .trip-member-field`).hide();
+                    $(`#row${rowCount} .family-member-field`).hide();
+                    $(`#row${rowCount} .trip-member-field`).hide();
 
-var numofpeople = document.querySelector('#tr_num_people');
-numofpeople.value = rowCount;
+                    var numofpeople = document.querySelector('#tr_num_people');
+                    numofpeople.value = rowCount;
 
-var travelerdates = flatpickr(`#traveler_date_${rowCount}`, {
-  locale: 'en',
-  altInput: true,
-  dateFormat: "m/d/Y",
-  altFormat: "d/m/Y",
-  allowInput: true,
-});
+                    var travelerdates = flatpickr(`#traveler_date_${rowCount}`, {
+                        locale: 'en',
+                        altInput: true,
+                        dateFormat: "m/d/Y",
+                        altFormat: "d/m/Y",
+                        allowInput: true,
+                    });
 
-document.getElementById(`traveler-date-icons_${rowCount}`).addEventListener('click', function () {
-      // alert('jhk');
-      travelerdates.open();
-  });
-
-
-var birthdateInput = document.querySelector(`#traveler_date_${rowCount}`);
-var ageInput = document.querySelector(`#trtm_age_${rowCount}`);
-
-birthdateInput.addEventListener('change', function () {
-  var birthdate = new Date(birthdateInput.value);
-  var today = new Date();
-  var age = today.getFullYear() - birthdate.getFullYear();
-  var m = today.getMonth() - birthdate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-    age--;
-}
-if (age < 0) {
-    ageInput.value = 0;
-        // alert("Invalid birthdate. Please enter a valid birthdate.");
-    } else {
-        ageInput.value = age;
-    }
-});
-
-});
-
-$(document).on('change', '.trtm_type', function() {
-  var rowId = $(this).closest('.item-row').attr('id').replace('row', '');
-  if ($(this).val() == 1) {
-    $(`#row${rowId} .family-member-field`).show();
-    $(`#row${rowId} .trip-member-field`).hide();
-} else  if ($(this).val() == 2){
-    $(`#row${rowId} .family-member-field`).hide();
-    $(`#row${rowId} .trip-member-field`).show();
-}
-});
-
-$(document).on('click', '.delete-item', function () {
-  var rowId = $(this).attr("id");
-  $('#row' + rowId).remove();
-
-  rowCount--;
-  $('#tr_num_people').val(rowCount);
-});
-
-var birthdateInput = document.querySelector('#birthdate_date');
-var ageInput = document.querySelector('#tr_age');
-
-birthdateInput.addEventListener('change', function () {
-  var birthdate = new Date(birthdateInput.value);
-  var today = new Date();
-  var age = today.getFullYear() - birthdate.getFullYear();
-  var m = today.getMonth() - birthdate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-      age--;
-  }
-  if (age < 0) {
-      ageInput.value = 0;
-      // alert("Invalid birthdate. Please enter a valid birthdate.");
-  } else {
-      ageInput.value = age;
-  }
-});
-
-});
+                    document.getElementById(`traveler-date-icons_${rowCount}`).addEventListener('click',
+                        function() {
+                            // alert('jhk');
+                            travelerdates.open();
+                        });
 
 
-</script>
+                    var birthdateInput = document.querySelector(`#traveler_date_${rowCount}`);
+                    var ageInput = document.querySelector(`#trtm_age_${rowCount}`);
+
+                    birthdateInput.addEventListener('change', function() {
+                        var birthdate = new Date(birthdateInput.value);
+                        var today = new Date();
+                        var age = today.getFullYear() - birthdate.getFullYear();
+                        var m = today.getMonth() - birthdate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                            age--;
+                        }
+                        if (age < 0) {
+                            ageInput.value = 0;
+                            // alert("Invalid birthdate. Please enter a valid birthdate.");
+                        } else {
+                            ageInput.value = age;
+                        }
+                    });
+
+                });
+
+                $(document).on('change', '.trtm_type', function() {
+                    var rowId = $(this).closest('.item-row').attr('id').replace('row', '');
+                    if ($(this).val() == 1) {
+                        $(`#row${rowId} .family-member-field`).show();
+                        $(`#row${rowId} .trip-member-field`).hide();
+                    } else if ($(this).val() == 2) {
+                        $(`#row${rowId} .family-member-field`).hide();
+                        $(`#row${rowId} .trip-member-field`).show();
+                    }
+                });
+
+                $(document).on('click', '.delete-item', function() {
+                    var rowId = $(this).attr("id");
+                    $('#row' + rowId).remove();
+
+                    rowCount--;
+                    $('#tr_num_people').val(rowCount);
+                });
+
+                var birthdateInput = document.querySelector('#birthdate_date');
+                var ageInput = document.querySelector('#tr_age');
+
+                birthdateInput.addEventListener('change', function() {
+                    var birthdate = new Date(birthdateInput.value);
+                    var today = new Date();
+                    var age = today.getFullYear() - birthdate.getFullYear();
+                    var m = today.getMonth() - birthdate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                        age--;
+                    }
+                    if (age < 0) {
+                        ageInput.value = 0;
+                        // alert("Invalid birthdate. Please enter a valid birthdate.");
+                    } else {
+                        ageInput.value = age;
+                    }
+                });
+
+            });
+        </script>
 
 
-<script>
-    $(document).ready(function() {
-        // Function to add new fields
-        var  rowCountItinerary = 0;
-        $('.add-btn2').click(function() {
-          rowCountItinerary++;
-          var target = $(this).data('target');
-          var newRow = `
+        <script>
+            $(document).ready(function() {
+                // Function to add new fields
+                var rowCountItinerary = 0;
+                $('.add-btn2').click(function() {
+                    rowCountItinerary++;
+                    var target = $(this).data('target');
+                    var newRow = `
           <div class="row align-items-center mb-3">
           <div class="col-md-4">
           <input type="text" class="form-control" name="itinerary[${rowCountItinerary}][trit_text]" placeholder="${target.charAt(0).toUpperCase() + target.slice(1)} Link">
@@ -574,70 +593,69 @@ birthdateInput.addEventListener('change', function () {
           </div>
           </div>
           `;
-          $('#'+target+'-fields').append(newRow);
-      });
+                    $('#' + target + '-fields').append(newRow);
+                });
 
-        // Function to delete fields
-        $(document).on('click', '.delete-btn', function() {
-            $(this).closest('.row').remove();
-        });
-    });
-
-
-
-    $(document).ready(function() {
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var activeTab = $(e.target).text(); // Get active tab text
-        $('#trip_type_text').val(activeTab); // Set it to hidden field
-    });
-    });
-
-</script>
-<script>
-    $(document).ready(function() {
-        // When a tab is clicked, update the hidden input field with the tab's text
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            var tripTypeName = $(e.target).text();  // Get the tab text (Cruise, Excursion, etc.)
-            $('#trip_type_name').val(tripTypeName);  // Set the hidden field value
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkboxes = document.querySelectorAll('input[name="tr_type_trip[]"]');
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                updateTabs();
+                // Function to delete fields
+                $(document).on('click', '.delete-btn', function() {
+                    $(this).closest('.row').remove();
+                });
             });
-        });
 
-        function updateTabs() {
-            const tabList = document.getElementById('tab-content');
-            const tabContent = document.getElementById('tab-content');
 
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    const tripTypeName = checkbox.value;
-                // alert(tripTypeName);
-                const tripTypeId = checkbox.id;
 
-                // Check if the tab already exists
-                if (!document.getElementById(`${tripTypeId}-tab`)) {
+            $(document).ready(function() {
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                    var activeTab = $(e.target).text(); // Get active tab text
+                    $('#trip_type_text').val(activeTab); // Set it to hidden field
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // When a tab is clicked, update the hidden input field with the tab's text
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                    var tripTypeName = $(e.target).text(); // Get the tab text (Cruise, Excursion, etc.)
+                    $('#trip_type_name').val(tripTypeName); // Set the hidden field value
+                });
+            });
+        </script>
 
-                    // Create tab link
-                    const tabLink = document.createElement('li');
-                    tabLink.className = 'nav-item';
-                    tabLink.innerHTML = `
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const checkboxes = document.querySelectorAll('input[name="tr_type_trip[]"]');
+
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        updateTabs();
+                    });
+                });
+
+                function updateTabs() {
+                    const tabList = document.getElementById('tab-content');
+                    const tabContent = document.getElementById('tab-content');
+
+                    checkboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            const tripTypeName = checkbox.value;
+                            // alert(tripTypeName);
+                            const tripTypeId = checkbox.id;
+
+                            // Check if the tab already exists
+                            if (!document.getElementById(`${tripTypeId}-tab`)) {
+
+                                // Create tab link
+                                const tabLink = document.createElement('li');
+                                tabLink.className = 'nav-item';
+                                tabLink.innerHTML = `
                     <a id="${tripTypeId}-tab">${tripTypeName}</a>
                     `;
-                    tabList.appendChild(tabLink);
+                                tabList.appendChild(tabLink);
 
-                    // Create tab panel
-                    const tabPanel = document.createElement('div');
-                    
-                    tabPanel.innerHTML = `
+                                // Create tab panel
+                                const tabPanel = document.createElement('div');
+
+                                tabPanel.innerHTML = `
                     <div class="dynamic-fields" id="${tripTypeId}-fields">
                     <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_name]" value="${tripTypeName}">
                     <div class="row align-items-center mb-3">
@@ -661,28 +679,29 @@ birthdateInput.addEventListener('change', function () {
                     </div>
                     </div>
                     `;
-                    tabContent.appendChild(tabPanel);
+                                tabContent.appendChild(tabPanel);
 
-                    // Activate the new tab
-                    const allTabs = tabList.querySelectorAll('.nav-link');
-                    allTabs.forEach(t => {
-                        t.classList.remove('active');
-                        const panelId = t.getAttribute('href').substring(1);
-                        document.getElementById(panelId).classList.remove('show', 'active');
-                    });
+                                // Activate the new tab
+                                const allTabs = tabList.querySelectorAll('.nav-link');
+                                allTabs.forEach(t => {
+                                    t.classList.remove('active');
+                                    const panelId = t.getAttribute('href').substring(1);
+                                    document.getElementById(panelId).classList.remove('show', 'active');
+                                });
 
-                    tabLink.querySelector('a').classList.add('active');
-                    tabPanel.classList.add('show', 'active');
+                                tabLink.querySelector('a').classList.add('active');
+                                tabPanel.classList.add('show', 'active');
 
-                    // Add event listener to "Add Another" button
-                    let entryIndex = 1; // Track the index for the dynamic fields
-                    const addButton = tabPanel.querySelector('.add-btn');
-                    addButton.addEventListener('click', function() {
-                        const targetId = addButton.getAttribute('data-target');
-                        const fieldsContainer = document.getElementById(`${targetId}-fields`);
+                                // Add event listener to "Add Another" button
+                                let entryIndex = 1; // Track the index for the dynamic fields
+                                const addButton = tabPanel.querySelector('.add-btn');
+                                addButton.addEventListener('click', function() {
+                                    const targetId = addButton.getAttribute('data-target');
+                                    const fieldsContainer = document.getElementById(
+                                        `${targetId}-fields`);
 
-                        // Create a new row for dynamic fields with incrementing indices
-                        const newRow = `
+                                    // Create a new row for dynamic fields with incrementing indices
+                                    const newRow = `
                         <input type="hidden" name="trip_types[${targetId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
 
                         <div class="row align-items-center mb-3">
@@ -697,38 +716,38 @@ birthdateInput.addEventListener('change', function () {
                         </div>
                         </div>
                         `;
-                        fieldsContainer.insertAdjacentHTML('beforeend', newRow);
+                                    fieldsContainer.insertAdjacentHTML('beforeend', newRow);
 
-                        // Add event listener to the delete button in the new row
-                        const deleteButton = fieldsContainer.lastElementChild.querySelector('.delete-btn');
-                        deleteButton.addEventListener('click', function() {
-                            fieldsContainer.removeChild(deleteButton.closest('.row'));
-                        });
+                                    // Add event listener to the delete button in the new row
+                                    const deleteButton = fieldsContainer.lastElementChild.querySelector(
+                                        '.delete-btn');
+                                    deleteButton.addEventListener('click', function() {
+                                        fieldsContainer.removeChild(deleteButton.closest(
+                                            '.row'));
+                                    });
 
-                        entryIndex++; // Increment the index for the next dynamic row
-                    });
+                                    entryIndex++; // Increment the index for the next dynamic row
+                                });
 
-                    // Add event listener to the delete button in the initial row
-                    const deleteButton = tabPanel.querySelector('.delete-btn');
-                    deleteButton.addEventListener('click', function() {
-                        tabPanel.remove(); // Remove the entire tab panel
-                        tabLink.remove(); // Remove the corresponding tab link
+                                // Add event listener to the delete button in the initial row
+                                const deleteButton = tabPanel.querySelector('.delete-btn');
+                                deleteButton.addEventListener('click', function() {
+                                    tabPanel.remove(); // Remove the entire tab panel
+                                    tabLink.remove(); // Remove the corresponding tab link
+                                });
+                            }
+                        } else {
+                            // If unchecked, remove the corresponding tab and panel
+                            const tabLink = document.getElementById(`${checkbox.id}-tab`);
+                            const tabPanel = document.getElementById(`tab-${checkbox.id}`);
+                            if (tabLink && tabPanel) {
+                                tabLink.remove();
+                                tabPanel.remove();
+                            }
+                        }
                     });
                 }
-            } else {
-                // If unchecked, remove the corresponding tab and panel
-                const tabLink = document.getElementById(`${checkbox.id}-tab`);
-                const tabPanel = document.getElementById(`tab-${checkbox.id}`);
-                if (tabLink && tabPanel) {
-                    tabLink.remove();
-                    tabPanel.remove();
-                }
-            }
-        });
-}
-});
-
-
-</script>
-@endsection
+            });
+        </script>
+    @endsection
 @endif

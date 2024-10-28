@@ -247,10 +247,11 @@
                                     <div class="form-group">
                                         <x-input-label for="tr_agent_id" :value="__('Emergency Phone Number')"> <span
                                                 class="text-danger">*</span></x-input-label>
-                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
+                                        <x-text-input type="number" class="form-control" id="tr_agent_id"
                                             placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id"
                                             value="{{ old('user_emergency_phone_number') }}" />
+                                        <x-input-error class="mt-2" :messages="$errors->get('user_emergency_phone_number')" />
 
                                     </div>
                                 </div>

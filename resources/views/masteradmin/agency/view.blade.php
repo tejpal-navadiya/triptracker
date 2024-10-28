@@ -71,7 +71,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Phone Number:</th>
-                                                        <td>{{ $agency->users_phone }}</td>
+                                                        <td>{{ $agency->user_emergency_phone_number }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -99,10 +99,7 @@
                                                         <th>User Role:</th>
                                                         <td>{{ $agency->role_id }}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <th>Password:</th>
-                                                        <td>{{ $agency->users_password }}</td>
-                                                    </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>

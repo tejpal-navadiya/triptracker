@@ -92,7 +92,7 @@ class TripController extends Controller
         return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status'));
     }
 
-    
+
     public function create(): View
     {
 
@@ -123,7 +123,7 @@ class TripController extends Controller
             'tr_dob' => 'nullable|string',
             'tr_age' => 'nullable|string',
             'tr_email' => 'nullable|email',
-            'tr_phone' => 'nullable|string',
+            'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
             'tr_num_people' => 'nullable|string',
             'tr_number' => 'nullable|string',
             'tr_start_date' => 'required',
@@ -134,8 +134,7 @@ class TripController extends Controller
             'tr_state' => 'nullable|string',
             'tr_city' => 'nullable|string',
             'tr_address' => 'nullable|string',
-            'tr_zip' => 'nullable|string',
-
+            'tr_zip' => 'nullable|numeric|digits_between:1,6',
             'items.*.trtm_type' => 'required|string',
             'items.*.trtm_first_name' => 'required|string',
             'items.*.trtm_middle_name' => 'nullable|string',
@@ -153,7 +152,7 @@ class TripController extends Controller
             'tr_age' => 'Age is Required',
             'tr_traveler_name.required' => 'Traveler name is required',
             'tr_email.email' => 'Invalid email address',
-            'tr_phone' => 'Phone is Required',
+            'tr_phone.regex' => 'The phone number must be between 1 to 12 digits.',
             'tr_num_people' => 'Total Number Of People Required',
             'tr_number' => 'Number Is Required',
             'tr_start_date.required' => 'Start date is required',
@@ -181,6 +180,16 @@ class TripController extends Controller
         $tableName = $traveler->getTable();
         $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "tr_id", $chars = 6);
         $traveler->tr_id = $uniqueId;
+
+
+
+        $existingtrip = $traveler->where('tr_email', $validatedData['tr_email'])->first();
+
+        if ($existingtrip) {
+            return redirect()->back()->withErrors(['tr_email' => 'The email address is already in use.'])->withInput();
+        }
+
+
         $traveler->id = $user->users_id;
         $traveler->tr_name = $validatedData['tr_name'];
         $traveler->tr_agent_id = $validatedData['tr_agent_id'];
