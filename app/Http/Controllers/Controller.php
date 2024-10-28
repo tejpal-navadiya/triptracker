@@ -132,8 +132,6 @@ class Controller extends BaseController
             if (!Schema::hasTable($storeId.'_tc_users_details')){   
                 Schema::create($storeId.'_tc_users_details', function (Blueprint $table) {
                     $table->string('users_id')->unique()->primary();
-
-
                     $table->string('users_agencies_name')->nullable();
                     $table->string('users_franchise_name')->nullable();
                     $table->string('users_consortia_name')->nullable();
@@ -413,19 +411,24 @@ class Controller extends BaseController
 
             if (!Schema::hasTable($storeId.'_tc_email_template')){   
                 Schema::create($storeId.'_tc_email_template', function (Blueprint $table) {
-                    $table->string('id')->unique()->primary();
-                    $table->string('u_id')->nullable()->default(0);
-                    $table->string('email_tid')->nullable()->default(0);
-                    $table->string('category')->nullable();
-                    // $table->string('mtitle')->nullable();
-                    // $table->integer('mid')->nullable();
-                    // $table->string('is_access')->nullable();
+                   
+                    $table->string('email_tid') ->unique()->primary();
+                    $table->string('id')->nullable()->default(0);
+                    $table->string('category')->nullable()->default(0);
+                    $table->string('title')->nullable();
+                    $table->string('email_text')->nullable();
                     $table->timestamps();
+                
                 });
             }else{
                 Schema::table($storeId.'_tc_email_template', function (Blueprint $table) use ($storeId) {
                     if (!Schema::hasColumn($storeId.'_tc_email_template', 'title')) {
                         $table->string('title')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_email_template', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_email_template', 'email_text')) {
+                        $table->string('email_text')->nullable();
                     }
                 });
             }

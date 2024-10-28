@@ -42,10 +42,13 @@
                                         <div class="form-group">
                                             <label for="tr_name">Category <span class="text-danger">*</span></label>
                                             <select class="form-control" id="tr_category" name="lib_category" autofocus>
-                                                <option value="" disabled selected>Select Category</option>
+                                                <option value="" disabled {{ old('lib_category') ? '' : 'selected' }}>
+                                                    Select Category</option>
                                                 @foreach ($librarycategory as $category)
-                                                    <option value="{{ $category->lib_cat_name }}">
-                                                        {{ $category->lib_cat_name }}</option>
+                                                    <option value="{{ $category->lib_cat_name }}"
+                                                        {{ old('lib_category') === $category->lib_cat_name ? 'selected' : '' }}>
+                                                        {{ $category->lib_cat_name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_category')" />
@@ -53,12 +56,13 @@
                                     </div>
 
 
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Name <span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Select Agent" name="lib_name" autofocus
-                                                autocomplete="tr_agent_id" />
+                                                autocomplete="tr_agent_id" value="{{ old('lib_name') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_name')" />
                                         </div>
                                     </div>
@@ -77,7 +81,6 @@
                                                 @endforeach
                                                 <!-- Add more options as needed -->
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_country')" />
                                         </div>
                                     </div>
                                 </div>
@@ -88,11 +91,10 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_currencys" :value="__('Currency')"> <span
                                                     class="text-danger">*</span></x-input-label>
-                                            <select class="form-control select2"" id="tr_currency" name="lib_currency"
+                                            <select class="form-control select2" id="tr_currency" name="lib_currency"
                                                 autofocus>
                                                 <option value="" selected>Select Currency</option>
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_currency')" />
                                         </div>
                                     </div>
 
@@ -105,7 +107,6 @@
                                                 <!-- States will be populated here based on the selected country -->
                                             </select>
 
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_state')" />
                                         </div>
                                     </div>
 
@@ -121,7 +122,6 @@
                                                 <!-- Cities will be populated here based on the selected state -->
                                             </select>
 
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_city')" />
                                         </div>
                                     </div>
 
@@ -129,8 +129,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_email" :value="__('Zip')" />
-                                            <input type="text" class="form-control" id="tr_zip" name="lib_zip"
-                                                placeholder="Enter Zip" accept=".zip" />
+                                            <input type="number" class="form-control" id="tr_zip" name="lib_zip"
+                                                placeholder="Enter Zip" accept=".zip" value="{{ old('lib_zip') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_zip')" />
                                         </div>
                                     </div>
@@ -141,16 +141,17 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <x-input-label for="tr_basic_info" :value="__('Basic Information')" />
-                                            <textarea class="form-control" id="tr_basic_info" name="lib_basic_information" placeholder="Enter Basic Information"></textarea>
+                                            <textarea class="form-control" id="tr_basic_info" name="lib_basic_information" placeholder="Enter Basic Information">{{ old('lib_basic_information') }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" />
                                         </div>
                                     </div>
+
 
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <x-input-label for="tr_sightseeing_info" :value="__('Sightseeing Information')" />
                                             <textarea class="form-control" id="tr_sightseeing_info" name="lib_sightseeing_information"
-                                                placeholder="Enter Sightseeing Information"></textarea>
+                                                placeholder="Enter Sightseeing Information">{{ old('lib_sightseeing_information') }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_sightseeing_information')" />
                                         </div>
                                     </div>

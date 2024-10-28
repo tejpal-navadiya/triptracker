@@ -150,7 +150,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_email" :value="__('Zip')" />
-                                            <x-text-input type="text" class="form-control" id="tr_zip"
+                                            <x-text-input type="number" class="form-control" id="tr_zip"
                                                 placeholder="Enter Zip" name="lib_zip" autofocus autocomplete="tr_agent_id"
                                                 :value="old('tr_name', $library->lib_zip ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />

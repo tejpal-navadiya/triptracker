@@ -441,14 +441,15 @@
                                     <div class="form-group">
                                         <x-input-label for="tr_agent_id" :value="__('zip')"> <span
                                                 class="text-danger">*</span></x-input-label>
-                                        <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                            placeholder="Enter Zip" name="users_zip" :value="old('age_user_id', $agency->users_address ?? '')" autofocus
+                                        <x-text-input type="number" class="form-control" id="tr_agent_id"
+                                            placeholder="Enter Zip" name="users_zip" :value="old('age_user_id', $agency->users_zip ?? '')" autofocus
                                             autocomplete="tr_agent_id" />
 
                                         <x-input-error class="mt-2" :messages="$errors->get('users_zip')" />
                                     </div>
                                 </div>
                             </div>
+
 
 
                             {{-- End Fifth Row --}}

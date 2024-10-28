@@ -22,11 +22,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Company List</h1>
+                            <h1 class="m-0">Companies List</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">Companies</li>
-                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Company List</li>
+                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Companies List
+                                </li>
                             </ol>
                         </div><!-- /.col -->
 

@@ -54,8 +54,14 @@ class PlanController extends Controller
             'sp_user.integer' => 'The user field must be an integer.',
             'sp_year_amount.required' => 'The user Field is required',
         ]);
+
         $id = $this->GenerateUniqueRandomString($table='ta_subscription_plans', $column="sp_id", $chars=6);
         $validatedData['sp_id'] = $id;
+
+        $validatedData['sp_amount'] = '$' . $validatedData['sp_amount'];
+        $validatedData['sp_year_amount'] = '$' . $validatedData['sp_year_amount'];
+
+
         // Assuming you have a Plan model to handle database interactions
         Plan::create($validatedData);
         \LogActivity::addToLog('Admin Plan Created.');

@@ -92,8 +92,7 @@ class TripController extends Controller
         return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status'));
     }
 
-
-
+    
     public function create(): View
     {
 
