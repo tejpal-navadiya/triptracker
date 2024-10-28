@@ -52,7 +52,6 @@
                                 <table id="example1" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
-                                            <th>ID Number</th>
                                             <th>Name</th>
                                             <th>Email Address</th>
                                             <th>Phone Number</th>
@@ -65,8 +64,6 @@
 
                                         @foreach ($agency as $value)
                                             <tr>
-                                                <td>{{ $value->user_agency_numbers ?? '' }}
-                                                </td>
                                                 <td>{{ $value->users_first_name ?? ('' . ' ' . $value->users_first_name ?? '') }}
                                                 </td>
                                                 <td>{{ $value->users_email }}</td>
@@ -99,7 +96,10 @@
                                                     @endif
 
 
+
                                                     {{-- start --}}
+
+
 
                                                     <a data-toggle="modal"
                                                         data-target="#agency_user-modal-{{ $value->users_id }}">
@@ -124,20 +124,38 @@
                                                                         <div class="form-group">
                                                                             <label for="user_select">Select User
                                                                                 Role:</label>
-                                                                            <select id="user_select" name="role_id"
-                                                                                class="form-control">
-                                                                                @foreach ($users_role as $user_role)
-                                                                                    <option
-                                                                                        value="{{ $user_role->role_id }}">
-                                                                                        {{ $user_role->role_name }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                            <button type="button" class="add_btn px-15"
+
+
+                                                                            @if ($value->userRole->role_name ?? '')
+                                                                                <select id="user_select" name="role_id"
+                                                                                    class="form-control">
+                                                                                    @foreach ($users_role as $user_role)
+                                                                                        <option
+                                                                                            value="{{ $user_role->role_id }}">
+                                                                                            {{ $user_role->role_name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            @else
+                                                                                {{ config('global.default_user_role_alert_msg') }}
+                                                                            @endif
+
+                                                                            @if ($value->userRole->role_name ?? '')
+                                                                                <button type="button" class="add_btn px-15"
+                                                                                    data-dismiss="modal">Cancel</button>
+                                                                                <button type="submit"
+                                                                                    class="delete_btn px-15">Assign</button>
+                                                                            @endif
+
+
+
+
+                                                                            {{-- <button type="button" class="add_btn px-15"
                                                                                 data-dismiss="modal">Cancel</button>
                                                                             <button type="submit"
-                                                                                class="delete_btn px-15">Assign</button>
+                                                                                class="delete_btn px-15">Assign</button> --}}
                                                                         </div>
+
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -182,12 +200,15 @@
                                                                         @else
                                                                             {{ config('global.default_user_role_alert_msg') }}
                                                                         @endif
+
                                                                         @if ($value->userRole->role_name ?? '')
                                                                             <button type="button" class="add_btn px-15"
                                                                                 data-dismiss="modal">Cancel</button>
                                                                             <button type="submit"
                                                                                 class="delete_btn px-15">Delete</button>
                                                                         @endif
+
+
                                                                     </div>
 
                                                                 </form>

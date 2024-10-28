@@ -168,7 +168,6 @@ class LibraryController extends Controller
             return redirect()->back()->with('error', 'Image not found.');
     }
 
-
     public function edit($id)
     {
         $library = Library::where( 'lib_id', $id)->firstOrFail();
@@ -194,7 +193,6 @@ class LibraryController extends Controller
 
         return view('masteradmin.library.edit', compact('library', 'currencies', 'categories', 'countries', 'states', 'cities'));
     }
-
 
     public function update(Request $request, $id)
     {
@@ -286,7 +284,6 @@ class LibraryController extends Controller
         return redirect()->route('library.index')->with('success', 'Library updated successfully.');
     }
 
-
     public function getStates($countryId)
     {
         // $librarystate = States::all();
@@ -335,12 +332,11 @@ class LibraryController extends Controller
         return redirect()->route(route: 'library.index')->with('success', 'Library deleted successfully');
     }
 
-
     public function show($id){
 
-        $library = Library::where('lib_id', $id)->firstOrFail();
+       $library = Library::where('lib_id', $id)->firstOrFail();
 
-       $user = Auth::guard('masteradmins')->user();
+        $user = Auth::guard('masteradmins')->user();
         $libraries = Library::all();
         $library = Library::with('libcategory','currency','state','city','country')->where(['lib_status' => 1, 'id' => $user->users_id,'lib_id'=>$id])->firstOrFail();
 
@@ -356,7 +352,6 @@ class LibraryController extends Controller
              return view('masteradmin.library.view', compact('libraries'));
 
     }
-
     
     public function search(Request $request)
     {
@@ -369,9 +364,5 @@ class LibraryController extends Controller
     
         return view('masteradmin.library.view', compact('libraries'));
     }
-    
-    
-
-    
 
 }
