@@ -18,6 +18,13 @@ class EmailTemplateController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
         $EmailTemplate = EmailTemplate::where(['id' =>$user->users_id])->get();
+      
+        $EmailTemplate = new EmailTemplate();
+        $EmailTemplate = $EmailTemplate->get();
+
+        //dd($EmailTemplate);
+
+
         return view('masteradmin.emailtemplate.index', compact('EmailTemplate'));
     }
     public function create(): View
@@ -25,9 +32,9 @@ class EmailTemplateController extends Controller
         return view('masteradmin.emailtemplate.add_email_template');
     }
 
-   
     public function store(Request $request): RedirectResponse
 {
+     //dd($request->all());
     // Get the authenticated user (master admin in this case)
     $user = Auth::guard('masteradmins')->user();
     // dd($user);
@@ -43,16 +50,15 @@ class EmailTemplateController extends Controller
         'email_text.required' => 'Email content is required',
     ]);
 
-    // Create a new EmailTemplate instance
     $emailTemplate = new EmailTemplate();
     $tableName = $emailTemplate->getTable();
     $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "email_tid", $chars = 6);
 
-    // Set table dynamically based on the user ID (using your prefix logic)
+   // dd($uniqueId);
 
-    // Assign values to the model's attributes
-    $emailTemplate->email_tid = $uniqueId; // Generate a unique email template ID
-    $emailTemplate->id = $user->id; 
+
+    $emailTemplate->id= $user->id ;
+    $emailTemplate->email_tid= $uniqueId;
     $emailTemplate->category = $validatedData['category'];
     $emailTemplate->title = $validatedData['title'];
     $emailTemplate->email_text = $validatedData['email_text'];

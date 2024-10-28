@@ -61,7 +61,7 @@ class LibraryController extends Controller
             'lib_country' => 'required|string',
             'lib_state' => 'required|string',
             'lib_city' => 'required|string',
-            'lib_zip' => 'required|string',
+            'lib_zip' => 'required|numeric|digits_between:1,10',
             'lib_basic_information' => 'required|string',
             'lib_sightseeing_information' => 'required|string',
             'image' => 'required|array', // Validate that image is an array
@@ -74,6 +74,7 @@ class LibraryController extends Controller
             'lib_state.required' => 'State is required',
             'lib_city.required' => 'City is required',
             'lib_zip.required' => 'ZIP code is required',
+            'lib_zip.numeric' => 'Zipcode must be Number',
             'lib_basic_information.required' => 'Basic information is required',
             'lib_sightseeing_information.required' => 'Sightseeing information is required',
             'image.required' => 'At least one image is required',
@@ -205,7 +206,7 @@ class LibraryController extends Controller
             'lib_country' => 'required|string',
             'lib_state' => 'required|string',
             'lib_city' => 'required|string',
-            'lib_zip' => 'required|string',
+            'lib_zip' => 'required|numeric|digits_between:1,10',
             'lib_basic_information' => 'required|string',
             'lib_sightseeing_information' => 'required|string',
             'image' => 'nullable|array', // Make image optional
@@ -218,6 +219,7 @@ class LibraryController extends Controller
             'lib_state.required' => 'State is required',
             'lib_city.required' => 'City is required',
             'lib_zip.required' => 'ZIP code is required',
+            'lib_zip.numeric' => 'Zipcode must be Number',
             'lib_basic_information.required' => 'Basic information is required',
             'lib_sightseeing_information.required' => 'Sightseeing information is required',
             'image.mimes' => 'Image must be a file of type: jpeg, png, jpg, gif',

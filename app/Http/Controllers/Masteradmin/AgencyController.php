@@ -57,30 +57,31 @@ class AgencyController extends Controller
       $validatedData = $request->validate([
         'users_first_name' => 'required|string|max:255',
         'users_last_name' => 'required|string|max:255',
-        'users_email' => 'nullable|email|max:255',
+        'users_email' => 'required|email|max:255',
         'users_address' => 'required|string|max:255',
-        'users_zip' => 'required|string|max:10',
+        'users_zip' => 'required|numeric|digits_between:1,10',
         'user_agency_numbers' => 'required|string|max:255',
         'user_qualification' => 'required|string|max:255',
-        'user_work_email' => 'nullable|email|max:255',
+        'user_work_email' => 'required|email|max:255',
         'user_dob' => 'required|date',
         'user_emergency_contact_person' => 'required|string|max:255',
         'user_emergency_phone_number' =>  'required|string|max:255',
         'user_emergency_email' => 'nullable|email|max:255',
-        'users_country' => 'nullable|string|max:255',
-        'users_state' => 'nullable|string|max:255',
-        'users_city' => 'nullable|string|max:255',
-        'role_id' => 'nullable|string|max:255',
+        'users_country' => 'required|string|max:255',
+        'users_state' => 'required|string|max:255',
+        'users_city' => 'required|string|max:255',
+        'role_id' => 'required|string|max:255',
         'users_password' => 'required|string|min:6', // Assuming min length for password
     ], [
         'users_first_name.required' => 'First name is required',
         'users_last_name.required' => 'Last name is required',
         'users_email.required' => 'Email is required',
         'users_address.required' => 'Address is required',
-        'users_zip.required' => 'Zipcode is required',
+        'users_zip.required' => 'Zipcode is Required',
+        'users_zip.numeric' => 'Zipcode must be Number',
         'user_agency_numbers.required' => 'ID Number is required',
         'user_qualification.required' => 'Qualification is required',
-        'user_work_email.email' => 'Work email is required',
+        'user_work_email.required' => 'Work email is required',
         'user_dob.required' => 'dob is required',
         'user_emergency_contact_person.required' => 'Emergency Contact is required',
         'user_emergency_phone_number.required' => 'Emergency phone is required',
@@ -88,7 +89,7 @@ class AgencyController extends Controller
         'users_country.required' => 'Country is required',
         'users_state.required' => 'State is required',
         'users_city.required' => 'City is required',
-        'role_id.required' => 'City is required',
+        'role_id.required' => 'Role is required',
         'users_password.required' => 'Password is required',
         'users_password.min' => 'Password must be at least 6 characters long',
     ]);
@@ -104,6 +105,14 @@ class AgencyController extends Controller
 
         $agency->users_id = $users_id;
         $agency->id = $dynamicId;
+
+
+    $existingAgency = $agency->where('users_email', $validatedData['users_email'])->first();
+
+    if ($existingAgency) {
+        return redirect()->back()->withErrors(['users_email' => 'The email address is already in use.'])->withInput();
+    }
+
 
         $agency->user_id = $user->user_id;   
 
@@ -123,6 +132,8 @@ class AgencyController extends Controller
       $agency->users_email  = $validatedData['users_email'];
       $agency->users_address = $validatedData['users_address'];
       $agency->users_zip = $validatedData['users_zip'];
+      $agency->users_bio = '';  
+      $agency->users_status = 1;  
       $agency->users_password = bcrypt($validatedData['users_password']);  
       $agency->save();
 
@@ -214,7 +225,8 @@ class AgencyController extends Controller
       'users_country' => 'required|string|max:255',
       'users_state' => 'required|string|max:255',
       'users_city' => 'required|string|max:255',
-      'users_zip' => 'required|string|max:10',
+      'users_zip' => 'required|numeric|digits_between:1,10',
+      
   
   ], [
       'user_agency_numbers.required' => 'User ID is required',
@@ -234,8 +246,8 @@ class AgencyController extends Controller
       'users_country.required' => 'Country is required',
       'users_state.required' => 'State is required',
       'users_city.required' => 'City is required',
-      'users_zip.required' => 'ZIP code is required',
-      'users_zip.max' => 'ZIP code must not exceed 10 characters',
+      'users_zip.required' => 'Zipcode is Required',
+      'users_zip.numeric' => 'Zipcode must be Number',
   ]);
 
 $userdetailu->user_agency_numbers = $validatedData['user_agency_numbers'];

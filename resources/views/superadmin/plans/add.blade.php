@@ -20,10 +20,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Add Subscription Plans</h1>
+                            <h1 class="m-0">Add Subscription Plan</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Add Subscription Plans</li>
+                                <li class="breadcrumb-item active">Add Subscription Plan</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
@@ -42,7 +42,7 @@
                     <!-- card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Add Subscription Plans</h3>
+                            <h3 class="card-title">Add Subscription Plan</h3>
                         </div>
 
                         <form id="yourForm" method="POST" action="{{ route('plans.store') }}">
@@ -63,8 +63,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planamount">Amount Monthy <span
-                                                    class="text-danger">*</span></label>
+                                            <label for="planamount">Amount Monthy </label>
                                             <input type="number"
                                                 class="form-control @error('sp_amount') is-invalid @enderror"
                                                 id="planamount" name="sp_amount" placeholder="Enter Amount"
@@ -76,8 +75,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planamount">Amount Yearly <span
-                                                    class="text-danger">*</span></label>
+                                            <label for="planamount">Amount Yearly </label>
                                             <input type="number"
                                                 class="form-control @error('sp_year_amount') is-invalid @enderror"
                                                 id="planamount" name="sp_year_amount" placeholder="Enter Amount"
@@ -90,8 +88,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planvalidity">Validity <span
-                                                    class="text-danger">*</span></label>
+                                            <label for="planvalidity">Validity </label>
                                             <input type="number"
                                                 class="form-control @error('sp_month') is-invalid @enderror"
                                                 id="planvalidity" name="sp_month" placeholder="Enter Validity"

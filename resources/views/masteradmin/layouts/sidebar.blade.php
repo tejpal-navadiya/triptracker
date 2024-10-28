@@ -25,8 +25,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#"
-                        class="nav-link ">
+                    <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Trips
                             <i class="fas fa-angle-right right"></i>
@@ -94,8 +93,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#"
-                        class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Travelers
                             <i class="fas fa-angle-right right"></i>
@@ -183,51 +181,13 @@
                     </ul>
                 </li>
 
-                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fas fa-cog"></i>
-                        <p>
-                            Settings
-                            <i class="fas fa-angle-right right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        @if (isset($access['edit_profile']) && $access['edit_profile'])
-                            <li class="nav-item">
-                                <a href="{{ route('masteradmin.profile.edit') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Profile</p>
-                                </a>
-                            </li>
-                        @endif
-
-                        @if (isset($access['view_role']) && $access['view_role'])
-                            <li class="nav-item">
-                                <a href="{{ route('user-role-details.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
-                                    request()->is($busadminRoutes . '/h*') ||
-                                    request()->is($busadminRoutes . '/h/*')
-                                        ? 'active'
-                                        : '' }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>User Role</p>
-                                </a>
-                            </li>
-                        @endif
 
 
 
-                        <li class="nav-item">
-                            <a href="{{ route('masteradmin.masterlog.index') }}"
-                                class="nav-link {{ request()->is($busadminRoutes . '/logActivity*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Log Activity</p>
-                            </a>
-                        </li>
 
-                    </ul>
-                </li>
+
+
+
 
 
 
@@ -267,7 +227,6 @@
                     </ul>
                 </li>
 
-
                 <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fas fa-user"></i>
@@ -301,6 +260,86 @@
                         @endif
                     </ul>
                 </li>
+
+
+
+
+
+
+
+                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon far fas fa-key"></i>
+                        <p>
+                            User Roles
+                            <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @if (isset($access['view_role']) && $access['view_role'])
+                            <li class="nav-item">
+                                <a href="{{ route('user-role-details.index') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
+                                        ? 'active'
+                                        : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>View All Agencies Role</p>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+
+
+                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon far fas fa-cog"></i>
+                        <p>
+                            Settings
+                            <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+                            <li class="nav-item">
+                                <a href="{{ route('masteradmin.profile.edit') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Profile</p>
+                                </a>
+                            </li>
+                        @endif
+                        {{-- 
+                        @if (isset($access['view_role']) && $access['view_role'])
+                            <li class="nav-item">
+                                <a href="{{ route('user-role-details.index') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
+                                        ? 'active'
+                                        : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>User Role</p>
+                                </a>
+                            </li>
+                        @endif --}}
+
+
+
+                        <li class="nav-item">
+                            <a href="{{ route('masteradmin.masterlog.index') }}"
+                                class="nav-link {{ request()->is($busadminRoutes . '/logActivity*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Log Activity</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
 
                 <li class="nav-item">
                     <form id="logout-form" method="POST" action="{{ route('masteradmin.logout') }}"
