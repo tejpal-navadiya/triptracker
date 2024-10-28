@@ -36,7 +36,7 @@
           <div class="row">
               <div class="col-lg-3 col-1024 col-md-6 px-10">
                   <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
-                      <option value="" default disabled>Choose Agent</option>
+                      <option value="" default >Choose Agent</option>
                       @foreach($agency as $value)
                       <option value="{{ $value->users_id }}">
                           {{ $value->users_first_name }} {{ $value->users_last_name }}
@@ -47,7 +47,7 @@
 
               <div class="col-lg-3 col-1024 col-md-6 px-10">
                   <select id="trip_traveler" class="form-control select2" style="width: 100%;" name="trip_traveler">
-                      <option value="" default disabled>Choose Traveler</option>
+                      <option value="" default >Choose Traveler</option>
                       @foreach($trip as $value)
                       <option value="{{ $value->tr_traveler_name }}">
                           {{ $value->tr_traveler_name }}
@@ -83,65 +83,3 @@
 
   @endsection
 @endif
-
-<script>
-  $(document).ready(function() {
-
-    var trip_agent = ""; 
-    var trip_traveler = "";  
-
-        $('#trip_agent').val(trip_agent);
-
-        $('#trip_traveler').val(trip_traveler);
-
-        $('.filter-text').on('click', function() {
-              clearFilters();
-          });
-
-   
-    function fetchFilteredData() {
-        var formData = {
-            trip_agent: $('#trip_agent').val(),
-            trip_traveler: $('#trip_traveler').val(),
-            _token: '{{ csrf_token() }}'
-        };
-        // alert('hii');
-
-        $.ajax({
-          url: '{{ route('masteradmin.task.all') }}',
-          type: 'GET',
-          data: formData,
-          success: function(response) {
-              $('#filter_data').html(response); 
-              
-          },
-          error: function(xhr) {
-              console.error('Error:', xhr);
-              //alert('An error occurred while fetching data.');
-          }
-        });
-
-    }
-
-     // Attach change event handlers to filter inputs
-     $('#trip_agent, #trip_traveler').on('change keyup', function(e) {
-
-      e.preventDefault(); 
-    //   alert('hii');
-      fetchFilteredData();
-    });
-
-    
-    function clearFilters() {
-      // Clear filters
-      $('#trip_agent').val('').trigger('change');
-      $('#trip_traveler').val('').trigger('change');
-
-
-      fetchFilteredData(); 
-  }
-
-
-});
-
-</script>

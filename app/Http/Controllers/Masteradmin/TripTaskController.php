@@ -26,13 +26,13 @@ class TripTaskController extends Controller
 
 
 
-        $member = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
+        $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
 
         // dd($member);
 
     
         if ($request->ajax()) {
-            $member = TripTask::where(['id' => $user->id, 'tr_id' => $id])->latest()->get();
+            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->latest()->get();
             //  dd($access);
             return Datatables::of($member)
 
@@ -44,8 +44,6 @@ class TripTaskController extends Controller
                     ->addColumn('trvt_category', function($category) {
                         return $category->tripCategory->task_cat_name ?? '';
                     })
-
-
 
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
@@ -88,7 +86,7 @@ class TripTaskController extends Controller
     {
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id; 
+        $dynamicId = $user->users_id; 
 
             $validatedData = $request->validate([
                 'trvt_name' => 'required|string',
@@ -151,7 +149,7 @@ class TripTaskController extends Controller
     {
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id; 
+        $dynamicId = $user->users_id; 
         $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
 
         // dd($task);
@@ -195,96 +193,220 @@ class TripTaskController extends Controller
              
         return response()->json(['success'=>'Record deleted successfully.']);
     }
-    public function allDetails(Request $request)
-    {           
-        $access = view()->shared('access');
-        // dd($access);
-        $user = Auth::guard('masteradmins')->user();
-        // dd($user);
-        $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id])->with(['trip','tripCategory','taskstatus'])->latest()->first();
+    // public function allDetails(Request $request)
+    // {  
+                 
+    //     $trip_agent = trim($request->input('trip_agent'));   
+    //     $trip_traveler = trim($request->input('trip_traveler'));   
 
-        $trip = Trip::where(['tr_status'=> 1,'id'=> $user->users_id])
-        ->get();
-        
-        $masterUserDetails = new MasterUserDetails();
-        $masterUserDetails->setTableForUniqueId($user->user_id); 
-        $masterUserTable = $masterUserDetails->getTable();
-        $agency = $masterUserDetails->get();
-        // dd($trip);
+    //     $access = view()->shared('access');
+    //     $user = Auth::guard('masteradmins')->user();
     
+    //     // Get master user details for filtering
+    //     $masterUserDetails = new MasterUserDetails();
+    //     $masterUserDetails->setTableForUniqueId($user->user_id); 
+    //     $agency = $masterUserDetails->get();
+
+    //     $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id])->with(['trip','tripCategory','taskstatus'])->latest()->first();
+
+    //     $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
+
+    //     $trips = new Trip();
+    //     $tripTable = $trips->getTable();
+        
+    //     if ($trip_agent) {
+    //         $tripQuery->where('tr_agent_id', $trip_agent);
+    //     }
+    
+    //     if ($trip_traveler) {
+    //         $tripQuery->where('tr_traveler_name', 'LIKE', "%{$trip_traveler}%");
+    //     }
+    
+    //     $trip = $tripQuery->get();
+
+    //     if ($request->ajax()) {
+
+    //         $task = TripTask::where(['id' => $user->id])->with(['trip','tripCategory','taskstatus'])->latest()->get();
+    //         //    dd($task);
+    //         return Datatables::of($task)
+    //                 ->addIndexColumn()
+    //                 ->addColumn('trip_name', function($document) {
+    //                     $trip_name = $document->trip->tr_name ?? '';
+                        
+    //                     return $trip_name;
+    //                 })
+    //                 ->addColumn('agent_name', function($document) {
+    //                     $agent_name = $document->trip->tr_agent_id ?? '';
+                        
+    //                     return $agent_name;
+    //                 })
+    //                 ->addColumn('traveler_name', function($document) {
+    //                     $traveler_name = $document->trip->tr_traveler_name ?? '';
+                        
+    //                     return $traveler_name;
+    //                 })
+    //                 ->addColumn('task_status_name', function($document) {
+    //                     $task_status_name = $document->taskstatus->ts_status_name ?? '';
+                        
+    //                     return $task_status_name;
+    //                 })
+    //                 ->addColumn('task_cat_name', function($document) {
+    //                     $task_cat_name = $document->tripCategory->task_cat_name ?? '';
+                        
+    //                     return $task_cat_name;
+    //                 })
+    //                 ->addColumn('trvt_due_date', function($document) {
+    //                     $trvt_due_date = \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y')  ?? '';
+                        
+    //                     return $trvt_due_date;
+    //                 })
+    //                 ->addColumn('action', function($members) use ($access){
+    //                     $btn = '';
+                        
+    //                     if(isset($access['edit_role']) && $access['edit_role']) {
+    //                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+    //                     }
+                        
+    //                     if(isset($access['delete_role']) && $access['delete_role']) {
+    //                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members->trvt_id.'">
+    //                                     <i class="fas fa-trash delete_icon_grid"></i>
+    //                                     <div class="modal fade" id="delete-role-modal-'.$members->trvt_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    //                                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    //                                             <div class="modal-content">
+    //                                                 <div class="modal-body pad-1 text-center">
+    //                                                     <i class="fas fa-solid fa-trash delete_icon"></i>
+    //                                                     <p class="company_business_name px-10"><b>Delete Task </b></p>
+    //                                                     <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
+    //                                                     <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+    //                                                     <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id='.$members->trvt_id.'>Delete</button>
+    //                                                 </div>
+    //                                             </div>
+    //                                         </div>
+    //                                     </div>
+    //                                 </a>';
+    //                     }
+    //                     // dd($access);
+    //                     return $btn;
+    //                 })
+    //                 ->rawColumns(['action'])
+    //                 ->toJson();
+                  
+    //     }
+      
+    //     $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => Auth::guard('masteradmins')->user()->id])->get();
+
+    //     return view('masteradmin.task.index',compact('task','taskCategory','agency','trip'));
+    // }
+    
+    public function allDetails(Request $request)
+    {
+        $tripAgent = trim($request->input('trip_agent'));
+        $tripTraveler = trim($request->input('trip_traveler'));
+    
+        $access = view()->shared('access');
+        $user = Auth::guard('masteradmins')->user();
+        // dD($user);
+        $task = TripTask::where(['id' => $user->users_id])->with(['trip','tripCategory','taskstatus'])->latest()->first();
+
+    
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id);
+        $agency = $masterUserDetails->get();
+
+        
+    
+        $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
+    
+        if ($tripAgent) {
+            $tripQuery->where('tr_agent_id', $tripAgent);
+        }
+    
+        if ($tripTraveler) {
+            $tripQuery->where('tr_traveler_name', 'LIKE', "%{$tripTraveler}%");
+        }
+    
+        $trip = $tripQuery->get();
+
+        // dd($trip);
+        
         if ($request->ajax()) {
-            $task = TripTask::where(['id' => $user->id])->with(['trip','tripCategory','taskstatus'])->latest()->get();
-            //    dd($task);
-            return Datatables::of($task)
-                    ->addIndexColumn()
-                    ->addColumn('trip_name', function($document) {
-                        $trip_name = $document->trip->tr_name ?? '';
-                        
-                        return $trip_name;
-                    })
-                    ->addColumn('agent_name', function($document) {
-                        $agent_name = $document->trip->tr_agent_id ?? '';
-                        
-                        return $agent_name;
-                    })
-                    ->addColumn('traveler_name', function($document) {
-                        $traveler_name = $document->trip->tr_traveler_name ?? '';
-                        
-                        return $traveler_name;
-                    })
-                    ->addColumn('task_status_name', function($document) {
-                        $task_status_name = $document->taskstatus->ts_status_name ?? '';
-                        
-                        return $task_status_name;
-                    })
-                    ->addColumn('task_cat_name', function($document) {
-                        $task_cat_name = $document->tripCategory->task_cat_name ?? '';
-                        
-                        return $task_cat_name;
-                    })
-                    ->addColumn('trvt_due_date', function($document) {
-                        $trvt_due_date = \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y')  ?? '';
-                        
-                        return $trvt_due_date;
-                    })
-                    ->addColumn('action', function($members) use ($access){
-                        $btn = '';
-                        
-                        if(isset($access['edit_role']) && $access['edit_role']) {
-                            $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
-                        }
-                        
-                        if(isset($access['delete_role']) && $access['delete_role']) {
-                            $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members->trvt_id.'">
-                                        <i class="fas fa-trash delete_icon_grid"></i>
-                                        <div class="modal fade" id="delete-role-modal-'.$members->trvt_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body pad-1 text-center">
-                                                        <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                        <p class="company_business_name px-10"><b>Delete Task </b></p>
-                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
-                                                        <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id='.$members->trvt_id.'>Delete</button>
-                                                    </div>
+            $taskQuery = TripTask::where('id', $user->users_id)
+                ->with(['trip', 'tripCategory', 'taskstatus'])
+                ->latest();
+    
+            if ($tripAgent) {
+                $taskQuery->whereHas('trip', function ($q) use ($tripAgent) {
+                    $q->where('tr_agent_id', $tripAgent);
+                });
+            }
+    
+            if ($tripTraveler) {
+                $taskQuery->whereHas('trip', function ($q) use ($tripTraveler) {
+                    $q->where('tr_traveler_name', 'LIKE', "%{$tripTraveler}%");
+                });
+            }
+    
+            $tasks = $taskQuery->get();
+    
+            return Datatables::of($tasks)
+                ->addIndexColumn()
+                ->addColumn('trip_name', function ($document) {
+                    return optional($document->trip)->tr_name ?? '';
+                })
+                ->addColumn('agent_name', function ($document) {
+                    return optional($document->trip)->tr_agent_id ?? '';
+                })
+                ->addColumn('traveler_name', function ($document) {
+                    return optional($document->trip)->tr_traveler_name ?? '';
+                })
+                ->addColumn('task_status_name', function ($document) {
+                    return optional($document->taskstatus)->ts_status_name ?? '';
+                })
+                ->addColumn('task_cat_name', function ($document) {
+                    return optional($document->tripCategory)->task_cat_name ?? '';
+                })
+                ->addColumn('trvt_due_date', function ($document) {
+                    return optional($document->trvt_due_date) ? \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y') : '';
+                })
+                ->addColumn('action', function ($members) use ($access) {
+                    $btn = '';
+    
+                    if(isset($access['edit_role']) && $access['edit_role']) {
+                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                    }
+                    
+                    if (isset($access['delete_role']) && $access['delete_role']) {
+                        $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-' . $members->trvt_id . '">
+                                    <i class="fas fa-trash delete_icon_grid"></i>
+                                    <div class="modal fade" id="delete-role-modal-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body pad-1 text-center">
+                                                    <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                    <p class="company_business_name px-10"><b>Delete Task </b></p>
+                                                    <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
+                                                    <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id=' . $members->trvt_id . '>Delete</button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </a>';
-                        }
-                        // dd($access);
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->toJson();
-                  
+                                    </div>
+                                </a>';
+                    }
+    
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->toJson();
+       
         }
-      
-        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => Auth::guard('masteradmins')->user()->id])->get();
-
-        return view('masteradmin.task.index',compact('task','taskCategory','agency','trip'));
+    
+        $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->id)->get();
+       
+        return view('masteradmin.task.index', compact('task', 'taskCategory', 'agency', 'trip'));
     }
     
+
     public function incompleteDetails(Request $request)
     {           
         $access = view()->shared('access');
@@ -328,7 +450,7 @@ class TripTaskController extends Controller
                         $btn = '';
                         
                         if(isset($access['edit_role']) && $access['edit_role']) {
-                            $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask1"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                            $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
                         
                         if(isset($access['delete_role']) && $access['delete_role']) {

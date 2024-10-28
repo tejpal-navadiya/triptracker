@@ -7,29 +7,31 @@
             </div>
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
-            <div class="col-md-12 table-responsive pad_table">
-                <table id="example11" class="table table-hover text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>Trip Name</th>
-                            <th>Agent Name</th>
-                            <th>Traveler Name</th>
-                            <th>Task</th>
-                            <th>Category</th>
-                            <th>Due Date</th>
-                            <th>Priority</th>
-                            <th>Status</th>
-                            <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+       
+            <div class="card-body">
+                <div class="col-md-12 table-responsive pad_table">
+                    <table id="example11" class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Trip Name</th>
+                                <th>Agent Name</th>
+                                <th>Traveler Name</th>
+                                <th>Task</th>
+                                <th>Category</th>
+                                <th>Due Date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filter_data">
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
-
-        </div>
+      
     </div>
 </div>
 <?php //dd($task->trip->tr_id);
@@ -187,7 +189,9 @@
                 url: "{{ route('masteradmin.task.all') }}",
                 type: 'GET',
                 data: function(d) {
-                    d._token = "{{ csrf_token() }}";
+                    d.trip_agent = $('#trip_agent').val(); 
+                    d.trip_traveler = $('#trip_traveler').val(); 
+                    d._token = '{{ csrf_token() }}';
                 }
             },
             columns: [{
@@ -388,6 +392,17 @@
             });
         });
 
+      
+
+        $('#trip_agent, #trip_traveler').on('change', function() {
+            allTable.draw();
+        });
+
+        $('.filter-text').on('click', function() {
+            $('#trip_agent').val('').trigger('change'); 
+            $('#trip_traveler').val('').trigger('change');
+            allTable.draw();
+        });
 
     });
 </script>

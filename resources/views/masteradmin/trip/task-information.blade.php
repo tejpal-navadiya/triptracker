@@ -8,6 +8,7 @@
             <div class="col-auto"><button href="javascript:void(0)" id="createNewTask" class="reminder_btn">Add
                     Task</button></div>
         </div>
+        
         <!-- /.card-header -->
         <div class="card-body">
             <div class="col-md-12 table-responsive pad_table">
