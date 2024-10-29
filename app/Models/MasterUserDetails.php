@@ -95,5 +95,4 @@ class MasterUserDetails extends Authenticatable
     {
         return $this->belongsTo(MasterUserDetails::class, 'id', 'users_id');
     }
-
 }

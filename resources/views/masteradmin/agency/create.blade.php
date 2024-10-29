@@ -266,6 +266,9 @@
                                             autofocus autocomplete="tr_agent_id"
                                             value="{{ old('user_emergency_email') }}" />
 
+                                        <x-input-error class="mt-2" :messages="$errors->get('user_emergency_email')" />
+
+
                                     </div>
                                 </div>
 

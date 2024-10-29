@@ -113,6 +113,12 @@ class AgencyController extends Controller
         return redirect()->back()->withErrors(['users_email' => 'The email address is already in use.'])->withInput();
     }
 
+    $existingWorkemail = $agency->where('user_work_email', $validatedData['user_work_email'])->first();
+
+    if ($existingWorkemail) {
+        return redirect()->back()->withErrors(['user_work_email' => 'The email address is already in use.'])->withInput();
+    }
+
 
         $agency->user_id = $user->user_id;   
 

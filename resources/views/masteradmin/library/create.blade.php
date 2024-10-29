@@ -45,7 +45,7 @@
                                                 <option value="" disabled {{ old('lib_category') ? '' : 'selected' }}>
                                                     Select Category</option>
                                                 @foreach ($librarycategory as $category)
-                                                    <option value="{{ $category->lib_cat_name }}"
+                                                    <option value="{{ $category->lib_cat_id }}"
                                                         {{ old('lib_category') === $category->lib_cat_name ? 'selected' : '' }}>
                                                         {{ $category->lib_cat_name }}
                                                     </option>

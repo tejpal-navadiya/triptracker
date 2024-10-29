@@ -172,23 +172,18 @@ class LibraryController extends Controller
     {
         $library = Library::where( 'lib_id', $id)->firstOrFail();
 
-        // Get the selected country's ID
         $selectedCountryId = $library->lib_country;
 
         $categories = LibraryCategory::select('lib_cat_id', 'lib_cat_name')->get();
 
-        // Get currencies related to the selected country
         $currencies = Countries::where('id', $selectedCountryId)->get();
 
-        // Get states related to the selected country
         $states = States::where('country_id', $selectedCountryId)->get();
 
-        // Get cities related to the selected state (if you want to pre-load cities, you can use the library's lib_state)
         $selectedStateId = $library->lib_state;
         
         $cities = Cities::where('state_id', $selectedStateId)->get();
 
-        // If you want to get all countries for the dropdown
         $countries = Countries::select('id', 'name', 'iso2')->get();
 
         return view('masteradmin.library.edit', compact('library', 'currencies', 'categories', 'countries', 'states', 'cities'));

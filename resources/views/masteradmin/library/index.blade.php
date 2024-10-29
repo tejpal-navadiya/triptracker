@@ -77,7 +77,7 @@
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
                                                     <!-- <a href="{{ route('masteradmin.library.view') }}"><i
-                                                                                                    class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
+                                                                                                                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
 
                                                     <a href="{{ route('library.edit', $value->lib_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>

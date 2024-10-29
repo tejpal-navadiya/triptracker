@@ -97,9 +97,8 @@
                                                     </tr>
                                                     <tr>
                                                         <th>User Role:</th>
-                                                        <td>{{ $agency->role_id }}</td>
+                                                        <td>{{ $agency->userRole->role_name ?? '' }}</td>
                                                     </tr>
-
                                                 </tbody>
                                             </table>
                                         </div>
