@@ -150,7 +150,7 @@ class RegisterController extends Controller
 
        // Create MasterUserDetails and set table name
         $userDetails = new MasterUserDetails();
-        $userDetails->setTableForUniqueId($buss_unique_id);
+        $userDetails->setTableForUniqueId(strtolower($buss_unique_id));
         $tableName = $userDetails->getTable();
         // dd($userDetails->getTable());
         $users_id = $this->GenerateUniqueRandomString($table= $tableName, $column="users_id", $chars=6);

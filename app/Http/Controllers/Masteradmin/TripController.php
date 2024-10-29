@@ -115,7 +115,7 @@ class TripController extends Controller
     {
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->id;
+        $dynamicId = $user->users_id;
         $validatedData = $request->validate([
             'tr_name' => 'required|string',
             'tr_agent_id' => 'required|string',
@@ -500,7 +500,9 @@ class TripController extends Controller
 
             $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
                 ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
-                ->where('trtm_status', 1) // Ensure you're filtering by status
+                ->where('trtm_status', 1) 
+                ->where($tableName . '.id', $user->users_id)
+                ->where($tableName . '.tr_id', $id)
                 ->get();
 
             $tripData = DB::table($uniq_id . '_tc_trip')

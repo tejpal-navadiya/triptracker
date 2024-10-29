@@ -34,9 +34,10 @@
                     <ul class="nav nav-treeview">
 
                         @if (isset($access['book_trip']) && $access['book_trip'])
-                            <li class="nav-item">
+                            <li class="nav-item {{ request()->is($busadminRoutes.'/trip*')
+                    ? 'menu-open' : '' }}" >
                                 <a href="{{ route('trip.index') }}"
-                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    class="nav-link {{ request()->is($busadminRoutes . '/trip*') ||
                                     request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h/*')
                                         ? 'active'

@@ -83,7 +83,7 @@
                                     <thead>
                                         <tr>
                                             <th>Plan Name</th>
-                                            <th>Description</th>
+                                            <!-- <th>Description</th> -->
                                             <th>Amount Monthly</th>
                                             <th>Amount Yearly</th>
                                             <th>Validity (In Months)</th>
@@ -98,7 +98,7 @@
                                             @foreach ($plan as $value)
                                                 <tr>
                                                     <td>{{ $value->sp_name }}</td>
-                                                    <td>{{ $value->sp_desc }}</td>
+                                                    <!-- <td>{{ $value->sp_desc }}</td> -->
                                                     <td>${{ $value->sp_month_amount }}</td>
                                                     <td>${{ $value->sp_year_amount }}</td>
                                                     <td>{{ $value->sp_month }}</td>
@@ -110,11 +110,11 @@
                                                         <a href="{{ route('plans.edit', $value->sp_id) }}"><i
                                                                 class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
                                                         <a data-toggle="modal"
-                                                            data-target="#deletesubscription-plans"><i
+                                                            data-target="#deletesubscription-plans_{{ $value->sp_id }}"><i
                                                                 class="fas fa-solid fa-trash delete_icon_grid"></i></a>
                                                     </td>
                                                 </tr>
-                                                <div class="modal fade" id="deletesubscription-plans" tabindex="-1"
+                                                <div class="modal fade" id="deletesubscription-plans_{{ $value->sp_id }}" tabindex="-1"
                                                     role="dialog" aria-labelledby="exampleModalCenterTitle"
                                                     aria-hidden="true">
                                                     <div class="modal-dialog modal-sm modal-dialog-centered"
