@@ -61,9 +61,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Agency ID Number')">
-                                                <span class="text-danger">* </span></x-input-label>
-
+                                            <label for="tr_agent_id">Agency ID Number<span
+                                                    class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Select Agent" name="user_agency_numbers" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_agency_numbers ?? '')" />
@@ -75,8 +74,9 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('First Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+
+                                            <label for="tr_agent_id">First Name<span class="text-danger">*</span></label>
+
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter First Name" name="users_first_name" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_first_name ?? '')" />
@@ -88,8 +88,9 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Last Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+
+                                            <label for="tr_agent_id">Last Name<span class="text-danger">*</span></label>
+
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Last Name" name="users_last_name" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_last_name ?? '')" />
@@ -115,14 +116,16 @@
                                                 placeholder="Enter Qualification" name="user_qualification" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_qualification ?? '')" />
 
-                                            <x-input-error class="mt-2" :messages="$errors->get('age_user_qualification')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_qualification')" /> --}}
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Work Email Address')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+
+                                            <label for="tr_agent_id">Work Email Address<span
+                                                    class="text-danger">*</span></label>
+
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Work Email Address" name="user_work_email" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_work_email ?? '')" />
@@ -134,8 +137,10 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Personal Email Address')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+
+                                            <label for="tr_agent_id">Personal Email Address<span
+                                                    class="text-danger">*</span></label>
+
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Personal Email Address" name="users_email" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_email ?? '')" />
@@ -167,7 +172,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" /> --}}
                                         </div>
                                     </div>
 
@@ -177,9 +182,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('User Role')">
-                                                <span class="text-danger">*</span>
-                                            </x-input-label>
+                                            <label for="tr_agent_id">User Role<span class="text-danger">*</span></label>
                                             <select class="form-control" id="tr_category" name="role_id" autofocus>
                                                 <option value="" disabled selected>Select Category</option>
 
@@ -190,7 +193,7 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('age_user_type')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_type')" /> --}}
                                         </div>
                                     </div>
 
@@ -204,7 +207,7 @@
                                                 placeholder="Enter Password" name="users_password" autofocus
                                                 autocomplete="tr_agent_id" :value="old('users_password', $agency->users_password ?? '')" />
 
-                                            <x-input-error class="mt-2" :messages="$errors->get('age_user_password')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_password')" /> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -322,7 +325,7 @@
                                             placeholder="Contact Person Name" name="user_emergency_contact_person"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_contact_person ?? '')" />
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_contact')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_contact')" /> --}}
                                     </div>
                                 </div>
 
@@ -334,7 +337,7 @@
                                             placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_phone_number ?? '')" />
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_phone_number')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_phone_number')" /> --}}
                                     </div>
                                 </div>
 
@@ -347,7 +350,7 @@
                                             placeholder="Enter Emergency Email Address" name="user_emergency_email"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_email ?? '')" />
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_email')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_email')" /> --}}
                                     </div>
                                 </div>
 
@@ -368,7 +371,7 @@
                                             placeholder="Select Agent" name="users_address" autofocus
                                             autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_address ?? '')" />
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('age_user_address')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_address')" /> --}}
                                     </div>
                                 </div>
 
@@ -395,7 +398,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        <x-input-error class="mt-2" :messages="$errors->get('users_state')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_state')" /> --}}
                                     </div>
                                 </div>
 
@@ -416,7 +419,7 @@
                                             @endforeach
 
                                         </select>
-                                        <x-input-error class="mt-2" :messages="$errors->get('users_state')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_state')" /> --}}
                                     </div>
                                 </div>
 
@@ -440,7 +443,7 @@
 
                                         </select>
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('users_city')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_city')" /> --}}
                                     </div>
                                 </div>
 
@@ -453,7 +456,7 @@
                                             placeholder="Enter Zip" name="users_zip" :value="old('age_user_id', $agency->users_zip ?? '')" autofocus
                                             autocomplete="tr_agent_id" />
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('users_zip')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_zip')" /> --}}
                                     </div>
                                 </div>
                             </div>
@@ -464,7 +467,7 @@
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
-                                    <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('agency.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>

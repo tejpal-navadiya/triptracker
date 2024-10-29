@@ -220,7 +220,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Address')" />
                                             <x-text-input type="text" class="form-control" id="tr_phone"
-                                                placeholder="Enter Phone Number" name="tr_address" autofocus
+                                                placeholder="Enter Address" name="tr_address" autofocus
                                                 autocomplete="tr_phone" value="{{ old('tr_address') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_address')" />
                                         </div>
@@ -229,9 +229,9 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Zip')" />
                                             <x-text-input type="number" class="form-control" id="tr_phone"
-                                                placeholder="Enter Phone Number" name="tr_zip" autofocus
+                                                placeholder="Enter Zip Code" name="tr_zip" autofocus
                                                 autocomplete="tr_phone" value="{{ old('tr_zip') }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_zip')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_zip')" /> --}}
                                         </div>
                                     </div>
 

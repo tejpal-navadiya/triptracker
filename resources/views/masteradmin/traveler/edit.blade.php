@@ -59,8 +59,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Agent Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Agent Name<span class="text-danger">*</span></label>
                                             <select id="tr_agent_id" name="tr_agent_id" class="form-control select2">
                                                 <option disabled selected>Select Agent</option>
                                                 @foreach ($agency_users as $value)
@@ -78,8 +77,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_traveler_name" :value="__('Traveler Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_traveler_name"
                                                 placeholder="Traveler Name" name="tr_traveler_name" required autofocus
                                                 autocomplete="tr_traveler_name" :value="old('tr_traveler_name', $trip->tr_traveler_name ?? '')" />
@@ -91,7 +89,10 @@
                                 <div class="row pxy-15 px-10">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_start_date" :value="__('Start Date')" />
+
+                                            <label for="tr_agent_id">Start Date<span class="text-danger">*</span></label>
+
+
                                             <div class="input-group date" id="tr_start_date" data-target-input="nearest">
 
                                                 <x-flatpickr id="completed_date" name="tr_start_date"
@@ -109,7 +110,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_end_date" :value="__('End Date')" />
+
+                                            <label for="tr_agent_id">End Date<span class="text-danger">*</span></label>
                                             <div class="input-group date" id="tr_end_date" data-target-input="nearest">
 
                                                 <x-flatpickr id="expiration_date" name="tr_end_date"
@@ -127,7 +129,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_email" :value="__('Email Address')" />
+                                            <label for="tr_agent_id">Email Address<span
+                                                    class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="tr_email"
                                                 placeholder="Enter Email Address" name="tr_email" required autofocus
                                                 autocomplete="tr_email" :value="old('tr_email', $trip->tr_email ?? '')" />

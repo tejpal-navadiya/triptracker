@@ -45,7 +45,7 @@
                                                 <option value="" disabled {{ old('lib_category') ? '' : 'selected' }}>
                                                     Select Category</option>
                                                 @foreach ($librarycategory as $category)
-                                                    <option value="{{ $category->lib_cat_name }}"
+                                                    <option value="{{ $category->lib_cat_id }}"
                                                         {{ old('lib_category') === $category->lib_cat_name ? 'selected' : '' }}>
                                                         {{ $category->lib_cat_name }}
                                                     </option>
@@ -61,7 +61,7 @@
                                         <div class="form-group">
                                             <label for="tr_agent_id">Name <span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Select Agent" name="lib_name" autofocus
+                                                placeholder="Enter Name" name="lib_name" autofocus
                                                 autocomplete="tr_agent_id" value="{{ old('lib_name') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_name')" />
                                         </div>
@@ -130,8 +130,8 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_email" :value="__('Zip')" />
                                             <input type="number" class="form-control" id="tr_zip" name="lib_zip"
-                                                placeholder="Enter Zip" accept=".zip" value="{{ old('lib_zip') }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_zip')" />
+                                                placeholder="Enter Zip Code" accept=".zip" value="{{ old('lib_zip') }}" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_zip')" /> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_basic_info" :value="__('Basic Information')" />
                                             <textarea class="form-control" id="tr_basic_info" name="lib_basic_information" placeholder="Enter Basic Information">{{ old('lib_basic_information') }}</textarea>
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" /> --}}
                                         </div>
                                     </div>
 
@@ -152,7 +152,7 @@
                                             <x-input-label for="tr_sightseeing_info" :value="__('Sightseeing Information')" />
                                             <textarea class="form-control" id="tr_sightseeing_info" name="lib_sightseeing_information"
                                                 placeholder="Enter Sightseeing Information">{{ old('lib_sightseeing_information') }}</textarea>
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_sightseeing_information')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_sightseeing_information')" /> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -184,7 +184,7 @@
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
-                                    <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>

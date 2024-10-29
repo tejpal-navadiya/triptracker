@@ -58,7 +58,8 @@
                                         </tr>
                                         <tr>
                                             <th>Currency:</th>
-                                            <td>{{ $library->currency->currency_symbol ?? '' }} ({{ $library->currency->currency ?? '' }})</td>
+                                            <td>{{ $library->currency->currency_symbol ?? '' }}
+                                                ({{ $library->currency->currency ?? '' }})</td>
                                         </tr>
 
                                     </tbody>
@@ -77,7 +78,8 @@
                                         </tr>
                                         <tr>
                                             <th>Location:</th>
-                                            <td>{{ $library->city->name ?? '' }}, {{ $library->state->name ?? '' }}, {{ $library->country->name ?? '' }}</td>
+                                            <td>{{ $library->city->name ?? '' }}, {{ $library->state->name ?? '' }},
+                                                {{ $library->country->name ?? '' }}</td>
                                         </tr>
 
                                     </tbody>
@@ -113,76 +115,17 @@
                             <div class="col-md-12">
                                 <div class="card m-2 p-3">
                                     Images
-                                    <div class="card m-2 p-3">
+                                    @foreach ($libraries as $library)
+                                        <div class="col-md-12"> <!-- Adjust the width as needed -->
 
-                                        @foreach ($libraries as $library)
-                                            <div class="col-md-4"> <!-- Adjust the width as needed -->
-                                                <div class="card mb-3">
+                                            @if ($library->lib_image)
+                                                @php
+                                                    // Decode the JSON to get an array of image paths
+                                                    $images = json_decode($library->lib_image, true);
+                                                @endphp
 
-                                                    @if ($library->lib_image)
-                                                        @php
-                                                            // Decode the JSON to get an array of image paths
-                                                            $images = json_decode($library->lib_image, true);
-                                                        @endphp
-
-                                                        @if (!empty($images) && is_array($images))
-                                                            <div class="mt-2">
-
-                                                                <!-- Loop through images and display one (or all if needed) -->
-                                                                @foreach ($images as $image)
-                                                                    <tr>
-                                                                        <td>
-                                                                            <!-- Display the image -->
-                                                                            <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $image }}"
-                                                                                alt="Uploaded Image" class="img-thumbnail"
-                                                                                style="max-width: 100px; height: auto;">
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-
-                                                            </div>
-                                                        @endif
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        @endforeach
-
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Main row -->
-                    {{-- <div class="row">
-
-                        @foreach ($libraries as $library)
-                            <div class="col-md-4"> <!-- Adjust the width as needed -->
-                                <div class="card mb-3">
-
-                                    @if ($library->lib_image)
-                                        @php
-                                            // Decode the JSON to get an array of image paths
-                                            $images = json_decode($library->lib_image, true);
-                                        @endphp
-
-                                        @if (!empty($images) && is_array($images))
-                                            <div class="mt-2">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Image Preview</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                                                @if (!empty($images) && is_array($images))
+                                                    <div class="mt-1">
                                                         <!-- Loop through images and display one (or all if needed) -->
                                                         @foreach ($images as $image)
                                                             <tr>
@@ -190,36 +133,25 @@
                                                                     <!-- Display the image -->
                                                                     <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $image }}"
                                                                         alt="Uploaded Image" class="img-thumbnail"
-                                                                        style="max-width: 100px; height: auto;">
+                                                                        style="max-width: 220px; height: 200px;">
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        @endif
-                                    @endif
-
-
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $library->lib_name }}</h5>
-                                        <p class="card-text">{{ $library->lib_basic_information }}</p>
-
-                                        <a href="{{ route('library.show', $library->lib_id) }}"
-                                            class="btn btn-primary">View Details</a>
-
-                                        <a href="{{ route('library.edit', $library->lib_id) }}"
-                                            class="btn btn-primary">Edit</a>
-                                        <a href="{{ route('library.destroy', $library->lib_id) }}"
-                                            class="btn btn-primary">Delete</a>
-                                    </div>
+                                                @endif
+                                            @endif
+                                    @endforeach
                                 </div>
                             </div>
-                        @endforeach
 
-                    </div> --}}
-                    <!-- /.row (main row) -->
-                </div><!-- /.container-fluid -->
+
+                            <div class="row py-20 px-10">
+                                <div class="col-md-12 text-center">
+                                    <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </section>
             <!-- /.content -->
         </div>

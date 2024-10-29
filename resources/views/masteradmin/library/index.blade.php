@@ -64,15 +64,20 @@
                                             <tr>
                                                 <td>{{ $value->libcategory->lib_cat_name ?? '' }}</td>
                                                 <td>{{ $value->lib_name }}</td>
-                                                <td>{{ $value->city->name ?? '' }}, {{ $value->state->name ?? '' }}, {{ $value->country->name ?? '' }}</td>
-                                                <td>{{ $value->currency->currency_symbol ?? '' }} ({{ $value->currency->currency ?? '' }})</td>
-                                                <td>{{ strip_tags($value->lib_basic_information) ?? '' }}</td>
+                                                <td>{{ $value->city->name ?? '' }}, {{ $value->state->name ?? '' }},
+                                                    {{ $value->country->name ?? '' }}</td>
+                                                <td>{{ $value->currency->currency_symbol ?? '' }}
+                                                    ({{ $value->currency->currency ?? '' }})
+                                                </td>
+                                                <td>{{ \Illuminate\Support\Str::limit(strip_tags($value->lib_basic_information), 45, '...') }}
+                                                </td>
+
                                                 <td>
-                                                <a href="{{ route('library.show', $value->lib_id) }}"><i
-                                                class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                                                    <a href="{{ route('library.show', $value->lib_id) }}"><i
+                                                            class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
                                                     <!-- <a href="{{ route('masteradmin.library.view') }}"><i
-                                                            class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
+                                                                                                                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
 
                                                     <a href="{{ route('library.edit', $value->lib_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>

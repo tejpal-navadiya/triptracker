@@ -89,6 +89,8 @@
                                         @foreach ($tripTravelingMembers as $member)
                                             <option value="{{ $member->trtm_id }}">
                                                 {{ $member->trtm_first_name }}
+                                                {{ $member->trtm_last_name }}
+
                                             </option>
                                         @endforeach
 

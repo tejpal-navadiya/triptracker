@@ -252,7 +252,7 @@
                                             placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id"
                                             value="{{ old('user_emergency_phone_number') }}" />
-                                        <x-input-error class="mt-2" :messages="$errors->get('user_emergency_phone_number')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('user_emergency_phone_number')" /> --}}
 
                                     </div>
                                 </div>
@@ -266,6 +266,9 @@
                                             placeholder="Enter Emergency Email Address" name="user_emergency_email"
                                             autofocus autocomplete="tr_agent_id"
                                             value="{{ old('user_emergency_email') }}" />
+
+                                        <x-input-error class="mt-2" :messages="$errors->get('user_emergency_email')" />
+
 
                                     </div>
                                 </div>
@@ -284,7 +287,7 @@
                                         <x-input-label for="tr_agent_id" :value="__('Address')"> <span
                                                 class="text-danger">*</span></x-input-label>
                                         <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                            placeholder="Select Agent" name="users_address" autofocus
+                                            placeholder="Enter Address" name="users_address" autofocus
                                             autocomplete="tr_agent_id" value="{{ old('users_address') }}" />
 
                                     </div>
@@ -352,7 +355,7 @@
                                         <x-text-input type="number" class="form-control" id="tr_agent_id"
                                             placeholder="Enter Zip" name="users_zip" autofocus autocomplete="tr_agent_id"
                                             value="{{ old('users_zip') }}" />
-                                        <x-input-error class="mt-2" :messages="$errors->get('users_zip')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_zip')" /> --}}
                                     </div>
                                 </div>
 
@@ -362,7 +365,7 @@
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
-                                    <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('agency.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>

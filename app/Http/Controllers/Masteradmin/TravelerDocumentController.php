@@ -164,7 +164,6 @@ class TravelerDocumentController extends Controller
             \MasterLogActivity::addToLog('Master Admin Trip Traveller Document is Uploaded.');
     
      
-    
         return response()->json(['success'=>'Record saved successfully.']);
     }
     

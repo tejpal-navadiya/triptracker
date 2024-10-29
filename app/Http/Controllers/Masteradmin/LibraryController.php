@@ -168,33 +168,26 @@ class LibraryController extends Controller
             return redirect()->back()->with('error', 'Image not found.');
     }
 
-
     public function edit($id)
     {
         $library = Library::where( 'lib_id', $id)->firstOrFail();
 
-        // Get the selected country's ID
         $selectedCountryId = $library->lib_country;
 
         $categories = LibraryCategory::select('lib_cat_id', 'lib_cat_name')->get();
 
-        // Get currencies related to the selected country
         $currencies = Countries::where('id', $selectedCountryId)->get();
 
-        // Get states related to the selected country
         $states = States::where('country_id', $selectedCountryId)->get();
 
-        // Get cities related to the selected state (if you want to pre-load cities, you can use the library's lib_state)
         $selectedStateId = $library->lib_state;
         
         $cities = Cities::where('state_id', $selectedStateId)->get();
 
-        // If you want to get all countries for the dropdown
         $countries = Countries::select('id', 'name', 'iso2')->get();
 
         return view('masteradmin.library.edit', compact('library', 'currencies', 'categories', 'countries', 'states', 'cities'));
     }
-
 
     public function update(Request $request, $id)
     {
@@ -278,14 +271,15 @@ class LibraryController extends Controller
         }
 
         // Save the updated record to the database
-        $library->save(); // Use save() instead of update()
+        $library->where('lib_id', $id)->update($validatedData);
+
+      //  $library->save(); // Use save() instead of update()
 
         // Log the activity
         \MasterLogActivity::addToLog('Master Admin Library Updated.');
 
         return redirect()->route('library.index')->with('success', 'Library updated successfully.');
     }
-
 
     public function getStates($countryId)
     {
@@ -335,12 +329,11 @@ class LibraryController extends Controller
         return redirect()->route(route: 'library.index')->with('success', 'Library deleted successfully');
     }
 
-
     public function show($id){
 
-        $library = Library::where('lib_id', $id)->firstOrFail();
+       $library = Library::where('lib_id', $id)->firstOrFail();
 
-       $user = Auth::guard('masteradmins')->user();
+        $user = Auth::guard('masteradmins')->user();
         $libraries = Library::all();
         $library = Library::with('libcategory','currency','state','city','country')->where(['lib_status' => 1, 'id' => $user->users_id,'lib_id'=>$id])->firstOrFail();
 
@@ -356,7 +349,6 @@ class LibraryController extends Controller
              return view('masteradmin.library.view', compact('libraries'));
 
     }
-
     
     public function search(Request $request)
     {
@@ -369,9 +361,5 @@ class LibraryController extends Controller
     
         return view('masteradmin.library.view', compact('libraries'));
     }
-    
-    
-
-    
 
 }

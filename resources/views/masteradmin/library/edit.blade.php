@@ -45,7 +45,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_category" :value="__('Category*')" />
+                                            <label for="tr_agent_id">Category<span class="text-danger">*</span></label>
+
                                             <select class="form-control" id="tr_category" name="lib_category" autofocus>
                                                 <option value="" disabled>Select Category</option>
                                                 @foreach ($categories as $category)
@@ -61,8 +62,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('Name')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_agent_id">Name<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
                                                 placeholder="Select Agent" name="lib_name" autofocus
                                                 autocomplete="tr_agent_id" :value="old('tr_name', $library->lib_name ?? '')" />
@@ -84,7 +84,7 @@
                                                 @endforeach
                                                 <!-- Add more options as needed -->
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" /> --}}
                                         </div>
                                     </div>
 
@@ -95,7 +95,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_currency" :value="__('Currency*')" />
+                                            <x-input-label for="tr_currency" :value="__('Currency')" />
                                             <select class="form-control select2" id="tr_currency" name="lib_currency"
                                                 autofocus>
                                                 <option value="" disabled>Select Currency</option>
@@ -107,7 +107,7 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_currency')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_currency')" /> --}}
                                         </div>
                                     </div>
 
@@ -143,7 +143,7 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <x-input-error class="mt-2" :messages="$errors->get('lib_city')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_city')" /> --}}
                                         </div>
                                     </div>
 
@@ -153,7 +153,7 @@
                                             <x-text-input type="number" class="form-control" id="tr_zip"
                                                 placeholder="Enter Zip" name="lib_zip" autofocus autocomplete="tr_agent_id"
                                                 :value="old('tr_name', $library->lib_zip ?? '')" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_email')" /> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -167,7 +167,7 @@
                                                 autofocus>
                                              {{ $library->lib_basic_information }}
                                             </textarea>
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" /> --}}
                                         </div>
                                     </div>
 
@@ -177,7 +177,7 @@
                                             <textarea class="form-control" id="tr_num_people" name="lib_sightseeing_information"
                                                 placeholder="Enter Sightseeing Information">
                                                 {{ $library->lib_sightseeing_information }}</textarea>
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" /> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
 
                                         <!-- here -->
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('lib_image')" />
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_image')" /> --}}
                                     </div>
                                 </div>
 
@@ -216,7 +216,7 @@
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
-                                    <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>
