@@ -181,7 +181,7 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::resource('trip', TripController::class);
        Route::get('/view-trip/{userdetail}', [TripController::class, 'view'])->name('trip.view');
       
-       //Route::get('/booked_trips', [TripController::class, 'view'])->name('trip.booked_trips');
+        Route::get('/booked_trips', [TripController::class, 'booked_after'])->name('masteradmin.trip.booked_after');
 
 
 

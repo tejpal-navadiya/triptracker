@@ -23,6 +23,8 @@ use App\Models\TaskStatus;
 use App\Models\TripTask;
 use App\Models\PredefineTask;
 use App\Models\MasterUserDetails;
+use Carbon\Carbon;
+
 
 
 class TripController extends Controller
@@ -465,8 +467,9 @@ class TripController extends Controller
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
         $documentType = DocumentType::get();
 
-
-        
+     $trip_id=$id;
+     
+     
             $agency_users = new MasterUserDetails();
             $agency_users->setTableForUniqueId($user->user_id);
             $tableName = $agency_users->getTable();
@@ -513,7 +516,7 @@ class TripController extends Controller
 
         //dd($tripTraveling);
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user'));
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id'));
     }
 
     public function travelersDetails(): View
@@ -605,5 +608,101 @@ class TripController extends Controller
 
         // dd($trip);
         return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData'));
+    }
+
+    
+    public function booked_after(Request $request): View
+    {
+        $user = Auth::guard('masteradmins')->user();
+
+        $startDate = $request->input('start_date'); 
+        $endDate = $request->input('end_date');   
+        $trip_agent = $request->input('trip_agent');   
+        $trip_traveler = $request->input('trip_traveler');   
+        $trip_status1 = $request->input('trip_status');   
+
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+        $agency = $masterUserDetails->get();
+
+        $trip_status = TripStatus::get();
+
+        $trips = new Trip();
+        $tripTable = $trips->getTable();
+
+
+
+//         $futureTrips = DB::table($tripTable)
+//     ->whereDate('tr_start_date', '>=', $currentDate)
+//     ->get();
+
+// dd($futureTrips);
+
+
+
+
+        $currentDate = Carbon::today('Asia/Kolkata');
+
+        //dd($currentDate);
+
+
+      $tripQuery = Trip::where('tr_status', 1)
+
+    ->from($tripTable)
+    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+
+    ->where($tripTable . '.id', $user->users_id)
+
+    //->whereDate($tripTable . '.tr_start_date', '>=', $currentDate) // Filter future trips
+    ->orderBy($tripTable . '.tr_start_date', 'asc') // Order by start date
+
+
+    ->select([
+        $tripTable . '.*', 
+        $masterUserTable . '.users_first_name', 
+        $masterUserTable . '.users_last_name'
+    ]);
+
+    //dd($tripQuery);
+
+
+        // if ($startDate && $endDate) {
+        //     $tripQuery->whereBetween($tripTable . '.trip_date', [$startDate, $endDate]);
+        // }
+
+
+
+        //filter do not touch
+
+        if ($startDate && !$endDate) {
+            $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+        } elseif ($startDate && $endDate) {
+            $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+                ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+        }
+
+        if ($trip_agent) {
+            $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+        }
+
+        if ($trip_traveler) {
+            $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
+        }
+
+        if ($trip_status1) {
+            $tripQuery->where($tripTable . '.tr_status', $trip_status1);
+        }
+
+        $trip = $tripQuery->get();
+        if ($request->ajax()) {
+            // dd(\DB::getQueryLog()); 
+             // dd($allEstimates);
+             return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status'))->render();
+         }
+        // dd($trip);
+    //end do not touch
+
+      return view('masteradmin.trip.booked-after',compact('trip', 'agency', 'trip_status'));
     }
 }

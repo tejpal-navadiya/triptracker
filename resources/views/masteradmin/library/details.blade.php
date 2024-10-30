@@ -50,6 +50,8 @@
                         <div class="col-md-6">
 
                             <div class="card m-2 p-3">
+
+
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
@@ -112,34 +114,64 @@
                             </div>
 
 
+                            {{-- <div class="col-md-12">
+                                <div class="card m-4 p-3">
+                                    <h4>Images</h4>
+
+                                    @if ($library->lib_image)
+                                        @php
+                                            $images = json_decode($library->lib_image, true);
+                                        @endphp
+
+                                        @if (!empty($images) && is_array($images))
+                                            <div class="d-flex flex-wrap mt-3">
+
+                                                @foreach ($images as $image)
+                                                    <div class="mb-2 me-2">
+
+                                                        <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $image }}"
+                                                            alt="Uploaded Image" class="img-thumbnail"
+                                                            style="max-width: 220px; height: 200px;">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p>No images available.</p>
+                                        @endif
+                                    @else
+                                        <p>No images available.</p>
+                                    @endif
+                                </div>
+                            </div> --}}
+
+
                             <div class="col-md-12">
                                 <div class="card m-2 p-3">
-                                    Images
-                                    @foreach ($libraries as $library)
-                                        <div class="col-md-12"> <!-- Adjust the width as needed -->
+                                    <h4>Images</h4>
 
-                                            @if ($library->lib_image)
-                                                @php
-                                                    // Decode the JSON to get an array of image paths
-                                                    $images = json_decode($library->lib_image, true);
-                                                @endphp
+                                    @if ($library->lib_image)
+                                        @php
 
-                                                @if (!empty($images) && is_array($images))
-                                                    <div class="mt-1">
-                                                        <!-- Loop through images and display one (or all if needed) -->
-                                                        @foreach ($images as $image)
-                                                            <tr>
-                                                                <td>
-                                                                    <!-- Display the image -->
-                                                                    <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $image }}"
-                                                                        alt="Uploaded Image" class="img-thumbnail"
-                                                                        style="max-width: 220px; height: 200px;">
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                @endif
-                                            @endif
-                                    @endforeach
+                                            $images = json_decode($library->lib_image, true);
+                                        @endphp
+
+                                        @if (!empty($images) && is_array($images))
+                                            <div class="d-flex flex-wrap mt-3">
+
+                                                @foreach ($images as $image)
+                                                    <div style="margin-right: 10px; margin-bottom: 15px;">
+                                                        <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $image }}"
+                                                            alt="Uploaded Image" class="img-thumbnail"
+                                                            style="max-width: 220px; height: 200px;">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p>No images available.</p>
+                                        @endif
+                                    @else
+                                        <p>No images available.</p>
+                                    @endif
                                 </div>
                             </div>
 

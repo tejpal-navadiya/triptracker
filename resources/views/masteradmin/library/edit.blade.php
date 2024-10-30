@@ -188,8 +188,8 @@
                                         <x-input-label for="lib_image" :value="__('Image Upload')" />
 
                                         <!-- File input for uploading an image -->
-                                        <input type="file" class="form-control" id="lib_image" name="image[]"
-                                            accept="image/*" multiple />
+                                        <input type="file" class="form-control" id="lib_image" name="lib_image[]"
+                                            multiple />
 
 
                                         <!-- here -->

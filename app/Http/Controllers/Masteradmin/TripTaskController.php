@@ -18,23 +18,28 @@ class TripTaskController extends Controller
     //
     public function index(Request $request,$id)
     {
-        // dd($id);
+         //dd($id);
       
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
 
+       // \DB::enableQueryLog();
 
 
         $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
+       // dd(\DB::getQueryLog()); 
+
 
         // dd($member);
 
     
         if ($request->ajax()) {
-            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->latest()->get();
+            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
             //  dd($access);
+
             return Datatables::of($member)
+
 
                     ->addIndexColumn()
                     ->addColumn('status_name', function($status) {
@@ -44,6 +49,7 @@ class TripTaskController extends Controller
                     ->addColumn('trvt_category', function($category) {
                         return $category->tripCategory->task_cat_name ?? '';
                     })
+
 
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
