@@ -8,7 +8,7 @@
             <div class="col-auto"><button href="javascript:void(0)" id="createNewTask" class="reminder_btn">Add
                     Task</button></div>
         </div>
-        
+
         <!-- /.card-header -->
         <div class="card-body">
             <div class="col-md-12 table-responsive pad_table">
@@ -190,6 +190,11 @@
     </div>
 </div>
 
+<?php
+
+// dd($trip_id);
+?>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
@@ -210,7 +215,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('masteradmin.task.index', $trip->tr_id) }}",
+                url: "{{ route('masteradmin.task.index', $trip_id) }}",
                 type: 'GET',
                 data: function(d) {
                     d._token = "{{ csrf_token() }}";
@@ -315,12 +320,12 @@
 
             if ($('#trvt_id').val() === '') {
                 // Create new task
-                url = "{{ route('masteradmin.task.store', $trip->tr_id) }}";
+                url = "{{ route('masteradmin.task.store', $trip_id) }}";
                 formData.append('_method', 'POST');
             } else {
                 // Update existing task
                 var trvt_id = $('#trvt_id').val();
-                url = "{{ route('masteradmin.task.update', [$trip->tr_id, ':trvt_id']) }}";
+                url = "{{ route('masteradmin.task.update', [$trip_id, ':trvt_id']) }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
             }
@@ -355,8 +360,8 @@
 
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.task.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}"
-                .replace('id', id).replace('{{ $trip->tr_id }}', '{{ $trip->tr_id }}'),
+            $.get("{{ route('masteradmin.task.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
+                .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
                 function(data) {
 
                     // console.log(data);
@@ -441,7 +446,7 @@
             e.preventDefault();
             var trvt_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.task.destroy', [$trip->tr_id, ':trvt_id']) }}";
+            var url = "{{ route('masteradmin.task.destroy', [$trip_id, ':trvt_id']) }}";
             url = url.replace(':trvt_id', trvt_id);
             // alert(url);
             $.ajax({

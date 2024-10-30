@@ -162,7 +162,7 @@
                                     <div class="form-group">
                                         <x-input-label for="lib_image" :value="__('Image Upload')" />
                                         <input type="file" class="form-control" id="lib_image" name="image[]"
-                                            accept="image/*" multiple />
+                                            multiple />
                                         <x-input-error class="mt-2" :messages="$errors->get('lib_image')" />
                                     </div>
                                 </div>
