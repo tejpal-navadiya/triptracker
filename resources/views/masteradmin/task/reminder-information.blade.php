@@ -159,8 +159,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
+
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -171,54 +172,83 @@
         var table = $('#example15').DataTable();
         table.destroy();
 
-         //list
-         table = $('#example15').DataTable({
+        //list
+        table = $('#example15').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 url: "{{ route('masteradmin.task.incomplete') }}",
                 type: 'GET',
                 data: function(d) {
-                    d._token = "{{ csrf_token() }}";
+                    d.trip_agent = $('#trip_agent').val(); 
+                    d.trip_traveler = $('#trip_traveler').val(); 
+                    d._token = '{{ csrf_token() }}';
                 }
             },
-            columns: [
-                {data: 'trip_name', name: 'trip_name'},
-                {data: 'agent_name', name: 'agent_name'},
-                {data: 'traveler_name', name: 'traveler_name'},
-                {data: 'trvt_name', name: 'trvt_name'},
-                {data: 'task_cat_name', name: 'task_cat_name'},
-                {data: 'trvt_due_date', name: 'trvt_due_date'},
-                {data: 'trvt_priority', name: 'trvt_priority'},
-                {data: 'status', name: 'status'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
+            columns: [{
+                    data: 'trip_name',
+                    name: 'trip_name'
+                },
+                {
+                    data: 'agent_name',
+                    name: 'agent_name'
+                },
+                {
+                    data: 'traveler_name',
+                    name: 'traveler_name'
+                },
+                {
+                    data: 'trvt_name',
+                    name: 'trvt_name'
+                },
+                {
+                    data: 'task_cat_name',
+                    name: 'task_cat_name'
+                },
+                {
+                    data: 'trvt_due_date',
+                    name: 'trvt_due_date'
+                },
+                {
+                    data: 'trvt_priority',
+                    name: 'trvt_priority'
+                },
+                {
+                    data: 'task_status_name',
+                    name: 'task_status_name'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
             ]
         });
 
 
-         //insert/update data
-         $('#saveBtnTask1').click(function (e) {
+        //insert/update data
+        $('#saveBtnTask').click(function(e) {
             e.preventDefault();
             $(this).html('Sending..');
-            
-               var formData = new FormData($('#FormTask1')[0]);
+
+            var formData = new FormData($('#FormTask')[0]);
             formData.append('_token', "{{ csrf_token() }}");
 
             var url = '';
-            var method = 'POST';  // Default to POST for new tasks
+            var method = 'POST'; // Default to POST for new tasks
 
-            if ($('#trvt_id1').val() === '') {
-                // Create new task
-                url = "{{ route('masteradmin.task.store', $task->trip->tr_id) }}";
-                formData.append('_method', 'POST');
+            
+            if ($('#trvt_id').val() === '') {
+                url = "{{ $task && $task->trip ? route('masteradmin.task.store', $task->trip->tr_id) : '' }}";
             } else {
-                // Update existing task
-                var trvt_id = $('#trvt_id1').val();
-                url = "{{ route('masteradmin.task.update', [$task->trip->tr_id, ':trvt_id']) }}";
+                var trvt_id = $('#trvt_id').val();
+                url = "{{ $task && $task->trip ? route('masteradmin.task.update', [$task->trip->tr_id, ':trvt_id']) : '' }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
             }
-                    
+
+
             $.ajax({
                 data: formData,
                 url: url,
@@ -226,130 +256,152 @@
                 dataType: 'json',
                 contentType: false,
                 processData: false,
-                success: function (data) {
+                success: function(data) {
                     table.draw();
-                    $('#example11').DataTable().ajax.reload();
-
-                    $('#ajaxModelTask1').modal('hide');
+                    $('#example15').DataTable().ajax.reload();
+                    $('#ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
-                    $('#ajaxModelTask1').css('display', 'none');
-                    $('#saveBtnTask1').html('Save');
-                    $('#FormTask1')[0].reset();
-                    
+                    $('#ajaxModelTask').css('display', 'none');
+                    $('#saveBtnTask').html('Save');
+                    $('#FormTask')[0].reset();
+
                 },
-                error: function (data) {
+                error: function(data) {
                     console.log('Error:', data);
-                    $('#saveBtnTask1').html('Save Changes');
+                    $('#saveBtnTask').html('Save Changes');
                 }
             });
         });
 
         //edit popup open
-        $(document).on('click', '.editTask1', function (e) {
+        $(document).on('click', '.editTask', function(e) {
             e.preventDefault();
+
         
-    
-            var id = $(this).data('id'); 
+            var id = $(this).data('id');
+            var url = "{{ $task && $task->trip ? route('masteradmin.task.edit', ['id' => ':id', 'trip_id' => $task->trip->tr_id]) : '' }}";
+            if (url) {
+                url = url.replace(':id', id);
             // alert(id);
-            $.get("{{ route('masteradmin.task.edit', ['id' => 'id', 'trip_id' => $task->trip->tr_id]) }}".replace('id', id).replace('{{$task->trip->tr_id}}', '{{ $task->trip->tr_id }}'), function (data) {
+             $.get(url, function(data) {
 
-                // console.log(data);
-                $('#modelHeadingTask1').html("Edit Task");
-                $('#saveBtnTask1').val("edit-user");
+                    // console.log(data);
+                    $('#modelHeadingTask').html("Edit Task");
+                    $('#saveBtnTask').val("edit-user");
 
-                var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask1'));
-                editModal.show();
+                    var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+                    editModal.show();
 
-                $('#trvt_id1').val(data.trvt_id);
-                $('#trvt_name1').val(data.trvt_name);
-                $('#trvt_agent_id1').val(data.trvt_agent_id);
-                $('#trvt_category1').val(data.trvt_category).trigger('change.select2');
-                $('#trvt_date1').val(data.trvt_date);
-                $('#trvt_due_date1').val(data.trvt_due_date);
-                
-                $('#trvt_date_hidden1').val(data.trvt_date);
-                $('#trvt_due_date_hidden1').val(data.trvt_due_date);
+                    $('#trvt_id').val(data.trvt_id);
+                    $('#trvt_name').val(data.trvt_name);
+                    $('#trvt_agent_id').val(data.trvt_agent_id);
+                    $('#trvt_category').val(data.trvt_category).trigger('change.select2');
+                    $('#trvt_date').val(data.trvt_date);
+                    $('#trvt_due_date').val(data.trvt_due_date);
 
-                $('#trvt_priority1').val(data.trvt_priority).trigger('change.select2');
-             
-                $('#task_document1').html('');
-                var baseUrl = "{{ config('app.image_url') }}";
-                if (data.trvt_document) {
-                    $('#task_document1').append(
-                        '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' + data.trvt_document + '" target="_blank">' +
-                        data.trvt_document + 
-                        '</a>'
-                    );
-                }
-                                
-                var trvt_date_hidden = document.getElementById('trvt_date_hidden1');
-                var trvt_due_date_hidden = document.getElementById('trvt_due_date_hidden1');
+                    $('#trvt_date_hidden').val(data.trvt_date);
+                    $('#trvt_due_date_hidden').val(data.trvt_due_date);
 
-                if (trvt_date_hidden && trvt_due_date_hidden) {
-                var completed_date = flatpickr("#create_date1", {
-                locale: 'en',
-                altInput: true,
-                dateFormat: "m/d/Y",
-                altFormat: "m/d/Y",
-                allowInput: true,
-                defaultDate: trvt_date_hidden.value || null,
-                });
+                    $('#trvt_priority').val(data.trvt_priority).trigger('change.select2');
 
-                var todatepicker = flatpickr("#due_date1", {
-                locale: 'en',
-                altInput: true,
-                dateFormat: "m/d/Y",
-                altFormat: "m/d/Y",
-                allowInput: true,
-                defaultDate: trvt_due_date_hidden.value || null,
-                });
+                    $('#task_document').html('');
+                    var baseUrl = "{{ config('app.image_url') }}";
+                    if (data.trvt_document) {
+                        $('#task_document').append(
+                            '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' + data
+                            .trvt_document + '" target="_blank">' +
+                            data.trvt_document +
+                            '</a>'
+                        );
+                    }
 
-                document.getElementById('create-date-icon1').addEventListener('click', function () {
-                fromdatepicker.open();
-                });
+                    var trvt_date_hidden = document.getElementById('trvt_date_hidden');
+                    var trvt_due_date_hidden = document.getElementById('trvt_due_date_hidden');
 
-                document.getElementById('due-date-icon1').addEventListener('click', function () {
-                todatepicker.open();
+                    if (trvt_date_hidden && trvt_due_date_hidden) {
+                        var completed_date = flatpickr("#create_date", {
+                            locale: 'en',
+                            altInput: true,
+                            dateFormat: "m/d/Y",
+                            altFormat: "m/d/Y",
+                            allowInput: true,
+                            defaultDate: trvt_date_hidden.value || null,
+                        });
+
+                        var todatepicker = flatpickr("#due_date", {
+                            locale: 'en',
+                            altInput: true,
+                            dateFormat: "m/d/Y",
+                            altFormat: "m/d/Y",
+                            allowInput: true,
+                            defaultDate: trvt_due_date_hidden.value || null,
+                        });
+
+                        document.getElementById('create-date-icon').addEventListener('click',
+                            function() {
+                                fromdatepicker.open();
+                            });
+
+                        document.getElementById('due-date-icon').addEventListener('click',
+                            function() {
+                                todatepicker.open();
+                            });
+                    }
+
+
                 });
             }
-           
-            
-            });
         });
 
         //delete record
-        $('body').on('click', '.deleteTaskbtn1', function (e) {
+        $('body').on('click', '.deleteTaskbtn', function(e) {
             e.preventDefault();
             var trvt_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.task.destroy', [$task->trip->tr_id, ':trvt_id']) }}";
-            url = url.replace(':trvt_id', trvt_id);
+             var trvt_id = $(this).data("id");
+            var trip_id = "{{ $task && $task->trip ? $task->trip->tr_id : '' }}";
+            
+                if (trip_id) {
+                var url = "{{ route('masteradmin.task.destroy', [':trip_id', ':trvt_id']) }}";
+                url = url.replace(':trip_id', trip_id).replace(':trvt_id', trvt_id);
+          
             // alert(url);
             $.ajax({
                 type: "DELETE",
                 url: url,
-                success: function (data) {
+                success: function(data) {
                     alert(data.success);
-                  
-                    $('.ajaxModelTask1').modal('hide');
+
+                    $('.ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
-                    $('.ajaxModelTask1').css('display', 'none');
-                    
+                    $('.ajaxModelTask').css('display', 'none');
+
                     table.draw();
-                    $('#example11').DataTable().ajax.reload();
+                    $('#example15').DataTable().ajax.reload();
 
                 },
-                error: function (data) {
+                error: function(data) {
                     console.log('Error:', data);
                 }
             });
-        }); 
+                }
+        });
 
+      
 
-   });
-    
+        $('#trip_agent, #trip_traveler').on('change', function() {
+            table.draw();
+        });
+
+        $('.filter-text').on('click', function() {
+            $('#trip_agent').val('').trigger('change'); 
+            $('#trip_traveler').val('').trigger('change');
+            table.draw();
+        });
+
+    });
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

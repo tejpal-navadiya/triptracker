@@ -64,16 +64,17 @@
                         @endif
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
-                                <a href="{{ route('masteradmin.emailtemplate.EmailTemplate') }}"
+                                <a href="{{ route('masteradmin.trip.booked_after') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Trip Follow Up (After Booked)</p>
+                                    <p>Booked Trips (After Booked)</p>
                                 </a>
                             </li>
+                            
                         @endif
 
                         @if (isset($access['view_role']) && $access['view_role'])
@@ -182,27 +183,16 @@
                     </ul>
                 </li>
 
-
-
-
-
-
-
-
-
-
-
-                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fas fa-plus"></i>
-                        <p>
-                            Libraries
+                <li class="nav-item">
+                    <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-envelope"></i>
+                        <p>Libraries
                             <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
-
                     <ul class="nav nav-treeview">
-                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+
+                        @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('library.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
@@ -212,10 +202,8 @@
                                 </a>
                             </li>
                         @endif
-                    </ul>
 
-                    <ul class="nav nav-treeview">
-                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+                        @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('library.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
@@ -225,20 +213,20 @@
                                 </a>
                             </li>
                         @endif
+
                     </ul>
                 </li>
 
-                <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fas fa-user"></i>
-                        <p>
-                            Agency Users
+                <li class="nav-item">
+                    <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-envelope"></i>
+                        <p>Agency Users
                             <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
-
                     <ul class="nav nav-treeview">
-                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+
+                        @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('agency.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
@@ -247,10 +235,8 @@
                                 </a>
                             </li>
                         @endif
-                    </ul>
 
-                    <ul class="nav nav-treeview">
-                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+                        @if (isset($access['book_trip']) && $access['book_trip'])
                             <li class="nav-item">
                                 <a href="{{ route('agency.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
@@ -259,14 +245,9 @@
                                 </a>
                             </li>
                         @endif
+
                     </ul>
                 </li>
-
-
-
-
-
-
 
                 <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
@@ -277,7 +258,8 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        @if (isset($access['view_role']) && $access['view_role'])
+
+                    @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('user-role-details.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
