@@ -114,7 +114,9 @@ return [
             'user_not_found' => 'User not found.',
             'profile_setup_success' => 'profile updated successfully.',
             'password_change_success' => 'Change Password updated successfully.',
-            
+            'register_success' => 'User register successfully.',
+            'invalid' =>'Invalid input',
+            'login_success' => 'Login successfully',
         ],
         'country'=> [
             'country_get_success' => 'Country data get successfully.',

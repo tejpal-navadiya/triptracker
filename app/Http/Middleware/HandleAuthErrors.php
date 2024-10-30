@@ -9,6 +9,8 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use App\Models\MasterUserDetails;
+use App\Models\MasterUser;
+
 
 class HandleAuthErrors
 {
@@ -20,30 +22,41 @@ class HandleAuthErrors
 
      public function handle(Request $request, Closure $next)
      {
+     
         $token = $request->bearerToken();
         $uniqueId = $request->header('X-UniqueId');
  
          if (!$token) {
              return response()->json([
-                 'error' => 'Unauthenticated',
+                 'success' => false,
                  'message' => 'No token provided.'
              ], 401);
          }
 
          if (!$uniqueId) {
             return response()->json([
-                'error' => 'Unauthenticated',
+                'success' =>  false,
                 'message' => 'No uniqueId provided.'
             ], 401);
         }
-         $userModel = new MasterUserDetails();
-     
+
+        $user = MasterUser::where('buss_unique_id', $uniqueId)->first();
+        // dd($user);
+          if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid X-UniqueId header value. No matching user found.',
+            ], 404);  // 404 Not Found status
+        }
+       
+        $userModel = new MasterUserDetails();
+        
          $userModel->setTableForUniqueId( $uniqueId);
          $userDetailRecord = $userModel->where(['api_token'=> $token])->first();
 
          if (!$userDetailRecord) {
              return response()->json([
-                 'error' => 'Unauthenticated',
+                 'success' =>  false,
                  'message' => 'Your token is either invalid or expired.'
              ], 401);
          }

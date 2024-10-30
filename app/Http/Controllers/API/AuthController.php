@@ -33,14 +33,14 @@ class AuthController extends Controller
 
     public function register(Request $request):JsonResponse
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'user_agencies_name' => ['required', 'string', 'max:255'],
             'user_franchise_name' => ['nullable', 'string', 'max:255'],
             'user_consortia_name' => ['nullable', 'string', 'max:255'],
             'user_first_name' => ['required', 'string', 'max:255'],
             'user_last_name' => ['nullable', 'string', 'max:255'],
-            'user_iata_clia_number' => ['required', 'string', 'max:255'],
-            'user_clia_number' => ['nullable', 'string', 'max:255'],
+            'user_iata_clia_number' => ['nullable', 'string', 'max:255'],
+            'user_clia_number' => ['required', 'string', 'max:255'],
             'user_iata_number' => ['nullable', 'string', 'max:255'],
             'user_image' => ['nullable', 'string', 'max:255'],
             'user_address' => ['nullable', 'string', 'max:255'],
@@ -48,13 +48,31 @@ class AuthController extends Controller
             'user_state' => ['nullable', 'string', 'max:255'],
             'user_city' => ['nullable', 'string', 'max:255'],
             'user_zip' => ['nullable', 'string', 'max:255'],
-            'sp_id' => ['nullable', 'string', 'max:255'],
-            'user_email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.MasterUser::class],
+            'sp_id' => ['required', 'string', 'max:255'],
+            'user_email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . MasterUser::class],
             'user_password' => ['required', 'string', '', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
+        ], [
+            // Custom error messages
+            'user_agencies_name.required' => 'The agency name is required.',
+            'user_first_name.required' => 'First name is required.',
+            'user_email.required' => 'Email address is required.',
+            'user_email.email' => 'The email format is invalid.',
+            'user_email.unique' => 'The email has already been taken.',
+            'user_password.required' => 'A password is required.',
+            'user_password.min' => 'The password must be at least :min characters.',
+            'user_password.mixedCase' => 'The password must contain both uppercase and lowercase letters.',
+            'user_password.letters' => 'The password must contain at least one letter.',
+            'user_password.numbers' => 'The password must contain at least one number.',
+            'user_password.symbols' => 'The password must contain at least one symbol.',
+            'sp_id.required' => 'The Plan is required.',
         ]);
-                
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.api.user.invalid'),
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $plan = Plan::where('sp_id', $request->sp_id)->firstOrFail();
@@ -137,7 +155,9 @@ class AuthController extends Controller
             // $success['token'] =  $admin->createToken('MyApp')->plainTextToken;
             $success['name'] =  $admin->user_first_name.' '.$admin->user_last_name;
 
-            return $this->sendResponse($success, 'User register successfully.');
+            // return $this->sendResponse($success, 'User register successfully.');
+            return $this->sendResponse($success, __('messages.api.user.register_success'));
+
 
         
 
@@ -161,13 +181,40 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // Validate the input fields
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'user_email' => 'required|string|email',
             'user_password' => 'required|string|min:8',
             'user_id' => 'required|string',
+        ], [
+            'user_email.required' => 'The email field is required.',
+            'user_email.string' => 'The email must be a string.',
+            'user_email.email' => 'Please provide a valid email address.',
+            
+            'user_password.required' => 'The password field is required.',
+            'user_password.string' => 'The password must be a string.',
+            'user_password.min' => 'The password must be at least 8 characters long.',
+            
+            'user_id.required' => 'The user ID is required.',
+            'user_id.string' => 'The user ID must be a string.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.api.user.invalid'),
+                'errors' => $validator->errors()
+            ], 422);
+        }
     
+        
         $masterUser = MasterUser::where('buss_unique_id', $request->user_id)->first();
+
+        if (!$masterUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid user ID. No matching user found.',
+            ], 404);
+        }
 
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($masterUser->buss_unique_id);
@@ -198,18 +245,19 @@ class AuthController extends Controller
 
             // $userDetailRecord->Authorization = $token;
 
-                return response()->json([
-                    'message' => 'Login successfully',
-                    'data' => $userDetailRecord,
-                ], 200);
+                // return response()->json([
+                //     'message' => 'Login successfully',
+                //     'data' => $userDetailRecord,
+                // ], 200);
+            return $this->sendResponse($userDetailRecord, __('messages.api.user.login_success'));
+
             }
-    
+
         return response()->json(['error' => 'Unauthorized: Invalid credentials'], 401);
     }
     
     public function GetUserProfile(Request $request)
     {
-   
 
         try {
             $user = $request->attributes->get('authenticated_user');
@@ -470,20 +518,28 @@ class AuthController extends Controller
             $uniqueId = $request->header('X-UniqueId');
             $token = $request->bearerToken();
             $user = MasterUser::where('id', $auth_user->id)->first();
+            
            // dd($user->user_first_name);
             if($auth_user)
             {
                 
                 $input = $request->all();
    
-                $request->validate([
-                    'users_first_name' => ['required', 'string', 'max:255'],
-                    'users_last_name' => ['required', 'string', 'max:255'],
-                    'users_email' => ['required', 'string', 'max:255'],
+                $validator = Validator::make($request->all(), [
+                    'users_first_name' => ['nullable', 'string', 'max:255'],
+                    'users_last_name' => ['nullable', 'string', 'max:255'],
+                    'users_email' => ['nullable', 'string', 'max:255'],
                     'users_phone' => ['nullable', 'string', 'max:255'],
-                    'users_bio' => ['required', 'string', 'max:255']
+                    'users_bio' => ['nullable', 'string', 'max:255']
                 ]);
 
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => __('messages.api.user.invalid'),
+                        'errors' => $validator->errors()
+                    ], 422);
+                }
             
                 $userDetails = new MasterUserDetails();
                 $userDetails->setTableForUniqueId($uniqueId);
@@ -524,7 +580,8 @@ class AuthController extends Controller
                 $updatedUser->sp_expiry_date = $user ? Carbon::parse($user->sp_expiry_date)->format('M d, Y') : null; 
                 $updatedUser->isActive = $user ? $user->isActive : null; 
                 $updatedUser->user_first_name = $user->user_first_name;
-                $user->token = $request->bearerToken();
+
+                $updatedUser->token = $request->bearerToken();
                 $user_data = $this->UserResponse($updatedUser);
 
                 //dd($userDetails->getTable());
@@ -575,7 +632,11 @@ class AuthController extends Controller
                     ]);
                 
                     if ($validator->fails()) {
-                        return $this->sendError('Validation Error.', $validator->errors());
+                        return response()->json([
+                            'success' => false,
+                            'message' => __('messages.api.user.invalid'),
+                            'errors' => $validator->errors()
+                        ], 422);
                     }
                 
                     // dd($auth_user);
@@ -618,7 +679,8 @@ class AuthController extends Controller
                         $updatedUser->sp_expiry_date = $user ? Carbon::parse($user->sp_expiry_date)->format('M d, Y') : null; 
                         $updatedUser->isActive = $user ? $user->isActive : null; 
                         $updatedUser->user_first_name = $user->user_first_name;
-                
+                        $updatedUser->token = $request->bearerToken();
+                        
                         $user_data = $this->UserResponse($updatedUser);
                         return $this->sendResponse($user_data, __('messages.api.user.password_change_success'));
 
