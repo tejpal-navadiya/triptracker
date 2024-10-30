@@ -43,6 +43,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
+
             <form id="FormTask" name="FormTask" class="mt-6 space-y-6" enctype="multipart/form-data">
 
                 <input type="hidden" name="trvt_id" id="trvt_id">
@@ -150,11 +152,11 @@
                             <div class="form-group">
                                 <label for="trvt_document">Upload Documents</label>
                                 <div class="d-flex">
-                                    <x-text-input type="file" name="trvt_document" id="trvt_document"
-                                        accept="image/*" class="" />
+                                    <x-text-input type="file" name="trvt_document" id="trvt_document" />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
                                 <p id="task_document"></p>
+                                <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
                             </div>
                         </div>
 

@@ -92,10 +92,6 @@
                                             </option>
                                         @endforeach
 
-
-
-
-
                                         <x-input-error class="mt-2" :messages="$errors->get('trvm_id')" />
                                     </select>
                                 </div>
@@ -112,6 +108,8 @@
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvd_document')" />
                                 <p id="document_images"></p>
+                                <label for="trvd_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+
                             </div>
                         </div>
                     </div>
