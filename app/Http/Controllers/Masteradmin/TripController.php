@@ -463,11 +463,16 @@ class TripController extends Controller
         $user = Auth::guard('masteradmins')->user();
         $trip = Trip::where('tr_id', $id)->firstOrFail();
         $triptableName = $trip->getTable();
-        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
-        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->id])->get();
+
+        
+        $taskCategory = new TaskCategory();
+        $taskCategory = $taskCategory->get();
+
+        //dd($TaskCategory);
+
         $documentType = DocumentType::get();
 
-     $trip_id=$id;
+         $trip_id=$id;
      
      
             $agency_users = new MasterUserDetails();
@@ -508,10 +513,13 @@ class TripController extends Controller
                 ->where($tableName . '.tr_id', $id)
                 ->get();
 
+
+
             $tripData = DB::table($uniq_id . '_tc_trip')
-                ->select('tr_id', 'tr_name')
+                ->select('tr_id', 'tr_traveler_name')
                 ->where('tr_id', $id)
                 ->get();
+
 
 
         //dd($tripTraveling);
@@ -640,8 +648,6 @@ class TripController extends Controller
 // dd($futureTrips);
 
 
-
-
         $currentDate = Carbon::today('Asia/Kolkata');
 
         //dd($currentDate);
@@ -664,13 +670,14 @@ class TripController extends Controller
         $masterUserTable . '.users_last_name'
     ]);
 
+
+
     //dd($tripQuery);
 
 
         // if ($startDate && $endDate) {
         //     $tripQuery->whereBetween($tripTable . '.trip_date', [$startDate, $endDate]);
         // }
-
 
 
         //filter do not touch

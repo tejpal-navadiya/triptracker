@@ -195,6 +195,8 @@
                                         <!-- here -->
 
                                         {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_image')" /> --}}
+                                        <label for="trvd_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+
                                     </div>
                                 </div>
 

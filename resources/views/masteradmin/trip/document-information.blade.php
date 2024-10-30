@@ -97,7 +97,7 @@
                                         <!-- Loop through trips -->
                                         @foreach ($tripData as $trip)
                                             <option value="{{ $trip->tr_id }}">
-                                                {{ $trip->tr_name }}
+                                                {{ $trip->tr_traveler_name }}
                                             </option>
                                         @endforeach
 
@@ -113,10 +113,12 @@
                                 <div class="d-flex">
                                     <!-- <x-text-input type="file" name="trvd_document" id="trvd_document" accept="image/*" class="" /> -->
                                     <x-text-input type="file" class="form-control" id="trvd_document"
-                                        name="trvd_document[]" accept="image/*" multiple />
+                                        name="trvd_document[]" multiple />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvd_document')" />
                                 <p id="document_images"></p>
+                                <label for="trvd_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+
                             </div>
                         </div>
                     </div>
@@ -146,7 +148,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('masteradmin.document.index', $trip->tr_id) }}",
+                url: "{{ route('masteradmin.document.index', $trip_id) }}",
                 type: 'GET',
                 data: function(d) {
                     d._token = "{{ csrf_token() }}";
@@ -225,12 +227,12 @@
 
             if ($('#trvd_id').val() === '') {
                 // Create new
-                url = "{{ route('masteradmin.document.store', $trip->tr_id) }}";
+                url = "{{ route('masteradmin.document.store', $trip_id) }}";
                 formData.append('_method', 'POST');
             } else {
                 // Update existing
                 var trvd_id = $('#trvd_id').val();
-                url = "{{ route('masteradmin.document.update', [$trip->tr_id, ':trvd_id']) }}";
+                url = "{{ route('masteradmin.document.update', [$trip_id, ':trvd_id']) }}";
                 url = url.replace(':trvd_id', trvd_id);
                 formData.append('_method', 'PATCH');
             }
@@ -266,8 +268,8 @@
 
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $trip->tr_id]) }}"
-                .replace('id', id).replace('{{ $trip->tr_id }}', '{{ $trip->tr_id }}'),
+            $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
+                .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
                 function(data) {
 
                     // console.log(data);
@@ -358,7 +360,7 @@
             e.preventDefault();
             var trvd_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.document.destroy', [$trip->tr_id, ':trvd_id']) }}";
+            var url = "{{ route('masteradmin.document.destroy', [$trip_id, ':trvd_id']) }}";
             url = url.replace(':trvd_id', trvd_id);
             // alert(url);
             $.ajax({

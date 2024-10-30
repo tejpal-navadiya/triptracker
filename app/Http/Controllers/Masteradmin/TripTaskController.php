@@ -101,13 +101,19 @@ class TripTaskController extends Controller
                 'trvt_priority' => 'required|string',
                 'trvt_date' => 'required|string',
                 'trvt_due_date' => 'required|string',
-                'trvt_document' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+               'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
+               'trvt_document.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // Multiple files validation
+
             ], [
-                'trvt_name.required' => 'Task Name is required',
+                'trvt_name.required' => 'Task Name is required',    
                 'trvt_agent_id.required' => 'Assign Agent is required',
                 'trvt_category.required' => 'Category is required',
                 'trvt_priority.required' => 'Priority is required',
                 'image.image' => 'The Document field is required.',
+
+                'trvt_document.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for single file
+                'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
+
             ]);
 
 
@@ -133,16 +139,13 @@ class TripTaskController extends Controller
                 $tripTask->trvt_id = $uniqueId1;
 
                 $tripTask->save();
-
-
-             
           
             \MasterLogActivity::addToLog('Master Admin Trip Task is Created.');
     
-     
-    
         return response()->json(['success'=>'Record saved successfully.']);
     }
+
+
     public function edit($id, $trip_id)
     {   
         
@@ -150,42 +153,101 @@ class TripTaskController extends Controller
 
         return response()->json($role);
     }
-    
+
+
+
     public function update(Request $request, $tr_id, $trvt_id)
-    {
-        // dd($request->all());
-        $user = Auth::guard('masteradmins')->user();
-        $dynamicId = $user->users_id; 
-        $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
+{
+    $user = Auth::guard('masteradmins')->user();
+    $dynamicId = $user->users_id; 
 
-        // dd($task);
-        if($task)
-        {
-            $validatedData = $request->validate([
-                'trvt_name' => 'required|string',
-                'trvt_agent_id' => 'required|string',
-                'trvt_category' => 'required|string',
-                'trvt_priority' => 'required|string',
-                'trvt_date' => 'required|string',
-                'trvt_due_date' => 'required|string',
-                'trvt_document' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'status' => 'nullable|in:1,2,3,4,5,6',
-            ], [
-                'trvt_name.required' => 'Task Name is required',
-                'trvt_agent_id.required' => 'Assign Agent is required',
-                'trvt_category.required' => 'Category is required',
-                'trvt_priority.required' => 'Priority is required',
-                'image.image' => 'The Document field is required.',
-            ]);
-            $task->where('trvt_id' , $trvt_id)->update($validatedData);
+    // Fetch the existing task
+    $task = TripTask::where(['id' => $dynamicId, 'tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
 
-            $task->save();
+    if ($task) {
+        // Validate request data
+        $validatedData = $request->validate([
+            'trvt_name' => 'required|string',
+            'trvt_agent_id' => 'required|string',
+            'trvt_category' => 'required|string',
+            'trvt_priority' => 'required|string',
+            'trvt_date' => 'required|string',
+            'trvt_due_date' => 'required|string',
+            'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
+            'status' => 'nullable',
+        ], [
+            'trvt_name.required' => 'Task Name is required',
+            'trvt_agent_id.required' => 'Assign Agent is required',
+            'trvt_category.required' => 'Category is required',
+            'trvt_priority.required' => 'Priority is required',
+            'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
+        ]);
 
-            \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
-
-            return response()->json(['success'=>'Record updated successfully.']);
+        // Check if new document files are uploaded
+        if ($request->hasFile('trvt_document')) {
+            $userFolder = session('userFolder');
+            // Handle file upload like in the store method
+            $users_cert_document = $this->handleImageUpload($request, 'trvt_document', null, 'task_image', $userFolder);
+            $validatedData['trvt_document'] = $users_cert_document;
         }
+
+        // Update task with validated data
+        $task->fill($validatedData);
+        $task->save();
+
+        \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
+
+        return response()->json(['success' => 'Record updated successfully.']);
     }
+
+    return response()->json(['error' => 'Record not found.'], 404);
+}
+
+
+
+
+    
+    // public function update(Request $request, $tr_id, $trvt_id)
+    // {
+    //    dd($request->all());
+    //     $user = Auth::guard('masteradmins')->user();
+    //     $dynamicId = $user->users_id; 
+    //     $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
+
+    //     // dd($task);
+    //     if($task)
+    //     {
+    //         $validatedData = $request->validate([
+    //             'trvt_name' => 'required|string',
+    //             'trvt_agent_id' => 'required|string',
+    //             'trvt_category' => 'required|string',
+    //             'trvt_priority' => 'required|string',
+    //             'trvt_date' => 'required|string',
+    //             'trvt_due_date' => 'required|string',
+
+    //             'trvt_document.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // For multiple file validation
+                 
+    //             'status' => 'nullables',
+    //         ], [
+    //             'trvt_name.required' => 'Task Name is required',
+    //             'trvt_agent_id.required' => 'Assign Agent is required',
+    //             'trvt_category.required' => 'Category is required',
+    //             'trvt_priority.required' => 'Priority is required',
+    //             'image.image' => 'The Document field is required.',
+
+    //             'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
+
+
+    //         ]);
+    //         $task->where('trvt_id' , $trvt_id)->update($validatedData);
+
+    //         $task->save();
+
+    //         \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
+
+    //         return response()->json(['success'=>'Record updated successfully.']);
+    //     }
+    // }
     
     public function destroy($trip_id, $trvt_id)
     {
@@ -491,3 +553,4 @@ class TripTaskController extends Controller
     }
 
 }
+    

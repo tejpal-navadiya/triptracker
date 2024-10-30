@@ -68,7 +68,11 @@ class LibraryController extends Controller
             'lib_basic_information' => 'required|string',
             'lib_sightseeing_information' => 'required|string',
             'image' => 'nullable|array', // Validate that image is an array
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image.*' => 'image|mimes:jpeg,png,jpg,pdf|max:2048',
+
+            //'trvt_document.*' => 'nullable|file|jpeg,png,jpg,pdf|max:2048',
+
+
         ], [
             'lib_category.required' => 'Category is required',
             'lib_name.required' => 'Name is required',
@@ -205,7 +209,7 @@ class LibraryController extends Controller
                 'lib_basic_information' => 'required|string',
                 'lib_sightseeing_information' => 'required|string',
                 'lib_image' => 'nullable',
-                'lib_image.*' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'lib_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
             ],
             [
                 'lib_image.nullable' => 'The Document is required.',

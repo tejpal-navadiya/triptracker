@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class TravelerDocument extends Model
 {
     use HasFactory;
-    protected $fillable = ['trvd_id','id','trv_id', 'trvm_id','trvd_name','trvd_document','trvd_status'];
+    protected $fillable = ['trvd_id','id','trv_id','tr_id', 'trvm_id','trvd_name','trvd_document','trvd_status'];
 
     public function __construct(array $attributes = [])
     {
@@ -30,6 +30,12 @@ class TravelerDocument extends Model
     {
         return $this->belongsTo(DocumentType::class, 'trvd_name', 'docty_id');
     }
+
+    public function trip()
+    {
+        return $this->belongsTo(Trip::class, 'tr_id', 'tr_id');
+    }
+
 
 
 }

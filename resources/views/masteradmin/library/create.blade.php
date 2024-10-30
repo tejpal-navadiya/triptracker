@@ -164,6 +164,8 @@
                                         <input type="file" class="form-control" id="lib_image" name="image[]"
                                             multiple />
                                         <x-input-error class="mt-2" :messages="$errors->get('lib_image')" />
+                                        <label for="trvd_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+
                                     </div>
                                 </div>
 

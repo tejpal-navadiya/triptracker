@@ -23,20 +23,23 @@ class TravelerDocumentController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $document = TravelerDocument::where(['id' => $user->users_id,'tr_id' => $id])->with(['traveler', 'documenttype'])->latest()->get();
-        //  dd($document);
+        $document = TravelerDocument::where(['id' => $user->users_id,'tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+        
+
+       // dd($document);
     
         if ($request->ajax()) {
-            $document = TravelerDocument::where(['id' => $user->users_id, 'tr_id' => $id])->with(['traveler', 'documenttype'])->latest()->get();
+            $document = TravelerDocument::where(['id' => $user->users_id, 'tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
             //  dd($access);
             return Datatables::of($document)
                     ->addIndexColumn()
+                    
                     ->addColumn('traveler_name', function($document) {
                         $firstName = $document->traveler->trtm_first_name ?? '';
                         $middleName = $document->traveler->trtm_middle_name ?? '';
                         $lastName = $document->traveler->trtm_last_name ?? '';
                         
-                        return $firstName . ' ' . $middleName . ' ' . $lastName;
+                        return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name;
                     })
                     ->addColumn('document_type', function($document) {
                         return $document->documenttype->docty_name ?? 'Unknown Document Type';
@@ -114,6 +117,9 @@ class TravelerDocumentController extends Controller
 
     }
 
+
+
+
     public function store(Request $request, $id)
     {
     //  dd($request->all());
@@ -124,7 +130,8 @@ class TravelerDocumentController extends Controller
                 'trvd_name' => 'required|string',
                 'trvm_id' => 'required|string',
                 'trvd_document' => 'required',
-                'trvd_document.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'trvd_document.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+
             ], [
                 'trvd_name.required' => 'Documents Type is required',
                 'trvm_id.required' => 'Traveler is required',
@@ -218,7 +225,7 @@ class TravelerDocumentController extends Controller
                 'trvd_name' => 'required|string',
                 'trvm_id' => 'required|string',
                 'trvd_document' => 'nullable',
-                'trvd_document.*' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'trvd_document.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             ], [
                 'trvd_name.required' => 'Documents Type is required',
                 'trvm_id.required' => 'Traveler is required',

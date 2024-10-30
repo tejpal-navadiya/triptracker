@@ -14,6 +14,8 @@ use App\Models\MasterUserDetails;
 use App\Models\Countries;
 use App\Models\States;
 use App\Models\Cities;
+use Illuminate\Support\Facades\Hash;
+
 
 
 class AgencyController extends Controller
@@ -140,7 +142,8 @@ class AgencyController extends Controller
       $agency->users_zip = $validatedData['users_zip'];
       $agency->users_bio = '';  
       $agency->users_status = 1;  
-      $agency->users_password = bcrypt($validatedData['users_password']);  
+      $agency->users_password = Hash::make($validatedData['users_password']);
+    
       $agency->save();
 
       
@@ -214,17 +217,18 @@ class AgencyController extends Controller
     $userdetailu = $masteruser->where(['users_id' => $users_id,'id' => $user->id])->firstOrFail();
 
     //dd( $userdetailu);
-    
-    $validatedData = $request->validate([
+
+     // Validate incoming request data
+     $validatedData = $request->validate([
       'user_agency_numbers' => 'required|string|max:255',
       'users_first_name' => 'required|string|max:255',
       'users_last_name' => 'required|string|max:255',
       'user_qualification' => 'required|string|max:255',
       'user_work_email' => 'nullable|email|max:255',
       'users_email' => 'nullable|email|max:255',
-      'user_dob' => 'required|date_format:m/d/Y', 
+      'user_dob' => 'required|date_format:m/d/Y',
       'role_id' => 'required|string|max:255',
-      'users_password' => 'required|string|min:6', 
+      'users_password' => 'required|string|min:6',
       'user_emergency_contact_person' => 'required|string|max:255',
       'user_emergency_email' => 'nullable|email|max:255',
       'user_emergency_phone_number' => 'required|string|regex:/^[0-9]{1,12}$/',
@@ -233,54 +237,48 @@ class AgencyController extends Controller
       'users_state' => 'required|string|max:255',
       'users_city' => 'required|string|max:255',
       'users_zip' => 'required|numeric|digits_between:1,6',
-      
-  
-  ], [
-      'user_agency_numbers.required' => 'User ID is required',
-      'users_first_name.required' => 'First name is required',
-      'users_last_name.required' => 'Last name is required',
-      'user_qualification.required' => 'Qualification is required',
-      'age_user_work_email.email' => 'Work email must be a valid email address',
-      'users_email.email' => 'Personal email must be a valid email address',
-      'user_dob.required' => 'Date of birth is required',
-      'user_dob.date_format' => 'Date of birth must be in the format mm/dd/yyyy',
-      'role_id.required' => 'User type is required',
-      'users_password.required' => 'Password is required',
-      'users_password.min' => 'Password must be at least 6 characters long',
-      'user_emergency_contact_person.required' => 'Emergency contact is required',
-      'user_emergency_email.email' => 'Emergency email must be a valid email address',
-      'user_emergency_phone_number' => 'The phone number must be between 1 to 12 digits.',
-      'users_address.required' => 'Address is required',
-      'users_country.required' => 'Country is required',
-      'users_state.required' => 'State is required',
-      'users_city.required' => 'City is required',
-      'users_zip.required' => 'Zipcode is Required',
-      'users_zip.numeric' => 'Zipcode must be Number',
   ]);
 
-$userdetailu->user_agency_numbers = $validatedData['user_agency_numbers'];
+  // Prepare data for update
+  $updateData = [
+      'user_agency_numbers' => $validatedData['user_agency_numbers'],
+      'users_first_name' => $validatedData['users_first_name'],
+      'users_last_name' => $validatedData['users_last_name'],
+      'user_qualification' => $validatedData['user_qualification'],
+      'user_work_email' => $validatedData['user_work_email'],
+      'users_email' => $validatedData['users_email'],
+      'user_dob' => $validatedData['user_dob'],
+      'role_id' => $validatedData['role_id'],
+      'users_password' => Hash::make($validatedData['users_password']), // Hash the password here
+      'user_emergency_contact_person' => $validatedData['user_emergency_contact_person'],
+      'user_emergency_email' => $validatedData['user_emergency_email'],
+      'users_address' => $validatedData['users_address'],
+      'users_city' => $validatedData['users_city'],
+      'users_country' => $validatedData['users_country'],
+      'users_state' => $validatedData['users_state'],
+      'users_zip' => $validatedData['users_zip'],
+  ];
 
-$userdetailu->users_first_name = $validatedData['users_first_name'];
-$userdetailu->users_last_name = $validatedData['users_last_name'];
-$userdetailu->user_qualification = $validatedData['user_qualification'];
-$userdetailu->user_work_email  = $validatedData['user_work_email'];
 
-$userdetailu->users_email  = $validatedData['users_email'];
-$userdetailu->user_dob = $validatedData['user_dob'];
-$userdetailu->role_id = $validatedData['role_id'];
-$userdetailu->users_password = bcrypt($validatedData['users_password']); 
+// $userdetailu->user_agency_numbers = $validatedData['user_agency_numbers'];
+// $userdetailu->users_first_name = $validatedData['users_first_name'];
+// $userdetailu->users_last_name = $validatedData['users_last_name'];
+// $userdetailu->user_qualification = $validatedData['user_qualification'];
+// $userdetailu->user_work_email  = $validatedData['user_work_email'];
+// $userdetailu->users_email  = $validatedData['users_email'];
+// $userdetailu->user_dob = $validatedData['user_dob'];
+// $userdetailu->role_id = $validatedData['role_id'];
+// $userdetailu->users_password = Hash::make($validatedData['users_password']);
+// $userdetailu->user_emergency_contact_person	 = $validatedData['user_emergency_contact_person'];
+// $userdetailu->user_emergency_email  = $validatedData['user_emergency_email'];
+// $userdetailu->users_address = $validatedData['users_address'];
+// $userdetailu->users_city = $validatedData['users_city'];
+// $userdetailu->users_country = $validatedData['users_country'];
+// $userdetailu->users_state = $validatedData['users_state'];
+// $userdetailu->users_zip = $validatedData['users_zip'];
 
-$userdetailu->user_emergency_contact_person	 = $validatedData['user_emergency_contact_person'];
-$userdetailu->user_emergency_email  = $validatedData['user_emergency_email'];
-$userdetailu->users_address = $validatedData['users_address'];
-$userdetailu->users_city = $validatedData['users_city'];
 
-$userdetailu->users_country = $validatedData['users_country'];
-$userdetailu->users_state = $validatedData['users_state'];
-$userdetailu->users_zip = $validatedData['users_zip'];
-
-
-  $userdetailu->where('users_id', $users_id)->update($validatedData);
+  $userdetailu->where('users_id', $users_id)->update($updateData);
 
   AgencyPhones::where('age_id', $users_id)->delete();
 
@@ -361,7 +359,6 @@ $userdetailu->users_zip = $validatedData['users_zip'];
     $masteruser = new MasterUserDetails();
     $masteruser->setTableForUniqueId($user->user_id);
     $agency = $masteruser->where('users_id', $id)->firstOrFail();
-
 
     return view('masteradmin.agency.view', compact('agency'));
   }
