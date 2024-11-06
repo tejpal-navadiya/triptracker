@@ -172,7 +172,7 @@ public function update(Request $request, $id)
         $user->updated_at = now(); 
 
 
-      $userFolder = 'masteradmin/' .$buss_unique_id.'_'.$request->input(key: 'user_first_name');
+      $userFolder = 'masteradmin/' .$buss_unique_id.'_'.$request->input('user_first_name');
       Storage::makeDirectory($userFolder, 0755, true);
 
       $users_image = '';
@@ -180,6 +180,8 @@ public function update(Request $request, $id)
       if ($request->hasFile('user_image')) {
 
           $users_image =  $this->handleImageUpload($request, 'user_image', null, 'profile_image', $userFolder);
+      }else{
+        $users_image = $user->user_image;
       }
 
       $user->user_image = $users_image;

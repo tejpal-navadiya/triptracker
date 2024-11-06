@@ -132,45 +132,44 @@
 
                                 <div class="row pxy-15 px-10">
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="tr_agent_id">IATA or CLIA Number<span
-                                                    class="text-danger">*</span></label>
-                                            <x-text-input type="number" min="0" class="form-control"
-                                                id="IATA or CLIA Number" placeholder="Enter IATA or CLIA Number"
-                                                name="user_iata_clia_number" autofocus
-                                                autocomplete="IATA or CLIA Number"
-                                                value="{{ $user->user_iata_clia_number }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('user_iata_clia_number')" />
-                                        </div>
+                                <div class="col-md-6 col-xl-4">
+                                    <label class="form-label">Select IATA or CLIA Number</label>
+                                    <span class="text-danger">*</span>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="user_iata_clia_number" id="clia_iata_option" value="IATA or CLIA Number" {{ $user->user_iata_clia_number === 'IATA or CLIA Number' ? 'checked' : '' }} >
+                                        <label class="form-check-label" for="clia_iata_option">
+                                            IATA or CLIA Number
+                                        </label>
                                     </div>
-
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="user_clia_number" :value="__('Personal CLIA Number')" />
-
-                                            <x-text-input type="number" min="0" class="form-control"
-                                                id="user_clia_number" placeholder="Enter CLIA Number"
-                                                name="user_clia_number" autofocus autocomplete="user_clia_number"
-                                                value="{{ $user->user_clia_number }}" />
-
-                                            <x-input-error class="mt-2" :messages="$errors->get('user_clia_number')" />
-                                        </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="user_iata_clia_number" id="iata_option" value="Personal IATA Number" {{ $user->user_iata_clia_number === 'Personal IATA Number' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="iata_option">
+                                            Personal IATA Number
+                                        </label>
                                     </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="user_iata_clia_number" id="clia_option" value="Personal CLIA Number" {{ $user->user_iata_clia_number === 'Personal CLIA Number' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="clia_option">
+                                            Personal CLIA Number
+                                        </label>
+                                    </div>
+                                
+                                </div>
 
-
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_num_people" :value="__('Personal IATA NUMBER')" />
-                                            <x-text-input type="number" min="0" class="form-control"
-                                                id="user_iata_number" placeholder="Enter IATA  Number"
-                                                name="user_iata_number" autofocus autocomplete="user_iata_number"
-                                                value="{{ $user->user_iata_number }}" />
+                                <div class="col-md-6 col-xl-4">
+                                    <label for="user_agencies_name" class="form-label">Personal Number</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-regular fa-phone"></span>
+                                            </div>
+                                        </div>
+                                        <x-text-input type="number" min="0" class="form-control"
+                                                id="user_clia_number" placeholder="Enter Personal Number" name="user_iata_number"
+                                                autofocus autocomplete="user_iata_number" value="{{ $user->user_iata_number }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('user_iata_number')" />
-                                        </div>
                                     </div>
+                                </div>
 
 
                                     <div class="col-md-12">
@@ -195,7 +194,7 @@
                                                 @foreach ($country as $value)
                                                     <option value="{{ $value->id }}"
                                                         {{ old('user_country', $user->user_country ?? '') == $value->id ? 'selected' : '' }}>
-                                                        {{ $value->name }} ({{ $value->iso2 }})
+                                                        {{ $value->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -217,7 +216,7 @@
                                                 @foreach ($states as $value)
                                                     <option value="{{ $value->id }}"
                                                         {{ old('user_state', $user->user_state ?? '') == $value->id ? 'selected' : '' }}>
-                                                        {{ $value->name }} ({{ $value->iso2 }})
+                                                        {{ $value->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -237,7 +236,7 @@
                                                 @foreach ($cities as $value)
                                                     <option value="{{ $value->id }}"
                                                         {{ old('user_city', $user->user_city ?? '') == $value->id ? 'selected' : '' }}>
-                                                        {{ $value->name }} ({{ $value->iso2 }})
+                                                        {{ $value->name }}
                                                     </option>
                                                 @endforeach
 
@@ -278,6 +277,15 @@
                                             </div>
                                             <label for="trvd_document">Only jpg, jpeg, png, and pdf files are
                                                 allowed</label>
+                                            @if ($user->user_image ?? '')
+                                                @php $userFolder = 'masteradmin/' .$user->buss_unique_id.'_'.$user->user_first_name;
+                                                $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$user->user_image));
+
+                                                @endphp
+                                                <a href="{{ $imageurl }}" target="_blank">
+                                                    <div title="{{ $imageurl }}" class="ptm pbm">{{ $user->user_image ?? '' }}</div>
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
 
