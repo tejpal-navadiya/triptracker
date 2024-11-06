@@ -43,11 +43,10 @@
 
                             <div class="card-body2">
 
-                                {{-- First Row --}}
 
                                 <div class="row pxy-15 px-10">
 
-                                    {{-- <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Agency ID Number <span
                                                     class="text-danger">*</span></label>
@@ -57,7 +56,7 @@
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_agency_numbers')" />
                                         </div>
-                                    </div> --}}
+                                    </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -128,7 +127,8 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_start_date" :value="__('Start Date')" />
                                             <div class="input-group date" id="tr_start_date" data-target-input="nearest">
-                                                <x-flatpickr id="completed_date" name="user_dob" placeholder="mm/dd/yyyy" />
+                                                <x-flatpickr id="completed_date" name="user_dob"
+                                                    placeholder="mm/dd/yyyy" />
                                                 <div class="input-group-append">
                                                     <div class="input-group-text" id="completed-date-icon">
                                                         <i class="fa fa-calendar-alt"></i>
@@ -236,10 +236,6 @@
                                             placeholder="Enter Emergency Email Address" name="user_emergency_email"
                                             autofocus autocomplete="tr_agent_id"
                                             value="{{ old('user_emergency_email') }}" />
-
-                                        <x-input-error class="mt-2" :messages="$errors->get('user_emergency_email')" />
-
-
                                     </div>
                                 </div>
 

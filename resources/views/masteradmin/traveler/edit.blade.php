@@ -79,7 +79,7 @@
                                         <div class="form-group">
                                             <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_traveler_name"
-                                                placeholder="Traveler Name" name="tr_traveler_name" required autofocus
+                                                placeholder="Traveler Name" name="tr_traveler_name" autofocus
                                                 autocomplete="tr_traveler_name" :value="old('tr_traveler_name', $trip->tr_traveler_name ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
@@ -132,7 +132,7 @@
                                             <label for="tr_agent_id">Email Address<span
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="tr_email"
-                                                placeholder="Enter Email Address" name="tr_email" required autofocus
+                                                placeholder="Enter Email Address" name="tr_email" autofocus
                                                 autocomplete="tr_email" :value="old('tr_email', $trip->tr_email ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
                                         </div>
@@ -141,8 +141,8 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Phone Number')" />
                                             <x-text-input type="number" min="0" class="form-control"
-                                                id="tr_phone" placeholder="Enter Phone Number" name="tr_phone" required
-                                                autofocus autocomplete="tr_phone" :value="old('tr_phone', $trip->tr_phone ?? '')" />
+                                                id="tr_phone" placeholder="Enter Phone Number" name="tr_phone" autofocus
+                                                autocomplete="tr_phone" :value="old('tr_phone', $trip->tr_phone ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
                                         </div>
                                     </div>

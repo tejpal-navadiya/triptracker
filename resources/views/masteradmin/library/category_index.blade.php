@@ -74,11 +74,11 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="{{ route('library.show', $value->lib_cat_id) }}"><i
+                                                    <a href="#"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
                                                     <!-- <a href="{{ route('masteradmin.library.view') }}"><i
-                                                                                                                                                                                                                                                                                                                                                            class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
+                                                                                                                                                                                                                                                                                                                                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
 
                                                     <a href="{{ route('library_category.edit', $value->lib_cat_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>

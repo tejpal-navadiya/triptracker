@@ -147,13 +147,6 @@
                                                                                     class="delete_btn px-15">Assign</button>
                                                                             @endif
 
-
-
-
-                                                                            {{-- <button type="button" class="add_btn px-15"
-                                                                                data-dismiss="modal">Cancel</button>
-                                                                            <button type="submit"
-                                                                                class="delete_btn px-15">Assign</button> --}}
                                                                         </div>
 
                                                                     </div>

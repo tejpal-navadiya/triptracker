@@ -177,11 +177,7 @@
                                                                 class="btn btn-outline-primary btn-sm" download>
                                                                 Download
                                                             </a>
-                                                            <button
-                                                                onclick="printFile('{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}')"
-                                                                class="btn btn-outline-secondary btn-sm">
-                                                                Print
-                                                            </button>
+
                                                         </div>
                                                     </div>
                                                 @endforeach

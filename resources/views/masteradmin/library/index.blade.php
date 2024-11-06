@@ -48,90 +48,9 @@
                     @foreach ($library as $value)
                     @endforeach
 
+
+
                     {{-- <div class="row">
-                        @foreach ($libraries as $library)
-                            <div class="col-md-4"> <!-- Adjust the width as needed -->
-                                <div class="card mb-3">
-
-                                    @if ($library->lib_image)
-                                        @php
-                                            // Decode the JSON to get an array of image paths
-                                            $images = json_decode($library->lib_image, true);
-                                        @endphp
-
-                                        @if (!empty($images) && is_array($images))
-                                            <div class="mt-2">
-                                                <table class="table table-bordered">
-
-                                                    <tbody>
-                                                        <!-- Display only the first image from the array -->
-                                                        <tr>
-                                                            <td>
-                                                                <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $images[0] }}"
-                                                                    alt="Uploaded Image" class="img-thumbnail"
-                                                                    style="max-width: 100px; height: auto;">
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        @endif
-                                    @endif
-
-
-
-                                    <div class="card-body">
-
-                                        <h5 class="card-title">{{ $library->lib_name }}</h5>
-                                        <p class="card-text"></p>
-                                        <a href="{{ route('library.show', $value->lib_id) }}"><i
-                                                class="fas fa-regular fa-eye edit_icon_grid"></i></a>
-
-
-                                        <a href="{{ route('library.edit', $value->lib_id) }}"><i
-                                                class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
-
-                                        <a data-toggle="modal" data-target="#delete-library-modal-{{ $value->lib_id }}">
-                                            <i class="fas fa-solid fa-trash delete_icon_grid"></i>
-                                        </a>
-
-                                        <div class="modal fade" id="delete-library-modal-{{ $value->lib_id }}"
-                                            tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-                                            aria-hidden="true">
-
-                                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-
-                                                    <form id="delete-plan-form"
-                                                        action="{{ route('library.destroy', $value->lib_id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('DELETE') <!-- Spoofing DELETE method -->
-
-                                                        <div class="modal-body  pad-1 text-center">
-                                                            <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                            <p class="company_business_name px-10"> <b>Delete
-                                                                    Library</b></p>
-                                                            <p class="company_details_text">Are You Sure You
-                                                                Want to Delete This Library?</p>
-                                                            <button type="button" class="add_btn px-15"
-                                                                data-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="delete_btn px-15">Delete</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div> --}}
-
-
-
-
-                    <div class="row">
                         @foreach ($libraries as $library)
                             <div class="col-md-3">
                                 <div class="card mb-4">
@@ -218,7 +137,101 @@
                                 </div>
                             </div>
                         @endforeach
+                    </div> --}}
+
+                    <div class="row">
+                        @foreach ($libraries as $library)
+                            <div class="col-md-3">
+                                <div class="card mb-4">
+                                    @if ($library->lib_image)
+                                        @php
+                                            // Decode the JSON to get an array of file paths
+                                            $files = json_decode($library->lib_image, true);
+                                        @endphp
+
+                                        @if (!empty($files) && is_array($files))
+                                            <div class="mt-2">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        @if (isset($files[0]))
+                                                            <!-- Show only the first file -->
+                                                            @php
+                                                                $file = $files[0];
+                                                            @endphp
+                                                            <tr>
+                                                                <td class="text-center" style="width: 80px;">
+                                                                    @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
+                                                                        <!-- Display the image -->
+                                                                        <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                                            alt="Uploaded Image"
+                                                                            class="img-fluid img-thumbnail w-100">
+                                                                    @elseif (preg_match('/\.pdf$/i', $file))
+                                                                        <!-- Display the PDF with an embed tag -->
+                                                                        <div class="embed-responsive embed-responsive-4by3">
+                                                                            <embed
+                                                                                src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                                                type="application/pdf"
+                                                                                class="embed-responsive-item">
+                                                                        </div>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @endif
+                                    @endif
+
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="title m-auto p-auto">
+                                                <button type="button"
+                                                    class="btn btn-primary">{{ $library->lib_name }}</button>
+                                            </div>
+                                        </div>
+                                        <hr class="my-2">
+
+                                        <div class="d-flex justify-content-between">
+                                            <a href="{{ route('library.show', $library->lib_id) }}" class="text-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <a href="{{ route('library.edit', $library->lib_id) }}" class="text-warning">
+                                                <i class="fas fa-pen"></i> Edit
+                                            </a>
+                                            <a href="#" data-toggle="modal"
+                                                data-target="#delete-library-modal-{{ $library->lib_id }}"
+                                                class="text-danger">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="delete-library-modal-{{ $library->lib_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form action="{{ route('library.destroy', $library->lib_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="modal-body text-center">
+                                                <i class="fas fa-trash fa-2x text-danger mb-3"></i>
+                                                <p><strong>Delete Library</strong></p>
+                                                <p>Are you sure you want to delete this library?</p>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
+
 
 
 

@@ -52,21 +52,22 @@ class LibraryController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
 
-       // dd($request->all());
-
         $dynamicId = $user->users_id;
 
         // Validate the request data
         $validatedData = $request->validate([
             'lib_category' => 'required|string',
-            'lib_name' => 'required|string',
-             'tag_name' => 'required|string',
 
+            'lib_name' => [
+            'required',         
+            'string',          
+            'max:255',         
+            'regex:/^[a-zA-Z\s\-]+$/', 
+            ],
+
+            'tag_name' => 'nullable|string',
             'lib_basic_information' => 'nullable|string',
-           
-           // 'image' => 'nullable|array', // Validate that image is an array
-
-            'image' => 'nullable', // Validate that image is an array
+            'image' => 'nullable', 
             'image.*' => 'image|mimes:jpeg,png,jpg,pdf|max:2048',
 
         ], [
@@ -74,12 +75,6 @@ class LibraryController extends Controller
             'lib_name.required' => 'Name is required',
             'tag_name' => 'Tag Name is Required',
             'lib_basic_information.nullable' => 'Basic information is required',
-
-            // 'image.required' => 'At least one image is required',
-            // 'image.array' => 'The images must be provided as an array',
-            // 'image.*.image' => 'Each file must be an image',
-            // 'image.*.mimes' => 'Each image must be a file of type: jpeg, png, jpg, gif',
-            // 'image.*.max' => 'Each image size must not exceed 2MB',
 
             'lib_image.nullable' => 'The Document is required.',
             'lib_image.*.image' => 'The Document must be an image.',
@@ -127,7 +122,7 @@ class LibraryController extends Controller
 
         $library->save();
 
-        \MasterLogActivity::addToLog('Master Admin Users Certification Created.');
+        \MasterLogActivity::addToLog('Library Created.');
 
 
         return redirect()->route('library.index')->with('success', 'Library entry created successfully.');
@@ -186,13 +181,20 @@ class LibraryController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Fetch the existing library record
         $library = Library::where('lib_id', $id)->firstOrFail();
 
         $validatedData = $request->validate(
             [
                 'lib_category' => 'required|string',
-                'lib_name' => 'required|string',
+                
+            'lib_name' => [
+                'required',         
+                'string',          
+                'max:255',         
+                'regex:/^[a-zA-Z\s\-]+$/', 
+                ],
+
+                'tag_name' => 'nullable|string',
                 'lib_currency' => 'nullable|string',
                 'lib_country' => 'nullable|string',
                 'lib_state' => 'nullable|string',
@@ -200,7 +202,6 @@ class LibraryController extends Controller
                 'lib_zip' => 'nullable|numeric|digits_between:1,6',
                 'lib_basic_information' => 'nullable|string',
                 'lib_sightseeing_information' => 'nullable|string',
-
                 'lib_image' => 'nullable',
                 'lib_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
             ],
@@ -211,7 +212,6 @@ class LibraryController extends Controller
                 'lib_image.*.max' => 'The Document may not be greater than 2048 kilobytes.',
             ]
         );
-
 
         $document_images = [];
 
