@@ -31,16 +31,6 @@
                 <div class="container-fluid">
                     <!-- card -->
                     <div class="card">
-
-                        {{-- @if ($errors->any())
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        @endif --}}
-
-
                         <div class="card-header">
                             <h3 class="card-title">Add User</h3>
                         </div>
@@ -57,7 +47,7 @@
 
                                 <div class="row pxy-15 px-10">
 
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Agency ID Number <span
                                                     class="text-danger">*</span></label>
@@ -67,7 +57,7 @@
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_agency_numbers')" />
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -90,16 +80,11 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('users_last_name')" />
                                         </div>
                                     </div>
-
                                 </div>
 
-                                {{-- End First Row --}}
 
-
-                                {{-- sec Row --}}
 
                                 <div class="row pxy-15 px-10">
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_agent_id" :value="__('Qualification')"> <span
@@ -137,19 +122,13 @@
 
                                 </div>
 
-                                {{-- End sec Row --}}
-
-
-                                {{-- third Row --}}
 
                                 <div class="row pxy-15 px-10">
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_start_date" :value="__('Start Date')" />
                                             <div class="input-group date" id="tr_start_date" data-target-input="nearest">
-                                                <x-flatpickr id="completed_date" name="user_dob"
-                                                    placeholder="mm/dd/yyyy" />
+                                                <x-flatpickr id="completed_date" name="user_dob" placeholder="mm/dd/yyyy" />
                                                 <div class="input-group-append">
                                                     <div class="input-group-text" id="completed-date-icon">
                                                         <i class="fa fa-calendar-alt"></i>
@@ -200,10 +179,8 @@
                                 </div>
 
 
-                                {{-- Dynamic Input Row --}}
 
                                 <div class="row pxy-15 px-10">
-
                                     <div class="col">
                                         <div class="form-group">
 
@@ -219,16 +196,10 @@
 
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-
                             </div>
 
-                            {{-- End  Dynamic Input Row --}}
-
-
-                            {{-- Fourth Row --}}
 
                             <div class="row pxy-15 px-10">
 
@@ -252,7 +223,6 @@
                                             placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id"
                                             value="{{ old('user_emergency_phone_number') }}" />
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('user_emergency_phone_number')" /> --}}
 
                                     </div>
                                 </div>
@@ -304,7 +274,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <x-input-label for="tr_agent_id" :value="__('country')"> <span
+                                        <x-input-label for="tr_agent_id" :value="__('Country')"> <span
                                                 class="text-danger">*</span></x-input-label>
 
                                         <select id="tr_country" name="users_country" class="form-control select2"
@@ -322,7 +292,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <x-input-label for="tr_agent_id" :value="__('state')"> <span
+                                        <x-input-label for="tr_agent_id" :value="__('State')"> <span
                                                 class="text-danger">*</span></x-input-label>
                                         <select id="tr_state" name="users_state" class="form-control select2"
                                             style="width: 100%;">

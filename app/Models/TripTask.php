@@ -26,6 +26,7 @@ class TripTask extends Model
     {
         return $this->belongsTo(Trip::class, 'tr_id', 'tr_id');
     }
+    
 
     public function tripCategory()
     {

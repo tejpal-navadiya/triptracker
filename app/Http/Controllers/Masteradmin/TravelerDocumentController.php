@@ -117,9 +117,6 @@ class TravelerDocumentController extends Controller
 
     }
 
-
-
-
     public function store(Request $request, $id)
     {
     //  dd($request->all());

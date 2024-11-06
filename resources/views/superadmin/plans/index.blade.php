@@ -114,7 +114,8 @@
                                                                 class="fas fa-solid fa-trash delete_icon_grid"></i></a>
                                                     </td>
                                                 </tr>
-                                                <div class="modal fade" id="deletesubscription-plans_{{ $value->sp_id }}" tabindex="-1"
+                                                <div class="modal fade"
+                                                    id="deletesubscription-plans_{{ $value->sp_id }}" tabindex="-1"
                                                     role="dialog" aria-labelledby="exampleModalCenterTitle"
                                                     aria-hidden="true">
                                                     <div class="modal-dialog modal-sm modal-dialog-centered"

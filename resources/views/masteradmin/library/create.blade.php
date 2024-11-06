@@ -10,10 +10,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Add Library') }}</h1>
+                            <h1 class="m-0">{{ __('Add Library Item') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Add Library') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Add Library Item') }}</li>
                             </ol>
                         </div><!-- /.col -->
 
@@ -59,118 +59,63 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="tr_agent_id">Name <span class="text-danger">*</span></label>
-                                            <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Name" name="lib_name" autofocus
-                                                autocomplete="tr_agent_id" value="{{ old('lib_name') }}" />
+                                            <label for="lib_name">Name <span class="text-danger">*</span></label>
+                                            <x-text-input type="text" class="form-control" id="lib_name"
+                                                placeholder="Enter Name" name="lib_name" autofocus autocomplete="lib_name"
+                                                value="{{ old('lib_name') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('lib_name')" />
                                         </div>
                                     </div>
 
 
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_country" :value="__('Country')" />
-                                            <select class="form-control select2" id="tr_country" name="lib_country"
-                                                autofocus>
-                                                <option value="" selected>Select Location</option>
-                                                @foreach ($librarycurrency as $currency)
-                                                    <option value="{{ $currency->id }}">{{ $currency->name }}
-                                                        ({{ $currency->iso2 }})
-                                                    </option>
-                                                @endforeach
-                                                <!-- Add more options as needed -->
-                                            </select>
+                                            <label for="tag_name">Tag<span class="text-danger"></span></label>
+                                            <x-text-input type="text" class="form-control" id="tag_name"
+                                                placeholder="Enter Tag" name="tag_name" autofocus autocomplete="tag_name"
+                                                value="{{ old('tag_name') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tag_name')" />
                                         </div>
                                     </div>
+
+
                                 </div>
-
-                                <div class="row pxy-15 px-10">
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_currencys" :value="__('Currency')"> <span
-                                                    class="text-danger">*</span></x-input-label>
-                                            <select class="form-control select2" id="tr_currency" name="lib_currency"
-                                                autofocus>
-                                                <option value="" selected>Select Currency</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!-- State Selection -->
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_state" :value="__('State')" />
-                                            <select class="form-control" id="tr_state" name="lib_state" autofocus>
-                                                <option value="" selected>Select State</option>
-                                                <!-- States will be populated here based on the selected country -->
-                                            </select>
-
-                                        </div>
-                                    </div>
-
-                                    <!-- City Selection -->
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="lib_city" :value="__('City')">
-                                                <span class="text-danger">*</span>
-                                            </x-input-label>
-                                            <select class="form-control form-control select2" id="lib_city" name="lib_city"
-                                                autofocus>
-                                                <option value="" selected>Select City</option>
-                                                <!-- Cities will be populated here based on the selected state -->
-                                            </select>
-
-                                        </div>
-                                    </div>
+                            </div>
 
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_email" :value="__('Zip')" />
-                                            <input type="number" class="form-control" id="tr_zip" name="lib_zip"
-                                                placeholder="Enter Zip Code" accept=".zip" value="{{ old('lib_zip') }}" />
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_zip')" /> --}}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row pxy-15 px-10">
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_basic_info" :value="__('Basic Information')" />
-                                            <textarea class="form-control" id="tr_basic_info" name="lib_basic_information" placeholder="Enter Basic Information">{{ old('lib_basic_information') }}</textarea>
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" /> --}}
-                                        </div>
-                                    </div>
 
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_sightseeing_info" :value="__('Sightseeing Information')" />
-                                            <textarea class="form-control" id="tr_sightseeing_info" name="lib_sightseeing_information"
-                                                placeholder="Enter Sightseeing Information">{{ old('lib_sightseeing_information') }}</textarea>
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_sightseeing_information')" /> --}}
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="row pxy-15 px-10">
 
-
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="form-group">
-                                        <x-input-label for="lib_image" :value="__('Image Upload')" />
-                                        <input type="file" class="form-control" id="lib_image" name="image[]"
-                                            multiple />
-                                        <x-input-error class="mt-2" :messages="$errors->get('lib_image')" />
-                                        <label for="trvd_document">Only jpg, jpeg, png, and pdf files are allowed</label>
-
+                                        <x-input-label for="tr_basic_info" :value="__('Basic Information')" />
+                                        <textarea class="form-control" id="tr_basic_info" name="lib_basic_information" placeholder="Enter Basic Information">{{ old('lib_basic_information') }}</textarea>
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" /> --}}
                                     </div>
                                 </div>
 
 
-                                {{-- <div class="col-md-12" id="dynamic_field">
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <x-input-label for="lib_image" :value="__('Image Upload')" />
+
+                                    <input type="file" class="form-control" id="lib_image" name="lib_image[]" multiple />
+                                    <x-input-error class="mt-2" :messages="$errors->get('lib_image')" />
+                                    <label for="trvd_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+
+                                </div>
+                            </div>
+
+
+
+
+
+                            {{-- <div class="col-md-12" id="dynamic_field">
                                     @if ($errors->any())
                                         <div class="alert alert-danger">
                                             <ul>
@@ -182,18 +127,18 @@
                                     @endif
                                 </div> --}}
 
-                            </div>
-
-                            <div class="row py-20 px-10">
-                                <div class="col-md-12 text-center">
-                                    <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
-                                    <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
-                                </div>
-                            </div>
                     </div>
-                    </form>
+
+                    <div class="row py-20 px-10">
+                        <div class="col-md-12 text-center">
+                            <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
+                            <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
+                        </div>
+                    </div>
                 </div>
-                <!-- /.card -->
+                </form>
+        </div>
+        <!-- /.card -->
         </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->

@@ -2,74 +2,77 @@
 <title>Trip Details | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')
-    <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
+        <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
-                <div class="col-lg-12 fillter_box">
-                    <div class="row align-items-center justify-content-between">
-                        <div class="col-auto">
-                            <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
-                        </div><!-- /.col -->
-                        <div class="col-auto">
-                            <p class="m-0 float-sm-right filter-text">Clear Filters<i class="fas fa-regular fa-circle-xmark"></i></p>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                    <div class="row">
-                        <div class="col-lg-3 col-1024 col-md-6 px-10">
-                            <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
-                                <option value="" default disabled>Choose Agent</option>
-                                @foreach($agency as $value)
-                                <option value="{{ $value->users_id }}">
-                                    {{ $value->users_first_name }} {{ $value->users_last_name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-lg-3 col-1024 col-md-6 px-10">
-                            <select id="trip_traveler" class="form-control select2" style="width: 100%;" name="trip_traveler">
-                                <option value="" default disabled>Choose Traveler</option>
-                                @foreach($trip as $value)
-                                <option value="{{ $value->tr_traveler_name }}">
-                                    {{ $value->tr_traveler_name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="col-lg-2 col-1024 col-md-6 px-10">
-                            <select class="form-control form-select" style="width: 100%;" name="trip_status" id="trip_status">
-                            <option value="" default>Choose Status</option>
-                                @foreach($trip_status as $value)
-                                <option value="{{ $value->tr_status_id }}">
-                                    {{ $value->tr_status_name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex">
-                            <div class="input-group date" >
-                            <x-flatpickr id="from-datepicker" placeholder="From"/>
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="from-calendar-icon">
-                                    <i class="fa fa-calendar-alt"></i>
-                                </span>
-                            </div>
+                    <div class="col-lg-12 fillter_box">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
+                            </div><!-- /.col -->
+                            <div class="col-auto">
+                                <p class="m-0 float-sm-right filter-text">Clear Filters<i
+                                        class="fas fa-regular fa-circle-xmark"></i></p>
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                        <div class="row">
+                            <div class="col-lg-3 col-1024 col-md-6 px-10">
+                                <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
+                                    <option value="" default disabled>Choose Agent</option>
+                                    @foreach ($agency as $value)
+                                        <option value="{{ $value->users_id }}">
+                                            {{ $value->users_first_name }} {{ $value->users_last_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
-                            <div class="input-group date" >
-                            <x-flatpickr id="to-datepicker" placeholder="To" />
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="to-calendar-icon">
-                                    <i class="fa fa-calendar-alt"></i>
-                                </span>
+                            <div class="col-lg-3 col-1024 col-md-6 px-10">
+                                <select id="trip_traveler" class="form-control select2" style="width: 100%;"
+                                    name="trip_traveler">
+                                    <option value="" default disabled>Choose Traveler</option>
+                                    @foreach ($trip as $value)
+                                        <option value="{{ $value->tr_traveler_name }}">
+                                            {{ $value->tr_traveler_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
+
+                            <div class="col-lg-2 col-1024 col-md-6 px-10">
+                                <select class="form-control form-select" style="width: 100%;" name="trip_status"
+                                    id="trip_status">
+                                    <option value="" default>Choose Status</option>
+                                    @foreach ($trip_status as $value)
+                                        <option value="{{ $value->tr_status_id }}">
+                                            {{ $value->tr_status_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                        </div>
+                            <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex">
+                                <div class="input-group date">
+                                    <x-flatpickr id="from-datepicker" placeholder="From" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="from-calendar-icon">
+                                            <i class="fa fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="input-group date">
+                                    <x-flatpickr id="to-datepicker" placeholder="To" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="to-calendar-icon">
+                                            <i class="fa fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-2 align-items-center justify-content-between">
@@ -125,7 +128,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($trip as $value)
+                                            {{-- @foreach ($trip as $value)
                                                 <tr>
                                                     <td>{{ $value->tr_name ?? ''}}</td>
                                                     <td>{{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? ''}}</td>
@@ -182,7 +185,66 @@
                                                         </div>
                                                     </td>
                                                 </tr>
+                                            @endforeach --}}
+
+
+                                            @foreach ($trip as $value)
+                                                <tr>
+                                                    <td>{{ $value->tr_name ?? '' }}</td>
+                                                    <td>{{ $value->users_first_name ?? '' }}
+                                                        {{ $value->users_last_name ?? '' }}</td>
+                                                    <td>{{ $value->tr_traveler_name ?? '' }}</td>
+                                                    <td>{{ $value->tr_value_trip ?? '' }}</td>
+
+                                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
+
+                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
+                                                    </td>
+
+                                                    <td>
+                                                        <button type="button" class="btn btn-info">
+                                                            {{ $value->trip_status->tr_status_name ?? '' }}
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ route('trip.view', $value->tr_id) }}"><i
+                                                                class="fas fa-eye edit_icon_grid"></i></a>
+                                                        <a href="{{ route('trip.edit', $value->tr_id) }}"><i
+                                                                class="fas fa-pen edit_icon_grid"></i></a>
+                                                        <a data-toggle="modal"
+                                                            data-target="#delete-product-modal-{{ $value->tr_id }}"><i
+                                                                class="fas fa-trash delete_icon_grid"></i></a>
+
+                                                        <!-- Delete Modal -->
+                                                        <div class="modal fade"
+                                                            id="delete-product-modal-{{ $value->tr_id }}" tabindex="-1"
+                                                            role="dialog">
+                                                            <div class="modal-dialog modal-sm modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <form
+                                                                        action="{{ route('trip.destroy', $value->tr_id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <div class="modal-body text-center">
+                                                                            <p><b>Delete Trip</b></p>
+                                                                            <p>Are you sure you want to delete this trip?
+                                                                            </p>
+                                                                            <button type="button" class="btn btn-secondary"
+                                                                                data-dismiss="modal">Cancel</button>
+                                                                            <button type="submit"
+                                                                                class="btn btn-danger">Delete</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             @endforeach
+
+
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -214,8 +276,9 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="role_name">Role Name</label>
-                                        <input type="text" class="form-control @error('role_name') is-invalid @enderror"
-                                            id="role_name" name="role_name" placeholder="Enter Role Name"
+                                        <input type="text"
+                                            class="form-control @error('role_name') is-invalid @enderror" id="role_name"
+                                            name="role_name" placeholder="Enter Role Name"
                                             value="{{ old('role_name') }}" />
                                         @error('role_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -249,18 +312,18 @@
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment"></script>
 <script>
-  $(document).ready(function() {
+    $(document).ready(function() {
 
 
-    var defaultStartDate = "";  
-    var defaultEndDate = "";    
-    var trip_agent = ""; 
-    var trip_traveler = "";  
-    var trip_status = "";  
+        var defaultStartDate = "";
+        var defaultEndDate = "";
+        var trip_agent = "";
+        var trip_traveler = "";
+        var trip_status = "";
 
-  
+
         $('#from-datepicker').val(defaultStartDate);
-   
+
         $('#to-datepicker').val(defaultEndDate);
 
         $('#trip_agent').val(trip_agent);
@@ -270,130 +333,130 @@
         $('#trip_status').val(trip_status);
 
         var fromdatepicker = flatpickr("#from-datepicker", {
-          locale: 'en',
+            locale: 'en',
+            altInput: true,
+            dateFormat: "MM/DD/YYYY",
+            altFormat: "MM/DD/YYYY",
+            onChange: function(selectedDates, dateStr, instance) {
+
+                fetchFilteredData();
+                //alert('edate');
+            },
+            parseDate: (datestr, format) => {
+                return moment(datestr, format, true).toDate();
+            },
+            formatDate: (date, format, locale) => {
+                return moment(date).format(format);
+            }
+        });
+        document.getElementById('from-calendar-icon').addEventListener('click', function() {
+            fromdatepicker.open();
+        });
+
+        var todatepicker = flatpickr("#to-datepicker", {
+            locale: 'en',
+            altInput: true,
+            dateFormat: "MM/DD/YYYY",
+            altFormat: "MM/DD/YYYY",
+            onChange: function(selectedDates, dateStr, instance) {
+
+                fetchFilteredData();
+
+                //alert('edate');
+            },
+            parseDate: (datestr, format) => {
+                return moment(datestr, format, true).toDate();
+            },
+            formatDate: (date, format, locale) => {
+                return moment(date).format(format);
+            }
+        });
+        document.getElementById('to-calendar-icon').addEventListener('click', function() {
+            todatepicker.open();
+        });
+
+        $('.filter-text').on('click', function() {
+            clearFilters();
+        });
+
+
+
+        function fetchFilteredData() {
+            var formData = {
+                start_date: $('#from-datepicker').val(),
+                end_date: $('#to-datepicker').val(),
+                trip_agent: $('#trip_agent').val(),
+                trip_traveler: $('#trip_traveler').val(),
+                trip_status: $('#trip_status').val(),
+                _token: '{{ csrf_token() }}'
+            };
+            // alert('hii');
+
+            $.ajax({
+                url: '{{ route('trip.index') }}',
+                type: 'GET',
+                data: formData,
+                success: function(response) {
+                    $('#filter_data').html(
+                        response); // Update the results container with HTML content
+
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    //alert('An error occurred while fetching data.');
+                }
+            });
+
+        }
+
+        // Attach change event handlers to filter inputs
+        $('#trip_agent, #trip_traveler, #trip_status').on('change keyup', function(e) {
+
+            e.preventDefault();
+            //   alert('hii');
+            fetchFilteredData();
+        });
+
+
+        function clearFilters() {
+            // Clear filters
+            $('#trip_agent').val('').trigger('change');
+            $('#trip_traveler').val('').trigger('change');
+            $('#trip_status').val('').trigger('change');
+
+            // Clear datepicker fields
+            const fromDatePicker = flatpickr("#from-datepicker", {
+                locale: 'en',
                 altInput: true,
                 dateFormat: "MM/DD/YYYY",
                 altFormat: "MM/DD/YYYY",
-                onChange: function(selectedDates, dateStr, instance) {
-        
-                      fetchFilteredData();
-                      //alert('edate');
-                  },
                 parseDate: (datestr, format) => {
-                  return moment(datestr, format, true).toDate();
+                    return moment(datestr, format, true).toDate();
                 },
                 formatDate: (date, format, locale) => {
-                  return moment(date).format(format);
+                    return moment(date).format(format);
                 }
             });
-            document.getElementById('from-calendar-icon').addEventListener('click', function () {
-              fromdatepicker.open(); 
+            fromDatePicker.clear(); // Clears the "from" datepicker
+
+            const todatepicker = flatpickr("#to-datepicker", {
+                locale: 'en',
+                altInput: true,
+                dateFormat: "MM/DD/YYYY",
+                altFormat: "MM/DD/YYYY",
+                parseDate: (datestr, format) => {
+                    return moment(datestr, format, true).toDate();
+                },
+                formatDate: (date, format, locale) => {
+                    return moment(date).format(format);
+                }
             });
 
-          var todatepicker = flatpickr("#to-datepicker", {
-            locale: 'en',
-              altInput: true,
-              dateFormat: "MM/DD/YYYY",
-              altFormat: "MM/DD/YYYY",
-              onChange: function(selectedDates, dateStr, instance) {
-        
-                  fetchFilteredData();
-                  
-                  //alert('edate');
-              },
-              parseDate: (datestr, format) => {
-                return moment(datestr, format, true).toDate();
-              },
-              formatDate: (date, format, locale) => {
-                return moment(date).format(format);
-              }
-          });
-          document.getElementById('to-calendar-icon').addEventListener('click', function () {
-            todatepicker.open(); 
-          });
+            todatepicker.clear();
 
-          $('.filter-text').on('click', function() {
-                clearFilters();
-            });
+            fetchFilteredData();
+        }
 
-            
-   
-    function fetchFilteredData() {
-        var formData = {
-            start_date: $('#from-datepicker').val(),
-            end_date: $('#to-datepicker').val(),
-            trip_agent: $('#trip_agent').val(),
-            trip_traveler: $('#trip_traveler').val(),
-            trip_status: $('#trip_status').val(),
-            _token: '{{ csrf_token() }}'
-        };
-        // alert('hii');
 
-        $.ajax({
-          url: '{{ route('trip.index') }}',
-          type: 'GET',
-          data: formData,
-          success: function(response) {
-              $('#filter_data').html(response); // Update the results container with HTML content
-              
-          },
-          error: function(xhr) {
-              console.error('Error:', xhr);
-              //alert('An error occurred while fetching data.');
-          }
-        });
-
-    }
-
-     // Attach change event handlers to filter inputs
-     $('#trip_agent, #trip_traveler, #trip_status').on('change keyup', function(e) {
-
-      e.preventDefault(); 
-    //   alert('hii');
-      fetchFilteredData();
     });
-
-    
-    function clearFilters() {
-      // Clear filters
-      $('#trip_agent').val('').trigger('change');
-      $('#trip_traveler').val('').trigger('change');
-      $('#trip_status').val('').trigger('change');
-
-      // Clear datepicker fields
-      const fromDatePicker = flatpickr("#from-datepicker", {
-        locale: 'en',
-        altInput: true,
-        dateFormat: "MM/DD/YYYY",
-        altFormat: "MM/DD/YYYY",
-        parseDate: (datestr, format) => {
-            return moment(datestr, format, true).toDate();
-        },
-        formatDate: (date, format, locale) => {
-            return moment(date).format(format);
-        }
-      });
-      fromDatePicker.clear(); // Clears the "from" datepicker
-
-      const todatepicker = flatpickr("#to-datepicker", {
-        locale: 'en',
-        altInput: true,
-        dateFormat: "MM/DD/YYYY",
-        altFormat: "MM/DD/YYYY",
-        parseDate: (datestr, format) => {
-            return moment(datestr, format, true).toDate();
-        },
-        formatDate: (date, format, locale) => {
-            return moment(date).format(format);
-        }
-      });
-
-      todatepicker.clear(); 
-    
-      fetchFilteredData(); 
-  }
-
-
-});
-
 </script>

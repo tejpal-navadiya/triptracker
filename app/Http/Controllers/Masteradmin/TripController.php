@@ -47,8 +47,14 @@ class TripController extends Controller
 
         $trip_status = TripStatus::get();
 
+        
         $trips = new Trip();
+        
         $tripTable = $trips->getTable();
+
+
+
+        
 
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
@@ -60,9 +66,15 @@ class TripController extends Controller
                 $masterUserTable . '.users_last_name' 
             ]);
 
-        // if ($startDate && $endDate) {
-        //     $tripQuery->whereBetween($tripTable . '.trip_date', [$startDate, $endDate]);
-        // }
+            
+    $today = Carbon::today('Asia/Kolkata'); 
+    
+    //$tripQuery->orderByRaw("CASE WHEN tr_start_date = ? THEN 0 ELSE 1 END, tr_start_date ASC", [$today]);
+    
+    $tripQuery->orderByRaw("CASE WHEN tr_start_date = ? THEN 0 ELSE 1 END, tr_start_date DESC", [$today]);
+
+
+    
 
         if ($startDate && !$endDate) {
             $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
@@ -83,7 +95,11 @@ class TripController extends Controller
             $tripQuery->where($tripTable . '.tr_status', $trip_status1);
         }
 
+
         $trip = $tripQuery->get();
+        
+
+
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
              // dd($allEstimates);
@@ -296,10 +312,7 @@ class TripController extends Controller
               'trvt_name' => $task->pre_task_name, 
           ]);
       }
-      
-
-
-
+    
 
         if ($request->travelers == "travelers") {
             \MasterLogActivity::addToLog('Master Admin Travelers Created.');
@@ -515,6 +528,7 @@ class TripController extends Controller
 
 
 
+
             $tripData = DB::table($uniq_id . '_tc_trip')
                 ->select('tr_id', 'tr_traveler_name')
                 ->where('tr_id', $id)
@@ -602,10 +616,15 @@ class TripController extends Controller
             ->where('trtm_status', 1) // Ensure you're filtering by status
             ->get();
 
+          //  return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name;
+
+
+
         $tripData = DB::table($uniq_id . '_tc_trip')
             ->select('tr_id', 'tr_name')
             ->where('tr_id', $id)
             ->get();
+
 
 
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
@@ -618,7 +637,6 @@ class TripController extends Controller
         return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData'));
     }
 
-    
     public function booked_after(Request $request): View
     {
         $user = Auth::guard('masteradmins')->user();
@@ -641,43 +659,16 @@ class TripController extends Controller
 
 
 
-//         $futureTrips = DB::table($tripTable)
-//     ->whereDate('tr_start_date', '>=', $currentDate)
-//     ->get();
+        $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.id', $user->users_id)
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
 
-// dd($futureTrips);
-
-
-        $currentDate = Carbon::today('Asia/Kolkata');
-
-        //dd($currentDate);
-
-
-      $tripQuery = Trip::where('tr_status', 1)
-
-    ->from($tripTable)
-    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-
-    ->where($tripTable . '.id', $user->users_id)
-
-    //->whereDate($tripTable . '.tr_start_date', '>=', $currentDate) // Filter future trips
-    ->orderBy($tripTable . '.tr_start_date', 'asc') // Order by start date
-
-
-    ->select([
-        $tripTable . '.*', 
-        $masterUserTable . '.users_first_name', 
-        $masterUserTable . '.users_last_name'
-    ]);
-
-
-
-    //dd($tripQuery);
-
-
-        // if ($startDate && $endDate) {
-        //     $tripQuery->whereBetween($tripTable . '.trip_date', [$startDate, $endDate]);
-        // }
 
 
         //filter do not touch
@@ -710,6 +701,6 @@ class TripController extends Controller
         // dd($trip);
     //end do not touch
 
-      return view('masteradmin.trip.booked-after',compact('trip', 'agency', 'trip_status'));
+      return view('masteradmin.trip.booked-after',compact('trip', 'agency', 'trip_status','tripQuery'));
     }
 }

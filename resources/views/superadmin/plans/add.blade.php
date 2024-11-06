@@ -79,7 +79,7 @@
                                             <input type="number"
                                                 class="form-control @error('sp_year_amount') is-invalid @enderror"
                                                 id="planamount" name="sp_year_amount" placeholder="Enter Amount"
-                                                value="{{ old('sp_year_amount') }}" min="0" >
+                                                value="{{ old('sp_year_amount') }}" min="0">
                                             @error('sp_year_amount')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

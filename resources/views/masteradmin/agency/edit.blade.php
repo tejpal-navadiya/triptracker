@@ -101,10 +101,6 @@
 
                                 </div>
 
-                                {{-- End First Row --}}
-
-
-                                {{-- sec Row --}}
 
                                 <div class="row pxy-15 px-10">
 
@@ -116,7 +112,6 @@
                                                 placeholder="Enter Qualification" name="user_qualification" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_qualification ?? '')" />
 
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_qualification')" /> --}}
                                         </div>
                                     </div>
 
@@ -129,7 +124,6 @@
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Work Email Address" name="user_work_email" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_work_email ?? '')" />
-
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_work_email')" />
                                         </div>
                                     </div>
@@ -148,13 +142,9 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('age_user_personal_email')" />
                                         </div>
                                     </div>
-
                                 </div>
 
-                                {{-- End sec Row --}}
 
-
-                                {{-- third Row --}}
 
                                 <div class="row pxy-15 px-10">
 
@@ -172,7 +162,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" /> --}}
                                         </div>
                                     </div>
 
@@ -193,7 +182,6 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_type')" /> --}}
                                         </div>
                                     </div>
 
@@ -207,12 +195,10 @@
                                                 placeholder="Enter Password" name="users_password" autofocus
                                                 autocomplete="tr_agent_id" :value="old('users_password', $agency->users_password ?? '')" />
 
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_password')" /> --}}
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Dynamic Input Row --}}
 
                                 <div class="row pxy-15 px-10">
 
@@ -227,82 +213,88 @@
                                         </div>
 
                                         <div class="row">
-                                        <div class="col-md-12" id="dynamic_field">
-
-
                                             <div class="col-md-12" id="dynamic_field">
-                                                @php
-                                                    $i = 1;
-                                                @endphp
-                                                @foreach ($agent as $index => $item)
+
+
+                                                <div class="col-md-12" id="dynamic_field">
                                                     @php
-                                                        $rowCount = $i + 1;
-
+                                                        $i = 1;
                                                     @endphp
+                                                    @foreach ($agent as $index => $item)
+                                                        @php
+                                                            $rowCount = $i + 1;
 
-                                                    <div class="item-row row" id="row{{ $rowCount }}">
-                                                        <input type="hidden" name="age_id" id="trtm_id_hidden"
-                                                            value="{{ $rowCount }}" />
+                                                        @endphp
+
+                                                        <div class="item-row row" id="row{{ $rowCount }}">
+                                                            <input type="hidden" name="age_id" id="trtm_id_hidden"
+                                                                value="{{ $rowCount }}" />
 
 
-                                                        <div class="col-md-4 family-member-field">
-                                                            <div class="form-group">
-                                                                <label for="trtm_first_name">Phone Number<span
-                                                                        class="text-danger">*</span></label>
-                                                                <div class="d-flex">
-                                                                    <input type="text" class="form-control"
-                                                                        id="trtm_first_name{{ $rowCount }}"
-                                                                        name="items[{{ $rowCount }}][age_user_phone_number]"
-                                                                        placeholder="Enter First Name"
-                                                                        value="{{ $item->age_user_phone_number }}">
+                                                            <div class="col-md-4 family-member-field">
+                                                                <div class="form-group">
+                                                                    <label for="trtm_first_name">Phone Number<span
+                                                                            class="text-danger">*</span></label>
+                                                                    <div class="d-flex">
+                                                                        <input type="text" class="form-control"
+                                                                            id="trtm_first_name{{ $rowCount }}"
+                                                                            name="items[{{ $rowCount }}][age_user_phone_number]"
+                                                                            placeholder="Enter First Name"
+                                                                            value="{{ $item->age_user_phone_number }}">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
 
-                                                        <div class="col-md-4 family-member-field">
-                                                            <div class="form-group">
-                                                                <label for="trtm_gender">Type<span
-                                                                        class="text-danger">*</span></label>
-                                                                <div class="d-flex">
-                                                                    <select class="form-control select2"
-                                                                        style="width: 100%;"
-                                                                        id="trtm_gender{{ $rowCount }}"
-                                                                        name="items[{{ $rowCount }}][age_user_type]">
+                                                            <div class="col-md-4 family-member-field">
+                                                                <div class="form-group">
+                                                                    <label for="trtm_gender">Type<span
+                                                                            class="text-danger">*</span></label>
+                                                                    <div class="d-flex">
+                                                                        <select class="form-control select2"
+                                                                            style="width: 100%;"
+                                                                            id="trtm_gender{{ $rowCount }}"
+                                                                            name="items[{{ $rowCount }}][age_user_type]">
 
-                                                                        <option default>Select</option>
+                                                                            <option default>Select</option>
 
-                                                                        @foreach ($phones_type as $product)
-                                                                            <option value="{{ $product->agent_phone_id }}"
-                                                                                {{ old('type', $item->age_user_type ?? '') == $product->agent_phone_id ? 'selected' : '' }}>
-                                                                                {{ $product->type }}</option>
-                                                                        @endforeach
+                                                                            @foreach ($phones_type as $product)
+                                                                                <option
+                                                                                    value="{{ $product->agent_phone_id }}"
+                                                                                    {{ old('type', $item->age_user_type ?? '') == $product->agent_phone_id ? 'selected' : '' }}>
+                                                                                    {{ $product->type }}</option>
+                                                                            @endforeach
 
-                                                                    </select>
+                                                                        </select>
 
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
 
-                                                        <div class="col-md-4">
-                                                            <label for="trtm_gender">&nbsp;</label>
+                                                            <div class="col-md-4">
+                                                                <label for="trtm_gender">&nbsp;</label>
                                                                 <div class="d-flex">
-                                                                    <a class="delete_btn delete-item" id="{{ $rowCount }}">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                                                    <path d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z" fill="white"></path>
-                                                                    </svg>
-                                                                    Remove Phone Number</a>
+                                                                    <a class="delete_btn delete-item"
+                                                                        id="{{ $rowCount }}">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            width="14" height="14"
+                                                                            viewBox="0 0 14 14" fill="none">
+                                                                            <path
+                                                                                d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
+                                                                                fill="white"></path>
+                                                                        </svg>
+                                                                        Remove Phone Number</a>
                                                                 </div>
 
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <hr />
-                                                    @php
-                                                        $i++;
-                                                    @endphp
-                                                @endforeach
-                                            </div>
+                                                        <hr />
+                                                        @php
+                                                            $i++;
+                                                        @endphp
+                                                    @endforeach
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -325,7 +317,6 @@
                                             placeholder="Contact Person Name" name="user_emergency_contact_person"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_contact_person ?? '')" />
 
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_contact')" /> --}}
                                     </div>
                                 </div>
 
@@ -337,7 +328,6 @@
                                             placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_phone_number ?? '')" />
 
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_phone_number')" /> --}}
                                     </div>
                                 </div>
 
@@ -350,16 +340,10 @@
                                             placeholder="Enter Emergency Email Address" name="user_emergency_email"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_email ?? '')" />
 
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_emergency_email')" /> --}}
                                     </div>
                                 </div>
 
                             </div>
-
-                            {{-- End Fourths Row --}}
-
-
-                            {{-- Fourth Row --}}
 
                             <div class="row pxy-15 px-10">
 
@@ -371,22 +355,18 @@
                                             placeholder="Select Agent" name="users_address" autofocus
                                             autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_address ?? '')" />
 
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('age_user_address')" /> --}}
                                     </div>
                                 </div>
 
                             </div>
 
-                            {{-- End Fourths Row --}}
 
-
-                            {{-- Fifth Row --}}
 
                             <div class="row pxy-15 px-10">
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <x-input-label for="tr_agent_id" :value="__('country')"> <span
+                                        <x-input-label for="tr_agent_id" :value="__('Country')"> <span
                                                 class="text-danger">*</span></x-input-label>
                                         <select id="tr_country" name="users_country" class="form-control select2"
                                             style="width: 100%;">
@@ -398,14 +378,13 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_state')" /> --}}
                                     </div>
                                 </div>
 
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <x-input-label for="tr_agent_id" :value="__('state')"> <span
+                                        <x-input-label for="tr_agent_id" :value="__('State')"> <span
                                                 class="text-danger">*</span></x-input-label>
                                         <select id="tr_state" name="users_state" class="form-control select2"
                                             style="width: 100%;">
@@ -419,7 +398,6 @@
                                             @endforeach
 
                                         </select>
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_state')" /> --}}
                                     </div>
                                 </div>
 
@@ -443,7 +421,6 @@
 
                                         </select>
 
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_city')" /> --}}
                                     </div>
                                 </div>
 
@@ -456,14 +433,12 @@
                                             placeholder="Enter Zip" name="users_zip" :value="old('age_user_id', $agency->users_zip ?? '')" autofocus
                                             autocomplete="tr_agent_id" />
 
-                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('users_zip')" /> --}}
                                     </div>
                                 </div>
                             </div>
 
 
 
-                            {{-- End Fifth Row --}}
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
