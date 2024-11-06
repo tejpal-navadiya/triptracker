@@ -26,7 +26,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">Agencies</li>
-                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Agencies List
+                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Agencies List</a>
                                 </li>
                             </ol>
                         </div><!-- /.col -->
@@ -74,8 +74,8 @@
                                             <th>Email Address</th>
                                             <th>Subscription Plan</th>
                                             <!-- <th>Membership Plan</th> -->
-                                            <th>IATA Number</th>
-                                            <th>CLIA Number</th>
+                                            <th>IATA or CLIA Number</th>
+                                            <th>Personal Number</th>
                                             <th>Total Users</th>
                                             <th>Action</th>
                                         </tr>
@@ -91,9 +91,9 @@
                                                     </td>
                                                     <td>{{ $value->user_email }}</td>
                                                     <td>{{ $value->plan ? $value->plan->sp_name : 'No Plan' }}</td>
-                                                    <td>{{ $value->user_iata_clia_number }}</td>
-                                                    <td>{{ $value->user_clia_number }}</td>
-                                                    <td>{{ $value->totalUserCount }}</td>
+                                                    <td>{{ $value->user_iata_clia_number ?? '' }}</td>
+                                                    <td>{{ $value->user_iata_number ?? '' }}</td>
+                                                    <td>{{ $value->totalUserCount ?? 0 }}</td>
 
                                                     {{-- <td>
                                                         @if ($value->user_status == 1)

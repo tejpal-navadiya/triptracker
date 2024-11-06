@@ -114,43 +114,34 @@
                 @enderror
             </div>
 
+
+
             <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">IATA or CLIA Number</label>
+                <label class="form-label">Select IATA or CLIA Number</label>
                 <span class="text-danger">*</span>
-                <div class="input-group mb-2">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-regular fa-user"></span>
-                        </div>
-                    </div>
-                    <input type="number" class="form-control @error('user_iata_clia_number') is-invalid @enderror"
-                        id="user_iata_clia_number" name="user_iata_clia_number"
-                        placeholder="Enter Personal CLIA Number" value="{{ old('user_iata_clia_number') }}">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="user_iata_clia_number" id="clia_iata_option" value="IATA or CLIA Number" >
+                    <label class="form-check-label" for="clia_iata_option">
+                        IATA or CLIA Number
+                    </label>
                 </div>
-                @error('user_iata_clia_number')
-                    <div class="invalid-feedback mb-2">{{ $message }}</div>
-                @enderror
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="user_iata_clia_number" id="iata_option" value="Personal IATA Number" >
+                    <label class="form-check-label" for="iata_option">
+                        Personal IATA Number
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="user_iata_clia_number" id="clia_option" value="Personal CLIA Number">
+                    <label class="form-check-label" for="clia_option">
+                        Personal CLIA Number
+                    </label>
+                </div>
+               
             </div>
 
             <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Personal CLIA Number</label>
-                <div class="input-group mb-2">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-regular fa-phone"></span>
-                        </div>
-                    </div>
-                    <input type="number" class="form-control @error('user_clia_number') is-invalid @enderror"
-                        id="user_clia_number" name="user_clia_number" placeholder="Enter Personal CLIA Number"
-                        value="{{ old('user_clia_number') }}">
-                </div>
-                @error('user_clia_number')
-                    <div class="invalid-feedback mb-2">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Personal IATA Number</label>
+                <label for="user_agencies_name" class="form-label">Personal Number</label>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -158,13 +149,14 @@
                         </div>
                     </div>
                     <input type="number" class="form-control @error('user_iata_number') is-invalid @enderror"
-                        id="user_iata_number" name="user_iata_number" placeholder="Enter Personal IATA Number"
+                        id="user_iata_number" name="user_iata_number" placeholder="Enter Personal Number"
                         value="{{ old('user_iata_number') }}">
                 </div>
                 @error('user_iata_number')
                     <div class="invalid-feedback mb-2">{{ $message }}</div>
                 @enderror
             </div>
+
 
             <div class="col-md-6 col-xl-4">
                 <label for="user_agencies_name" class="form-label">Address</label>

@@ -78,17 +78,10 @@
                                             <table class="table estimate_detail_table">
                                                 <tbody>
                                                     <tr>
-                                                        <td><strong>IATA or CLIA Number :</strong></td>
-                                                        <td>{{ $user->user_iata_clia_number }}</td>
+                                                        <td><strong>{{ $user->user_iata_clia_number ?? '' }} :</strong></td>
+                                                        <td>{{ $user->user_iata_number ?? ''}}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td><strong>Personal CLIA Number :</strong></td>
-                                                        <td>{{ $user->user_clia_number }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Personal IATA Number :</strong></td>
-                                                        <td>{{ $user->user_iata_number }}</td>
-                                                    </tr>
+                                                    
                                                     <tr>
                                                         <td><strong>Subscription Plan :</strong></td>
                                                         <td>{{ $user->plan ? $user->plan->sp_name : 'No Plan' }}</td>
