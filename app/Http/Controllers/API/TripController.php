@@ -26,7 +26,7 @@ class TripController extends Controller
             $auth_user = $request->attributes->get('authenticated_user');
             //dd($auth_user->users_id);
             if (!$auth_user) {
-                return $this->sendError('Unauthenticated.', [], 401);
+                return $this->sendError('Unauthenticated.', [], 500);
             }
 
             $uniqueId = $request->header('X-UniqueId');
@@ -73,7 +73,7 @@ class TripController extends Controller
         //   dd($trips);
 
             if ($trips->isEmpty()) {
-                return $this->sendError('No Trip found.', [], 404);
+                return $this->sendError('No Trip found.', [], 500);
             }
             
             $response = [
@@ -92,7 +92,7 @@ class TripController extends Controller
         {
             
             $this->serviceLogError('GetTripList', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
-            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
         }    
     }
 
@@ -102,7 +102,7 @@ class TripController extends Controller
             $auth_user = $request->attributes->get('authenticated_user');
             //dd($auth_user->users_id);
             if (!$auth_user) {
-                return $this->sendError('Unauthenticated.', [], 401);
+                return $this->sendError('Unauthenticated.', [], 500);
             }
 
             $uniqueId = $request->header('X-UniqueId');
@@ -120,7 +120,7 @@ class TripController extends Controller
         //   dd($trips);
 
             if ($task->isEmpty()) {
-                return $this->sendError('No Task found.', [], 404);
+                return $this->sendError('No Task found.', [], 500);
             }
 
             foreach ($task as $taskItem) {
@@ -173,7 +173,7 @@ class TripController extends Controller
         {
             
             $this->serviceLogError('GetTaskList', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
-            return $this->sendError($e->getMessage(), config('global.null_object'), 401, false);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
         }    
     }
 
