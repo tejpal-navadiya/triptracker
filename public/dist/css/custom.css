@@ -2816,3 +2816,55 @@ button.btn.btn-info {
     font-size: 14px;
     font-weight: 400;
 }
+
+.libary-box{
+    position: relative;
+    border: 1px solid #DBE0E6;
+    background: #fff;
+    border-radius: 5px;
+}
+.libary-img{
+    position: relative;
+    width: 100%;
+}
+.libary-name{
+    font-size: 28px;
+    font-weight: 700;
+    color: #384150;
+    text-align: center;
+    padding-top: 20px;
+}
+.libary-btnbox{
+    position: relative;
+    border-top: 1px solid #DBE0E6;
+    padding: 8px 15px;
+    display:flex;
+    justify-content:space-between;
+}
+.l-view-btn{
+    position: relative;
+    border: 1px solid #cecece;
+    padding: 5px 10px;
+    color:#1676FF;
+    font-size: 14px;
+    line-height: normal;
+    border-radius: 3px;
+}
+.l-edit-btn{
+    position: relative;
+    border: 1px solid #cecece;
+    padding: 5px 10px;
+    color:#384150;
+    font-size: 14px;
+    line-height: normal;
+    border-radius: 3px;
+}
+.l-delete-btn{
+    position: relative;
+    border: 1px solid #cecece;
+    padding: 5px 10px;
+    color:#FF5500;
+    font-size: 14px;
+    line-height: normal;
+    border-radius: 3px;
+}

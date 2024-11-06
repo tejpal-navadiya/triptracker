@@ -76,21 +76,7 @@
                                 </div>
 
 
-                                <div class="row pxy-15 px-10">
-
-                                    {{-- <div class="col-md-12" id="dynamic_field">
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                </div> --}}
-
-                                </div>
+                                <div class="row pxy-15 px-10"></div>
 
                                 <div class="row py-20 px-10">
                                     <div class="col-md-12 text-center">

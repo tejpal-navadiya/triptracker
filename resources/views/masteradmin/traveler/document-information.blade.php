@@ -66,17 +66,6 @@
                                     <select class="form-control select2" style="width: 100%;" id="trvm_id"
                                         name="trvm_id">
                                         <option default>Select Traveler</option>
-                                        {{-- @foreach ($tripTraveling as $member)
-                                        <option value="{{ $member->trtm_id }}">{{  $member->trtm_first_name }} {{  $member->trtm_middle_name }} {{  $member->trtm_last_name }}</option>
-                                        @endforeach --}}
-
-                                        {{-- @foreach ($tripTraveling as $member)
-                                            <option value="{{ $member->trtm_id }}">
-                                                {{ $member->tr_traveler_name }}
-                                                <!-- Make sure this matches your selection -->
-                                            </option>
-                                        @endforeach --}}
-
 
                                         <!-- Loop through traveling members -->
                                         @foreach ($tripTravelingMembers as $member)
@@ -85,12 +74,13 @@
                                             </option>
                                         @endforeach
 
-                                        <!-- Loop through trips -->
+
                                         @foreach ($tripData as $trip)
                                             <option value="{{ $trip->tr_id }}">
-                                                {{ $trip->tr_name }}
+                                                {{ $trip->tr_traveler_name }}
                                             </option>
                                         @endforeach
+
 
                                         <x-input-error class="mt-2" :messages="$errors->get('trvm_id')" />
                                     </select>

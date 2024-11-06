@@ -30,16 +30,6 @@
             <!-- Main content -->
 
 
-
-            {{-- @if ($errors->any())
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            @endif --}}
-
-
             <section class="content px-10">
                 <div class="container-fluid">
                     <!-- card -->
@@ -55,8 +45,7 @@
                                 <div class="row pxy-15 px-10">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_name" :value="__('Name of Trip')"> <span
-                                                    class="text-danger">*</span></x-input-label>
+                                            <label for="tr_name">Name of Trip<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_name"
                                                 placeholder="Enter Name of Trip" name="tr_name" autofocus
                                                 autocomplete="tr_name" value="{{ old('tr_name') }}" />
@@ -107,7 +96,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" /> --}}
                                         </div>
                                     </div>
 
@@ -124,7 +112,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" /> --}}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -141,8 +128,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
 
-                                            <label for="tr_agent_id">Email Address<span
-                                                    class="text-danger">*</span></label>
+                                            <label for="tr_email">Email Address<span class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="tr_email"
                                                 placeholder="Enter Email Address" name="tr_email" autofocus
                                                 autocomplete="tr_email" value="{{ old('tr_email') }}" />
@@ -168,7 +154,6 @@
                                         </div>
                                     </div>
 
-                                    {{-- Added By Rvi --}}
 
 
                                     <div class="col-md-4">

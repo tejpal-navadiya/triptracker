@@ -20,10 +20,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">Agencies Detail</h1>
+                            <h1 class="m-0">Agencies Details</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Agencies Detail</li>
+                                <li class="breadcrumb-item active">Agencies Details</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
@@ -44,7 +44,7 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Company Information</h3>
+                                    <h3 class="card-title">Agency Information</h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="row justify-content-between">
@@ -52,7 +52,7 @@
                                             <table class="table estimate_detail_table">
                                                 <tbody>
                                                     <tr>
-                                                        <td><strong>Company Name :</strong></td>
+                                                        <td><strong>Agency Name :</strong></td>
                                                         <td>{{ $user->user_agencies_name }}</td>
                                                     </tr>
                                                     <tr>
@@ -103,7 +103,7 @@
                         <div class="card-header">
                             <div class="row justify-content-between align-items-center">
                                 <div class="col-auto">
-                                    <h3 class="card-title">Company User</h3>
+                                    <h3 class="card-title">Agency User</h3>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +127,9 @@
                                     <tbody>
                                         @foreach ($udetail as $detail)
                                             <tr>
-                                                <td>{{ $detail->users_first_name }}</td>
+                                                <td>{{ $detail->users_first_name ?? '' }}
+                                                    {{ $detail->users_last_name ?? '' }}</td>
+
                                                 <td>{{ $detail->users_email }}</td>
                                                 <td>{{ $detail->users_phone }}</td>
                                                 <td>{{ $detail->role_name }}</td>

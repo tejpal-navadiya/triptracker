@@ -76,12 +76,47 @@
                                                         class="btn btn-sm btn-primary">Edit</a>
                                                     <form
                                                         action="{{ route('masteradmin.emailtemplate.destroy', $template->email_tid) }}"
-                                                        method="POST" style="display:inline;">
+                                                        method="POST" style="display:inline;"
+                                                        id="delete-form-{{ $template->email_tid }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Are you sure you want to delete this template?')">Delete</button>
-                                                    </form>
+
+
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                            data-toggle="modal"
+                                                            data-target="#delete-product-modal-{{ $template->email_tid }}">
+                                                            Delete</button>
+
+                                                        <div class="modal fade"
+                                                            id="delete-product-modal-{{ $template->email_tid }}"
+                                                            tabindex="-1" role="dialog"
+                                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm modal-dialog-centered"
+                                                                role="document">
+                                                                <div class="modal-content">
+                                                                    <form id="delete-plan-form"
+                                                                        action="{{ route('masteradmin.emailtemplate.destroy', $template->email_tid) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <div class="modal-body pad-1 text-center">
+                                                                            <i
+                                                                                class="fas fa-solid fa-trash delete_icon"></i>
+                                                                            <p class="company_business_name px-10"><b>Delete
+                                                                                    Trip</b></p>
+                                                                            <p class="company_details_text">Are You Sure You
+                                                                                Want to Delete This Email Template?</p>
+                                                                            <button type="button" class="add_btn px-15"
+                                                                                data-dismiss="modal">Cancel</button>
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit"
+                                                                                class="delete_btn px-15">Delete</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                 </td>
                                             </tr>
                                         @endforeach

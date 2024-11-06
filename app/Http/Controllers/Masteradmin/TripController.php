@@ -53,9 +53,6 @@ class TripController extends Controller
         $tripTable = $trips->getTable();
 
 
-
-        
-
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
@@ -135,13 +132,41 @@ class TripController extends Controller
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
         $validatedData = $request->validate([
-            'tr_name' => 'required|string',
+            
+            'tr_name' => [
+                'required',         
+                'string',          
+                'max:255',         
+                'regex:/^[a-zA-Z\s\-]+$/', 
+                ],
+
             'tr_agent_id' => 'required|string',
-            'tr_traveler_name' => 'required|string',
+
+            'tr_traveler_name' => [
+                'required',         
+                'string',          
+                'max:255',         
+                'regex:/^[a-zA-Z\s\-]+$/', 
+                ],
+    
             'tr_dob' => 'nullable|string',
             'tr_age' => 'nullable|string',
-            'tr_email' => 'nullable|email',
-            'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+
+            'tr_email' => [
+            'required',
+            'email',
+            'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+            'max:255'
+            ],   
+
+            'tr_phone' => [
+            'nullable',                          
+            'string',                          
+            'regex:/^\+?[1-9]\d{1,14}$/',    
+            'min:1',  
+            'max:12',                          
+            ],
+
             'tr_num_people' => 'nullable|string',
             'tr_number' => 'nullable|string',
             'tr_start_date' => 'required',
@@ -212,17 +237,17 @@ class TripController extends Controller
         $traveler->tr_name = $validatedData['tr_name'];
         $traveler->tr_agent_id = $validatedData['tr_agent_id'];
         $traveler->tr_traveler_name = $validatedData['tr_traveler_name'];
-        $traveler->tr_dob = $validatedData['tr_dob'] ?? null; // Use null if not set
-        $traveler->tr_age = $validatedData['tr_age'] ?? null; // Use null if not set
-        $traveler->tr_number = $validatedData['tr_number'] ?? null; // Use null if not set
-        $traveler->tr_email = $validatedData['tr_email'] ?? null; // Use null if not set
-        $traveler->tr_phone = $validatedData['tr_phone'] ?? null; // Use null if not set
-        $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
+        $traveler->tr_dob = $validatedData['tr_dob'] ?? null; 
+        $traveler->tr_age = $validatedData['tr_age'] ?? null;
+        $traveler->tr_number = $validatedData['tr_number'] ?? null; 
+        $traveler->tr_email = $validatedData['tr_email'] ?? null; 
+        $traveler->tr_phone = $validatedData['tr_phone'] ?? null; 
+        $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null;
         $traveler->tr_start_date = $validatedData['tr_start_date'];
-        $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
-        $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
+        $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null;
+        $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; 
         $traveler->tr_type_trip = json_encode($request->input('tr_type_trip'));
-        $traveler->tr_desc = $validatedData['tr_desc'] ?? null; // Use null if not set
+        $traveler->tr_desc = $validatedData['tr_desc'] ?? null; 
 
         $traveler->tr_country = $validatedData['tr_country'] ?? null;
         $traveler->tr_state = $validatedData['tr_state'] ?? null;
@@ -365,13 +390,41 @@ class TripController extends Controller
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
 
         $validatedData = $request->validate([
-            'tr_name' => 'required|string',
+
+            'tr_name' => [
+                'required',         
+                'string',          
+                'max:255',         
+                'regex:/^[a-zA-Z\s\-]+$/', 
+                ],
+
             'tr_agent_id' => 'required|string',
-            'tr_traveler_name' => 'required|string',
+
+            'tr_traveler_name' => [
+                'required',         
+                'string',          
+                'max:255',         
+                'regex:/^[a-zA-Z\s\-]+$/', 
+                ],
+    
             'tr_dob' => 'nullable|string',
             'tr_age' => 'nullable|string',
-            'tr_email' => 'nullable|email',
-            'tr_phone' => 'nullable|string',
+
+            'tr_email' => [
+                'required',
+                'email',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'max:255'
+                ],   
+
+            'tr_phone' => [
+                'nullable',                          
+                'string',                          
+                'regex:/^\+?[1-9]\d{1,14}$/',    
+                'min:1',  
+                'max:12',                          
+                ],
+
             'tr_num_people' => 'nullable|string',
             'tr_number' => 'nullable|string',
             'tr_start_date' => 'required',
@@ -408,8 +461,6 @@ class TripController extends Controller
 
 
         ]);
-
-        // Update Trip record
 
 
 
@@ -511,13 +562,17 @@ class TripController extends Controller
                        $masterUserTable . '.users_last_name'  
                    ])
                    ->firstOrFail();
+
+
+
                    
             $taskstatus = TaskStatus::all();
 
             $tripTraveling = new TripTravelingMember();
             $tableName = $tripTraveling->getTable();
 
-            $uniq_id = $user->user_id; // Ensure this is set based on your authentication logic
+            $uniq_id = $user->user_id; 
+
 
             $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
                 ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
@@ -525,7 +580,6 @@ class TripController extends Controller
                 ->where($tableName . '.id', $user->users_id)
                 ->where($tableName . '.tr_id', $id)
                 ->get();
-
 
 
 
@@ -615,13 +669,15 @@ class TripController extends Controller
             ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
             ->where('trtm_status', 1) // Ensure you're filtering by status
             ->get();
+            
 
           //  return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name;
 
 
 
-        $tripData = DB::table($uniq_id . '_tc_trip')
-            ->select('tr_id', 'tr_name')
+
+            $tripData = DB::table($uniq_id . '_tc_trip')
+            ->select('tr_id', 'tr_traveler_name')
             ->where('tr_id', $id)
             ->get();
 
@@ -631,6 +687,7 @@ class TripController extends Controller
         //  $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
         $documentType = DocumentType::get();
+        
 
 
         // dd($trip);

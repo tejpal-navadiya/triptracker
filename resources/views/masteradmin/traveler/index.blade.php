@@ -70,9 +70,7 @@
                                                         {{ $value->trip_status->tr_status_name ?? '' }}</button>
                                                 </td>
 
-
                                                 <td>
-
                                                     <a href="{{ route('masteradmin.travelers.view', $value->tr_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
@@ -100,7 +98,7 @@
                                                                         <p class="company_business_name px-10"><b>Delete
                                                                                 Trip</b></p>
                                                                         <p class="company_details_text">Are You Sure You
-                                                                            Want to Delete This Trip?</p>
+                                                                            Want to Delete This Traveler?</p>
                                                                         <button type="button" class="add_btn px-15"
                                                                             data-dismiss="modal">Cancel</button>
                                                                         @csrf

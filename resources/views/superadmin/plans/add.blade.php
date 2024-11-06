@@ -104,7 +104,7 @@
                                             <input type="number"
                                                 class="form-control @error('sp_user') is-invalid @enderror"
                                                 id="sp_user" name="sp_user" placeholder="Enter Users"
-                                                value="{{ old('sp_user') }}">
+                                                value="{{ old('sp_user') }}" min="0">
                                             @error('sp_user')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
