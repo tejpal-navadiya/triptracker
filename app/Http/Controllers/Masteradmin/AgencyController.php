@@ -15,6 +15,8 @@ use App\Models\Countries;
 use App\Models\States;
 use App\Models\Cities;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\UsersDetails;
 
 
 
@@ -40,11 +42,20 @@ class AgencyController extends Controller
 
     public function create(): View
 {
+  $user = Auth::guard('masteradmins')->user();
+
     $phones_type = StaticAgentPhone::all();
     $users_role = UserRole::all();
     $country = Countries::all();
+
+    $agency = new MasterUserDetails();
+    $agency->setTableForUniqueId($user->user_id);
+    $agency = $agency->count();
+
+    $nextAgencyNumber = str_pad($agency + 1, 3, '0', STR_PAD_LEFT); // Auto-increment logic
+  // dd($nextAgencyNumber);
   
-    return view('masteradmin.agency.create', compact('phones_type','users_role','country'));
+    return view('masteradmin.agency.create', compact('phones_type','users_role','country','nextAgencyNumber'));
 }
 
     public function store(Request $request){
@@ -60,38 +71,24 @@ class AgencyController extends Controller
         'users_first_name' => 'required|string|max:255',
         'users_last_name' => 'required|string|max:255',
         'users_email' => 'required|email|max:255',
-        'users_address' => 'required|string|max:255',
-        'users_zip' => 'required|numeric|digits_between:1,6',
+        'users_address' => 'nullable|string|max:255',
+        'users_zip' => 'nullable|numeric|digits_between:1,6',
         'user_agency_numbers' => 'required|string|max:255',
-        'user_qualification' => 'required|string|max:255',
         'user_work_email' => 'required|email|max:255',
-        'user_dob' => 'required|date',
-        'user_emergency_contact_person' => 'required|string|max:255',
-        'user_emergency_phone_number' => 'required|string|regex:/^[0-9]{1,12}$/',
+        'user_dob' => 'nullable|date',
+        'user_emergency_contact_person' => 'nullable|string|max:255',
+        'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
         'user_emergency_email' => 'nullable|email|max:255',
-        'users_country' => 'required|string|max:255',
-        'users_state' => 'required|string|max:255',
-        'users_city' => 'required|string|max:255',
-        'role_id' => 'required|string|max:255',
+        'users_country' => 'nullable|string|max:255',
+        'users_state' => 'nullable|string|max:255',
+        'users_city' => 'nullable|string|max:255',
+        'role_id' => 'nullable|string|max:255',
         'users_password' => 'required|string|min:6', // Assuming min length for password
     ], [
         'users_first_name.required' => 'First name is required',
         'users_last_name.required' => 'Last name is required',
         'users_email.required' => 'Email is required',
-        'users_address.required' => 'Address is required',
-        'users_zip.required' => 'Zipcode is Required',
-        'users_zip.numeric' => 'Zipcode must be Number',
         'user_agency_numbers.required' => 'ID Number is required',
-        'user_qualification.required' => 'Qualification is required',
-        'user_work_email.required' => 'Work email is required',
-        'user_dob.required' => 'dob is required',
-        'user_emergency_contact_person.required' => 'Emergency Contact is required',
-        'user_emergency_phone_number' => 'The phone number must be between 1 to 12 digits.',
-        'user_emergency_email.email' => 'Emergency Email is required',
-        'users_country.required' => 'Country is required',
-        'users_state.required' => 'State is required',
-        'users_city.required' => 'City is required',
-        'role_id.required' => 'Role is required',
         'users_password.required' => 'Password is required',
         'users_password.min' => 'Password must be at least 6 characters long',
     ]);
@@ -125,7 +122,6 @@ class AgencyController extends Controller
         $agency->user_id = $user->user_id;   
 
       $agency->user_agency_numbers = $validatedData['user_agency_numbers'];
-      $agency->user_qualification = $validatedData['user_qualification'];
       $agency->user_work_email = $validatedData['user_work_email'];
       $agency->user_dob = $validatedData['user_dob'];
       $agency->user_emergency_contact_person = $validatedData['user_emergency_contact_person'];
@@ -166,6 +162,14 @@ class AgencyController extends Controller
 
           $travelerItem->save();
       }
+
+      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->user_id]);
+        try {
+            Mail::to($request->users_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->users_email));
+            session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
+        } catch (\Exception $e) {
+            session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
+        }
 
       return redirect()->route('agency.index')->with('success', 'Agecy User entry created successfully.');
 
@@ -220,23 +224,29 @@ class AgencyController extends Controller
 
      // Validate incoming request data
      $validatedData = $request->validate([
-      'user_agency_numbers' => 'required|string|max:255',
       'users_first_name' => 'required|string|max:255',
       'users_last_name' => 'required|string|max:255',
-      'user_qualification' => 'required|string|max:255',
-      'user_work_email' => 'nullable|email|max:255',
-      'users_email' => 'nullable|email|max:255',
-      'user_dob' => 'required|date_format:m/d/Y',
-      'role_id' => 'required|string|max:255',
-      'users_password' => 'required|string|min:6',
-      'user_emergency_contact_person' => 'required|string|max:255',
+      'users_email' => 'required|email|max:255',
+      'users_address' => 'nullable|string|max:255',
+      'users_zip' => 'nullable|numeric|digits_between:1,6',
+      'user_agency_numbers' => 'required|string|max:255',
+      'user_work_email' => 'required|email|max:255',
+      'user_dob' => 'nullable|date',
+      'user_emergency_contact_person' => 'nullable|string|max:255',
+      'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
       'user_emergency_email' => 'nullable|email|max:255',
-      'user_emergency_phone_number' => 'required|string|regex:/^[0-9]{1,12}$/',
-      'users_address' => 'required|string|max:255',
-      'users_country' => 'required|string|max:255',
-      'users_state' => 'required|string|max:255',
-      'users_city' => 'required|string|max:255',
-      'users_zip' => 'required|numeric|digits_between:1,6',
+      'users_country' => 'nullable|string|max:255',
+      'users_state' => 'nullable|string|max:255',
+      'users_city' => 'nullable|string|max:255',
+      'role_id' => 'nullable|string|max:255',
+      'users_password' => 'required|string|min:6', // Assuming min length for password
+  ], [
+      'users_first_name.required' => 'First name is required',
+      'users_last_name.required' => 'Last name is required',
+      'users_email.required' => 'Email is required',
+      'user_agency_numbers.required' => 'ID Number is required',
+      'users_password.required' => 'Password is required',
+      'users_password.min' => 'Password must be at least 6 characters long',
   ]);
 
   // Prepare data for update
@@ -244,7 +254,6 @@ class AgencyController extends Controller
       'user_agency_numbers' => $validatedData['user_agency_numbers'],
       'users_first_name' => $validatedData['users_first_name'],
       'users_last_name' => $validatedData['users_last_name'],
-      'user_qualification' => $validatedData['user_qualification'],
       'user_work_email' => $validatedData['user_work_email'],
       'users_email' => $validatedData['users_email'],
       'user_dob' => $validatedData['user_dob'],
@@ -258,24 +267,6 @@ class AgencyController extends Controller
       'users_state' => $validatedData['users_state'],
       'users_zip' => $validatedData['users_zip'],
   ];
-
-
-// $userdetailu->user_agency_numbers = $validatedData['user_agency_numbers'];
-// $userdetailu->users_first_name = $validatedData['users_first_name'];
-// $userdetailu->users_last_name = $validatedData['users_last_name'];
-// $userdetailu->user_qualification = $validatedData['user_qualification'];
-// $userdetailu->user_work_email  = $validatedData['user_work_email'];
-// $userdetailu->users_email  = $validatedData['users_email'];
-// $userdetailu->user_dob = $validatedData['user_dob'];
-// $userdetailu->role_id = $validatedData['role_id'];
-// $userdetailu->users_password = Hash::make($validatedData['users_password']);
-// $userdetailu->user_emergency_contact_person	 = $validatedData['user_emergency_contact_person'];
-// $userdetailu->user_emergency_email  = $validatedData['user_emergency_email'];
-// $userdetailu->users_address = $validatedData['users_address'];
-// $userdetailu->users_city = $validatedData['users_city'];
-// $userdetailu->users_country = $validatedData['users_country'];
-// $userdetailu->users_state = $validatedData['users_state'];
-// $userdetailu->users_zip = $validatedData['users_zip'];
 
 
   $userdetailu->where('users_id', $users_id)->update($updateData);

@@ -116,7 +116,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
        Route::get('auth_register_state/{countryId}', [RegisterController::class, 'getStates'])->name('authregisterStates');
        Route::get('auth_register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('authregisterCities');
-
+        
 
     
     Route::middleware(['masteradmin'])->group(function () {

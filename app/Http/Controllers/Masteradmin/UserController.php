@@ -224,7 +224,7 @@ class UserController extends Controller
     {
         $email = $request->query('email');
         $user_id = $request->query('user_id');
-        return view('masteradmin.userdetails.change-password', ['email' => $email ,'user_id' => $user_id ]);
+        return view('masteradmin.agency.change-password', ['email' => $email ,'user_id' => $user_id ]);
     }
 
     public function storePassword(Request $request, $user_id): RedirectResponse
