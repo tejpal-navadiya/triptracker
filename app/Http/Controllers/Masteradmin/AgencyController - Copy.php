@@ -15,8 +15,8 @@ use App\Models\Countries;
 use App\Models\States;
 use App\Models\Cities;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use App\Notifications\UsersDetails;
+use Illuminate\Support\Facades\Log;
+
 
 
 
@@ -42,20 +42,11 @@ class AgencyController extends Controller
 
     public function create(): View
 {
-  $user = Auth::guard('masteradmins')->user();
-
     $phones_type = StaticAgentPhone::all();
     $users_role = UserRole::all();
     $country = Countries::all();
-
-    $agency = new MasterUserDetails();
-    $agency->setTableForUniqueId($user->user_id);
-    $agency = $agency->count();
-
-    $nextAgencyNumber = str_pad($agency + 1, 3, '0', STR_PAD_LEFT); // Auto-increment logic
-  // dd($nextAgencyNumber);
   
-    return view('masteradmin.agency.create', compact('phones_type','users_role','country','nextAgencyNumber'));
+    return view('masteradmin.agency.create', compact('phones_type','users_role','country'));
 }
 
     public function store(Request $request){
@@ -63,32 +54,65 @@ class AgencyController extends Controller
       $user = Auth::guard('masteradmins')->user();
 
       $dynamicId = $user->id;
-
-      // dd($user);
-     // dd($request->all());
     
       $validatedData = $request->validate([
         'users_first_name' => 'required|string|max:255',
         'users_last_name' => 'required|string|max:255',
-        'users_email' => 'required|email|max:255',
+
+        'users_email' => [
+          'required',
+          'email',
+          'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+          'max:255'
+      ],        
         'users_address' => 'nullable|string|max:255',
         'users_zip' => 'nullable|numeric|digits_between:1,6',
         'user_agency_numbers' => 'required|string|max:255',
-        'user_work_email' => 'required|email|max:255',
+        'user_qualification' => 'nullable|string|max:255',
+
+        'user_work_email' => [
+          'required',
+          'email',
+          'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+          'max:255'
+      ],    
+
+
         'user_dob' => 'nullable|date',
         'user_emergency_contact_person' => 'nullable|string|max:255',
         'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
-        'user_emergency_email' => 'nullable|email|max:255',
+
+       'user_emergency_email' => [
+          'nullable',
+          'email',
+          'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+          'max:255'
+      ],    
+
+
         'users_country' => 'nullable|string|max:255',
         'users_state' => 'nullable|string|max:255',
         'users_city' => 'nullable|string|max:255',
         'role_id' => 'nullable|string|max:255',
-        'users_password' => 'required|string|min:6', // Assuming min length for password
+        'users_password' => 'nullable|string|min:6', // Assuming min length for password
     ], [
         'users_first_name.required' => 'First name is required',
         'users_last_name.required' => 'Last name is required',
         'users_email.required' => 'Email is required',
+        'users_address.required' => 'Address is required',
+        'users_zip.required' => 'Zipcode is Required',
+        'users_zip.numeric' => 'Zipcode must be Number',
         'user_agency_numbers.required' => 'ID Number is required',
+        'user_qualification.required' => 'Qualification is required',
+        'user_work_email.required' => 'Work email is required',
+        'user_dob.required' => 'dob is required',
+        'user_emergency_contact_person.required' => 'Emergency Contact is required',
+        'user_emergency_phone_number' => 'The phone number must be between 1 to 12 digits.',
+        'user_emergency_email.email' => 'Emergency Email is required',
+        'users_country.required' => 'Country is required',
+        'users_state.required' => 'State is required',
+        'users_city.required' => 'City is required',
+        'role_id.required' => 'Role is required',
         'users_password.required' => 'Password is required',
         'users_password.min' => 'Password must be at least 6 characters long',
     ]);
@@ -122,6 +146,7 @@ class AgencyController extends Controller
         $agency->user_id = $user->user_id;   
 
       $agency->user_agency_numbers = $validatedData['user_agency_numbers'];
+      $agency->user_qualification = $validatedData['user_qualification'];
       $agency->user_work_email = $validatedData['user_work_email'];
       $agency->user_dob = $validatedData['user_dob'];
       $agency->user_emergency_contact_person = $validatedData['user_emergency_contact_person'];
@@ -163,17 +188,10 @@ class AgencyController extends Controller
           $travelerItem->save();
       }
 
-      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->user_id]);
-        try {
-            Mail::to($request->users_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->users_email));
-            session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
-        } catch (\Exception $e) {
-            session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
-        }
+      \MasterLogActivity::addToLog('Agency Record Created.');
+
 
       return redirect()->route('agency.index')->with('success', 'Agecy User entry created successfully.');
-
-      \MasterLogActivity::addToLog('Master Admin Users Certification Created.');
 
     }
 
@@ -212,7 +230,6 @@ class AgencyController extends Controller
   {
     $user = Auth::guard('masteradmins')->user();
 
-    //dd($request->all());
 
     $masteruser = new MasterUserDetails();
     $masteruser->setTableForUniqueId($user->user_id);
@@ -220,40 +237,32 @@ class AgencyController extends Controller
   
     $userdetailu = $masteruser->where(['users_id' => $users_id,'id' => $user->id])->firstOrFail();
 
-    //dd( $userdetailu);
-
-     // Validate incoming request data
      $validatedData = $request->validate([
-      'users_first_name' => 'required|string|max:255',
-      'users_last_name' => 'required|string|max:255',
-      'users_email' => 'required|email|max:255',
-      'users_address' => 'nullable|string|max:255',
-      'users_zip' => 'nullable|numeric|digits_between:1,6',
       'user_agency_numbers' => 'required|string|max:255',
+      'users_first_name' => 'required|string|max:255',  
+      'users_last_name' => 'required|string|max:255',
+      'user_qualification' => 'nullable|string|max:255',
       'user_work_email' => 'required|email|max:255',
-      'user_dob' => 'nullable|date',
+      'users_email' => 'required|email|max:255',
+      'user_dob' => 'nullable|date_format:m/d/Y',
+      'role_id' => 'required|string|max:255',
+      'users_password' => 'nullable|string|min:6',
       'user_emergency_contact_person' => 'nullable|string|max:255',
-      'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
       'user_emergency_email' => 'nullable|email|max:255',
+      'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+      'users_address' => 'nullable|string|max:255',
       'users_country' => 'nullable|string|max:255',
       'users_state' => 'nullable|string|max:255',
       'users_city' => 'nullable|string|max:255',
-      'role_id' => 'nullable|string|max:255',
-      'users_password' => 'required|string|min:6', // Assuming min length for password
-  ], [
-      'users_first_name.required' => 'First name is required',
-      'users_last_name.required' => 'Last name is required',
-      'users_email.required' => 'Email is required',
-      'user_agency_numbers.required' => 'ID Number is required',
-      'users_password.required' => 'Password is required',
-      'users_password.min' => 'Password must be at least 6 characters long',
+      'users_zip' => 'nullable|numeric|digits_between:1,6',
   ]);
 
-  // Prepare data for update
+
   $updateData = [
       'user_agency_numbers' => $validatedData['user_agency_numbers'],
       'users_first_name' => $validatedData['users_first_name'],
-      'users_last_name' => $validatedData['users_last_name'],
+      'users_last_name' => $validatedData['users_last_name'], 
+      'user_qualification' => $validatedData['user_qualification'],
       'user_work_email' => $validatedData['user_work_email'],
       'users_email' => $validatedData['users_email'],
       'user_dob' => $validatedData['user_dob'],
@@ -273,8 +282,6 @@ class AgencyController extends Controller
 
   AgencyPhones::where('age_id', $users_id)->delete();
 
-
-  //$rawItems = $request->input('items');  
   
     $rawItems = $request->input('items', []);   
 
@@ -290,7 +297,6 @@ class AgencyController extends Controller
 
     $ageid = $this->GenerateUniqueRandomString($table = $tableName, $column = "age_user_phone_id", $chars = 6);
     
-      // Assign the generated unique ID
       $travelerItem->age_id = $users_id;
       $travelerItem->id = $user->id;
       $travelerItem->age_user_phone_id = $ageid;

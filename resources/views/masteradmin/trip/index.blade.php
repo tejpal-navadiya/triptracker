@@ -147,10 +147,27 @@
                                                     </td>
 
                                                     <td>
-                                                        <button type="button" class="btn btn-info">
-                                                            {{ $value->trip_status->tr_status_name ?? '' }}
+                                                        @php
+                                                            $statusName = $value->trip_status->tr_status_name ?? '';
+
+                                                            $buttonColor = match (strtolower($statusName)) {
+                                                                'trip request' => '#DB9ACA',
+                                                                'trip proposal' => '#F6A96D',
+                                                                'trip modification' => '#FBC11E',
+                                                                'trip accepted' => '#28C76F',
+                                                                'trip sold' => '#C5A070',
+                                                                'trip lost' => '#F56B62',
+                                                            };
+                                                        @endphp
+
+                                                        <button type="button" class="btn text-white"
+                                                            style="background-color: {{ $buttonColor }};">
+                                                            {{ $statusName }}
                                                         </button>
                                                     </td>
+
+
+
                                                     <td>
                                                         <a href="{{ route('trip.view', $value->tr_id) }}"><i
                                                                 class="fas fa-eye edit_icon_grid"></i></a>
@@ -175,7 +192,8 @@
                                                                             <p><b>Delete Trip</b></p>
                                                                             <p>Are you sure you want to delete this trip?
                                                                             </p>
-                                                                            <button type="button" class="btn btn-secondary"
+                                                                            <button type="button"
+                                                                                class="btn btn-secondary"
                                                                                 data-dismiss="modal">Cancel</button>
                                                                             <button type="submit"
                                                                                 class="btn btn-danger">Delete</button>

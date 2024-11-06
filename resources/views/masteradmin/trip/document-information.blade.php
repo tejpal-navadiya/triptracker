@@ -60,23 +60,6 @@
                         </div>
 
 
-                        {{-- <div class="col-md-6">
-                            <div class="form-group">
-                            <label for="trvm_id">Traveler<span class="text-danger">*</span></label>
-                                <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trvm_id" name="trvm_id" >
-                                        <option default>Select Traveler</option>
-                                        @foreach ($tripTraveling as $member)
-                                        <option value="{{ $member->trtm_id }}">{{  $member->trtm_first_name }} {{  $member->trtm_middle_name }} {{  $member->trtm_last_name }}</option>
-                                        @endforeach
-                                        <x-input-error class="mt-2" :messages="$errors->get('trvm_id')" />
-                                    </select>
-                                </div>
-                            </div>
-                        </div> --}}
-
-
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trvm_id">Traveler <span class="text-danger">*</span></label>

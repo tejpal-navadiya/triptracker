@@ -53,9 +53,6 @@ class TripController extends Controller
         $tripTable = $trips->getTable();
 
 
-
-        
-
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
@@ -565,13 +562,17 @@ class TripController extends Controller
                        $masterUserTable . '.users_last_name'  
                    ])
                    ->firstOrFail();
+
+
+
                    
             $taskstatus = TaskStatus::all();
 
             $tripTraveling = new TripTravelingMember();
             $tableName = $tripTraveling->getTable();
 
-            $uniq_id = $user->user_id; // Ensure this is set based on your authentication logic
+            $uniq_id = $user->user_id; 
+
 
             $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
                 ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
@@ -579,7 +580,6 @@ class TripController extends Controller
                 ->where($tableName . '.id', $user->users_id)
                 ->where($tableName . '.tr_id', $id)
                 ->get();
-
 
 
 
@@ -669,13 +669,15 @@ class TripController extends Controller
             ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
             ->where('trtm_status', 1) // Ensure you're filtering by status
             ->get();
+            
 
           //  return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name;
 
 
 
-        $tripData = DB::table($uniq_id . '_tc_trip')
-            ->select('tr_id', 'tr_name')
+
+            $tripData = DB::table($uniq_id . '_tc_trip')
+            ->select('tr_id', 'tr_traveler_name')
             ->where('tr_id', $id)
             ->get();
 
@@ -685,6 +687,7 @@ class TripController extends Controller
         //  $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
         $documentType = DocumentType::get();
+        
 
 
         // dd($trip);

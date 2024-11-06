@@ -33,13 +33,6 @@
 
             <section class="content px-10">
                 <div class="container-fluid">
-                @if(Session::has('link-success'))
-                <p class="text-success" > {{ Session::get('link-success') }}</p>
-                @endif
-                @if(Session::has('link-error'))
-                <p class="text-danger" > {{ Session::get('link-error') }}</p>
-                @endif
-
                     @if (Session::has('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ Session::get('success') }}
@@ -154,13 +147,6 @@
                                                                                     class="delete_btn px-15">Assign</button>
                                                                             @endif
 
-
-
-
-                                                                            {{-- <button type="button" class="add_btn px-15"
-                                                                                data-dismiss="modal">Cancel</button>
-                                                                            <button type="submit"
-                                                                                class="delete_btn px-15">Assign</button> --}}
                                                                         </div>
 
                                                                     </div>
