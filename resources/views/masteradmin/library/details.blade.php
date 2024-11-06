@@ -47,21 +47,13 @@
                     <!-- Main row -->
                     <div class="row">
                         <!-- First Block -->
-                        <div class="col-md-6">
-
+                        <div class="col-md-4">
                             <div class="card m-2 p-3">
-
-
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
                                             <th>Category:</th>
                                             <td>{{ $library->libcategory->lib_cat_name ?? '' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Currency:</th>
-                                            <td>{{ $library->currency->currency_symbol ?? '' }}
-                                                ({{ $library->currency->currency ?? '' }})</td>
                                         </tr>
 
                                     </tbody>
@@ -70,7 +62,7 @@
                         </div>
 
                         <!-- Second Block -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="card m-2 p-3">
                                 <table class="table table-bordered">
                                     <tbody>
@@ -78,12 +70,19 @@
                                             <th>Name:</th>
                                             <td>{{ $library->lib_name }}</td>
                                         </tr>
-                                        <tr>
-                                            <th>Location:</th>
-                                            <td>{{ $library->city->name ?? '' }}, {{ $library->state->name ?? '' }},
-                                                {{ $library->country->name ?? '' }}</td>
-                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
+                        <div class="col-md-4">
+                            <div class="card m-2 p-3">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th>Tag:</th>
+                                            <td>{{ $library->tag_name }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -102,78 +101,108 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
-                                <div class="card m-2 p-3">
-                                    Sightseeing Infomation
-                                    <div class="card m-2 p-3">
-                                        <p>
-                                            <td>{{ strip_tags($library->lib_sightseeing_information ?? '') }}</td>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+
 
 
                             {{-- <div class="col-md-12">
-                                <div class="card m-4 p-3">
-                                    <h4>Images</h4>
+                                <div class="card m-2 p-3">
+                                    <h4>Files</h4>
 
                                     @if ($library->lib_image)
                                         @php
-                                            $images = json_decode($library->lib_image, true);
+                                            // Decode the JSON to get an array of file paths
+                                            $files = json_decode($library->lib_image, true);
                                         @endphp
 
-                                        @if (!empty($images) && is_array($images))
+                                        @if (!empty($files) && is_array($files))
                                             <div class="d-flex flex-wrap mt-3">
-
-                                                @foreach ($images as $image)
-                                                    <div class="mb-2 me-2">
-
-                                                        <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $image }}"
-                                                            alt="Uploaded Image" class="img-thumbnail"
-                                                            style="max-width: 220px; height: 200px;">
+                                                @foreach ($files as $file)
+                                                    <div class="mr-3 mb-3">
+                                                        @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
+                                                            <!-- Display Image -->
+                                                            <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                alt="Uploaded Image" class="img-thumbnail"
+                                                                style="width: 200px; height: 200px;">
+                                                        @elseif (preg_match('/\.pdf$/i', $file))
+                                                            <!-- Display PDF as embedded viewer -->
+                                                            <div class="embed-responsive embed-responsive-4by3"
+                                                                style="width: 200px; height: 200px;">
+                                                                <embed
+                                                                    src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                    type="application/pdf" class="embed-responsive-item">
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 @endforeach
                                             </div>
                                         @else
-                                            <p>No images available.</p>
+                                            <p>No files available.</p>
                                         @endif
                                     @else
-                                        <p>No images available.</p>
+                                        <p>No files available.</p>
                                     @endif
                                 </div>
                             </div> --}}
 
-
                             <div class="col-md-12">
                                 <div class="card m-2 p-3">
-                                    <h4>Images</h4>
+                                    <h4>Files</h4>
 
                                     @if ($library->lib_image)
                                         @php
-
-                                            $images = json_decode($library->lib_image, true);
+                                            // Decode the JSON to get an array of file paths
+                                            $files = json_decode($library->lib_image, true);
                                         @endphp
 
-                                        @if (!empty($images) && is_array($images))
+                                        @if (!empty($files) && is_array($files))
                                             <div class="d-flex flex-wrap mt-3">
-
-                                                @foreach ($images as $image)
-                                                    <div style="margin-right: 10px; margin-bottom: 15px;">
-                                                        <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $image }}"
-                                                            alt="Uploaded Image" class="img-thumbnail"
-                                                            style="max-width: 220px; height: 200px;">
+                                                @foreach ($files as $file)
+                                                    <div class="mr-3 mb-3 text-center">
+                                                        @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
+                                                            <!-- Display Image -->
+                                                            <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                alt="Uploaded Image" class="img-thumbnail"
+                                                                style="width: 100%; max-width: 200px;">
+                                                        @elseif (preg_match('/\.pdf$/i', $file))
+                                                            <!-- Display PDF as embedded viewer -->
+                                                            <div class="embed-responsive embed-responsive-4by3">
+                                                                <embed
+                                                                    src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                    type="application/pdf" class="embed-responsive-item">
+                                                            </div>
+                                                        @endif
+                                                        <!-- Download and Print Options -->
+                                                        <div class="mt-2">
+                                                            <a href="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                class="btn btn-outline-primary btn-sm" download>
+                                                                Download
+                                                            </a>
+                                                            <button
+                                                                onclick="printFile('{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}')"
+                                                                class="btn btn-outline-secondary btn-sm">
+                                                                Print
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         @else
-                                            <p>No images available.</p>
+                                            <p>No files available.</p>
                                         @endif
                                     @else
-                                        <p>No images available.</p>
+                                        <p>No files available.</p>
                                     @endif
                                 </div>
                             </div>
+
+                            <script>
+                                function printFile(url) {
+                                    const printWindow = window.open(url, '_blank');
+                                    printWindow.print();
+                                }
+                            </script>
+
+
 
 
                             <div class="row py-20 px-10">

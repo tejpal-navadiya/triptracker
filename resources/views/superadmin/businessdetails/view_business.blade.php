@@ -20,10 +20,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">Company Detail</h1>
+                            <h1 class="m-0">Agencies Detail</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Company Detail</li>
+                                <li class="breadcrumb-item active">Agencies Detail</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">

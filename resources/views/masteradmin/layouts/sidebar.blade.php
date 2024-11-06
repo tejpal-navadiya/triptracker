@@ -34,8 +34,7 @@
                     <ul class="nav nav-treeview">
 
                         @if (isset($access['book_trip']) && $access['book_trip'])
-                            <li class="nav-item {{ request()->is($busadminRoutes.'/trip*')
-                    ? 'menu-open' : '' }}" >
+                            <li class="nav-item {{ request()->is($busadminRoutes . '/trip*') ? 'menu-open' : '' }}">
                                 <a href="{{ route('trip.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/trip*') ||
                                     request()->is($busadminRoutes . '/h*') ||
@@ -51,7 +50,7 @@
 
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('masteradmin.trip.booked_after') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h/*')
@@ -64,17 +63,16 @@
                         @endif
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
-                                <a href="{{ route('masteradmin.trip.booked_after') }}"
+                                <a href="#"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h/*')
                                         ? 'active'
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Booked Trips (After Booked)</p>
+                                    <p>Trip Follow Up (After Booked)</p>
                                 </a>
                             </li>
-                            
                         @endif
 
                         @if (isset($access['view_role']) && $access['view_role'])
@@ -186,7 +184,7 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
-                        <p>Libraries
+                        <p>Library
                             <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
@@ -197,7 +195,7 @@
                                 <a href="{{ route('library.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>View All Libraries
+                                    <p>Library
                                     </p>
                                 </a>
                             </li>
@@ -208,11 +206,23 @@
                                 <a href="{{ route('library.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Add Library
+                                    <p>Add Library Item
                                     </p>
                                 </a>
                             </li>
                         @endif
+
+                        @if (isset($access['book_trip']) && $access['book_trip'])
+                            <li class="nav-item">
+                                <a href="{{ route('library_category.index') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Category
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
+
 
                     </ul>
                 </li>
@@ -259,7 +269,7 @@
                     </a>
                     <ul class="nav nav-treeview">
 
-                    @if (isset($access['view_role']) && $access['view_role'])
+                        @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
                                 <a href="{{ route('user-role-details.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||

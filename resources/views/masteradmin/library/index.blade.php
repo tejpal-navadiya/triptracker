@@ -44,95 +44,202 @@
                         @endphp
                     @endif
 
-                    <!-- Main row -->
-                    <div class="card px-20">
-                        <div class="card-body1">
-                            <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Category</th>
-                                            <th>Name</th>
-                                            <th>Location</th>
-                                            <th>Currency</th>
-                                            <th>Infomation</th>
-                                            <th class="sorting_disabled" data-orderable="false">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($library as $value)
-                                            <tr>
-                                                <td>{{ $value->libcategory->lib_cat_name ?? '' }}</td>
-                                                <td>{{ $value->lib_name }}</td>
-                                                <td>{{ $value->city->name ?? '' }}, {{ $value->state->name ?? '' }},
-                                                    {{ $value->country->name ?? '' }}</td>
-                                                <td>{{ $value->currency->currency_symbol ?? '' }}
-                                                    ({{ $value->currency->currency ?? '' }})
-                                                </td>
-                                                <td>{{ \Illuminate\Support\Str::limit(strip_tags($value->lib_basic_information), 45, '...') }}
-                                                </td>
 
-                                                <td>
-                                                    <a href="{{ route('library.show', $value->lib_id) }}"><i
-                                                            class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                    @foreach ($library as $value)
+                    @endforeach
 
-                                                    <!-- <a href="{{ route('masteradmin.library.view') }}"><i
-                                                                                                                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
+                    {{-- <div class="row">
+                        @foreach ($libraries as $library)
+                            <div class="col-md-4"> <!-- Adjust the width as needed -->
+                                <div class="card mb-3">
 
-                                                    <a href="{{ route('library.edit', $value->lib_id) }}"><i
-                                                            class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                    @if ($library->lib_image)
+                                        @php
+                                            // Decode the JSON to get an array of image paths
+                                            $images = json_decode($library->lib_image, true);
+                                        @endphp
+
+                                        @if (!empty($images) && is_array($images))
+                                            <div class="mt-2">
+                                                <table class="table table-bordered">
+
+                                                    <tbody>
+                                                        <!-- Display only the first image from the array -->
+                                                        <tr>
+                                                            <td>
+                                                                <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $images[0] }}"
+                                                                    alt="Uploaded Image" class="img-thumbnail"
+                                                                    style="max-width: 100px; height: auto;">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @endif
+                                    @endif
 
 
 
-                                                    <a data-toggle="modal"
-                                                        data-target="#delete-library-modal-{{ $value->lib_id }}">
-                                                        <i class="fas fa-solid fa-trash delete_icon_grid"></i>
-                                                    </a>
+                                    <div class="card-body">
 
-                                                    <div class="modal fade" id="delete-library-modal-{{ $value->lib_id }}"
-                                                        tabindex="-1" role="dialog"
-                                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                        <div class="modal-dialog modal-sm modal-dialog-centered"
-                                                            role="document">
-                                                            <div class="modal-content">
+                                        <h5 class="card-title">{{ $library->lib_name }}</h5>
+                                        <p class="card-text"></p>
+                                        <a href="{{ route('library.show', $value->lib_id) }}"><i
+                                                class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                                                                <form id="delete-plan-form"
-                                                                    action="{{ route('library.destroy', $value->lib_id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE') <!-- Spoofing DELETE method -->
 
-                                                                    <div class="modal-body  pad-1 text-center">
-                                                                        <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                                        <p class="company_business_name px-10"> <b>Delete
-                                                                                Library</b></p>
-                                                                        <p class="company_details_text">Are You Sure You
-                                                                            Want to Delete This Library?</p>
-                                                                        <button type="button" class="add_btn px-15"
-                                                                            data-dismiss="modal">Cancel</button>
-                                                                        <button type="submit"
-                                                                            class="delete_btn px-15">Delete</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
+                                        <a href="{{ route('library.edit', $value->lib_id) }}"><i
+                                                class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+
+                                        <a data-toggle="modal" data-target="#delete-library-modal-{{ $value->lib_id }}">
+                                            <i class="fas fa-solid fa-trash delete_icon_grid"></i>
+                                        </a>
+
+                                        <div class="modal fade" id="delete-library-modal-{{ $value->lib_id }}"
+                                            tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                            aria-hidden="true">
+
+                                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+
+                                                    <form id="delete-plan-form"
+                                                        action="{{ route('library.destroy', $value->lib_id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE') <!-- Spoofing DELETE method -->
+
+                                                        <div class="modal-body  pad-1 text-center">
+                                                            <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                            <p class="company_business_name px-10"> <b>Delete
+                                                                    Library</b></p>
+                                                            <p class="company_details_text">Are You Sure You
+                                                                Want to Delete This Library?</p>
+                                                            <button type="button" class="add_btn px-15"
+                                                                data-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="delete_btn px-15">Delete</button>
                                                         </div>
-                                                    </div>
-
-
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div><!-- /.card-body -->
-                    </div><!-- /.card-->
+                        @endforeach
+                    </div> --}}
+
+
+
+
+                    <div class="row">
+                        @foreach ($libraries as $library)
+                            <div class="col-md-3">
+                                <div class="card mb-4">
+                                    @if ($library->lib_image)
+                                        @php
+                                            $files = json_decode($library->lib_image, true);
+                                        @endphp
+
+                                        @if (!empty($files) && is_array($files))
+                                            <div class="mt-2">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        @foreach ($files as $file)
+                                                            <tr>
+                                                                <td class="text-center" style="width: 80px;">
+                                                                    @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
+                                                                        <!-- Display the image -->
+                                                                        <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                                            alt="Uploaded Image"
+                                                                            class="img-fluid img-thumbnail w-100">
+                                                                    @elseif (preg_match('/\.pdf$/i', $file))
+                                                                        <!-- Display the PDF with an embed tag -->
+                                                                        <div class="embed-responsive embed-responsive-4by3">
+                                                                            <embed
+                                                                                src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                                                type="application/pdf"
+                                                                                class="embed-responsive-item">
+                                                                        </div>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @endif
+                                    @endif
+
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="title m-auto p-auto">
+                                                <button type="button"
+                                                    class="btn btn-primary">{{ $library->lib_name }}</button>
+                                            </div>
+
+                                        </div>
+                                        <hr class="my-2">
+
+                                        <div class="d-flex justify-content-between">
+                                            <a href="{{ route('library.show', $library->lib_id) }}" class="text-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <a href="{{ route('library.edit', $library->lib_id) }}" class="text-warning">
+                                                <i class="fas fa-pen"></i> Edit
+                                            </a>
+                                            <a href="#" data-toggle="modal"
+                                                data-target="#delete-library-modal-{{ $library->lib_id }}"
+                                                class="text-danger">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="delete-library-modal-{{ $library->lib_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form action="{{ route('library.destroy', $library->lib_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="modal-body text-center">
+                                                <i class="fas fa-trash fa-2x text-danger mb-3"></i>
+                                                <p><strong>Delete Library</strong></p>
+                                                <p>Are you sure you want to delete this library?</p>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+
+
+
                     <!-- /.row (main row) -->
                 </div><!-- /.container-fluid -->
             </section>
+
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
+
+
+
+
+
+
+
+
+
+
 
         <div class="modal fade" id="ajaxModel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -152,8 +259,9 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="role_name">Role Name</label>
-                                        <input type="text" class="form-control @error('role_name') is-invalid @enderror"
-                                            id="role_name" name="role_name" placeholder="Enter Role Name"
+                                        <input type="text"
+                                            class="form-control @error('role_name') is-invalid @enderror" id="role_name"
+                                            name="role_name" placeholder="Enter Role Name"
                                             value="{{ old('role_name') }}" />
                                         @error('role_name')
                                             <div class="invalid-feedback">{{ $message }}</div>

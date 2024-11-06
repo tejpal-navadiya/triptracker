@@ -22,11 +22,11 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Companies List</h1>
+                            <h1 class="m-0">Agencies List</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Companies</li>
-                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Companies List
+                                <li class="breadcrumb-item active">Agencies</li>
+                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Agencies List
                                 </li>
                             </ol>
                         </div><!-- /.col -->
@@ -87,7 +87,8 @@
                                             @foreach ($MasterUser as $value)
                                                 <tr>
                                                     <td>{{ $value->user_agencies_name }}</td>
-                                                    <td>{{ $value->user_first_name }}</td>
+                                                    <td>{{ $value->user_first_name . ' ' . $value->user_last_name }}
+                                                    </td>
                                                     <td>{{ $value->user_email }}</td>
                                                     <td>{{ $value->plan ? $value->plan->sp_name : 'No Plan' }}</td>
                                                     <td>{{ $value->user_iata_clia_number }}</td>
@@ -112,6 +113,7 @@
                                                                     <span class="action_btn"><i
                                                                             class="fas fa-solid fa-chevron-down"></i></span>
                                                                 </a>
+
                                                                 <div class="dropdown-menu dropdown-menu-right">
                                                                     <a href="{{ route('businessdetails.show', $value->id) }}"
                                                                         class="dropdown-item">
@@ -123,7 +125,18 @@
                                                                     <!-- <a href="#" class="dropdown-item" data-toggle="modal" data-target="#deletebusiness">
                                       <i class="fas fa-solid fa-trash mr-2"></i> Delete
                                     </a> -->
+
+
+                                                                    <a href="{{ route('businessdetails.edit', $value->id) }}"
+                                                                        class="dropdown-item">
+                                                                        <i class="fas fa-regular fa-edit mr-2"></i> Edit
+                                                                    </a>
+
+
                                                                 </div>
+
+
+
                                                             </li>
                                                         </ul>
                                                     </td>

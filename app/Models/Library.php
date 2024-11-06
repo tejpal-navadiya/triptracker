@@ -13,7 +13,7 @@ class Library extends Model
     protected $fillable = ['lib_id',
                            'id', 
                            'lib_category',	
-                           'lib_name',
+                            'lib_name',
                             'lib_currency',
                             'lib_country',	
                             'lib_state'	,

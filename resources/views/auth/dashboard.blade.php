@@ -16,7 +16,7 @@
                         <!-- small box -->
                         <div class="small-box">
                             <h2 class="welcome_text">Welcome Super Admin</h2>
-                            <p>Lorem Ipsum is Simply Dummy Text<br>of the Printing and Typesetting<br>Industry.</p>
+                            <p><br><br></p>
                             <img src="{{ url('public/dist/img/welcome_img.png') }}" alt="welcome_img" class="welcome_img">
                         </div>
                     </div>
@@ -52,13 +52,13 @@
                     </div>
                     <!-- ./col -->
                     <!-- <div class="col-lg-2 col-md-6">
-                        <!-- small box --
-                        <div class="small-box bg-bills">
-                          <div class="dash_board_icon" style="--bgcolor: #AF70FF"><i class="nav-icon fas fa-regular fa-building"></i></div>
-                          <p class="total_text">Delete Business</p>
-                          <h3 class="customer_total bill_total">0</h3>
-                        </div>
-                      </div> -->
+                                                                            <!-- small box --
+                                                                            <div class="small-box bg-bills">
+                                                                              <div class="dash_board_icon" style="--bgcolor: #AF70FF"><i class="nav-icon fas fa-regular fa-building"></i></div>
+                                                                              <p class="total_text">Delete Business</p>
+                                                                              <h3 class="customer_total bill_total">0</h3>
+                                                                            </div>
+                                                                          </div> -->
                     <!-- ./col -->
                 </div>
                 <!-- /.row -->

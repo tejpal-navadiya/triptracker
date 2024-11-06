@@ -24,10 +24,10 @@ class LibraryController extends Controller
         $user = Auth::guard('masteradmins')->user();
 
         $library = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id])->get();
+        $libraries = Library::all();
 
-        //$library = Library::where(['lib_status' => 1, 'id' => $user->users_id])->get();
 
-        return view('masteradmin.library.index', compact('library'));
+        return view('masteradmin.library.index', compact('library','libraries'));
     }
 
     public function create(): View
@@ -52,7 +52,7 @@ class LibraryController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
 
-        //dd($request->all());
+       // dd($request->all());
 
         $dynamicId = $user->users_id;
 
@@ -60,56 +60,47 @@ class LibraryController extends Controller
         $validatedData = $request->validate([
             'lib_category' => 'required|string',
             'lib_name' => 'required|string',
-            'lib_currency' => 'required|string',
-            'lib_country' => 'required|string',
-            'lib_state' => 'required|string',
-            'lib_city' => 'required|string',
-            'lib_zip' => 'required|numeric|digits_between:1,6',
-            'lib_basic_information' => 'required|string',
-            'lib_sightseeing_information' => 'required|string',
-            'image' => 'nullable|array', // Validate that image is an array
+             'tag_name' => 'required|string',
+
+            'lib_basic_information' => 'nullable|string',
+           
+           // 'image' => 'nullable|array', // Validate that image is an array
+
+            'image' => 'nullable', // Validate that image is an array
             'image.*' => 'image|mimes:jpeg,png,jpg,pdf|max:2048',
-
-            //'trvt_document.*' => 'nullable|file|jpeg,png,jpg,pdf|max:2048',
-
 
         ], [
             'lib_category.required' => 'Category is required',
             'lib_name.required' => 'Name is required',
-            'lib_currency.required' => 'Currency is required',
-            'lib_country.required' => 'Country is required',
-            'lib_state.required' => 'State is required',
-            'lib_city.required' => 'City is required',
-            'lib_zip.required' => 'ZIP code is required',
-            'lib_zip.numeric' => 'Zipcode must be Number',
-            'lib_basic_information.required' => 'Basic information is required',
-            'lib_sightseeing_information.required' => 'Sightseeing information is required',
-            'image.required' => 'At least one image is required',
-            'image.array' => 'The images must be provided as an array',
-            'image.*.image' => 'Each file must be an image',
-            'image.*.mimes' => 'Each image must be a file of type: jpeg, png, jpg, gif',
-            'image.*.max' => 'Each image size must not exceed 2MB',
+            'tag_name' => 'Tag Name is Required',
+            'lib_basic_information.nullable' => 'Basic information is required',
+
+            // 'image.required' => 'At least one image is required',
+            // 'image.array' => 'The images must be provided as an array',
+            // 'image.*.image' => 'Each file must be an image',
+            // 'image.*.mimes' => 'Each image must be a file of type: jpeg, png, jpg, gif',
+            // 'image.*.max' => 'Each image size must not exceed 2MB',
+
+            'lib_image.nullable' => 'The Document is required.',
+            'lib_image.*.image' => 'The Document must be an image.',
+            'lib_image.*.mimes' => 'The Document must be a file of type: jpeg, png, jpg, gif, svg.',
+            'lib_image.*.max' => 'The Document may not be greater than 2048 kilobytes.',
         ]);
 
-        //For Multi Image
 
-        if ($request->hasFile('image')) {
 
-            if (is_array($request->file('image'))) {
+        if ($request->hasFile('lib_image')) {
 
+            if (is_array($request->file('lib_image'))) {
+                 
                 $userFolder = session('userFolder');
-                $library_images =  $this->handleImageUpload($request, 'image', null, 'library_image', $userFolder);
+                $documents_images =  $this->handleImageUpload($request, 'lib_image', null, 'library_image', $userFolder);
 
-                $libraryimg = json_encode($library_images);
-            } else {
+                $documentimg = json_encode($documents_images);
 
-                // Handle a single image
-                $userFolder = session('userFolder');
-                $library_image = $this->handleImageUpload($request, 'image', null, 'library_image', $userFolder);
             }
-        } else {
-            $libraryimg = '';
         }
+
 
         $library = new Library();
 
@@ -121,15 +112,16 @@ class LibraryController extends Controller
 
         $library->lib_category = $validatedData['lib_category'];
         $library->lib_name = $validatedData['lib_name'];
-        $library->lib_currency = $validatedData['lib_currency'];
-        $library->lib_country = $validatedData['lib_country'];
-        $library->lib_state = $validatedData['lib_state'];
-        $library->lib_city = $validatedData['lib_city'];
-        $library->lib_zip = $validatedData['lib_zip'];
-        $library->lib_basic_information = $validatedData['lib_basic_information'];
-        $library->lib_sightseeing_information = $validatedData['lib_sightseeing_information'];
+        $library->tag_name = $validatedData['tag_name'];
 
-        $library->lib_image = $libraryimg;
+       
+        $library->lib_basic_information = $validatedData['lib_basic_information'];
+
+       // $library->lib_image = $libraryimg;
+
+        $library->lib_image = $documentimg ?? '';
+
+      
 
         $library->lib_status = 1;
 
@@ -201,13 +193,14 @@ class LibraryController extends Controller
             [
                 'lib_category' => 'required|string',
                 'lib_name' => 'required|string',
-                'lib_currency' => 'required|string',
-                'lib_country' => 'required|string',
-                'lib_state' => 'required|string',
-                'lib_city' => 'required|string',
-                'lib_zip' => 'required|numeric|digits_between:1,6',
-                'lib_basic_information' => 'required|string',
-                'lib_sightseeing_information' => 'required|string',
+                'lib_currency' => 'nullable|string',
+                'lib_country' => 'nullable|string',
+                'lib_state' => 'nullable|string',
+                'lib_city' => 'nullable|string',
+                'lib_zip' => 'nullable|numeric|digits_between:1,6',
+                'lib_basic_information' => 'nullable|string',
+                'lib_sightseeing_information' => 'nullable|string',
+
                 'lib_image' => 'nullable',
                 'lib_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
             ],
@@ -323,4 +316,5 @@ class LibraryController extends Controller
 
         return view('masteradmin.library.view', compact('libraries'));
     }
+
 }

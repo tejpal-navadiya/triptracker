@@ -26,6 +26,8 @@ use App\Http\Controllers\Masteradmin\TravelerDocumentController;
 use App\Http\Controllers\Masteradmin\EmailTemplateController;
 use App\Http\Controllers\Masteradmin\AgencyController;
 use App\Http\Controllers\Masteradmin\BookedTripController;
+use App\Http\Controllers\Masteradmin\libraryCatgoryController;
+
 
 
 
@@ -86,9 +88,19 @@ Route::group(['prefix' => $adminRoute], function () {
         Route::delete('/plans/destroy/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
         Route::get('/plans/planrole/{plan}', [PlanController::class, 'planrole'])->name('plans.planrole');
         Route::POST('/plans/updaterole/{plan}', [PlanController::class, 'updaterole'])->name('plans.updaterole');
-        
+
+
+        //agencies list
         Route::get('/businessdetails', [BusinessDetailController::class, 'index'])->name('businessdetails.index');
         Route::get('/businessdetails/{id}', [BusinessDetailController::class, 'show'])->name('businessdetails.show');
+        Route::get('/editbusinessdetails/{id}', [BusinessDetailController::class, 'edit'])->name('businessdetails.edit');
+        Route::post('/updatebusinessdetails/{id}', [BusinessDetailController::class, 'update'])->name('businessdetails.update');
+        
+        //Admin agencies list dropdown 
+        Route::get('admin_agency_state/{countryId}', [RegisterController::class, 'getStates'])->name('get_admin_States');
+        Route::get('admin_agency_cities/{stateId}', [RegisterController::class, 'getCities'])->name('get_admin_Cities');
+
+
         Route::post('/business-detail/{id}/update-status', [BusinessDetailController::class, 'updateStatus'])->name('masteradmin.updateStatus');
 
         //logs
@@ -202,6 +214,14 @@ Route::group(['prefix' => $busadminRoute], function () {
         //library
        Route::resource( 'library', LibraryController::class);
 
+       //library Category
+       Route::resource('library_category',libraryCatgoryController::class);
+
+
+      Route::get('category', [LibraryController::class, 'category'])->name('masteradmin.library.category');
+
+
+
        //Library Add Dropdown
        Route::get('states/{countryId}', [LibraryController::class, 'getStates'])->name('getStates');
        Route::get('/currencies/{countryId}', [LibraryController::class, 'getCurrencies']);
@@ -277,6 +297,7 @@ Route::group(['prefix' => $busadminRoute], function () {
          Route::get('travelers-edit/{id}', [TripController::class, 'editDetails'])->name('masteradmin.travelers.edit');
          Route::put('/travelers-update/{id}', [TripController::class, 'update'])->name('masteradmin.travelers.update');
          Route::get('/view-travelers/{id}', [TripController::class, 'viewDetails'])->name('masteradmin.travelers.view');
+         
 
 
 
