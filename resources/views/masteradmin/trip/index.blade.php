@@ -161,8 +161,8 @@
                                                         @endphp
 
                                                         <button type="button" class="btn text-white"
-                                                            style="background-color: {{ $buttonColor }};">
-                                                            {{ $statusName }}
+                                                            style="background-color: {{ $buttonColor ?? ''}};">
+                                                            {{ $statusName ?? '' }}
                                                         </button>
                                                     </td>
 

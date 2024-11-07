@@ -39,15 +39,15 @@
             <!-- Main content -->
             <section class="content px-10">
                 <div class="container-fluid">
-                    @if (Session::has('businessdetails-add'))
+                    @if (Session::has('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ Session::get('businessdetails-add') }}
+                            {{ Session::get('success') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         @php
-                            Session::forget('businessdetails-add');
+                            Session::forget('success');
                         @endphp
                     @endif
                     @if (Session::has('businessdetails-delete'))
@@ -69,13 +69,13 @@
                                 <table id="example1" class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th>Company Name</th>
+                                            <th>Agencies Name</th>
                                             <th>Name</th>
                                             <th>Email Address</th>
                                             <th>Subscription Plan</th>
                                             <!-- <th>Membership Plan</th> -->
+                                            <!-- <th>IATA or CLIA Number</th> -->
                                             <th>IATA or CLIA Number</th>
-                                            <th>Personal Number</th>
                                             <th>Total Users</th>
                                             <th>Action</th>
                                         </tr>
@@ -86,13 +86,13 @@
                                         @if (count($MasterUser) > 0)
                                             @foreach ($MasterUser as $value)
                                                 <tr>
-                                                    <td>{{ $value->user_agencies_name }}</td>
-                                                    <td>{{ $value->user_first_name . ' ' . $value->user_last_name }}
+                                                    <td>{{ $value->users_agencies_name }}</td>
+                                                    <td>{{ $value->users_first_name . ' ' . $value->users_last_name }}
                                                     </td>
-                                                    <td>{{ $value->user_email }}</td>
+                                                    <td>{{ $value->users_email }}</td>
                                                     <td>{{ $value->plan ? $value->plan->sp_name : 'No Plan' }}</td>
-                                                    <td>{{ $value->user_iata_clia_number ?? '' }}</td>
-                                                    <td>{{ $value->user_iata_number ?? '' }}</td>
+                                                    <!-- <td>{{ $value->user_iata_clia_number ?? '' }}</td> -->
+                                                    <td>{{ $value->users_iata_number ?? '' }}</td>
                                                     <td>{{ $value->totalUserCount ?? 0 }}</td>
 
                                                     {{-- <td>

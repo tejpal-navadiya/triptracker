@@ -45,7 +45,7 @@
                             <h3 class="card-title">Edit Agencies</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('businessdetails.update', $user->id) }}" method="POST">
+                        <form method="POST" action="{{ route('businessdetails.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             {{-- @method('PUT') --}}
 
@@ -55,12 +55,12 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="tr_agent_id">Company Name<span
+                                            <label for="tr_agent_id">Agencies Name<span
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="user_agencies_name"
-                                                placeholder="Enter agency Name" name="user_agencies_name" autofocus
+                                                placeholder="Enter agency Name" name="users_agencies_name" autofocus
                                                 autocomplete="user_agencies_name"
-                                                value="{{ $user->user_agencies_name }}" />
+                                                value="{{ $userdetails->users_agencies_name }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_agencies_name')" />
                                         </div>
@@ -72,9 +72,9 @@
                                             <x-input-label for="tr_name" :value="__('Host Of Franchise Name')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="user_franchise_name"
-                                                placeholder="Enter agency Name" name="user_franchise_name" autofocus
+                                                placeholder="Enter agency Name" name="users_franchise_name" autofocus
                                                 autocomplete="user_franchise_name"
-                                                value="{{ $user->user_franchise_name }}" />
+                                                value="{{ $userdetails->users_franchise_name }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('user_franchise_name')" />
                                         </div>
                                     </div>
@@ -85,9 +85,9 @@
                                             <x-input-label for="tr_name" :value="__('Consortia Name')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="user_consortia_name"
-                                                placeholder="Enter agency Name" name="user_consortia_name" autofocus
+                                                placeholder="Enter agency Name" name="users_consortia_name" autofocus
                                                 autocomplete="user_consortia_name"
-                                                value="{{ $user->user_consortia_name }}" />
+                                                value="{{ $userdetails->users_consortia_name }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('user_consortia_name')" />
                                         </div>
                                     </div>
@@ -99,8 +99,8 @@
                                             <label for="tr_agent_id">First Name<span
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="user_first_name"
-                                                placeholder="Enter Name" name="user_first_name" autofocus
-                                                autocomplete="user_first_name" value="{{ $user->user_first_name }}" />
+                                                placeholder="Enter Name" name="users_first_name" autofocus
+                                                autocomplete="user_first_name" value="{{ $userdetails->users_first_name }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_first_name')" />
                                         </div>
@@ -110,8 +110,8 @@
                                         <div class="form-group">
                                             <label for="tr_agent_id">Last Name<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="user_last_name"
-                                                placeholder="Enter Name" name="user_last_name" autofocus
-                                                autocomplete="user_last_name" value="{{ $user->user_last_name }}" />
+                                                placeholder="Enter Name" name="users_last_name" autofocus
+                                                autocomplete="user_last_name" value="{{ $userdetails->users_last_name }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_last_name')" />
                                         </div>
@@ -123,8 +123,8 @@
                                             <label for="tr_agent_id">Email Address<span
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="user_email"
-                                                placeholder="Enter Email Address" name="user_email" autofocus
-                                                autocomplete="user_email" value="{{ $user->user_email }}" />
+                                                placeholder="Enter Email Address" name="users_email" autofocus
+                                                autocomplete="user_email" value="{{ $userdetails->users_email }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('user_email')" />
                                         </div>
                                     </div>
@@ -136,19 +136,19 @@
                                     <label class="form-label">Select IATA or CLIA Number</label>
                                     <span class="text-danger">*</span>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="user_iata_clia_number" id="clia_iata_option" value="IATA or CLIA Number" {{ $user->user_iata_clia_number === 'IATA or CLIA Number' ? 'checked' : '' }} >
+                                        <input class="form-check-input" type="radio" name="users_iata_clia_number" id="clia_iata_option" value="IATA or CLIA Number" {{ $userdetails->users_iata_clia_number === 'IATA or CLIA Number' ? 'checked' : '' }} >
                                         <label class="form-check-label" for="clia_iata_option">
                                             IATA or CLIA Number
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="user_iata_clia_number" id="iata_option" value="Personal IATA Number" {{ $user->user_iata_clia_number === 'Personal IATA Number' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="users_iata_clia_number" id="iata_option" value="Personal IATA Number" {{ $userdetails->users_iata_clia_number === 'Personal IATA Number' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="iata_option">
                                             Personal IATA Number
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="user_iata_clia_number" id="clia_option" value="Personal CLIA Number" {{ $user->user_iata_clia_number === 'Personal CLIA Number' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="users_iata_clia_number" id="clia_option" value="Personal CLIA Number" {{ $userdetails->users_iata_clia_number === 'Personal CLIA Number' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="clia_option">
                                             Personal CLIA Number
                                         </label>
@@ -156,17 +156,19 @@
                                 
                                 </div>
 
+                                
+
                                 <div class="col-md-6 col-xl-4">
-                                    <label for="user_agencies_name" class="form-label">Personal Number</label>
+                                    <label for="user_agencies_name" class="form-label">IATA or CLIA Number</label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-append">
                                             <div class="input-group-text">
                                                 <span class="fas fa-regular fa-phone"></span>
                                             </div>
                                         </div>
-                                        <x-text-input type="number" min="0" class="form-control"
-                                                id="user_clia_number" placeholder="Enter Personal Number" name="user_iata_number"
-                                                autofocus autocomplete="user_iata_number" value="{{ $user->user_iata_number }}" />
+                                        <x-text-input type="text" min="0" class="form-control"
+                                                id="user_clia_number" placeholder="Enter Personal Number" name="users_iata_number"
+                                                autofocus autocomplete="user_iata_number" value="{{ $userdetails->users_iata_number }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('user_iata_number')" />
                                     </div>
                                 </div>
@@ -177,23 +179,23 @@
                                             <x-input-label for="user_clia_number" :value="__('Address')" />
 
                                             <x-text-input type="text" min="0" class="form-control"
-                                                id="user_clia_number" placeholder="Enter Address" name="user_address"
-                                                autofocus autocomplete="Address" value="{{ $user->user_address }}" />
+                                                id="user_clia_number" placeholder="Enter Address" name="users_address"
+                                                autofocus autocomplete="Address" value="{{ $userdetails->users_address }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_address')" />
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-xl-4">
                                         <label for="tr_agent_id">Country<span class="text-danger"></span></label>
-                                        <div class="input-group mb-2">
-                                            <select id="tr_country" name="user_country" class="form-control"
+                                        <div class="mb-2 form-group">
+                                            <select id="tr_country" name="users_country" class="form-control select2"
                                                 style="width: 100%;">
                                                 <option value="">Select Country</option>
                                                 <!-- Changed for better usability -->
 
                                                 @foreach ($country as $value)
                                                     <option value="{{ $value->id }}"
-                                                        {{ old('user_country', $user->user_country ?? '') == $value->id ? 'selected' : '' }}>
+                                                        {{ old('user_country', $userdetails->users_country ?? '') == $value->id ? 'selected' : '' }}>
                                                         {{ $value->name }}
                                                     </option>
                                                 @endforeach
@@ -209,13 +211,13 @@
                                     <div class="col-md-6 col-xl-4">
                                         <label for="tr_agent_id">State<span class="text-danger"></span></label>
                                         <div class="input-group mb-2">
-                                            <select id="tr_state" name="user_state" class="form-control"
+                                            <select id="tr_state" name="users_state" class="form-control select2"
                                                 style="width: 100%;">
-                                                <option>Select State</option>
+                                                <option value="" selected>Select State</option>
 
                                                 @foreach ($states as $value)
                                                     <option value="{{ $value->id }}"
-                                                        {{ old('user_state', $user->user_state ?? '') == $value->id ? 'selected' : '' }}>
+                                                        {{ old('user_state', $userdetails->users_state ?? '') == $value->id ? 'selected' : '' }}>
                                                         {{ $value->name }}
                                                     </option>
                                                 @endforeach
@@ -230,12 +232,12 @@
                                         <label for="tr_agent_id">City<span class="text-danger"></span></label>
                                         <div class="input-group mb-2">
                                             <select class="form-control form-control select2" id="lib_city"
-                                                name="user_city" autofocus>
+                                                name="users_city" autofocus>
                                                 <option value="" selected>Select City</option>
 
                                                 @foreach ($cities as $value)
                                                     <option value="{{ $value->id }}"
-                                                        {{ old('user_city', $user->user_city ?? '') == $value->id ? 'selected' : '' }}>
+                                                        {{ old('user_city', $userdetails->users_city ?? '') == $value->id ? 'selected' : '' }}>
                                                         {{ $value->name }}
                                                     </option>
                                                 @endforeach
@@ -258,8 +260,8 @@
                                             </div>
                                             <input type="number"
                                                 class="form-control @error('user_zip') is-invalid @enderror"
-                                                id="user_zip" name="user_zip" placeholder="Enter Zip"
-                                                value="{{ $user->user_zip }}">
+                                                id="user_zip" name="users_zip" placeholder="Enter Zip"
+                                                value="{{ $userdetails->users_zip }}">
                                         </div>
                                         @error('user_zip')
                                             <div class="invalid-feedback mb-2">{{ $message }}</div>
@@ -272,23 +274,22 @@
                                             <div class="mb-3">
                                                 <label for="formFile" class="form-label">Company Logo / Profile Image
                                                     example</label>
-                                                <input class="form-control" name="user_image" type="file"
+                                                <input class="form-control" name="users_image" type="file"
                                                     id="formFile">
                                             </div>
                                             <label for="trvd_document">Only jpg, jpeg, png, and pdf files are
                                                 allowed</label>
-                                            @if ($user->user_image ?? '')
+                                            @if ($userdetails->users_image ?? '')
                                                 @php $userFolder = 'masteradmin/' .$user->buss_unique_id.'_'.$user->user_first_name;
-                                                $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$user->user_image));
+                                                $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$userdetails->users_image));
 
                                                 @endphp
                                                 <a href="{{ $imageurl }}" target="_blank">
-                                                    <div title="{{ $imageurl }}" class="ptm pbm">{{ $user->user_image ?? '' }}</div>
+                                                    <div title="{{ $imageurl }}" class="ptm pbm">{{ $userdetails->users_image ?? '' }}</div>
                                                 </a>
                                             @endif
                                         </div>
                                     </div>
-
 
                                     <div class="col-md-12 text-center py-20">
                                         <a href="{{ route('businessdetails.index') }}"

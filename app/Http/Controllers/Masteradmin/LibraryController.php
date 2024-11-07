@@ -242,21 +242,21 @@ class LibraryController extends Controller
     public function getStates($countryId)
     {
         // $librarystate = States::all();
-        $states = States::where('country_id', $countryId)->get();
+        $states = States::where('country_id', $countryId)->orderBy('name', 'ASC')->get();
 
         return response()->json($states);
     }
 
     public function getCurrencies($countryId)
     {
-        $currencies = Countries::where('id', $countryId)->get();
+        $currencies = Countries::where('id', $countryId)->orderBy('id', 'ASC')->get();
 
         return response()->json($currencies);
     }
 
     public function getCities($stateId)
     {
-        $cities = Cities::where('state_id', $stateId)->get();  // Fetch cities by state_id
+        $cities = Cities::where('state_id', $stateId)->orderBy('name', 'ASC')->get();  // Fetch cities by state_id
         return response()->json($cities);
     }
 
