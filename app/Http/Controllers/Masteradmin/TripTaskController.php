@@ -12,7 +12,6 @@ use App\Models\MasterUserDetails;
 use App\Models\Trip;
 
 
-
 class TripTaskController extends Controller
 {
     //
@@ -29,7 +28,6 @@ class TripTaskController extends Controller
 
         $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
        // dd(\DB::getQueryLog()); 
-
 
         // dd($member);
 

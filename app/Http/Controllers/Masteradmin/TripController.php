@@ -24,7 +24,7 @@ use App\Models\TripTask;
 use App\Models\PredefineTask;
 use App\Models\MasterUserDetails;
 use Carbon\Carbon;
-
+use App\Models\PredefineTaskCategory;
 
 
 class TripController extends Controller
@@ -222,14 +222,11 @@ class TripController extends Controller
         $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "tr_id", $chars = 6);
         $traveler->tr_id = $uniqueId;
 
-
-
         $existingtrip = $traveler->where('tr_email', $validatedData['tr_email'])->first();
 
         if ($existingtrip) {
             return redirect()->back()->withErrors(['tr_email' => 'The email address is already in use.'])->withInput();
         }
-
 
         $traveler->id = $user->users_id;
         $traveler->tr_name = $validatedData['tr_name'];
@@ -323,18 +320,42 @@ class TripController extends Controller
 
         $predefinedTasks = PredefineTask::select('pre_task_name')->where('pre_task_type' , '1')->get();
 
-      foreach ($predefinedTasks as $task) {
-        $tripTask = new TripTask();
-        $tableName = $tripTask->getTable();
-        $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
-  
-          TripTask::create([
-              'id'=>$user->users_id,
-              'trvt_id' =>$uniqueId1,
-             'tr_id' => $traveler->tr_id, 
-              'trvt_name' => $task->pre_task_name, 
-          ]);
-      }
+        foreach ($predefinedTasks as $task) {
+            $tripTask = new TripTask();
+            $tableName = $tripTask->getTable();
+            $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
+    
+            TripTask::create([
+                'id'=>$user->users_id,
+                'trvt_id' =>$uniqueId1,
+                'tr_id' => $traveler->tr_id, 
+                'trvt_name' => $task->pre_task_name, 
+                'trvt_status' => 1
+            ]);
+        }
+
+        $predefinedTasksCategory = PredefineTaskCategory::select('task_cat_name')->get();
+
+        foreach ($predefinedTasksCategory as $taskcate) {
+            // Check if the task category already exists for the trip
+            $exists = TaskCategory::where('task_cat_name', $taskcate->task_cat_name)
+                        ->exists();
+        
+            if (!$exists) {
+                // If it doesn't exist, create a new record
+                $tripTask_category = new TaskCategory();
+                $tableName = $tripTask_category->getTable();
+                $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "task_cat_id", $chars = 6);
+        
+                TaskCategory::create([
+                    'id' => $user->users_id,
+                    'task_cat_id' => $uniqueId1,
+                    'task_cat_name' => $taskcate->task_cat_name,
+                    'task_cat_status' => 1
+                ]);
+            }
+        }
+    
     
 
         if ($request->travelers == "travelers") {
