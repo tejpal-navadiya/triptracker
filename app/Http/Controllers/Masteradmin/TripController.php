@@ -33,7 +33,7 @@ class TripController extends Controller
     public function index(Request $request)
     {
         $user = Auth::guard('masteradmins')->user();
-
+       //dd($user);
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');   
         $trip_agent = $request->input('trip_agent');   
@@ -47,21 +47,58 @@ class TripController extends Controller
 
         $trip_status = TripStatus::get();
 
-        
         $trips = new Trip();
-        
         $tripTable = $trips->getTable();
 
 
-        $tripQuery = Trip::where('tr_status', 1)
+        //dd($agency);
+        if ($user->role_id == '0') {
+
+            $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.id', $user->users_id)
             ->select([
                 $tripTable . '.*', 
                 $masterUserTable . '.users_first_name', 
                 $masterUserTable . '.users_last_name' 
             ]);
+
+        }else{
+
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.id', "!=" , $user->users_id)
+            ->where($tripTable . '.tr_agent_id', $user->users_id)
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+            
+        }
+   
+        // $tripQuery = Trip::where('tr_status', 1)
+        // ->from($tripTable)
+        // ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        // ->where($tripTable . '.id', "!=" , $user->users_id)
+        // ->where($tripTable . '.tr_agent_id', $user->users_id)
+        // ->select([
+        //     $tripTable . '.*', 
+        //     $masterUserTable . '.users_first_name', 
+        //     $masterUserTable . '.users_last_name' 
+        // ]);
+
+        // $tripQuery = Trip::where('tr_status', 1)
+        //     ->from($tripTable)
+        //     ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        //     ->where($tripTable . '.id', "!=" , $user->users_id)
+        //     ->where($tripTable . '.tr_agent_id', $user->users_id)
+        //     ->select([
+        //         $tripTable . '.*', 
+        //         $masterUserTable . '.users_first_name', 
+        //         $masterUserTable . '.users_last_name' 
+        //     ]);
 
             
     $today = Carbon::today('Asia/Kolkata'); 
@@ -593,17 +630,28 @@ class TripController extends Controller
              $trips = new Trip();
              $tripTable = $trips->getTable();  
      
-             $trip = Trip::where('tr_status', 1) 
-                   ->from($tripTable)  
-                   ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                   ->where($tripTable . '.id', $user->users_id)
-                   ->where($tripTable . '.tr_id', $id)
-                   ->select([
-                       $tripTable . '.*',  
-                       $masterUserTable . '.users_first_name', 
-                       $masterUserTable . '.users_last_name'  
-                   ])
-                   ->firstOrFail();
+            //  $trip = Trip::where('tr_status', 1) 
+            //        ->from($tripTable)  
+            //        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+            //        ->where($tripTable . '.id', $user->users_id)
+            //        ->where($tripTable . '.tr_id', $id)
+            //        ->select([
+            //            $tripTable . '.*',  
+            //            $masterUserTable . '.users_first_name', 
+            //            $masterUserTable . '.users_last_name'  
+            //        ])
+            //        ->firstOrFail();
+
+            $trip = Trip::where('tr_status', 1) 
+            ->from($tripTable)  
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+            ->where($tripTable . '.tr_id', $id)
+            ->select([
+                $tripTable . '.*',  
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name'  
+            ])
+            ->firstOrFail();
             
             // dd($trip);
 
@@ -620,7 +668,6 @@ class TripController extends Controller
             $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
                 ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
                 ->where('trtm_status', 1) 
-                ->where($tableName . '.id', $user->users_id)
                 ->where($tableName . '.tr_id', $id)
                 ->get();
 

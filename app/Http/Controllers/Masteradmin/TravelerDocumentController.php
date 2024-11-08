@@ -23,13 +23,13 @@ class TravelerDocumentController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $document = TravelerDocument::where(['id' => $user->users_id,'tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+        $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
         
 
-       // dd($document);
+       //dd($document);
     
         if ($request->ajax()) {
-            $document = TravelerDocument::where(['id' => $user->users_id, 'tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+            $document = TravelerDocument::where([ 'tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
             //  dd($access);
             return Datatables::of($document)
                     ->addIndexColumn()
@@ -55,11 +55,11 @@ class TravelerDocumentController extends Controller
                     ->addColumn('action', function($document) use ($access){
                         $btn = '';
 
-                        if(isset($access['edit_role']) && $access['edit_role']) {
+                        if(isset($access['workflow']) && $access['workflow']) {
                             $btn .= '<a data-id="'.$document->trvd_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editDocument"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
 
-                        if(isset($access['edit_role']) && $access['edit_role']) {
+                        if(isset($access['workflow']) && $access['workflow']) {
 
                             $images = json_decode($document->trvd_document, true);
 
@@ -87,7 +87,7 @@ class TravelerDocumentController extends Controller
                                     </div>';
                         }
                         
-                        if(isset($access['delete_role']) && $access['delete_role']) {
+                        if(isset($access['workflow']) && $access['workflow']) {
                             $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$document->trvd_id.'">
                                         <i class="fas fa-trash delete_icon_grid"></i>
                                         <div class="modal fade" id="delete-role-modal-'.$document->trvd_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

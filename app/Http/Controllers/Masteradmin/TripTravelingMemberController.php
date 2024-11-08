@@ -16,27 +16,27 @@ class TripTravelingMemberController extends Controller
     //
     public function index(Request $request,$id)
     {
-        // dd($id);
+       // dd($id);
       
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $member = TripTravelingMember::where(['id' =>$user->users_id, 'tr_id' => $id])->latest()->get();
+        $member = TripTravelingMember::where(['tr_id' => $id])->latest()->get();
         // dd($roles);
     
         if ($request->ajax()) {
-            $member = TripTravelingMember::where(['id' => $user->users_id, 'tr_id' => $id])->latest()->get();
+            $member = TripTravelingMember::where(['tr_id' => $id])->latest()->get();
             //  dd($access);
             return Datatables::of($member)
                     ->addIndexColumn()
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
                         
-                        if(isset($access['edit_role']) && $access['edit_role']) {
+                        if(isset($access['workflow']) && $access['workflow']) {
                             $btn .= '<a data-id="'.$members->trtm_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
                         
-                        if(isset($access['delete_role']) && $access['delete_role']) {
+                        if(isset($access['workflow']) && $access['workflow']) {
                             $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members->trtm_id.'">
                                         <i class="fas fa-trash delete_icon_grid"></i>
                                         <div class="modal fade" id="delete-role-modal-'.$members->trtm_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
