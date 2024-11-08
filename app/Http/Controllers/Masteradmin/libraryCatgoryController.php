@@ -33,6 +33,8 @@ class libraryCatgoryController extends Controller
     //   echo '<pre>';
     //   dump($request->all());
     //   echo '</pre>';
+    
+    // dd($request->all());
 
     $user = Auth::guard('masteradmins')->user();
 

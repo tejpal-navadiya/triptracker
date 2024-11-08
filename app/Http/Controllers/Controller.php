@@ -36,7 +36,7 @@ class Controller extends BaseController
         return $randomStr;
     }
 
-    protected function handleImageUpload(Request $request, $type, $currentImages = null, $directory = 'default_directory', $userFolder = '')
+     protected function handleImageUpload(Request $request, $type, $currentImages = null, $directory = 'default_directory', $userFolder = '')
     {
         if ($userFolder) {
             $directory = $userFolder . '/' . $directory;
@@ -88,6 +88,7 @@ class Controller extends BaseController
     
         return $currentImages; // Return current images if no new file is uploaded
     }
+
 
     public function CreateTable($id)
     {
@@ -452,7 +453,7 @@ class Controller extends BaseController
             if (!Schema::hasTable($storeId.'_tc_library_category')){   
                 Schema::create($storeId.'_tc_library_category', function (Blueprint $table) use ($storeId) {
                     $table->string('lib_cat_id')->unique()->primary();
-     $table->string('id')->nullable()->default(0);
+                    $table->string('id')->nullable()->default(0);
                     $table->string('lib_cat_name')->nullable();
                     $table->tinyInteger('lib_cat_status')->default(0)->nullable();
                     $table->timestamps();

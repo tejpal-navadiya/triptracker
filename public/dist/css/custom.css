@@ -2826,6 +2826,8 @@ button.btn.btn-info {
 .libary-img{
     position: relative;
     width: 100%;
+    max-height: 200px;
+    min-height: 200px;
 }
 .libary-name{
     font-size: 20px;

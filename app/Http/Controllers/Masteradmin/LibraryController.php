@@ -37,19 +37,17 @@ class LibraryController extends Controller
         $librarystate = States::all();
 
 
-        return view(
-            'masteradmin.library.create',
-            compact(
+        return view('masteradmin.library.create',compact(
                 'librarycategory',
                 'librarycurrency',
-                'librarystate',
-
+                'librarystate'
             )
         );
     }
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
         $dynamicId = $user->users_id;
@@ -58,12 +56,7 @@ class LibraryController extends Controller
         $validatedData = $request->validate([
             'lib_category' => 'required|string',
 
-            'lib_name' => [
-            'required',         
-            'string',          
-            'max:255',         
-            'regex:/^[a-zA-Z\s\-]+$/', 
-            ],
+            'lib_name' => 'required|string',
 
             'tag_name' => 'nullable|string',
             'lib_basic_information' => 'nullable|string',
@@ -84,18 +77,17 @@ class LibraryController extends Controller
 
 
 
-        if ($request->hasFile('lib_image')) {
 
-            if (is_array($request->file('lib_image'))) {
-                 
+        if ($request->hasFile('lib_image')) {
+        
+
                 $userFolder = session('userFolder');
                 $documents_images =  $this->handleImageUpload($request, 'lib_image', null, 'library_image', $userFolder);
 
                 $documentimg = json_encode($documents_images);
 
-            }
-        }
-
+            
+        } 
 
         $library = new Library();
 
@@ -109,14 +101,9 @@ class LibraryController extends Controller
         $library->lib_name = $validatedData['lib_name'];
         $library->tag_name = $validatedData['tag_name'];
 
-       
         $library->lib_basic_information = $validatedData['lib_basic_information'];
 
-       // $library->lib_image = $libraryimg;
-
         $library->lib_image = $documentimg ?? '';
-
-      
 
         $library->lib_status = 1;
 
@@ -182,17 +169,12 @@ class LibraryController extends Controller
     public function update(Request $request, $id)
     {
         $library = Library::where('lib_id', $id)->firstOrFail();
-
+        // dd($request->lib_image);
         $validatedData = $request->validate(
             [
                 'lib_category' => 'required|string',
                 
-            'lib_name' => [
-                'required',         
-                'string',          
-                'max:255',         
-                'regex:/^[a-zA-Z\s\-]+$/', 
-                ],
+            'lib_name' => 'required|string',
 
                 'tag_name' => 'nullable|string',
                 'lib_currency' => 'nullable|string',
@@ -203,16 +185,16 @@ class LibraryController extends Controller
                 'lib_basic_information' => 'nullable|string',
                 'lib_sightseeing_information' => 'nullable|string',
                 'lib_image' => 'nullable',
-                'lib_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
+                'lib_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf',
             ],
             [
                 'lib_image.nullable' => 'The Document is required.',
                 'lib_image.*.image' => 'The Document must be an image.',
-                'lib_image.*.mimes' => 'The Document must be a file of type: jpeg, png, jpg, gif, svg.',
+                'lib_image.*.mimes' => 'The Document must be a file of type: jpeg, png, jpg',
                 'lib_image.*.max' => 'The Document may not be greater than 2048 kilobytes.',
             ]
         );
-
+        
         $document_images = [];
 
         if ($library->lib_image) {
@@ -228,6 +210,7 @@ class LibraryController extends Controller
             // Upload multiple images
             $newImages = $this->handleImageUpload($request, 'lib_image', null, 'library_image', $userFolder);
             $document_images = array_merge($document_images, $newImages);
+            //dd($document_images);
         }
         $validatedData['lib_image'] = $document_images;
         
@@ -280,7 +263,7 @@ class LibraryController extends Controller
 
         \MasterLogActivity::addToLog('Master Admin Library Deleted.');
 
-        return redirect()->route(route: 'library.index')->with('success', 'Library deleted successfully');
+        return redirect()->route('library.index')->with('success', 'Library deleted successfully');
     }
 
     public function show($id)

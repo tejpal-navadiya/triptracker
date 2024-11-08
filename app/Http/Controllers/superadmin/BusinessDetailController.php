@@ -27,7 +27,7 @@ class BusinessDetailController extends Controller
     {
         $MasterUser = MasterUser::with('plan')->get();
 
-        //dd($MasterUser);
+       
 
         $MasterUser->each(function ($user) {
 
@@ -39,14 +39,25 @@ class BusinessDetailController extends Controller
 
             $user->totalUserCount = $totalUserCount;
 
-            $userdetails = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->firstOrFail();
-            $user->users_agencies_name = $userdetails->users_agencies_name ?? '';
-            $user->users_first_name = $userdetails->users_first_name ?? '';
-            $user->users_last_name = $userdetails->users_last_name ?? '';
-            $user->users_email = $userdetails->users_email ?? '';
-            $user->users_iata_number = $userdetails->users_iata_number ?? '';
+            $userdetails = $userDetails->where(['users_email' => $user->user_email, 'role_id' => '0'])->first();
+
+            if ($userdetails) {
+                $user->users_agencies_name = $userdetails->users_agencies_name ?? '';
+                $user->users_first_name = $userdetails->users_first_name ?? '';
+                $user->users_last_name = $userdetails->users_last_name ?? '';
+                $user->users_email = $userdetails->users_email ?? '';
+                $user->users_iata_number = $userdetails->users_iata_number ?? '';
+            } else {
+                $user->users_agencies_name = '';
+                $user->users_first_name = '';
+                $user->users_last_name = '';
+                $user->users_email = '';
+                $user->users_iata_number = '';
+            }
 
         });
+        
+        //  dd($MasterUser);
         return view('superadmin.businessdetails.index')->with('MasterUser', $MasterUser);
     }
 
@@ -59,7 +70,7 @@ class BusinessDetailController extends Controller
 
         $udetail = $userDetails->where('users_email', '!=', $user->user_email)->get();
 
-        $userdetailss = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->firstOrFail();
+        $userdetailss = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->first();
 
         //dd($udetail);
 
@@ -89,29 +100,29 @@ class BusinessDetailController extends Controller
     }
 
 
-    public function edit($id) {
+       public function edit($id) {
 
         $user = MasterUser::findOrFail($id);
        
-        $userDetails = new MasterUserDetails();
-        $userDetails->setTableForUniqueId($user->buss_unique_id);
+        $userDetailss = new MasterUserDetails();
+        $userDetailss->setTableForUniqueId($user->buss_unique_id);
     
-        $udetail = $userDetails->where('users_email', '!=', $user->user_email)->get();
+        $udetail = $userDetailss->where('users_email', '!=', $user->user_email)->get();
 
-        $userdetails = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->firstOrFail();
+        $userdetails = $userDetailss->where(['users_email' => $user->user_email, 'role_id' => 0])->firstOrFail();
         // dd($userdetails);
         $country = Countries::all();
     
-        $selectedCountryId = $user->user_country;
+        $selectedCountryId = $userdetails->users_country;
 
         $states = States::where('country_id', $selectedCountryId)->orderBy('name', 'ASC')->get();
     
-        $selectedStateId = $user->user_state;
+        $selectedStateId = $userdetails->users_state;
     
         $cities = Cities::where('state_id', $selectedStateId)->orderBy('name', 'ASC')->get();
 
     
-        $totalUserCount = $userDetails->where('users_email', '!=', $user->user_email)->count();
+        $totalUserCount = $userDetailss->where('users_email', '!=', $user->user_email)->count();
         $user->totalUserCount = $totalUserCount;
     
         $tableName = $user->buss_unique_id . '_tc_users_role';
@@ -151,9 +162,9 @@ public function update(Request $request, $id)
             'max:254'
         ],        
         'users_zip' => 'nullable', 'string', 'max:255',
-        'users_country' => 'nullable|string',
-        'users_state' => 'nullable|string',
-        'users_city' => 'nullable|string',
+        'users_country' => 'nullable',
+        'users_state' => 'nullable',
+        'users_city' => 'nullable',
 
         'users_image' => 'nullable',
         'users_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
@@ -172,9 +183,7 @@ public function update(Request $request, $id)
         'users_image.max' => 'Image size must not exceed 2MB.',
     ]);
 
-    $validatedData['users_country'] = $validatedData['users_country'] ?? '';
-    $validatedData['users_state'] = $validatedData['users_state'] ?? '';
-    $validatedData['users_city'] = $validatedData['users_city'] ?? '';
+    
 
     $userdetails->updated_at = now(); 
 

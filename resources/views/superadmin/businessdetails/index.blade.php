@@ -77,6 +77,7 @@
                                             <!-- <th>IATA or CLIA Number</th> -->
                                             <th>IATA or CLIA Number</th>
                                             <th>Total Users</th>
+                                            <th>Created Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -103,7 +104,7 @@
                                                         @endif
                                                     </td> --}}
                                                     {{-- <!-- <td>{{ $value->user_status }}</td> --> --}}
-                                                    {{-- <!-- <td>{{ $value->created_at }}</td> --> --}}
+                                                     <td>{{ $value->created_at }}</td>
                                                     {{-- <td>{{ $value->updated_at }}</td> --}}
                                                     <td>
                                                         <ul class="navbar-nav ml-auto float-sm-right">

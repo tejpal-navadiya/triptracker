@@ -230,7 +230,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
 
        //Library Delete Image
-       Route::get('/library/{id}/image/{image}', [LibraryController::class, 'deleteImage'])->name('library.image.delete');
+       Route::post('/library/{id}/image/{image}', [LibraryController::class, 'deleteImage'])->name('library.image.delete');
 
        //Library View 
        //Route::get('/library/test', [LibraryController::class, 'view'])->name('masteradmin.library.test');

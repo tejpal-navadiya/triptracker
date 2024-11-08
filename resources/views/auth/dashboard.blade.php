@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <!-- ./col -->
-                    <div class="col-lg-2 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <!-- small box -->
                         <div class="small-box bg-invoices">
                             <div class="dash_board_icon" style="--bgcolor: #22EB45"><i

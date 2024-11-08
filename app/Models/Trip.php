@@ -60,6 +60,19 @@ class Trip extends Model
         return $this->belongsTo(TripStatus::class, 'status', 'tr_status_id');
     }
 
+    public function country()
+    {
+        return $this->belongsTo(Countries::class, 'tr_country', 'id');
+    }
 
+    public function state()
+    {
+        return $this->belongsTo(States::class, 'tr_state', 'id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(Cities::class, 'tr_city', 'id');
+    }
     
 }

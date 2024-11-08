@@ -137,7 +137,6 @@ class TripController extends Controller
                 'required',         
                 'string',          
                 'max:255',         
-                'regex:/^[a-zA-Z\s\-]+$/', 
                 ],
 
             'tr_agent_id' => 'required|string',
@@ -146,7 +145,6 @@ class TripController extends Controller
                 'required',         
                 'string',          
                 'max:255',         
-                'regex:/^[a-zA-Z\s\-]+$/', 
                 ],
     
             'tr_dob' => 'nullable|string',
@@ -323,7 +321,7 @@ class TripController extends Controller
             }
         }
 
-      $predefinedTasks = PredefineTask::select( 'pre_task_name')->get();
+        $predefinedTasks = PredefineTask::select('pre_task_name')->where('pre_task_type' , '1')->get();
 
       foreach ($predefinedTasks as $task) {
         $tripTask = new TripTask();
@@ -395,7 +393,6 @@ class TripController extends Controller
                 'required',         
                 'string',          
                 'max:255',         
-                'regex:/^[a-zA-Z\s\-]+$/', 
                 ],
 
             'tr_agent_id' => 'required|string',
@@ -404,7 +401,6 @@ class TripController extends Controller
                 'required',         
                 'string',          
                 'max:255',         
-                'regex:/^[a-zA-Z\s\-]+$/', 
                 ],
     
             'tr_dob' => 'nullable|string',
@@ -490,6 +486,28 @@ class TripController extends Controller
                 $travelerItem->save();
             }
         }
+
+        if (isset($validatedData['status'])) {
+            $predefinedTasks = PredefineTask::select('pre_task_name')->where('pre_task_type', $validatedData['status'])->get();
+        
+            $existingTasks = TripTask::where('tr_id', $id)->pluck('trvt_name')->toArray();
+        
+            foreach ($predefinedTasks as $task) {
+                if (!in_array($task->pre_task_name, $existingTasks)) {
+                    $tripTask = new TripTask();
+                    $tableName = $tripTask->getTable();
+                    $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
+        
+                    TripTask::create([
+                        'id' => $user->users_id,
+                        'trvt_id' => $uniqueId1,
+                        'tr_id' => $id,
+                        'trvt_name' => $task->pre_task_name,
+                    ]);
+                }
+            }
+        }
+      
         if ($request->travelers == "travelers") {
             \MasterLogActivity::addToLog('Master Admin Travelers Updated.');
 
@@ -525,8 +543,10 @@ class TripController extends Controller
     {
         // dd()
         $user = Auth::guard('masteradmins')->user();
-        $trip = Trip::where('tr_id', $id)->firstOrFail();
-        $triptableName = $trip->getTable();
+        
+        $trip_details = Trip::where('tr_id', $id)->firstOrFail();
+        $triptableName = $trip_details->getTable();
+
 
         
         $taskCategory = new TaskCategory();
@@ -556,13 +576,15 @@ class TripController extends Controller
                    ->from($tripTable)  
                    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
                    ->where($tripTable . '.id', $user->users_id)
+                   ->where($tripTable . '.tr_id', $id)
                    ->select([
                        $tripTable . '.*',  
                        $masterUserTable . '.users_first_name', 
                        $masterUserTable . '.users_last_name'  
                    ])
                    ->firstOrFail();
-
+            
+            // dd($trip);
 
 
                    
@@ -592,7 +614,7 @@ class TripController extends Controller
 
         //dd($tripTraveling);
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id'));
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','trip_details'));
     }
 
     public function travelersDetails(): View
@@ -655,7 +677,10 @@ class TripController extends Controller
         // dd()
         $user = Auth::guard('masteradmins')->user();
 
-        $trip = Trip::where('tr_id', $id)->firstOrFail();
+        $trip = Trip::with(['country','state','city'])
+        ->where('tr_id', $id)
+        ->firstOrFail();
+
         $triptableName = $trip->getTable();
 
         $tripTraveling = new TripTravelingMember();

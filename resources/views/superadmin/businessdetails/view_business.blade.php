@@ -53,23 +53,23 @@
                                                 <tbody>
                                                     <tr>
                                                         <td><strong>Agency Name :</strong></td>
-                                                        <td>{{ $userdetailss->users_agencies_name }}</td>
+                                                        <td>{{ $userdetailss->users_agencies_name ?? ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Host Of Franchise Name :</strong></td>
-                                                        <td>{{ $userdetailss->users_franchise_name }}</td>
+                                                        <td>{{ $userdetailss->users_franchise_name ?? '' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Consortia Name :</strong></td>
-                                                        <td>{{ $userdetailss->users_consortia_name }}</td>
+                                                        <td>{{ $userdetailss->users_consortia_name ?? '' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Name :</strong></td>
-                                                        <td>{{ $userdetailss->users_first_name }}</td>
+                                                        <td>{{ $userdetailss->users_first_name ?? ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Email :</strong></td>
-                                                        <td>{{ $userdetailss->users_email }}</td>
+                                                        <td>{{ $userdetailss->users_email ?? ''}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -78,8 +78,14 @@
                                             <table class="table estimate_detail_table">
                                                 <tbody>
                                                     <tr>
-                                                        <td><strong>{{ $userdetailss->users_iata_clia_number ? $user->user_iata_clia_number : 'IATA or CLIA Number' }} :</strong></td>
-                                                        <td>{{ $userdetailss->users_iata_number ?? ''}}</td>
+                                                    <td><strong>
+                                                        @if($userdetailss->users_iata_clia_number ?? '')
+                                                            {{ $userdetailss->users_iata_clia_number ? $userdetailss->users_iata_clia_number : 'IATA or CLIA Number' }}
+                                                        @else
+                                                            {{ $userdetailss->users_iata_number ?? '' }}
+                                                        @endif
+                                                    :</strong></td>
+                                                        
                                                     </tr>
                                                     
                                                     <tr>
@@ -88,7 +94,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Address :</strong></td>
-                                                        <td>{{ $userdetailss->users_address }}</td>
+                                                        <td>{{ $userdetailss->users_address ?? '' }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -131,11 +137,11 @@
                                                     {{ $detail->users_last_name ?? '' }}</td>
 
                                                 <td>{{ $detail->users_email }}</td>
-                                                <td>{{ $detail->users_phone }}</td>
+                                                <td>{{ $detail->users_phone ?? $detail->user_emergency_phone_number }}</td>
                                                 <td>{{ $detail->role_name }}</td>
                                                 <td>{{ $detail->updated_at }}</td>
                                                 <td>
-                                                    @if ($detail->users_status == 0)
+                                                    @if ($detail->users_status == 1)
                                                         <span class="status_btn converted_status"> Active </span>
                                                     @else
                                                         <span class="status_btn overdue_status">Inactive</span>
