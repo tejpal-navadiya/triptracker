@@ -94,7 +94,7 @@ class libraryCatgoryController extends Controller
         ]);
     
         // Update the library record
-        $library->update($validatedData);
+        $library->where('lib_cat_id', $id)->update($validatedData);
     
         \MasterLogActivity::addToLog('Master Admin Library Category Updated.');
     

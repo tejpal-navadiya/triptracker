@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Masteradmin\TaskCategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\superadmin\PlanController;
@@ -299,6 +300,8 @@ Route::group(['prefix' => $busadminRoute], function () {
          Route::get('/view-travelers/{id}', [TripController::class, 'viewDetails'])->name('masteradmin.travelers.view');
          
 
+        //task category
+        Route::resource('task-category', TaskCategoryController::class);
 
 
     });

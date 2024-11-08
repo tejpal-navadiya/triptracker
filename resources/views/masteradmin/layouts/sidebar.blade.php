@@ -89,6 +89,21 @@
                             </li>
                         @endif
 
+                        @if (isset($access['view_role']) && $access['view_role'])
+                            <li class="nav-item">
+                                <a href="{{ route('task-category.index') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h*') ||
+                                    request()->is($busadminRoutes . '/h/*')
+                                        ? 'active'
+                                        : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Tasks Category</p>
+                                </a>
+                            </li>
+                        @endif
+
+
                     </ul>
                 </li>
 
