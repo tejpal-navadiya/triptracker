@@ -118,7 +118,6 @@
                                             <x-text-input type="email" class="form-control" id="tr_email"
                                                 placeholder="Enter Email Address" name="tr_email" autofocus
                                                 autocomplete="tr_email" value="{{ old('tr_email') }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">

@@ -52,9 +52,9 @@ class AuthenticatedSessionController extends Controller
         Cache::forget('web_user_' . Auth::guard('web')->id());
 
 
-        // $request->session()->invalidate();
+        $request->session()->invalidate();
 
-        // $request->session()->regenerateToken();
+        $request->session()->regenerateToken();
 
         return redirect('/admin/login/');
     }

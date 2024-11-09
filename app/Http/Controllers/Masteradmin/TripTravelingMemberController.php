@@ -16,12 +16,12 @@ class TripTravelingMemberController extends Controller
     //
     public function index(Request $request,$id)
     {
-       // dd($id);
+        // dd($id);
       
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $member = TripTravelingMember::where(['tr_id' => $id])->latest()->get();
+        $member = TripTravelingMember::where([ 'tr_id' => $id])->latest()->get();
         // dd($roles);
     
         if ($request->ajax()) {
@@ -130,7 +130,7 @@ class TripTravelingMemberController extends Controller
         // dd($trtm_id);
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
-        $member = TripTravelingMember::where(['id' => $user->users_id, 'tr_id' => $id, 'trtm_id' => $trtm_id])->firstOrFail();
+        $member = TripTravelingMember::where(['tr_id' => $id, 'trtm_id' => $trtm_id])->firstOrFail();
 
         // dd($member);
         if($member)
@@ -155,9 +155,9 @@ class TripTravelingMemberController extends Controller
                 'trtm_age.required' => 'Age is required',
             ]);
 
-                $member->where('trtm_id' , $trtm_id)->update($validatedData);
+                $member->where(['tr_id' => $id, 'trtm_id' => $trtm_id])->update($validatedData);
 
-                $member->save();
+                // $member->save();
 
                 \MasterLogActivity::addToLog('Master Admin Trip Member is Updated.');
     

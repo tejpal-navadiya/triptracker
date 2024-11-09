@@ -28,7 +28,6 @@ class TripTaskController extends Controller
 
 
         $member = TripTask::where(['tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
-       // dd($member);
        // dd(\DB::getQueryLog()); 
 
 
@@ -36,7 +35,7 @@ class TripTaskController extends Controller
 
     
         if ($request->ajax()) {
-            $member = TripTask::where([ 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
+            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
             //  dd($access);
 
             return Datatables::of($member)
@@ -50,7 +49,30 @@ class TripTaskController extends Controller
                     ->addColumn('trvt_category', function($category) {
                         return $category->tripCategory->task_cat_name ?? '';
                     })
-
+                    ->addColumn('trvt_date', function($trvt_date) {
+                        if (isset($trvt_date->trvt_date) && $trvt_date->trvt_date) {
+                            $trvt_date = \Carbon\Carbon::parse($trvt_date->trvt_date)->format('M d, Y');
+                        } else {
+                            $trvt_date = '';
+                        }
+                    
+                        return $trvt_date;
+                    })
+                    ->addColumn('task_status_name', function($document) {
+                        $task_status_name = $document->taskstatus->ts_status_name ?? '';
+                        
+                        return $task_status_name;
+                    })
+                    
+                    ->addColumn('trvt_due_date', function($trvt_due_date) {
+                        if (isset($trvt_due_date->trvt_due_date) && $trvt_due_date->trvt_due_date) {
+                            $trvt_due_date = \Carbon\Carbon::parse($trvt_due_date->trvt_due_date)->format('M d, Y');
+                        } else {
+                            $trvt_due_date = '';
+                        }
+                    
+                        return $trvt_due_date;
+                    })
 
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
@@ -163,7 +185,7 @@ class TripTaskController extends Controller
     $dynamicId = $user->users_id; 
 
     // Fetch the existing task
-    $task = TripTask::where(['id' => $dynamicId, 'tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
+    $task = TripTask::where(['tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
 
     if ($task) {
         // Validate request data
@@ -193,8 +215,8 @@ class TripTaskController extends Controller
         }
 
         // Update task with validated data
-        $task->fill($validatedData);
-        $task->save();
+        $task->where(['tr_id' => $tr_id, 'trvt_id' => $trvt_id])->update($validatedData);
+        // $task->save();
 
         \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
 
@@ -440,11 +462,11 @@ class TripTaskController extends Controller
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
-                    if(isset($access['workflow']) && $access['workflow']) {
+                    if(isset($access['edit_role']) && $access['edit_role']) {
                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
-                    if (isset($access['workflow']) && $access['workflow']) {
+                    if (isset($access['delete_role']) && $access['delete_role']) {
                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
                                     <div class="modal fade" id="delete-role-modal-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -518,11 +540,11 @@ class TripTaskController extends Controller
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
                         
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['edit_role']) && $access['edit_role']) {
                             $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
                         
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['delete_role']) && $access['delete_role']) {
                             $btn .= '<a data-toggle="modal" data-target="#delete-role-modal1-'.$members->trvt_id.'">
                                         <i class="fas fa-trash delete_icon_grid"></i>
                                         <div class="modal fade" id="delete-role-modal1-'.$members->trvt_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

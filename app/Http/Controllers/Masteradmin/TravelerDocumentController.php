@@ -26,10 +26,10 @@ class TravelerDocumentController extends Controller
         $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
         
 
-       //dd($document);
+       // dd($document);
     
         if ($request->ajax()) {
-            $document = TravelerDocument::where([ 'tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+            $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
             //  dd($access);
             return Datatables::of($document)
                     ->addIndexColumn()

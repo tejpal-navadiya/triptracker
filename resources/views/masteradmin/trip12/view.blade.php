@@ -48,8 +48,8 @@
                             <li class="nav-item"><a class="nav-link" href="#Tasksinfo" data-toggle="tab">Tasks</a></li>
                             <li class="nav-item"><a class="nav-link" href="#Documentsinfo" data-toggle="tab">Documents</a>
                             </li>
-                            <!-- <li class="nav-item"><a class="nav-link" href="#Emailsinfo" data-toggle="tab">Related Emails</a>
-                            </li> -->
+                            <li class="nav-item"><a class="nav-link" href="#Emailsinfo" data-toggle="tab">Related Emails</a>
+                            </li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="tab-content px-20">

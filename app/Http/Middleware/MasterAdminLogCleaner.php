@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MasterAdminLogCleaner
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         try {
             MasterLogActivity::deleteOldLogs();

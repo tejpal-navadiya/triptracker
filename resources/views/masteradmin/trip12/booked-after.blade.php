@@ -77,20 +77,20 @@
                     </div>
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Trip Workflow') }}</h1>
+                            <h1 class="m-0">{{ __('Booked Trips (After Booked)') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li>
+                                {{-- <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li> --}}
+                                {{-- <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li> --}}
                             </ol>
                         </div><!-- /.col -->
-                        <div class="col-auto">
+                        {{-- <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['book_trip']) && $access['book_trip'])
                                     <a href="{{ route('trip.create') }}" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Trip</button></a>
                                 @endif
                             </ol>
-                        </div><!-- /.col -->
+                        </div><!-- /.col --> --}}
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -128,33 +128,53 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($trip as $value)
+                                            @foreach ($trip as $value)
                                                 <tr>
-                                                    <td>{{ $value->tr_name ?? ''}}</td>
-                                                    <td>{{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? ''}}</td>
-                                                    <td>{{ $value->tr_traveler_name ?? ''}}</td>
-                                                    <td>{{ $value->tr_value_trip ?? ''}}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }} -
-                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-info">
-                                                        {{ $value->trip_status->tr_status_name ?? '' }}</button>
+                                                    <td>{{ $value->tr_name ?? '' }}</td>
+                                                    <td>{{ $value->users_first_name ?? '' }}
+                                                        {{ $value->users_last_name ?? '' }}</td>
+                                                    <td>{{ $value->tr_traveler_name ?? '' }}</td>
+                                                    <td>{{ $value->tr_value_trip ?? '' }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
                                                     </td>
 
-
+                                                    @foreach ($tripQuery as $value)
+                                                <tr>
                                                     <td>
+                                                        {{ \Carbon\Carbon::parse($value->tr_start_date ?? now())->format('M d, Y') }}
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? now())->format('M d, Y') }}
+                                                    </td>
+                                                    <td>{{ $value->users_first_name }}</td>
+                                                    <td>{{ $value->users_last_name }}</td>
+                                                    <!-- Add other fields as needed -->
+                                                </tr>
+                                            @endforeach
 
-                                                        <a href="{{ route('trip.view', $value->tr_id) }}"><i
-                                                                class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                                            <td>
+                                                <button type="button" class="btn btn-info">
+                                                    {{ $value->trip_status->tr_status_name ?? '' }}</button>
+                                            </td>
 
-                                                        <a href="{{ route('trip.edit', $value->tr_id) }}"><i
-                                                                class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
-                                                        <a data-toggle="modal"
+                                            <td>
+
+                                                <a href="{{ route('trip.view', $value->tr_id) }}"><i
+                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+
+
+
+
+                                                <a href="{{ route('trip.edit', $value->tr_id) }}"><i
+                                                        class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+
+                                                {{-- <a data-toggle="modal"
                                                             data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i
-                                                                class="fas fa-solid fa-trash delete_icon_grid"></i></a>
+                                                                class="fas fa-solid fa-trash delete_icon_grid"></i></a> --}}
 
-                                                        <div class="modal fade"
+                                                {{-- <div class="modal fade"
                                                             id="delete-product-modal-{{ $value->sale_product_id }}"
                                                             tabindex="-1" role="dialog"
                                                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -167,10 +187,14 @@
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <div class="modal-body pad-1 text-center">
-                                                                            <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                                            <p class="company_business_name px-10"><b>Delete
-                                                                                    Trip</b></p>
-                                                                            <p class="company_details_text">Are You Sure You
+                                                                            <i
+                                                                                class="fas fa-solid fa-trash delete_icon"></i>
+                                                                            <p class="company_business_name px-10">
+                                                                                <b>Delete
+                                                                                    Trip</b>
+                                                                            </p>
+                                                                            <p class="company_details_text">Are You Sure
+                                                                                You
                                                                                 Want to Delete This Trip?</p>
                                                                             <button type="button" class="add_btn px-15"
                                                                                 data-dismiss="modal">Cancel</button>
@@ -182,130 +206,70 @@
                                                                     </form>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach --}}
+                                                        </div> --}}
+                                            </td>
+                                            </tr>
+    @endforeach
+    </tbody>
+    </table>
+    </div>
+    </div><!-- /.card-body -->
+    </div><!-- /.card-->
+    </div>
+    <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 
+    <div class="modal fade" id="ajaxModel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modelHeading"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="Form" name="Form" class="mt-6 space-y-6" enctype="multipart/form-data">
 
-                                            @foreach ($trip as $value)
-                                                <tr>
-                                                    <td>{{ $value->tr_name ?? '' }}</td>
-                                                    <td>{{ $value->users_first_name ?? '' }}
-                                                        {{ $value->users_last_name ?? '' }}</td>
-                                                    <td>{{ $value->tr_traveler_name ?? '' }}</td>
-                                                    <td>{{ $value->tr_value_trip ?? '' }}</td>
-
-                                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
-
-                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
-                                                    </td>
-
-                                                    <td>
-                                                        <button type="button" class="btn btn-info">
-                                                            {{ $value->trip_status->tr_status_name ?? '' }}
-                                                        </button>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ route('trip.view', $value->tr_id) }}"><i
-                                                                class="fas fa-eye edit_icon_grid"></i></a>
-                                                        <a href="{{ route('trip.edit', $value->tr_id) }}"><i
-                                                                class="fas fa-pen edit_icon_grid"></i></a>
-                                                        <a data-toggle="modal"
-                                                            data-target="#delete-product-modal-{{ $value->tr_id }}"><i
-                                                                class="fas fa-trash delete_icon_grid"></i></a>
-
-                                                        <!-- Delete Modal -->
-                                                        <div class="modal fade"
-                                                            id="delete-product-modal-{{ $value->tr_id }}" tabindex="-1"
-                                                            role="dialog">
-                                                            <div class="modal-dialog modal-sm modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <form
-                                                                        action="{{ route('trip.destroy', $value->tr_id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <div class="modal-body text-center">
-                                                                            <p><b>Delete Trip</b></p>
-                                                                            <p>Are you sure you want to delete this trip?
-                                                                            </p>
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                data-dismiss="modal">Cancel</button>
-                                                                            <button type="submit"
-                                                                                class="btn btn-danger">Delete</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-
-
-
-                                        </tbody>
-                                    </table>
+                    <input type="hidden" name="role_id" id="role_id">
+                    <ul id="update_msgList"></ul>
+                    <div class="modal-body">
+                        <div class="row pxy-15 px-10">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="role_name">Role Name</label>
+                                    <input type="text" class="form-control @error('role_name') is-invalid @enderror"
+                                        id="role_name" name="role_name" placeholder="Enter Role Name"
+                                        value="{{ old('role_name') }}" />
+                                    @error('role_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                            </div><!-- /.card-body -->
-                        </div><!-- /.card-->
-                    </div>
-                    <!-- /.row (main row) -->
-                </div><!-- /.container-fluid -->
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
-
-        <div class="modal fade" id="ajaxModel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modelHeading"></h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="Form" name="Form" class="mt-6 space-y-6" enctype="multipart/form-data">
-
-                        <input type="hidden" name="role_id" id="role_id">
-                        <ul id="update_msgList"></ul>
-                        <div class="modal-body">
-                            <div class="row pxy-15 px-10">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="role_name">Role Name</label>
-                                        <input type="text"
-                                            class="form-control @error('role_name') is-invalid @enderror" id="role_name"
-                                            name="role_name" placeholder="Enter Role Name"
-                                            value="{{ old('role_name') }}" />
-                                        @error('role_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
-                                <button type="submit" id="saveBtn" value="create"
-                                    class="add_btn">{{ __('Save Changes') }}</button>
                             </div>
                         </div>
-                    </form>
-                </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
+                            <button type="submit" id="saveBtn" value="create"
+                                class="add_btn">{{ __('Save Changes') }}</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
-        </div>
-        <!-- ./wrapper -->
-    @endsection
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+@endsection
 @endif
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -378,6 +342,7 @@
         $('.filter-text').on('click', function() {
             clearFilters();
         });
+
 
 
         function fetchFilteredData() {

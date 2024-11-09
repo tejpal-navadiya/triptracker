@@ -2,10 +2,10 @@
 <div class="card">
     <div class="col-lg-4 card-body3">
         <div class="card-body">
-            <p class="company_business_name">Name :{{ $trip->tr_traveler_name ?? '' }}</p>
-            <p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p>
-            <p class="company_business_name">Total Person : {{ $trip->tr_num_people ?? '' }}</p>
-            <p class="company_business_name">Phone Number : {{ $trip->tr_phone ?? '' }}</p>
+            <p class="company_business_name">Traveler Name :{{ $trip_details->tr_traveler_name ?? '' }}</p>
+            <p class="company_business_name">Email Address : {{ $trip_details->tr_email ?? '' }}</p>
+            <p class="company_business_name">Total Person : {{ $trip_details->tr_num_people ?? '' }}</p>
+            <p class="company_business_name">Phone Number : {{ $trip_details->tr_phone ?? '' }}</p>
             <!-- <p class="company_business_name">Address : 198-8604 Egestas. Rd. Turkey,87363</p> -->
         </div>
     </div>
@@ -16,13 +16,13 @@
             <div class="col-auto">
                 <h3 class="card-title">Traveling Member Information</h3>
             </div>
-            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveling Member</button></div>
+            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveling
+                    Member</button></div>
         </div>
         <!-- /.card-header -->
         <div class="card-body1">
             <div class="col-md-12 table-responsive pad_table">
-                
-                <table id="tableTraveler" class="table table-hover text-nowrap">
+                <table id="example10" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -32,39 +32,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <?php //dd($member); ?>
-                    @foreach ($member as $value)
-                    <tr>
-                        <td>{{ $value->trtm_first_name }}</td>
-                        <td>{{ $value->trtm_relationship }}</td>
-                        <td>{{ $value->trtm_age }}</td>
 
-                        <td>
-                            <a data-id="{{ $value->trtm_id}}" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>
-
-                            
-                            <a data-toggle="modal" data-target="#delete-role-modal-{{$value->trtm_id}}">
-                                         <i class="fas fa-trash delete_icon_grid"></i>
-                                        <div class="modal fade" id="delete-role-modal-{{$value->trtm_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body pad-1 text-center">
-                                                        <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                         <p class="company_business_name px-10"><b>Delete Traveling Member </b></p>
-                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This Traveling Member ?</p>
-                                                        <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="delete_btn px-15 deleteMemberbtn" data-id="{{$value->trtm_id}}">Delete</button>
-                                                   </div>
-                                                 </div>
-                                             </div>
-                                         </div>
-                                    </a>
-
-
-                        </td>
-                    </tr>
-                    @endforeach
-                        
                     </tbody>
                 </table>
             </div>
@@ -140,7 +108,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 family-member-field">
                             <div class="form-group">
                                 <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
                                 <div class="d-flex">
@@ -205,63 +173,56 @@
         </div>
     </div>
 </div>
-
-<!-- Success Modal -->
-<div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body pad-1 text-center">
-                <i class="fas fa-check-circle success_icon"></i>
-                <p class="company_business_name px-10"><b>Success!</b></p>
-                <p class="company_details_text px-10" id="success-message">Data has been successfully inserted!</p>
-                <button type="button" class="add_btn px-15" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
 <script>
     $(document).ready(function() {
-        // $('#tableTraveler').DataTable();
-        // return;
-    });
-     $(document).ready(function() {
-        var tableTraveler;
-
-        function initializeDataTable() {
-            if ($.fn.dataTable.isDataTable('#tableTraveler')) {
-                tableTraveler.clear().draw();
-
-            } else {
-                tableTraveler = $('#tableTraveler').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        url: "{{ route('masteradmin.family-member.index', $trip_id) }}",
-                        type: 'GET',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    },
-                    columns: [
-                        {
-                            data: null,
-                            name: 'trtm_full_name',
-                            render: function(data, type, row) {
-                                return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
-                            }
-                        },
-                        { data: 'trtm_relationship', name: 'trtm_relationship' },
-                        { data: 'trtm_age', name: 'trtm_age' },
-                        { data: 'action', name: 'action', orderable: false, searchable: false }
-                    ]
-                });
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-        }
-   
+        });
+
+        //datatable list
+        var table = $('#example10').DataTable();
+        table.destroy();
+        //list
+        table = $('#example10').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('masteradmin.family-member.index', $trip_id) }}",
+                type: 'GET',
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                }
+            },
+            columns: [{
+                    data: null,
+                    name: 'trtm_full_name',
+                    render: function(data, type, row) {
+                        return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row
+                            .trtm_middle_name : '') + ' ' + row.trtm_last_name;
+                    }
+                },
+                {
+                    data: 'trtm_relationship',
+                    name: 'trtm_relationship'
+                },
+                {
+                    data: 'trtm_age',
+                    name: 'trtm_age'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+
         //create popup
         $('#createNew').click(function() {
             $('#saveBtn').val("create-product");
@@ -275,53 +236,41 @@
 
         //insert/update data
         $('#saveBtn').click(function(e) {
-
             e.preventDefault();
             $(this).html('Sending..');
 
             var url = '';
             var method = '';
-            var successMessage = '';
-            
+
             if ($('#trtm_id').val() === '') {
                 // Add new data
                 url = "{{ route('masteradmin.family-member.store', $trip_id) }}";
                 method = "POST";
-                successMessage = 'Data has been successfully inserted!'; 
-
             } else {
+                // Update existing data
                 var trtm_id = $('#trtm_id').val();
-                var trip_id = '{{ $trip_id }}'; 
+                var trip_id = '{{ $trip_id }}'; // assuming $trip->tr_id is available in your view
                 var url =
                     "{{ route('masteradmin.family-member.update', [$trip_id, ':trtm_id']) }}";
                 url = url.replace(':trtm_id', trtm_id);
 
                 method = "PATCH";
-                successMessage = 'Data has been successfully updated!';
             }
 
             $.ajax({
                 data: $('#Form').serialize(),
                 url: url,
                 type: method,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                },
                 dataType: 'json',
                 success: function(data) {
-                    if (data && data.success) {
-                    initializeDataTable();
-                    
-                    // tableTraveler.ajax.reload();
-                    $('#success-message').text(successMessage);
-                    $('#success-modal').modal('show');
+                    table.draw();
                     $('#ajaxModel').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
                     $('#ajaxModel').css('display', 'none');
                     $('#saveBtn').html('Save');
                     $('#Form')[0].reset();
-                    }
+
                 },
                 error: function(data) {
                     console.log('Error:', data);
@@ -337,6 +286,7 @@
             $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
                 .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
                 function(data) {
+
                     // console.log(data);
                     $('#modelHeading').html("Edit Traveling Member");
                     $('#saveBtn').val("edit-user");
@@ -375,7 +325,7 @@
                     document.getElementById('traveler-date-icon').addEventListener('click',
                         function() {
                             fromdatepicker.open();
-                    });
+                        });
 
                 });
         });
@@ -391,20 +341,15 @@
             $.ajax({
                 type: "DELETE",
                 url: url,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                },
                 success: function(data) {
-                                       
-                    $('#success-message').text('Data has been successfully Deleted!');
-                    
-                    tableTraveler.ajax.reload();
-                    $('#success-modal').modal('show');
+                    alert(data.success);
 
                     $('.modal').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
                     $('.modal').css('display', 'none');
+
+                    table.draw();
 
                 },
                 error: function(data) {

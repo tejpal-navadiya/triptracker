@@ -12,7 +12,7 @@
         <!-- /.card-header -->
         <div class="card-body">
             <div class="col-md-12 table-responsive pad_table">
-                <table id="TaskDataTable" class="table table-hover text-nowrap">
+                <table id="example11" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Task</th>
@@ -25,37 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach ($task as $taskvalue)
-                    <tr>
-                        <td>{{ $taskvalue->trvt_name ?? ''}}</td>
-                        <td>{{ $taskvalue->tripCategory->task_cat_name ?? '' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($taskvalue->trvt_date)->format('M d, Y')  ?? '' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($taskvalue->trvt_due_date)->format('M d, Y')  ?? '' }}</td>
-                        <td>{{ $taskvalue->trvt_priority ?? '' }}</td>
-                        <td>{{ $taskvalue->taskstatus->ts_status_name ?? '' }}</td>
-                        <td>
-                            <a data-id="{{$taskvalue->trvt_id}}" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>
-                            
-                            <a data-toggle="modal" data-target="#delete-role-modal-{{$taskvalue->trvt_id}}">
-                                <i class="fas fa-trash delete_icon_grid"></i>
-                                <div class="modal fade" id="delete-role-modal-{{$taskvalue->trvt_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body pad-1 text-center">
-                                                <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                <p class="company_business_name px-10"><b>Delete Task </b></p>
-                                                <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
-                                                <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id="{{$taskvalue->trvt_id}}">Delete</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </td>
-                    </tr>
-                    @endforeach
-                        
+
                     </tbody>
                 </table>
             </div>
@@ -98,7 +68,7 @@
                                 <div class="d-flex">
                                     <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
                                         class="form-control select2">
-                                        <option value="">Select Agent</option>
+                                        <option disabled selected>Select Agent</option>
                                         @foreach ($agency_user as $value)
                                             <option value="{{ $value->users_id }}">
                                                 {{ $value->users_first_name }}
@@ -222,21 +192,6 @@
     </div>
 </div>
 
-<!-- Success Modal -->
-<div class="modal fade" id="task-success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body pad-1 text-center">
-                <i class="fas fa-check-circle success_icon"></i>
-                <p class="company_business_name px-10"><b>Success!</b></p>
-                <p class="company_details_text px-10" id="task-success-message">Data has been successfully inserted!</p>
-                <button type="button" class="add_btn px-15" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <?php
 
 // dd($trip_id);
@@ -246,41 +201,98 @@
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
 <script>
-    var TaskDataTable;
-
- 
-
     $(document).ready(function() {
-        
-        function initializeTaskDataTable() {
-    if ($.fn.dataTable.isDataTable('#TaskDataTable')) {
-        TaskDataTable.clear().draw();
-    }else{
-    // Initialize DataTable
-            TaskDataTable = $('#TaskDataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('masteradmin.task.index', $trip_id) }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                    }
-                },
-                columns: [
-                    { data: 'trvt_name', name: 'trvt_name' },
-                    { data: 'trvt_category', name: 'trvt_category' },
-                    { data: 'trvt_date', name: 'trvt_date' },
-                    { data: 'trvt_due_date', name: 'trvt_due_date' },
-                    { data: 'trvt_priority', name: 'trvt_priority' },
-                    { data: 'status_name', name: 'status_name' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false },
-                ]
-            });
-    }
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
- 
-    }
+        //datatable list
+        var table = $('#example11').DataTable();
+        table.destroy();
+
+        //list
+        table = $('#example11').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('masteradmin.task.index', $trip_id) }}",
+                type: 'GET',
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                }
+            },
+            columns: [{
+                    data: 'trvt_name',
+                    name: 'trvt_name'
+                },
+                {
+                    data: 'trvt_category',
+                    name: 'trvt_category'
+                },
+                {
+                    data: 'trvt_date',
+                    name: 'trvt_date'
+                },
+                {
+                    data: 'trvt_due_date',
+                    name: 'trvt_due_date'
+                },
+                {
+                    data: 'trvt_priority',
+                    name: 'trvt_priority'
+                },
+                {
+                    data: 'status_name',
+                    name: 'status_name',
+
+                    // render: function(data, type, row) {
+                    //     let statusIds = data.split(
+                    //         ','); // Split the status string into an array
+                    //     let buttons = '';
+
+                    //     // Generate buttons based on status IDs
+                    //     if (statusIds.includes('1')) {
+                    //         buttons +=
+                    //             '<button class="btn btn-info btn-sm">Task Request</button>';
+                    //     }
+                    //     if (statusIds.includes('2')) {
+                    //         buttons +=
+                    //             '<button class="btn btn-success btn-sm">Task Proposal</button>';
+                    //     }
+                    //     if (statusIds.includes('3')) {
+                    //         buttons +=
+                    //             '<button class="btn btn-warning btn-sm">Task Modification</button>';
+                    //     }
+                    //     if (statusIds.includes('4')) {
+                    //         buttons +=
+                    //             '<button class="btn btn-success btn-sm">Task Accepted</button>';
+                    //     }
+                    //     if (statusIds.includes('5')) {
+                    //         buttons +=
+                    //             '<button class="btn btn-secondary btn-sm">Task Sold</button>';
+                    //     }
+                    //     if (statusIds.includes('6')) {
+                    //         buttons +=
+                    //             '<button class="btn btn-danger btn-sm">Task Lost</button>';
+                    //     }
+                    //     // Add more conditions as needed for different status IDs
+
+                    //     // Return the buttons HTML
+                    //     return buttons ||
+                    //         '<span>No Status</span>'; // Fallback if no button is created
+                    // }
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+
+            ]
+        });
 
         //create task
         $('#createNewTask').click(function() {
@@ -307,39 +319,28 @@
 
             var url = '';
             var method = 'POST'; // Default to POST for new tasks
-            var tasksuccessMessage = '';
+
             if ($('#trvt_id').val() === '') {
                 // Create new task
                 url = "{{ route('masteradmin.task.store', $trip_id) }}";
                 formData.append('_method', 'POST');
-                tasksuccessMessage = 'Data has been successfully inserted!'; 
             } else {
                 // Update existing task
                 var trvt_id = $('#trvt_id').val();
                 url = "{{ route('masteradmin.task.update', [$trip_id, ':trvt_id']) }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
-                tasksuccessMessage = 'Data has been successfully updated!';
             }
 
             $.ajax({
                 data: formData,
                 url: url,
                 type: method,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                },
                 dataType: 'json',
                 contentType: false,
                 processData: false,
                 success: function(data) {
-
-                    // TaskDataTable.ajax.reload();
-                    initializeTaskDataTable()
-                    $('#task-success-message').text(tasksuccessMessage);
-                    
-                    $('#task-success-modal').modal('show');
-
+                    table.draw();
                     $('#ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
@@ -453,23 +454,15 @@
             $.ajax({
                 type: "DELETE",
                 url: url,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                },
                 success: function(data) {
-                    // alert(data.success);
-
-                    $('#task-success-message').text('Data has been successfully Deleted!');
-                    
-                    initializeTaskDataTable();
-                    $('#task-success-modal').modal('show');
-
+                    alert(data.success);
 
                     $('.ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
                     $('.ajaxModelTask').css('display', 'none');
 
+                    table.draw();
 
                 },
                 error: function(data) {
