@@ -81,6 +81,7 @@ class Kernel extends HttpKernel
         'prevent.back.history' => \App\Http\Middleware\PreventBackHistory::class,
         'setUserFolder' => \App\Http\Middleware\SetUserFolder::class,
         'handleAuthErrors' => \App\Http\Middleware\HandleAuthErrors::class,
+        'handle.ajax.session' => \App\Http\Middleware\HandleAjaxSession::class,
 
 
         

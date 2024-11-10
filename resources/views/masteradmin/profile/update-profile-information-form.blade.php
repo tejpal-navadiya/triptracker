@@ -146,6 +146,8 @@
         fetchUser();
 
         function fetchUser() {
+
+            // alert('hii');
             $.ajax({
                 type: "GET",
                 url: "{{ route('masteradmin.profile.fetchUser') }}", 

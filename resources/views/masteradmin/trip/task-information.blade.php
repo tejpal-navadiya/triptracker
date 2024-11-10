@@ -25,6 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                    @if (count($task) > 0)
                     @foreach ($task as $taskvalue)
                     <tr>
                         <td>{{ $taskvalue->trvt_name ?? ''}}</td>
@@ -55,7 +56,9 @@
                         </td>
                     </tr>
                     @endforeach
-                        
+                    @else
+                    <tr class="text-center"><td >No data found!</td></tr>
+                    @endif
                     </tbody>
                 </table>
             </div>

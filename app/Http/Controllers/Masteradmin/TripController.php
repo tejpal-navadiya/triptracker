@@ -44,7 +44,13 @@ class TripController extends Controller
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
         $masterUserTable = $masterUserDetails->getTable();
-        $agency = $masterUserDetails->get();
+
+        if ($user->users_id && $user->role_id == 0) {
+            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
+        } else {
+            $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
+        }
+       // $agency = $masterUserTable->get();
 
         $trip_status = TripStatus::get();
 
@@ -122,7 +128,6 @@ class TripController extends Controller
         return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status'));
     }
 
-
     public function create(): View
     {
 
@@ -134,12 +139,13 @@ class TripController extends Controller
        $agency_users = new MasterUserDetails();
        $agency_users->setTableForUniqueId($user->user_id);
        $tableName = $agency_users->getTable();
-       if($user->users_id && $user->role_id ==0 ){
-            $agency_user = $agency_users->get(); 
-       }else{
-        
-        $agency_user = $agency_users->where('users_id' , $user->users_id)->get(); 
-       }
+       if ($user->users_id && $user->role_id == 0) {
+            $agency_user = $agency_users->where('users_id', '!=', $user->users_id)->get();
+        } else {
+            $agency_user = $agency_users->where('users_id', $user->users_id)->get();
+        }
+    
+
        
        
     //    dd($aency_user);
@@ -361,7 +367,12 @@ class TripController extends Controller
         $agency_users = new MasterUserDetails();
         $agency_users->setTableForUniqueId($user->user_id);
         $tableName = $agency_users->getTable();
-        $agency_users = $agency_users->get();
+        if ($user->users_id && $user->role_id == 0) {
+            $agency_users = $agency_users->where('users_id', '!=', $user->users_id)->get();
+        } else {
+            $agency_users = $agency_users->where('users_id', $user->users_id)->get();
+        }
+    
 
         //dd($tripstatus);
 
@@ -571,7 +582,50 @@ class TripController extends Controller
     public function travelersDetails(): View
     {
         $user = Auth::guard('masteradmins')->user();
-        $trip = Trip::where(['tr_status' => 1, 'id' => $user->users_id])->get();
+        
+        // $trip = Trip::where(['tr_status' => 1, 'id' => $user->users_id])->get();
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+
+        if ($user->users_id && $user->role_id == 0) {
+            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
+        } else {
+            $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
+        }
+
+        $trips = new Trip();
+        
+        $tripTable = $trips->getTable();
+        $specificId = $user->users_id;
+
+        if($user->users_id && $user->role_id ==0 ){
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+
+            ]);
+            
+        }else{
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }
+
+        $trip = $tripQuery->get();
 
         
         return view('masteradmin.traveler.index', compact('trip'));
@@ -586,8 +640,14 @@ class TripController extends Controller
         $agency_users = new MasterUserDetails();
         $agency_users->setTableForUniqueId($user->user_id);
         $tableName = $agency_users->getTable();
- 
-        $agency_user = $agency_users->get(); 
+        
+        // $agency_user = $agency_users->get(); 
+
+        if ($user->users_id && $user->role_id == 0) {
+            $agency_user = $agency_users->where('users_id', '!=', $user->users_id)->get();
+        } else {
+            $agency_user = $agency_users->where('users_id', $user->users_id)->get();
+        }
 
         return view('masteradmin.traveler.create', compact('triptype', 'country','agency_user'));
     }
@@ -616,7 +676,12 @@ class TripController extends Controller
         $agency_users = new MasterUserDetails();
         $agency_users->setTableForUniqueId($user->user_id);
         $tableName = $agency_users->getTable();
-        $agency_users = $agency_users->get();
+        // $agency_users = $agency_users->get();
+        if ($user->users_id && $user->role_id == 0) {
+            $agency_users = $agency_users->where('users_id', '!=', $user->users_id)->get();
+        } else {
+            $agency_users = $agency_users->where('users_id', $user->users_id)->get();
+        }
 
 
 
@@ -659,9 +724,13 @@ class TripController extends Controller
         $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
         $documentType = DocumentType::get();
 
-
+          //last code
+          $member = TripTravelingMember::where(['tr_id' => $id])->get();
+          $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+          
+          $trip_id=$id;
         // dd($trip);
-        return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData'));
+        return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id'));
     }
 
     public function booked_after(Request $request): View

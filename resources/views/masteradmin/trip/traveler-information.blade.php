@@ -33,6 +33,7 @@
                     </thead>
                     <tbody>
                     <?php //dd($member); ?>
+                    @if (count($member) > 0)
                     @foreach ($member as $value)
                     <tr>
                         <td>{{ $value->trtm_first_name }}</td>
@@ -64,7 +65,9 @@
                         </td>
                     </tr>
                     @endforeach
-                        
+                    @else
+                    <tr class="text-center"><td >No data found!</td></tr>
+                    @endif
                     </tbody>
                 </table>
             </div>

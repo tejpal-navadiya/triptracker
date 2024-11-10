@@ -21,6 +21,7 @@
                     </thead>
                     <tbody>
                         <?php //dd($document);?>
+                        @if (count($document) > 0)
                     @foreach ($document as $documentvalue)
                     <tr>
                         <td>
@@ -105,6 +106,9 @@
                         </td>
                     </tr>
                     @endforeach
+                    @else
+                    <tr class="text-center"><td >No data found!</td></tr>
+                    @endif
                     </tbody>
                 </table>
             </div>

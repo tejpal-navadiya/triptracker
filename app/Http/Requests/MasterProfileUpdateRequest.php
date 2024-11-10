@@ -6,6 +6,8 @@ use App\Models\MasterUser;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MasterUserDetails;
+
 class MasterProfileUpdateRequest extends FormRequest
 {
     /**
@@ -15,12 +17,12 @@ class MasterProfileUpdateRequest extends FormRequest
      */
      public function rules(): array
     {
-        $user = Auth::guard('masteradmins')->user();
-        // dd($user );
+
+        // dd($users_id);
         return [
             'users_first_name' => ['required', 'string', 'max:255'],
             'users_last_name' => ['required', 'string', 'max:255'],
-            'users_email' => ['required', 'string', 'max:255'],
+           
             'users_phone' => ['nullable', 'string', 'max:255'],
             'users_bio' => ['required', 'string', 'max:255']
         ];
