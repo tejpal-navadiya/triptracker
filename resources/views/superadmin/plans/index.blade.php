@@ -86,7 +86,7 @@
                                             <!-- <th>Description</th> -->
                                             <th>Amount Monthly</th>
                                             <th>Amount Yearly</th>
-                                            <th>Validity (In Months)</th>
+                                            <!-- <th>Validity (In Months)</th> -->
                                             <th>Create User</th>
                                             <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
                                         </tr>
@@ -101,7 +101,7 @@
                                                     <!-- <td>{{ $value->sp_desc }}</td> -->
                                                     <td>${{ $value->sp_month_amount }}</td>
                                                     <td>${{ $value->sp_year_amount }}</td>
-                                                    <td>{{ $value->sp_month }}</td>
+                                                    <!-- <td>{{ $value->sp_month }}</td> -->
                                                     <td>{{ $value->sp_user }}</td>
 
                                                     <td class="text-right">

@@ -76,10 +76,10 @@
                                                 </div>
                                             @endif
                                         @else
-                                            <img src="../public/dist/img/mainfull-bg.jpg" class="libary-img">
+                                            <img src="../public/dist/img/no_image.jpg" class="libary-img">
                                         @endif
                                     @else
-                                        <img src="../public/dist/img/mainfull-bg.jpg" class="libary-img">
+                                        <img src="../public/dist/img/no_image.jpg" class="libary-img">
                                     @endif
 
                                     <p class="libary-name">{{ $library->lib_name }}</p>

@@ -32,7 +32,14 @@ class LibraryController extends Controller
 
     public function create(): View
     {
-        $librarycategory = LibraryCategory::all();
+        $user = Auth::guard('masteradmins')->user();
+        if($user->users_id && $user->role_id ==0 ){
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->get();
+        }else{
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+        }
+
+      
         $librarycurrency = Countries::all();
         $librarystate = States::all();
 
@@ -147,11 +154,20 @@ class LibraryController extends Controller
 
     public function edit($id)
     {
+        $user = Auth::guard('masteradmins')->user();
+
         $library = Library::where('lib_id', $id)->firstOrFail();
 
         $selectedCountryId = $library->lib_country;
 
-        $categories = LibraryCategory::select('lib_cat_id', 'lib_cat_name')->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->get();
+        }else{
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+        }
+
+
+        // $categories = LibraryCategory::select('lib_cat_id', 'lib_cat_name')->get();
 
         $currencies = Countries::where('id', $selectedCountryId)->get();
 

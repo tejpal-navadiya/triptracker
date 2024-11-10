@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Cities;
 
 
-
 class RegisterController extends Controller
 {
     //
@@ -63,8 +62,13 @@ class RegisterController extends Controller
             'user_zip' => ['nullable', 'string', 'max:255'],
             'sp_id' => ['nullable', 'string', 'max:255'],
             'user_email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.MasterUser::class],
-            'user_password' => ['required', 'string', '', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
-        ],[
+            'user_password' => [
+                'required',
+                'string',
+                Password::min(8)->mixedCase()->letters()->numbers()->symbols(), // Custom password rules
+            ],
+            'password_confirmation' => ['required', 'same:user_password'], // Confirm password must match user_password
+        ], [
             'user_first_name.required' => 'The First Name field is required.',
             'user_agencies_name.required' => 'The Agencies Name field is required.',
             'user_iata_clia_number.required' => 'The IATA or CLIA Number field is required.',
@@ -72,6 +76,7 @@ class RegisterController extends Controller
             'user_email.email' => 'The Email must be a valid email address.',
             'user_email.unique' => 'The Email has already been taken.',
             'user_password.required' => 'The Password field is required.',
+            'password_confirmation.same' => 'The password confirmation does not match.',
         ]);
 
 
@@ -79,7 +84,7 @@ class RegisterController extends Controller
         $plan = Plan::where('sp_id', $request->sp_id)->firstOrFail();
 
         $startDate = Carbon::now();
-        $months = $plan->sp_month;
+        $months = 6;
         $expirationDate = $startDate->addMonths($months);
         $expiryDate = $expirationDate->toDateString();
         $uniqueId = $this->GenerateUniqueRandomString('buss_master_users', 'id', 6);  

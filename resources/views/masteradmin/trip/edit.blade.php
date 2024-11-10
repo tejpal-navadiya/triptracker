@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Edit Trip | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['workflow']) && $access['workflow'])
     @section('content')
         <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 
@@ -49,7 +49,7 @@
                                         <div class="form-group">
                                             <label for="tr_agent_id">Name of Trip<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_name"
-                                                placeholder="Enter Name of Trip" name="tr_name" required autofocus
+                                                placeholder="Enter Name of Trip" name="tr_name" autofocus
                                                 autocomplete="tr_name" :value="old('tr_name', $trip->tr_name ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
                                         </div>
@@ -62,7 +62,7 @@
                                                 @foreach ($agency_users as $value)
                                                     <option value="{{ $value->users_id }}"
                                                         {{ old('tr_agent_id', $trip->tr_agent_id ?? '') == $value->users_id ? 'selected' : '' }}>
-                                                        {{ $value->users_first_name }}
+                                                        {{ $value->users_first_name ?? ''}} {{ $value->users_last_name ?? ''}}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -73,7 +73,7 @@
                                         <div class="form-group">
                                             <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_traveler_name"
-                                                placeholder="Traveler Name" name="tr_traveler_name" required autofocus
+                                                placeholder="Traveler Name" name="tr_traveler_name"  autofocus
                                                 autocomplete="tr_traveler_name" :value="old('tr_traveler_name', $trip->tr_traveler_name ?? '')" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
@@ -102,7 +102,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_age" :value="__('Age')" />
                                             <x-text-input type="text" class="form-control" id="tr_age"
-                                                placeholder="Enter Age" name="tr_age" required autofocus
+                                                placeholder="Enter Age" name="tr_age"  autofocus
                                                 autocomplete="tr_age" :value="old('tr_age', $trip->tr_age ?? '')" readonly />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
                                         </div>
@@ -111,7 +111,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_number" :value="__('Trip Number')" />
                                             <x-text-input type="number" class="form-control" id="tr_number"
-                                                placeholder="Enter Trip Number" name="tr_number" required autofocus
+                                                placeholder="Enter Trip Number" name="tr_number"  autofocus
                                                 autocomplete="tr_number" :value="old('tr_number', $trip->tr_number ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_number')" />
                                         </div>
@@ -120,7 +120,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_email" :value="__('Email Address')" />
                                             <x-text-input type="email" class="form-control" id="tr_email"
-                                                placeholder="Enter Email Address" name="tr_email" required autofocus
+                                                placeholder="Enter Email Address" name="tr_email"  autofocus
                                                 autocomplete="tr_email" :value="old('tr_email', $trip->tr_email ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
                                         </div>
@@ -129,7 +129,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Phone Number')" />
                                             <x-text-input type="number" class="form-control" id="tr_phone"
-                                                placeholder="Enter Phone Number" name="tr_phone" required autofocus
+                                                placeholder="Enter Phone Number" name="tr_phone"  autofocus
                                                 autocomplete="tr_phone" :value="old('tr_phone', $trip->tr_phone ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_phone')" />
                                         </div>
@@ -138,7 +138,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_num_people" :value="__('Number of People')" />
                                             <x-text-input type="text" class="form-control" id="tr_num_people"
-                                                placeholder="Enter Number of People" name="tr_num_people" required
+                                                placeholder="Enter Number of People" name="tr_num_people" 
                                                 autofocus autocomplete="tr_num_people" :value="old('tr_num_people', $trip->tr_num_people ?? '')" readonly />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
                                         </div>
@@ -186,7 +186,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_value_trip" :value="__('Value of trip')" />
                                             <x-text-input type="text" class="form-control" id="tr_value_trip"
-                                                placeholder="Enter Value of trip" name="tr_value_trip" required autofocus
+                                                placeholder="Enter Value of trip" name="tr_value_trip"  autofocus
                                                 autocomplete="tr_value_trip" :value="old('tr_value_trip', $trip->tr_value_trip ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_value_trip')" />
                                         </div>
@@ -196,7 +196,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_desc" :value="__('Description')" />
                                             <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
-                                                required autofocus autocomplete="tr_desc">{{ $trip->tr_desc }}</textarea>
+                                                 autofocus autocomplete="tr_desc">{{ $trip->tr_desc }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
                                         </div>
                                     </div>

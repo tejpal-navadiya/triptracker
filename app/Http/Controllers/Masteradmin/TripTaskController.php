@@ -228,7 +228,6 @@ class TripTaskController extends Controller
 
 
 
-
     
     // public function update(Request $request, $tr_id, $trvt_id)
     // {
@@ -272,6 +271,7 @@ class TripTaskController extends Controller
     //     }
     // }
     
+    
     public function destroy($trip_id, $trvt_id)
     {
         //
@@ -284,6 +284,7 @@ class TripTaskController extends Controller
              
         return response()->json(['success'=>'Record deleted successfully.']);
     }
+
     // public function allDetails(Request $request)
     // {  
                  
@@ -397,6 +398,7 @@ class TripTaskController extends Controller
         $access = view()->shared('access');
         $user = Auth::guard('masteradmins')->user();
         // dD($user);
+
         $task = TripTask::where(['id' => $user->users_id])->with(['trip','tripCategory','taskstatus'])->latest()->first();
 
     
@@ -407,6 +409,7 @@ class TripTaskController extends Controller
         
     
         $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
+        
     
         if ($tripAgent) {
             $tripQuery->where('tr_agent_id', $tripAgent);
@@ -421,9 +424,63 @@ class TripTaskController extends Controller
         // dd($trip);
         
         if ($request->ajax()) {
-            $taskQuery = TripTask::where('id', $user->users_id)
+            if($user->users_id && $user->role_id ==0 ){
+                $taskQuery = TripTask::where('id', $user->users_id)
                 ->with(['trip', 'tripCategory', 'taskstatus'])
                 ->latest();
+            }else{
+                $taskQuery = TripTask::where('id', $user->users_id)
+                ->where('trvt_agent_id', $user->users_id)
+                ->with(['trip', 'tripCategory', 'taskstatus'])
+                ->latest();
+            }
+           
+
+            // $masterUserDetails = new MasterUserDetails();
+            // $masterUserDetails->setTableForUniqueId($user->user_id);
+            // $masterUserDetailsTable = $masterUserDetails->getTable();  
+
+      
+            // dd($tripTask);
+
+            // $taskQuery = TripTask::with(['trip', 'tripCategory', 'taskstatus'])
+            // ->whereHas('trip', function ($query) use ($user) {
+            //     leftJoin($tripTable, "{$tripTable}.tr_id", '=', "{$tripTaskTable}.tr_id")
+            //     ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTable}.tr_agent_id")
+            //     $query->where('tr_agent_id', $user->users_id)
+            //           ->where('tr_status', 1);
+
+            // })
+            // ->where('id', $user->users_id)  // Assuming you want to filter by the user's ID
+            // ->orderBy('created_at', 'desc');
+        
+            // $masterUserDetails = new MasterUserDetails();
+            // $masterUserDetails->setTableForUniqueId($user->user_id);
+            // $masterUserDetailsTable = $masterUserDetails->getTable();  
+
+            // $tripTable = (new Trip())->getTable(); 
+            // $tripTaskTable = (new TripTask())->getTable();  
+
+            // // Build the query with correct joins and select statements
+            // $taskQuery = DB::table($tripTaskTable)
+            //     ->select(
+            //         "{$tripTaskTable}.trvt_id",
+            //         "{$tripTaskTable}.tr_id as task_tr_id",   // aliased to avoid conflict
+            //         "{$tripTaskTable}.created_at",
+            //         "{$tripTable}.tr_name as trip_name",
+            //         "{$tripTable}.tr_traveler_name",
+            //         "{$tripTable}.tr_agent_id",
+            //         "{$masterUserDetailsTable}.users_first_name as agent_name",  // Assuming 'name' exists
+            //         "{$masterUserDetailsTable}.users_id as agent_user_id"
+            //     )
+            //     ->leftJoin($tripTable, "{$tripTable}.tr_id", '=', "{$tripTaskTable}.tr_id")
+            //     ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTable}.tr_agent_id")
+            //     ->where("{$tripTable}.tr_status", 1)
+            //     ->where("{$tripTable}.tr_agent_id", '=', $user->users_id)
+            //     ->orderBy("{$tripTaskTable}.created_at", 'desc');
+
+            // dd($taskQuery);
+
     
             if ($tripAgent) {
                 $taskQuery->whereHas('trip', function ($q) use ($tripAgent) {
@@ -438,7 +495,8 @@ class TripTaskController extends Controller
             }
     
             $tasks = $taskQuery->get();
-    
+            // dd($taskQuery);
+            
             return Datatables::of($tasks)
                 ->addIndexColumn()
                 ->addColumn('trip_name', function ($document) {
@@ -462,11 +520,11 @@ class TripTaskController extends Controller
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
-                    if(isset($access['edit_role']) && $access['edit_role']) {
+                    if(isset($access['workflow']) && $access['workflow']) {
                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
-                    if (isset($access['delete_role']) && $access['delete_role']) {
+                    if (isset($access['workflow']) && $access['workflow']) {
                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
                                     <div class="modal fade" id="delete-role-modal-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -491,8 +549,12 @@ class TripTaskController extends Controller
                 ->toJson();
        
         }
-    
-        $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->id)->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $taskCategory = TaskCategory::where('task_cat_status', 1)->get();
+        }else{
+            $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
+        }
+        
        
         return view('masteradmin.task.index', compact('task', 'taskCategory', 'agency', 'trip'));
     }
@@ -570,7 +632,11 @@ class TripTaskController extends Controller
                   
         }
       
-        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => Auth::guard('masteradmins')->user()->id])->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $taskCategory = TaskCategory::where('task_cat_status', 1)->get();
+        }else{
+            $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
+        }
 
         return view('masteradmin.task.reminder-information',compact('task','taskCategory'));
     }

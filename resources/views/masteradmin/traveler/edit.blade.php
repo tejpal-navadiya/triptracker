@@ -11,10 +11,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Edit Trip') }}</h1>
+                            <h1 class="m-0">{{ __('Edit Traveler') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Edit Trip') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Edit Traveler') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
@@ -36,7 +36,7 @@
                     <!-- card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Trip</h3>
+                            <h3 class="card-title">Edit Traveler</h3>
                         </div>
                         <!-- /.card-header -->
                         <form action="{{ route('masteradmin.travelers.update', $trip->tr_id) }}" method="POST">
@@ -51,7 +51,7 @@
                                             <x-input-label for="tr_name" :value="__('Name of Trip')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <x-text-input type="text" class="form-control" id="tr_name"
-                                                placeholder="Enter Name of Trip" name="tr_name" required autofocus
+                                                placeholder="Enter Name of Trip" name="tr_name"  autofocus
                                                 autocomplete="tr_name" :value="old('tr_name', $trip->tr_name ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
                                         </div>
@@ -65,7 +65,7 @@
                                                 @foreach ($agency_users as $value)
                                                     <option value="{{ $value->users_id }}"
                                                         {{ old('tr_agent_id', $trip->tr_agent_id ?? '') == $value->users_id ? 'selected' : '' }}>
-                                                        {{ $value->users_first_name }}
+                                                        {{ $value->users_first_name }} {{ $value->users_last_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -151,7 +151,7 @@
                                             <x-input-label for="tr_num_people" :value="__('Number of People')" />
                                             <x-text-input type="number" min="0" class="form-control"
                                                 id="tr_num_people" placeholder="Enter Number of People"
-                                                name="tr_num_people" required autofocus autocomplete="tr_num_people"
+                                                name="tr_num_people"  autofocus autocomplete="tr_num_people"
                                                 :value="old('tr_num_people', $trip->tr_num_people ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
                                         </div>
@@ -161,7 +161,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_desc" :value="__('Description')" />
                                             <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
-                                                required autofocus autocomplete="tr_desc">{{ $trip->tr_desc }}</textarea>
+                                                 autofocus autocomplete="tr_desc">{{ $trip->tr_desc }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
                                         </div>
                                     </div>

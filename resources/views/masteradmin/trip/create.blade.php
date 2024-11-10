@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Add Trip | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['workflow']) && $access['workflow'])
     @section('content')
         <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 
@@ -258,7 +258,7 @@
                                             aria-labelledby="profile-tab">
 
                                             <div class="col-md-12" id="dynamic_field">
-                                                @if ($errors->any())
+                                                <!-- @if ($errors->any())
                                                     <div class="alert alert-danger">
                                                         <ul>
                                                             @foreach ($errors->all() as $error)
@@ -266,7 +266,7 @@
                                                             @endforeach
                                                         </ul>
                                                     </div>
-                                                @endif
+                                                @endif -->
                                             </div>
                                             <div class="col-md-12">
                                                 <button type="button" id="add"

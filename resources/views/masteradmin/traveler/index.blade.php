@@ -64,12 +64,33 @@
                                                 <td>{{ $value->tr_traveler_name }}</td>
                                                 <td>{{ $value->tr_email }}</td>
                                                 <td>{{ $value->tr_phone }}</td>
-                                                <td>{{ \Illuminate\Support\Str::limit(strip_tags($value->tr_address), 45, '...') }}
                                                 <td>
-                                                    <button type="button" class="btn btn-info">
-                                                        {{ $value->trip_status->tr_status_name ?? '' }}</button>
+                                                    {{ $value->city_name ?? '' }}{{ $value->city_name && ($value->state_name || $value->country_name || $value->tr_zip) ? ', ' : '' }}
+                                                    {{ $value->state_name ?? '' }}{{ $value->state_name && ($value->country_name || $value->tr_zip) ? ', ' : '' }}
+                                                    {{ $value->country_name ?? '' }}{{ $value->country_name && $value->tr_zip ? ' ' : '' }}
+                                                    {{ $value->tr_zip ?? '' }}
                                                 </td>
 
+                                                <td>
+                                                    @php
+                                                        $statusName = $value->trip_status->tr_status_name ?? '';
+
+                                                        $buttonColor = match (strtolower($statusName)) {
+                                                            'trip request' => '#DB9ACA',
+                                                            'trip proposal' => '#F6A96D',
+                                                            'trip modification' => '#FBC11E',
+                                                            'trip accepted' => '#28C76F',
+                                                            'trip sold' => '#C5A070',
+                                                            'trip lost' => '#F56B62',
+                                                            'trip completed' => '#F56B62',
+                                                        };
+                                                    @endphp
+
+                                                    <button type="button" class="btn text-white"
+                                                        style="background-color: {{ $buttonColor }};">
+                                                        {{ $statusName }}
+                                                    </button>
+                                                </td>
                                                 <td>
                                                     <a href="{{ route('masteradmin.travelers.view', $value->tr_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>

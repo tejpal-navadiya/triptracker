@@ -2,7 +2,7 @@
 
 
 <title>User Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['view_user']) && $access['view_user'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -19,7 +19,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
+                                @if (isset($access['add_user']) && $access['add_user'])
                                     <a href="{{ route('agency.create') }}" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add User</button></a>
                                 @endif
@@ -71,7 +71,7 @@
 
                                         @foreach ($agency as $value)
                                             <tr>
-                                                <td>{{ $value->users_first_name ?? ('' . ' ' . $value->users_first_name ?? '') }}
+                                                <td>{{ $value->users_first_name ?? ('' . ' ' . $value->users_first_name ?? '')}} {{ $value->users_last_name ?? ('' . ' ' . $value->users_last_name ?? '') }}
                                                 </td>
                                                 <td>{{ $value->users_email }}</td>
                                                 <td>{{ $value->user_emergency_phone_number ?? ($value->users_phone ?? '') }}
@@ -89,10 +89,17 @@
                                                     @endif
                                                 </td>
                                                 <td>
-
-                                                    <a href="{{ route('masteradmin.agency.view', $value->users_id) }}"><i
-                                                            class="fas fa-regular fa-eye edit_icon_grid"></i></a>
-
+                                                
+                                                @if (isset($access['view_user']) && $access['view_user'])
+                                                    @if ($value->userRole->role_name ?? '')
+                                                        <a href="{{ route('masteradmin.agency.view', $value->users_id) }}"><i
+                                                                class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                                                        @else
+                                                            <i class="fas fa-regular fa-eye edit_icon_grid"
+                                                                style="color: gray; cursor: not-allowed;"></i>
+                                                    @endif
+                                                @endif
+                                                @if (isset($access['edit_user']) && $access['edit_user'])
                                                     @if ($value->userRole->role_name ?? '')
                                                         <a href="{{ route('agency.edit', $value->users_id) }}">
                                                             <i class="fas fa-solid fa-pen-to-square edit_icon_grid"></i>
@@ -101,13 +108,14 @@
                                                         <i class="fas fa-solid fa-pen-to-square edit_icon_grid"
                                                             style="color: gray; cursor: not-allowed;"></i>
                                                     @endif
+                                                @endif
 
 
 
                                                     {{-- start --}}
 
 
-
+                                                    @if (isset($access['assign_user']) && $access['assign_user'])
                                                     <a data-toggle="modal"
                                                         data-target="#agency_user-modal-{{ $value->users_id }}">
                                                         <i class="fas fa-regular fa-user edit_icon_grid"></i>
@@ -129,22 +137,22 @@
                                                                         <p class="company_business_name px-10"><b>Assign
                                                                                 User</b></p>
                                                                         <div class="form-group">
-                                                                            <label for="user_select">Select User
-                                                                                Role:</label>
-
 
                                                                             @if ($value->userRole->role_name ?? '')
+                                                                                <label for="user_select">Select User
+                                                                            Role:</label>
                                                                                 <select id="user_select" name="role_id"
                                                                                     class="form-control">
                                                                                     @foreach ($users_role as $user_role)
                                                                                         <option
-                                                                                            value="{{ $user_role->role_id }}">
+                                                                                            value="{{ $user_role->role_id }}" 
+                                                                                             {{ old('role_id', $value->role_id ?? '') == $user_role->role_id ? 'selected' : '' }}>
                                                                                             {{ $user_role->role_name }}
                                                                                         </option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             @else
-                                                                                {{ config('global.default_user_role_alert_msg') }}
+                                                                                {{ config('global.default_user_role_assign_alert_msg') }}
                                                                             @endif
 
                                                                             @if ($value->userRole->role_name ?? '')
@@ -169,14 +177,14 @@
                                                         </div>
                                                     </div>
 
-
+                                                    @endif
                                                     {{-- end --}}
-
+                                                    @if (isset($access['delete_user']) && $access['delete_user'])
                                                     <a data-toggle="modal"
                                                         data-target="#delete-library-modal-{{ $value->users_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
-
+                                                   
                                                     <div class="modal fade"
                                                         id="delete-library-modal-{{ $value->users_id }}" tabindex="-1"
                                                         role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -222,6 +230,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

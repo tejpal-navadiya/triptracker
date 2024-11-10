@@ -11,7 +11,7 @@
         @csrf
         <div class="row">
             <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Agencies Name</label>
+                <label for="user_agencies_name" class="form-label">Agency Name</label>
                 <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
@@ -273,7 +273,7 @@
 
 
             <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Agencies Logo / Profile Image</label>
+                <label for="user_agencies_name" class="form-label">Agency Logo / Profile Image</label>
                 <div class="input-group">
                     <input type="file" name="image" accept="image/*" class="form-control form-control-file">
                 </div>

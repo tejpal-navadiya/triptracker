@@ -3,7 +3,7 @@
 
 
 <title>Edit Agency | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['edit_user']) && $access['edit_user'])
     @section('content')
         <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
         <!-- Content Wrapper. Contains page content -->

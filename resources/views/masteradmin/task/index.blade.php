@@ -1,6 +1,5 @@
 @extends('masteradmin.layouts.app')
 <title>View Trip | Trip Tracker</title>
-@if(isset($access['book_trip']) && $access['book_trip'])
   @section('content')
 
     <!-- Content Wrapper. Contains page content -->
@@ -61,7 +60,9 @@
         <div class="card-header d-flex p-0 justify-content-center tab_panal">
           <ul class="nav nav-pills p-2 tab_box">
             <li class="nav-item"><a class="nav-link active" href="#Traveleroverview" data-toggle="tab">View All Task</a></li>
+            @if(isset($access['reminder_all_task']) && $access['reminder_all_task'])
             <li class="nav-item"><a class="nav-link" href="#Agentinfo" data-toggle="tab">View All Reminder Task</a></li>
+            @endif
           </ul>
         </div><!-- /.card-header -->
           <div class="tab-content px-20">
@@ -69,9 +70,11 @@
                 @include('masteradmin.task.all-information')
             </div>
             <!-- /.tab-pane -->
+            @if(isset($access['reminder_all_task']) && $access['reminder_all_task'])
             <div class="tab-pane" id="Agentinfo">
               @include('masteradmin.task.reminder-information')
             </div>
+            @endif
           <!-- /.tab-pane -->
           </div>
           <!-- /.tab-content -->
@@ -82,4 +85,3 @@
   <!-- /.content-wrapper -->
 
   @endsection
-@endif

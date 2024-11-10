@@ -1,7 +1,7 @@
 @extends('masteradmin.layouts.app')
 
 <title>Agency Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['view_user']) && $access['view_user'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">

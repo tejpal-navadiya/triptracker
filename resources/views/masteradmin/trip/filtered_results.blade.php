@@ -24,8 +24,24 @@
                                 {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
                             </td>
                             <td>
-                                <button type="button" class="btn btn-info">
-                                    {{ $value->trip_status->tr_status_name ?? '' }}</button>
+                                @php
+                                    $statusName = $value->trip_status->tr_status_name ?? '';
+
+                                    $buttonColor = match (strtolower($statusName)) {
+                                        'trip request' => '#DB9ACA',
+                                        'trip proposal' => '#F6A96D',
+                                        'trip modification' => '#FBC11E',
+                                        'trip accepted' => '#28C76F',
+                                        'trip sold' => '#C5A070',
+                                        'trip lost' => '#F56B62',
+                                        'trip completed' => '#F56B62',
+                                    };
+                                @endphp
+
+                                <button type="button" class="btn text-white"
+                                    style="background-color: {{ $buttonColor }};">
+                                    {{ $statusName }}
+                                </button>
                             </td>
 
 

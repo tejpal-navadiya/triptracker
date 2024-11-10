@@ -76,16 +76,16 @@
                                         </div>
                                         <div class="col-auto">
                                             <table class="table estimate_detail_table">
-                                                <tbody>
+                                                <tbod>
                                                     <tr>
                                                     <td><strong>
                                                         @if($userdetailss->users_iata_clia_number ?? '')
                                                             {{ $userdetailss->users_iata_clia_number ? $userdetailss->users_iata_clia_number : 'IATA or CLIA Number' }}
-                                                        @else
-                                                            {{ $userdetailss->users_iata_number ?? '' }}
-                                                        @endif
-                                                    :</strong></td>
                                                         
+                                                        @endif
+                                                    </strong></td>
+                                                    <td>{{ ':'.$userdetailss->users_iata_number ?? '' }}</td>
+                                                    </tr>  
                                                     </tr>
                                                     
                                                     <tr>
@@ -94,8 +94,12 @@
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Address :</strong></td>
-                                                        <td>{{ $userdetailss->users_address ?? '' }}</td>
-                                                    </tr>
+                                                        <td>
+                                                            {{ $userdetailss->city_name ?? '' }}{{ $userdetailss->city_name && ($userdetailss->state_name || $userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
+                                                            {{ $userdetailss->state_name ?? '' }}{{ $userdetailss->state_name && ($userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
+                                                            {{ $userdetailss->country_name ?? '' }}{{ $userdetailss->country_name && $userdetailss->users_zip ? ' ' : '' }}
+                                                            {{ $userdetailss->users_zip ?? '' }}
+                                                        </td>                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>

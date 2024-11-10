@@ -69,7 +69,7 @@
                                 <table id="example1" class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th>Agencies Name</th>
+                                            <th>Agency Name</th>
                                             <th>Name</th>
                                             <th>Email Address</th>
                                             <th>Subscription Plan</th>

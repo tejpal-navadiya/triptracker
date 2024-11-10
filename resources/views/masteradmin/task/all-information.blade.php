@@ -14,7 +14,7 @@
                         <thead>
                             <tr>
                                 <th>Trip Name</th>
-                                <th>Agent Name</th>
+                                <!-- <th>Agent Name</th> -->
                                 <th>Traveler Name</th>
                                 <th>Task</th>
                                 <th>Category</th>
@@ -194,14 +194,15 @@
                     d._token = '{{ csrf_token() }}';
                 }
             },
-            columns: [{
+            columns: [
+                {
                     data: 'trip_name',
                     name: 'trip_name'
                 },
-                {
-                    data: 'agent_name',
-                    name: 'agent_name'
-                },
+                // {
+                //     data: 'agent_name',
+                //     name: 'agent_name'
+                // },
                 {
                     data: 'traveler_name',
                     name: 'traveler_name'

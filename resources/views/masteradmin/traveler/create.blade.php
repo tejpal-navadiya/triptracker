@@ -62,7 +62,7 @@
                                                 <option disabled selected>Select Agent</option>
                                                 @foreach ($agency_user as $value)
                                                     <option value="{{ $value->users_id }}">
-                                                        {{ $value->users_first_name }}
+                                                        {{ $value->users_first_name }} {{ $value->users_last_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -96,6 +96,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" />
                                         </div>
                                     </div>
 
@@ -112,6 +113,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -122,7 +124,7 @@
                                                 name="tr_num_people" autofocus autocomplete="tr_num_people"
                                                 value="{{ old('tr_num_people') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')"
-                                                value="{{ old('tr_num_people') }}" />
+                                                 />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -175,7 +177,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('state')"> <span
+                                            <x-input-label for="tr_agent_id" :value="__('State')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <select id="tr_state" name="tr_state" class="form-control select2"
                                                 style="width: 100%;">

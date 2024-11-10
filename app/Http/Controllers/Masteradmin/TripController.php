@@ -47,11 +47,11 @@ class TripController extends Controller
 
         if ($user->users_id && $user->role_id == 0) {
             $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
+        
         } else {
             $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
         }
        // $agency = $masterUserTable->get();
-
         $trip_status = TripStatus::get();
 
         
@@ -111,7 +111,7 @@ class TripController extends Controller
         }
 
         if ($trip_status1) {
-            $tripQuery->where($tripTable . '.tr_status', $trip_status1);
+            $tripQuery->where($tripTable . '.status', $trip_status1);
         }
 
 
@@ -158,63 +158,83 @@ class TripController extends Controller
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
-        $validatedData = $request->validate([
-            'tr_name' => 'required|string',
-            'tr_agent_id' => 'required|string',
-            'tr_traveler_name' => 'required|string',
-            'tr_dob' => 'nullable|string',
-            'tr_age' => 'nullable|string',
-            'tr_email' => 'nullable|email',
-            'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
-            'tr_num_people' => 'nullable|string',
-            'tr_number' => 'nullable|string',
-            'tr_start_date' => 'required',
-            'tr_end_date' => 'required|string',
-            'tr_value_trip' => 'nullable|string',
-            'tr_desc' => 'nullable|string',
-            'tr_country' => 'nullable|string',
-            'tr_state' => 'nullable|string',
-            'tr_city' => 'nullable|string',
-            'tr_address' => 'nullable|string',
-            'tr_zip' => 'nullable|numeric|digits_between:1,6',
-            'items.*.trtm_type' => 'required|string',
-            'items.*.trtm_first_name' => 'required|string',
-            'items.*.trtm_middle_name' => 'nullable|string',
-            'items.*.trtm_last_name' => 'nullable|string',
-            'items.*.trtm_nick_name' => 'nullable|string',
-            'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
-            'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
-            'items.*.trtm_dob' => 'required|string',
-            'items.*.trtm_age' => 'nullable|string',
-        ], [
-
-            'tr_name.required' => 'Traveler name is required',
-            'tr_agent_id.required' => 'Agent ID is required',
-            'tr_dob' => 'DOB Is Required',
-            'tr_age' => 'Age is Required',
-            'tr_traveler_name.required' => 'Traveler name is required',
-            'tr_email.email' => 'Invalid email address',
-            'tr_phone.regex' => 'The phone number must be between 1 to 12 digits.',
-            'tr_num_people' => 'Total Number Of People Required',
-            'tr_number' => 'Number Is Required',
-            'tr_start_date.required' => 'Start date is required',
-            'tr_end_date.required' => 'End Date Is Required',
-            'tr_value_trip' => 'Value Trip Is Required',
-            'tr_desc' => 'Description Is Required',
-            'tr_country.required' => 'Country is required',
-            'tr_state.required' => 'State is required',
-            'tr_city.required' => 'City is required',
-            'tr_address.required' => 'Address is required',
-            'tr_zip.required' => 'Zip is required',
-
-            'items.*.trtm_type.required' => 'Traveling member type is required',
-            'items.*.trtm_first_name.required' => 'First name is required',
-            'items.*.trtm_last_name.required' => 'Last name is required',
-            'items.*.trtm_gender.required' => 'Gender is required',
-            'items.*.trtm_dob.required' => 'Birthdate is required',
-            'items.*.trtm_age.required' => 'Age is required',
-        ]);
-
+        if ($request->travelers == "travelers") {
+            $validatedData = $request->validate([
+                'tr_name' => 'required|string',
+                'tr_agent_id' => 'required|string',
+                'tr_traveler_name' => 'required|string',
+                'tr_dob' => 'nullable|string',
+                'tr_age' => 'nullable|string',
+                'tr_email' => 'required|email',
+                'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                'tr_num_people' => 'nullable|string',
+                'tr_number' => 'nullable|string',
+                'tr_start_date' => 'required',
+                'tr_end_date' => 'required|string',
+                'tr_value_trip' => 'nullable|string',
+                'tr_desc' => 'nullable|string',
+                'tr_country' => 'nullable|string',
+                'tr_state' => 'nullable|string',
+                'tr_city' => 'nullable|string',
+                'tr_address' => 'nullable|string',
+                'tr_zip' => 'nullable|numeric|digits_between:1,6',
+                'items.*.trtm_type' => 'nullable|string',
+                'items.*.trtm_first_name' => 'nullable|string',
+                'items.*.trtm_middle_name' => 'nullable|string',
+                'items.*.trtm_last_name' => 'nullable|string',
+                'items.*.trtm_nick_name' => 'nullable|string',
+                'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
+                'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
+                'items.*.trtm_dob' => 'nullable|string',
+                'items.*.trtm_age' => 'nullable|string',
+            ], [
+    
+                'tr_name.required' => 'Traveler name is required',
+                'tr_agent_id.required' => 'Agent ID is required',
+                'tr_traveler_name.required' => 'Traveler name is required',
+                'tr_email.required' => 'Email is required',
+                'tr_start_date.required' => 'Start date is required',
+                'tr_end_date.required' => 'End Date Is Required',
+      
+            ]);
+        }else{
+            $validatedData = $request->validate([
+                'tr_name' => 'required|string',
+                'tr_agent_id' => 'required|string',
+                'tr_traveler_name' => 'required|string',
+                'tr_dob' => 'nullable|string',
+                'tr_age' => 'nullable|string',
+                'tr_email' => 'nullable|email',
+                'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                'tr_num_people' => 'nullable|string',
+                'tr_number' => 'nullable|string',
+                'tr_start_date' => 'nullable',
+                'tr_end_date' => 'nullable|string',
+                'tr_value_trip' => 'nullable|string',
+                'tr_desc' => 'nullable|string',
+                'tr_country' => 'nullable|string',
+                'tr_state' => 'nullable|string',
+                'tr_city' => 'nullable|string',
+                'tr_address' => 'nullable|string',
+                'tr_zip' => 'nullable|numeric|digits_between:1,6',
+                'items.*.trtm_type' => 'nullable|string',
+                'items.*.trtm_first_name' => 'nullable|string',
+                'items.*.trtm_middle_name' => 'nullable|string',
+                'items.*.trtm_last_name' => 'nullable|string',
+                'items.*.trtm_nick_name' => 'nullable|string',
+                'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
+                'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
+                'items.*.trtm_dob' => 'nullable|string',
+                'items.*.trtm_age' => 'nullable|string',
+            ], [
+    
+                'tr_name.required' => 'Traveler name is required',
+                'tr_agent_id.required' => 'Agent ID is required',
+                'tr_traveler_name.required' => 'Traveler name is required',
+      
+            ]);
+    
+        }
         // dd('data');
 
         // Store data
@@ -392,52 +412,84 @@ class TripController extends Controller
         $user = Auth::guard('masteradmins')->user();
 
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
-
-        $validatedData = $request->validate([
-            'tr_name' => 'required|string',
-            'tr_agent_id' => 'required|string',
-            'tr_traveler_name' => 'required|string',
-            'tr_dob' => 'nullable|string',
-            'tr_age' => 'nullable|string',
-            'tr_email' => 'nullable|email',
-            'tr_phone' => 'nullable|string',
-            'tr_num_people' => 'nullable|string',
-            'tr_number' => 'nullable|string',
-            'tr_start_date' => 'required',
-            'tr_end_date' => 'nullable|string',
-            'tr_value_trip' => 'nullable|string',
-            'tr_desc' => 'nullable|string',
-            'tr_country' => 'nullable|string',
-            'tr_state' => 'nullable|string',
-            'tr_city' => 'nullable|string',
-            'tr_address' => 'nullable|string',
-            'tr_zip' => 'nullable|string',
-            'status' => 'nullable',
-
-
-        ], [
-            'tr_name.required' => 'Traveler name is required',
-            'tr_agent_id.required' => 'Agent ID is required',
-            'tr_traveler_name.required' => 'Traveler name is required',
-            'tr_dob' => 'DOB Is Required',
-            'tr_age' => 'Age is Required',
-            'tr_email.email' => 'Invalid email address',
-            'tr_phone' => 'Phone is Required',
-            'tr_num_people' => 'Total Number Of People Required',
-            'tr_number' => 'Number Is Required',
-            'tr_start_date.required' => 'Start date is required',
-            'tr_end_date' => 'End Date Is Required',
-            'tr_value_trip' => 'Value Trip Is Required',
-            'tr_desc' => 'Description Is Required',
-            'tr_country.required' => 'Country is required',
-            'tr_state.required' => 'State is required',
-            'tr_city.required' => 'City is required',
-            'tr_address.required' => 'Address is required',
-            'tr_zip.required' => 'Zip is required',
-
-
-        ]);
-
+        if ($request->travelers == "travelers") {
+            $validatedData = $request->validate([
+                'tr_name' => 'required|string',
+                'tr_agent_id' => 'required|string',
+                'tr_traveler_name' => 'required|string',
+                'tr_dob' => 'nullable|string',
+                'tr_age' => 'nullable|string',
+                'tr_email' => 'required|email',
+                'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                'tr_num_people' => 'nullable|string',
+                'tr_number' => 'nullable|string',
+                'tr_start_date' => 'required',
+                'tr_end_date' => 'required|string',
+                'tr_value_trip' => 'nullable|string',
+                'tr_desc' => 'nullable|string',
+                'tr_country' => 'nullable|string',
+                'tr_state' => 'nullable|string',
+                'tr_city' => 'nullable|string',
+                'tr_address' => 'nullable|string',
+                'tr_zip' => 'nullable|numeric|digits_between:1,6',
+                'items.*.trtm_type' => 'nullable|string',
+                'items.*.trtm_first_name' => 'nullable|string',
+                'items.*.trtm_middle_name' => 'nullable|string',
+                'items.*.trtm_last_name' => 'nullable|string',
+                'items.*.trtm_nick_name' => 'nullable|string',
+                'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
+                'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
+                'items.*.trtm_dob' => 'nullable|string',
+                'items.*.trtm_age' => 'nullable|string',
+            ], [
+    
+                'tr_name.required' => 'Traveler name is required',
+                'tr_agent_id.required' => 'Agent ID is required',
+                'tr_traveler_name.required' => 'Traveler name is required',
+                'tr_email.email' => 'Invalid email address',
+                'tr_start_date.required' => 'Start date is required',
+                'tr_end_date.required' => 'End Date Is Required',
+      
+            ]);
+        }else{
+            $validatedData = $request->validate([
+                'tr_name' => 'required|string',
+                'tr_agent_id' => 'required|string',
+                'tr_traveler_name' => 'required|string',
+                'tr_dob' => 'nullable|string',
+                'tr_age' => 'nullable|string',
+                'tr_email' => 'nullable|email',
+                'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                'tr_num_people' => 'nullable|string',
+                'tr_number' => 'nullable|string',
+                'tr_start_date' => 'nullable',
+                'tr_end_date' => 'nullable|string',
+                'tr_value_trip' => 'nullable|string',
+                'tr_desc' => 'nullable|string',
+                'tr_country' => 'nullable|string',
+                'tr_state' => 'nullable|string',
+                'tr_city' => 'nullable|string',
+                'tr_address' => 'nullable|string',
+                'tr_zip' => 'nullable|numeric|digits_between:1,6',
+                'items.*.trtm_type' => 'nullable|string',
+                'items.*.trtm_first_name' => 'nullable|string',
+                'items.*.trtm_middle_name' => 'nullable|string',
+                'items.*.trtm_last_name' => 'nullable|string',
+                'items.*.trtm_nick_name' => 'nullable|string',
+                'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
+                'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
+                'items.*.trtm_dob' => 'nullable|string',
+                'items.*.trtm_age' => 'nullable|string',
+            ], [
+    
+                'tr_name.required' => 'Traveler name is required',
+                'tr_agent_id.required' => 'Agent ID is required',
+                'tr_traveler_name.required' => 'Traveler name is required',
+      
+            ]);
+    
+        }
+       
         // Update Trip record
 
 
@@ -501,15 +553,18 @@ class TripController extends Controller
 
     public function view($id): View
     {
-        // dd()
+    //    dd($id);
         $user = Auth::guard('masteradmins')->user();
-        $trip = Trip::where('tr_id', $id)->firstOrFail();
-        $triptableName = $trip->getTable();
+        $trip1 = Trip::where('tr_id', $id)->firstOrFail();
+        $triptableName = $trip1->getTable();
 
         
         $taskCategory = new TaskCategory();
-        $taskCategory = $taskCategory->get();
-
+        if($user->users_id && $user->role_id ==0 ){
+            $taskCategory = $taskCategory->where(['task_cat_status' => 1])->get();
+        }else{
+            $taskCategory = $taskCategory->where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
+        }
         //dd($TaskCategory);
 
         $documentType = DocumentType::get();
@@ -522,30 +577,66 @@ class TripController extends Controller
             $tableName = $agency_users->getTable();
             if($user->users_id && $user->role_id ==0 ){
                 $agency_user = $agency_users->get(); 
-               }else{
-                
+            }else{
                 $agency_user = $agency_users->where('users_id' , $user->users_id)->get(); 
-               }
+            }
             
-
-
             $masterUserDetails = new MasterUserDetails();
             $masterUserDetails->setTableForUniqueId($user->user_id); 
             $masterUserTable = $masterUserDetails->getTable();
              $trips = new Trip();
              $tripTable = $trips->getTable();  
-     
-             $trip = Trip::where('tr_status', 1) 
-                   ->from($tripTable)  
-                   ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                   ->where($tripTable . '.id', $user->users_id)
-                   ->select([
-                       $tripTable . '.*',  
-                       $masterUserTable . '.users_first_name', 
-                       $masterUserTable . '.users_last_name'  
-                   ])
-                   ->firstOrFail();
-                   
+
+            //  \DB::enableQueryLog();
+            if($user->users_id && $user->role_id ==0 ){
+                $trip = Trip::where('tr_status', 1) 
+                ->from($tripTable)  
+                ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state') 
+                ->where($tripTable . '.tr_id', $id)
+                ->select([
+                    $tripTable . '.*',  
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name',
+                    $masterUserTable . '.users_email',
+                    $masterUserTable . '.user_emergency_phone_number',
+                    'ta_countries.name as country_name', 
+                    'ta_cities.name as city_name', 
+                    'ta_states.name as state_name'     
+                ])
+                ->firstOrFail();
+            }else{
+                $specificId = $user->users_id;
+                $trip = Trip::where('tr_status', 1) 
+                ->from($tripTable)  
+                ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state'
+                )
+                ->where(function($query) use ($tripTable, $user, $specificId) {
+                    $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                        ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                }) 
+                ->where($tripTable . '.tr_id', $id)
+                ->select([
+                    $tripTable . '.*',  
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name',
+                    $masterUserTable . '.users_email',
+                    $masterUserTable . '.user_emergency_phone_number',
+                    'ta_countries.name as country_name', 
+                    'ta_cities.name as city_name', 
+                    'ta_states.name as state_name'     
+                ])
+                ->firstOrFail();
+
+            }
+                // dd($trip);
+                //    dd(\DB::getQueryLog()); 
+
             $taskstatus = TaskStatus::all();
 
             $tripTraveling = new TripTravelingMember();
@@ -559,9 +650,6 @@ class TripController extends Controller
                 ->where($tableName . '.id', $user->users_id)
                 ->where($tableName . '.tr_id', $id)
                 ->get();
-
-
-
 
             $tripData = DB::table($uniq_id . '_tc_trip')
                 ->select('tr_id', 'tr_traveler_name')
@@ -600,20 +688,30 @@ class TripController extends Controller
         $specificId = $user->users_id;
 
         if($user->users_id && $user->role_id ==0 ){
+
             $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
-            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->leftjoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
+            ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
+            ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state') 
             ->select([
-                $tripTable . '.*', 
+                $tripTable . '.*',
                 $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name' 
-
+                $masterUserTable . '.users_last_name',
+                'ta_countries.name as country_name', 
+                'ta_cities.name as city_name', 
+                'ta_states.name as state_name' 
             ]);
+        
             
         }else{
             $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
-            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->leftjoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
+            ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
+            ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state') 
             ->where(function($query) use ($tripTable, $user, $specificId) {
                 $query->where($tripTable . '.tr_agent_id', $user->users_id)
                     ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
@@ -621,7 +719,10 @@ class TripController extends Controller
             ->select([
                 $tripTable . '.*', 
                 $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name' 
+                $masterUserTable . '.users_last_name',
+                'ta_countries.name as country_name', 
+                'ta_cities.name as city_name', 
+                'ta_states.name as state_name'  
             ]);
         }
 
@@ -692,8 +793,21 @@ class TripController extends Controller
     {
         // dd()
         $user = Auth::guard('masteradmins')->user();
+        $trips = new Trip();
+        $tripTable = $trips->getTable();  
 
-        $trip = Trip::where('tr_id', $id)->firstOrFail();
+        $trip = Trip::where('tr_id', $id)
+          ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state')
+                ->select([
+                    $tripTable . '.*',  
+                    'ta_countries.name as country_name', 
+                    'ta_cities.name as city_name', 
+                    'ta_states.name as state_name'     
+                ])
+                ->firstOrFail();
+         // dd($trip);      
         $triptableName = $trip->getTable();
 
         $tripTraveling = new TripTravelingMember();
@@ -717,11 +831,15 @@ class TripController extends Controller
             ->where('tr_id', $id)
             ->get();
 
+                
+            if($user->users_id && $user->role_id ==0 ){
+                $taskCategory = TaskCategory::where(['task_cat_status' => 1])->get();
+            }else{
+                $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
+            }
 
-
-        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
+       
         //  $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
-        $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
         $documentType = DocumentType::get();
 
           //last code

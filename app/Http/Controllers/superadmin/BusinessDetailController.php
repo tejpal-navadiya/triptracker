@@ -68,11 +68,26 @@ class BusinessDetailController extends Controller
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($user->buss_unique_id);
 
-        $udetail = $userDetails->where('users_email', '!=', $user->user_email)->get();
+        $udetail = $userDetails
+        ->where('users_email', '!=', $user->user_email) 
+        ->get(); 
+
+        
 
         $userdetailss = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->first();
+        if ($userdetailss) {
 
-        //dd($udetail);
+            $countries = DB::table('ta_countries')->where('id', $userdetailss->users_country)->first();
+            $state = DB::table('ta_states')->where('id', $userdetailss->users_state)->first();
+            $city = DB::table('ta_cities')->where('id', $userdetailss->users_city)->first();
+
+            $userdetailss->country_name = $countries ? $countries->name : '';
+            $userdetailss->state_name = $state ? $state->name : '';
+            $userdetailss->city_name = $city ? $city->name : '';
+            
+        }
+
+       // dd($udetail);
 
         $totalUserCount = $userDetails->where('users_email', '!=', $user->user_email)->count();
         $user->totalUserCount = $totalUserCount;
@@ -81,21 +96,28 @@ class BusinessDetailController extends Controller
 
         foreach ($udetail as $detail) {
             $role = DB::table($tableName)->where('role_id', $detail->role_id)->first();
-            $detail->role_name = $role ? $role->role_name : 'No Role Assigned';
-        }
 
+            $countries = DB::table('ta_countries')->where('id', $detail->users_country)->first();
+            $state = DB::table('ta_states')->where('id', $detail->users_state)->first();
+            $city = DB::table('ta_cities')->where('id', $detail->users_city)->first();
+
+            $detail->role_name = $role ? $role->role_name : 'No Role Assigned';
+
+            $detail->country_name = $countries ? $countries->name : '';
+            $detail->state_name = $state ? $state->name : '';
+            $detail->city_name = $city ? $city->name : '';
+            
+        }
+        //dd($udetail);
         return view('superadmin.businessdetails.view_business', compact('user', 'udetail','userdetailss'));
     }
     public function updateStatus($id)
     {
-        // Fetch the user (business) by ID
         $business = MasterUser::findOrFail($id);
 
-        // Toggle the business status (assuming the field is 'user_status')
         $business->user_status = $business->user_status == 1 ? 0 : 1;
         $business->save();
 
-        // Return JSON response with the updated status
         return response()->json(['status' => 'success', 'new_status' => $business->user_status]);
     }
 

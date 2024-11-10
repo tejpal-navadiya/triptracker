@@ -51,6 +51,7 @@ class ProfilesController extends Controller
     {
 
          $user = Auth::guard('masteradmins')->user();
+         //dd($user);
        // $userDetails = session('user_details');
        //dd($user);
        if ($user) {
@@ -63,6 +64,7 @@ class ProfilesController extends Controller
     public function edits($id)
     {
         $user = Auth::guard('masteradmins')->user();
+        // dd($user);
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($user->user_id);
     
@@ -94,7 +96,7 @@ class ProfilesController extends Controller
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($user->user_id);
     
-        $existingUser = $userDetails->find($user->id);
+        $existingUser = $userDetails->where('users_id',$user->users_id)->first();
         //  dd($existingUser);
         if (!$existingUser) {
             return Redirect::route('masteradmin.profile.edit')->withErrors('User not found');
@@ -106,7 +108,7 @@ class ProfilesController extends Controller
         // Update the record
         $existingUser->where('users_id',$existingUser->users_id)->update($data);
 
-        $updatedUser = $userDetails->find($user->id);
+        $updatedUser = $userDetails->where('users_id',$user->users_id)->first();
 
         session(['user_details' => $updatedUser]);
 

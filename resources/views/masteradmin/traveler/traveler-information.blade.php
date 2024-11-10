@@ -6,7 +6,10 @@
             <p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p>
             <p class="company_business_name">Total Person : {{ $trip->tr_num_people ?? '' }}</p>
             <p class="company_business_name">Phone Number : {{ $trip->tr_phone ?? '' }}</p>
-            <!-- <p class="company_business_name">Address : 198-8604 Egestas. Rd. Turkey,87363</p> -->
+            <p class="company_business_name">Address : {{ $trip->city_name ?? '' }}{{ $trip->city_name && ($trip->state_name || $trip->country_name || $trip->tr_zip) ? ', ' : '' }}
+                                                    {{ $trip->state_name ?? '' }}{{ $trip->state_name && ($trip->country_name || $trip->tr_zip) ? ', ' : '' }}
+                                                    {{ $trip->country_name ?? '' }}{{ $trip->country_name && $trip->tr_zip ? ' ' : '' }}
+                                                    {{ $trip->tr_zip ?? '' }}</p>
         </div>
     </div>
 </div>

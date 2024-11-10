@@ -64,7 +64,7 @@
                                         <div class="form-group">
                                             <label for="tr_agent_id">Name<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                                placeholder="Select Agent" name="lib_name" autofocus
+                                                placeholder="Enter Name" name="lib_name" autofocus
                                                 autocomplete="tr_agent_id" :value="old('tr_name', $library->lib_name ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_agent_id')" />
                                         </div>
@@ -74,7 +74,7 @@
                                         <div class="form-group">
                                             <label for="tag_name">Tag Name<span class="text-danger"></span></label>
                                             <x-text-input type="text" class="form-control" id="tag_name"
-                                                placeholder="Select Agent" name="tag_name" autofocus autocomplete="tag_name"
+                                                placeholder="Enter Tag Name" name="tag_name" autofocus autocomplete="tag_name"
                                                 :value="old('tag_name', $library->tag_name ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tag_name')" />
                                         </div>
