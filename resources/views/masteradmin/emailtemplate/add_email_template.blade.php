@@ -51,7 +51,7 @@
                                         <option value="Virgin Voyages">Virgin Voyages</option>
                                         <option value="Royal Caribbean">Royal Caribbean</option>
                                         <option value="Payments Email">Payments Email</option>
-                                        <option value="booking Email">booking Email</option>
+                                        <option value="booking Email">Booking Email</option>
                                         <option value="Agency and Agent">Agency and Agent</option>
                                         <option value="Home Email">Home Email</option>
                                         <option value="Review Link">Review Link</option>

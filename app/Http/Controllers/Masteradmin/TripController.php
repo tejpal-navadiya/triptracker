@@ -470,6 +470,7 @@ class TripController extends Controller
                 'tr_state' => 'nullable|string',
                 'tr_city' => 'nullable|string',
                 'tr_address' => 'nullable|string',
+                'status' => 'nullable|numeric',
                 'tr_zip' => 'nullable|numeric|digits_between:1,6',
                 'items.*.trtm_type' => 'nullable|string',
                 'items.*.trtm_first_name' => 'nullable|string',
@@ -580,21 +581,23 @@ class TripController extends Controller
             }else{
                 $agency_user = $agency_users->where('users_id' , $user->users_id)->get(); 
             }
+            //dd($user->user_id);
             
             $masterUserDetails = new MasterUserDetails();
             $masterUserDetails->setTableForUniqueId($user->user_id); 
             $masterUserTable = $masterUserDetails->getTable();
+            //dd($masterUserTable);
              $trips = new Trip();
              $tripTable = $trips->getTable();  
 
-            //  \DB::enableQueryLog();
+            // \DB::enableQueryLog();
             if($user->users_id && $user->role_id ==0 ){
-                $trip = Trip::where('tr_status', 1) 
+                $trip = Trip::where($tripTable . '.tr_status', 1) 
                 ->from($tripTable)  
                 ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
-                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
-                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state') 
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $masterUserTable . '.users_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $masterUserTable . '.users_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $masterUserTable . '.users_state') 
                 ->where($tripTable . '.tr_id', $id)
                 ->select([
                     $tripTable . '.*',  
@@ -611,10 +614,10 @@ class TripController extends Controller
                 $specificId = $user->users_id;
                 $trip = Trip::where('tr_status', 1) 
                 ->from($tripTable)  
-                ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
-                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
-                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state'
+                ->leftJoin($tripTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $masterUserTable . '.tr_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $masterUserTable . '.tr_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $masterUserTable . '.tr_state'
                 )
                 ->where(function($query) use ($tripTable, $user, $specificId) {
                     $query->where($tripTable . '.tr_agent_id', $user->users_id)
@@ -634,8 +637,8 @@ class TripController extends Controller
                 ->firstOrFail();
 
             }
-                // dd($trip);
-                //    dd(\DB::getQueryLog()); 
+                //dd($trip);
+                  // dd(\DB::getQueryLog()); 
 
             $taskstatus = TaskStatus::all();
 

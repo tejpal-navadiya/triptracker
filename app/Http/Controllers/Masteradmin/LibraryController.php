@@ -161,9 +161,9 @@ class LibraryController extends Controller
         $selectedCountryId = $library->lib_country;
 
         if($user->users_id && $user->role_id ==0 ){
-            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->get();
+            $categories = LibraryCategory::where('lib_cat_status', 1)->get();
         }else{
-            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+            $categories = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
         }
 
 

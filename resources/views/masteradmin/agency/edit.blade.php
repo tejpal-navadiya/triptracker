@@ -330,7 +330,7 @@
                                     <div class="form-group">
                                         <x-input-label for="tr_agent_id" :value="__('Address')"> </x-input-label>
                                         <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                            placeholder="Select Agent" name="users_address" autofocus
+                                            placeholder="Enter Address" name="users_address" autofocus
                                             autocomplete="tr_agent_id" :value="old('age_user_id', $agency->users_address ?? '')" />
 
                                     </div>
