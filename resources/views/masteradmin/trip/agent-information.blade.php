@@ -6,9 +6,9 @@
                 <p class="company_business_name">Phone Number : {{ $trip->user_emergency_phone_number ?? '' }}</p>
                 <p class="company_business_name">Email Address : {{ $trip->users_email ?? ''}}</p>
                 <p class="company_business_name">Address :  {{ $trip->city_name ?? '' }}{{ $trip->city_name && ($trip->state_name || $trip->country_name || $trip->tr_zip) ? ', ' : '' }}
-                                                    {{ $trip->state_name ?? '' }}{{ $trip->state_name && ($trip->country_name || $trip->tr_zip) ? ', ' : '' }}
-                                                    {{ $trip->country_name ?? '' }}{{ $trip->country_name && $trip->tr_zip ? ' ' : '' }}
-                                                    {{ $trip->tr_zip ?? '' }}</p>
+                                                    {{ $trip->state_name ?? '' }}{{ $trip->state_name && ($trip->country_name || $trip->users_zip) ? ', ' : '' }}
+                                                    {{ $trip->country_name ?? '' }}{{ $trip->country_name && $trip->users_zip ? ' ' : '' }}
+                                                    {{ $trip->users_zip ?? '' }}</p>
             </div>
         </div>
     </div>

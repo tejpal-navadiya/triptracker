@@ -14,7 +14,7 @@
                         <thead>
                             <tr>
                                 <th>Trip Name</th>
-                                <!-- <th>Agent Name</th> -->
+                                <th>Agent Name</th>
                                 <th>Traveler Name</th>
                                 <th>Task</th>
                                 <th>Category</th>
@@ -199,10 +199,10 @@
                     data: 'trip_name',
                     name: 'trip_name'
                 },
-                // {
-                //     data: 'agent_name',
-                //     name: 'agent_name'
-                // },
+                {
+                    data: 'agent_name',
+                     name: 'agent_name'
+                },
                 {
                     data: 'traveler_name',
                     name: 'traveler_name'
@@ -241,6 +241,7 @@
         $('#saveBtnTask').click(function(e) {
             e.preventDefault();
             $(this).html('Sending..');
+        
 
             var formData = new FormData($('#FormTask')[0]);
             formData.append('_token', "{{ csrf_token() }}");
@@ -250,12 +251,12 @@
 
             if ($('#trvt_id').val() === '') {
                 // Create new task
-                url = "{{ route('masteradmin.task.store', $task->trip->tr_id) }}";
+                url = "{{ $task && $task->trip ? route('masteradmin.task.store', $task->trip->tr_id) : '' }}";
                 formData.append('_method', 'POST');
             } else {
                 // Update existing task
                 var trvt_id = $('#trvt_id').val();
-                url = "{{ route('masteradmin.task.update', [$task->trip->tr_id, ':trvt_id']) }}";
+                url = "{{ $task && $task->trip ? route('masteradmin.task.update', [$task->trip->tr_id, ':trvt_id']) : '' }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
             }
@@ -291,11 +292,12 @@
 
 
             var id = $(this).data('id');
+            var url = "{{ $task && $task->trip ? route('masteradmin.task.edit', ['id' => ':id', 'trip_id' => $task->trip->tr_id]) : '' }}";
+            if (url) {
+                url = url.replace(':id', id);
             // alert(id);
-            $.get("{{ route('masteradmin.task.edit', ['id' => 'id', 'trip_id' => $task->trip->tr_id]) }}"
-                .replace('id', id).replace('{{ $task->trip->tr_id }}',
-                    '{{ $task->trip->tr_id }}'),
-                function(data) {
+             $.get(url, function(data) {
+
 
                     // console.log(data);
                     $('#modelHeadingTask').html("Edit Task");
@@ -306,7 +308,7 @@
 
                     $('#trvt_id').val(data.trvt_id);
                     $('#trvt_name').val(data.trvt_name);
-                    $('#trvt_agent_id').val(data.trvt_agent_id);
+                    $('#trvt_agent_id').val(data.trvt_agent_id).trigger('change.select2');
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
@@ -360,17 +362,21 @@
                             });
                     }
 
-
                 });
+            }
         });
 
         //delete record
         $('body').on('click', '.deleteTaskbtn', function(e) {
             e.preventDefault();
-            var trvt_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.task.destroy', [$task->trip->tr_id, ':trvt_id']) }}";
-            url = url.replace(':trvt_id', trvt_id);
+             var trvt_id = $(this).data("id");
+            var trip_id = "{{ $task && $task->trip ? $task->trip->tr_id : '' }}";
+            
+                if (trip_id) {
+                var url = "{{ route('masteradmin.task.destroy', [':trip_id', ':trvt_id']) }}";
+                url = url.replace(':trip_id', trip_id).replace(':trvt_id', trvt_id);
+          
             // alert(url);
             $.ajax({
                 type: "DELETE",
@@ -391,6 +397,7 @@
                     console.log('Error:', data);
                 }
             });
+        }
         });
 
       

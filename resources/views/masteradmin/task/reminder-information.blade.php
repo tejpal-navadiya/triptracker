@@ -60,10 +60,17 @@
 
                         <div class="col-md-6 family-member-field">
                             <div class="form-group">
-                            <label for="trvt_agent_id">Assign Agent</label>
+                                <label for="trvt_agent_id">Assign Agent</label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trvt_agent_id1" name="trvt_agent_id" placeholder="Enter Assign Agent">
-                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_agent_id')" />
+                                    <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
+                                        class="form-control select2">
+                                        <option value="">Select Agent</option>
+                                        @foreach ($agency as $value)
+                                            <option value="{{ $value->users_id }}">
+                                                {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +243,7 @@
             formData.append('_token', "{{ csrf_token() }}");
 
             var url = '';
-            var method = 'POST'; // Default to POST for new tasks
+            var method = 'POST';
 
             
             if ($('#trvt_id').val() === '') {
@@ -295,7 +302,7 @@
 
                     $('#trvt_id').val(data.trvt_id);
                     $('#trvt_name').val(data.trvt_name);
-                    $('#trvt_agent_id').val(data.trvt_agent_id);
+                    $('#trvt_agent_id').val(data.trvt_agent_id).trigger('change.select2');
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);

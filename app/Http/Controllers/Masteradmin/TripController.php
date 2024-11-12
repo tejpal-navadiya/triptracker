@@ -25,6 +25,7 @@ use App\Models\PredefineTask;
 use App\Models\MasterUserDetails;
 use Carbon\Carbon;
 use App\Models\TravelerDocument;
+use App\Models\PredefineTaskCategory;
 
 
 
@@ -342,7 +343,7 @@ class TripController extends Controller
             }
         }
 
-      $predefinedTasks = PredefineTask::select( 'pre_task_name')->get();
+        $predefinedTasks = PredefineTask::select('pre_task_name')->where('pre_task_type' , '1')->get();
 
       foreach ($predefinedTasks as $task) {
         $tripTask = new TripTask();
@@ -354,10 +355,28 @@ class TripController extends Controller
               'trvt_id' =>$uniqueId1,
              'tr_id' => $traveler->tr_id, 
               'trvt_name' => $task->pre_task_name, 
+              'trvt_status' => 1
           ]);
       }
     
-
+      $predefinedTasksCategory = PredefineTaskCategory::select('task_cat_name')->get();
+      foreach ($predefinedTasksCategory as $taskcate) {
+          $exists = TaskCategory::where('task_cat_name', $taskcate->task_cat_name)
+                      ->exists();
+      
+          if (!$exists) {
+              $tripTask_category = new TaskCategory();
+              $tableName = $tripTask_category->getTable();
+              $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "task_cat_id", $chars = 6);
+      
+              TaskCategory::create([
+                  'id' => $user->users_id,
+                  'task_cat_id' => $uniqueId1,
+                  'task_cat_name' => $taskcate->task_cat_name,
+                  'task_cat_status' => 1
+              ]);
+          }
+      }
         if ($request->travelers == "travelers") {
             \MasterLogActivity::addToLog('Master Admin Travelers Created.');
 
@@ -376,7 +395,8 @@ class TripController extends Controller
         // dd($id);
         $trip = Trip::where('tr_id', $id)->firstOrFail();
         $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
-        // dd($tripmember);
+        $triptinerary = TripItineraryDetail::where('tr_id', $trip->tr_id)->get();
+        //dd($triptinerary);
 
         $triptype = TripType::all();
 
@@ -399,7 +419,7 @@ class TripController extends Controller
         $selectedStatus = $trip->status;
         //$status = Trip::where('status', $selectedStatus)->get();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users'));
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 
@@ -521,6 +541,34 @@ class TripController extends Controller
                 $travelerItem->save();
             }
         }
+
+        if (isset($validatedData['status'])) {
+
+            $predefinedTasks = PredefineTask::select('pre_task_name')
+                ->where('pre_task_type', $validatedData['status'])
+                ->get();
+        
+            foreach ($predefinedTasks as $task) {
+                $existingTask = TripTask::where('tr_id', $id)
+                    ->where('trvt_name', $task->pre_task_name)
+                    ->first();
+                
+                if (!$existingTask) {
+                    $tripTask = new TripTask();
+                    $tableName = $tripTask->getTable();
+                    $uniqueId1 = $this->GenerateUniqueRandomString($tableName, 'trvt_id', 6);
+        
+                    TripTask::create([
+                        'id' => $user->users_id,
+                        'trvt_id' => $uniqueId1,
+                        'tr_id' => $id,
+                        'trvt_name' => $task->pre_task_name,
+                        'trvt_status' => 1
+                    ]);
+                }
+            }
+        }
+
         if ($request->travelers == "travelers") {
             \MasterLogActivity::addToLog('Master Admin Travelers Updated.');
 
@@ -542,6 +590,8 @@ class TripController extends Controller
 
         if ($trip) {
             $tripmember = TripTravelingMember::where('tr_id', $id)->delete();
+            $triptask = TripTask::where('tr_id', $id)->delete();
+            $tripdocument = TravelerDocument::where('tr_id', $id)->delete();
             $trip->where('tr_id', $id)->delete();
 
             \MasterLogActivity::addToLog('Master Admin Trip Deleted.');
@@ -577,7 +627,7 @@ class TripController extends Controller
             $agency_users->setTableForUniqueId($user->user_id);
             $tableName = $agency_users->getTable();
             if($user->users_id && $user->role_id ==0 ){
-                $agency_user = $agency_users->get(); 
+                $agency_user = $agency_users->where('users_id', '!=', $user->users_id)->get(); 
             }else{
                 $agency_user = $agency_users->where('users_id' , $user->users_id)->get(); 
             }
@@ -604,6 +654,7 @@ class TripController extends Controller
                     $masterUserTable . '.users_first_name', 
                     $masterUserTable . '.users_last_name',
                     $masterUserTable . '.users_email',
+                    $masterUserTable . '.users_zip',
                     $masterUserTable . '.user_emergency_phone_number',
                     'ta_countries.name as country_name', 
                     'ta_cities.name as city_name', 
@@ -614,7 +665,7 @@ class TripController extends Controller
                 $specificId = $user->users_id;
                 $trip = Trip::where('tr_status', 1) 
                 ->from($tripTable)  
-                ->leftJoin($tripTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+                ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
                 ->leftJoin('ta_countries', 'ta_countries.id', '=', $masterUserTable . '.tr_country') 
                 ->leftJoin('ta_cities', 'ta_cities.id', '=', $masterUserTable . '.tr_city') 
                 ->leftJoin('ta_states', 'ta_states.id', '=', $masterUserTable . '.tr_state'
@@ -629,7 +680,8 @@ class TripController extends Controller
                     $masterUserTable . '.users_first_name', 
                     $masterUserTable . '.users_last_name',
                     $masterUserTable . '.users_email',
-                    $masterUserTable . '.user_emergency_phone_number',
+                    $masterUserTable . '.users_zip',
+                    $masterUserTable . '.users_email',
                     'ta_countries.name as country_name', 
                     'ta_cities.name as city_name', 
                     'ta_states.name as state_name'     
@@ -821,18 +873,16 @@ class TripController extends Controller
 
 
         $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
-            ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
-            ->where('trtm_status', 1) // Ensure you're filtering by status
-            ->get();
+                ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
+                ->where('trtm_status', 1) 
+                ->where($tableName . '.id', $user->users_id)
+                ->where($tableName . '.tr_id', $id)
+                ->get();
 
-          //  return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name;
-
-
-
-        $tripData = DB::table($uniq_id . '_tc_trip')
-            ->select('tr_id', 'tr_name')
-            ->where('tr_id', $id)
-            ->get();
+            $tripData = DB::table($uniq_id . '_tc_trip')
+                ->select('tr_id', 'tr_traveler_name')
+                ->where('tr_id', $id)
+                ->get();
 
                 
             if($user->users_id && $user->role_id ==0 ){
@@ -867,7 +917,11 @@ class TripController extends Controller
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
         $masterUserTable = $masterUserDetails->getTable();
-        $agency = $masterUserDetails->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
+        }else{
+            $agency = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
+        }
 
         $trip_status = TripStatus::get();
 

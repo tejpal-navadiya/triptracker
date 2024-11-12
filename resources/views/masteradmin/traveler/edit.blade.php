@@ -193,7 +193,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_agent_id" :value="__('state')"> <span
+                                            <x-input-label for="tr_agent_id" :value="__('State')"> <span
                                                     class="text-danger">*</span></x-input-label>
                                             <select id="tr_state" name="tr_state" class="form-control select2"
                                                 style="width: 100%;">

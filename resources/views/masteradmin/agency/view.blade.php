@@ -110,7 +110,10 @@
                                                 <tbody>
                                                     <tr>
                                                         <th>Address:</th>
-                                                        <td>{{ $agency->users_address }}</td>
+                                                        <td>{{ $agency->users_address }} {{ $agency->city->name ?? '' }}{{ $agency->city->name && ($agency->state->name || $agency->country->name || $agency->users_zip) ? ', ' : '' }}
+                                                    {{ $agency->state->name ?? '' }}{{ $agency->state->name && ($agency->country->name || $agency->users_zip) ? ', ' : '' }}
+                                                    {{ $agency->country->name ?? '' }}{{ $agency->country->name && $agency->tr_zip ? ' ' : '' }}
+                                                    {{ $agency->users_zip ?? '' }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

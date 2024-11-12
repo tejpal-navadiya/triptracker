@@ -104,7 +104,7 @@
                                         <option value="">Select Agent</option>
                                         @foreach ($agency_user as $value)
                                             <option value="{{ $value->users_id }}">
-                                                {{ $value->users_first_name }}
+                                                {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -378,7 +378,7 @@
 
                     $('#trvt_id').val(data.trvt_id);
                     $('#trvt_name').val(data.trvt_name);
-                    $('#trvt_agent_id').val(data.trvt_agent_id);
+                    $('#trvt_agent_id').val(data.trvt_agent_id).trigger('change.select2');
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);

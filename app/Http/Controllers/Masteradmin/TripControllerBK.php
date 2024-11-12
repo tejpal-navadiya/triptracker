@@ -24,6 +24,7 @@ use App\Models\TripTask;
 use App\Models\PredefineTask;
 use App\Models\MasterUserDetails;
 use Carbon\Carbon;
+use App\Models\PredefineTaskCategory;
 
 
 
@@ -490,23 +491,34 @@ class TripControllerBK extends Controller
                 $travelerItem->save();
             }
         }
-        if (isset($validatedData['status'])) {
-        
-          $predefinedTasks = PredefineTask::select('pre_task_name')->where('pre_task_type' , $validatedData['status'])->get();
 
-      foreach ($predefinedTasks as $task) {
-        $tripTask = new TripTask();
-        $tableName = $tripTask->getTable();
-        $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
-  
-          TripTask::create([
-              'id'=>$user->users_id,
-              'trvt_id' =>$uniqueId1,
-             'tr_id' => $id, 
-              'trvt_name' => $task->pre_task_name, 
-          ]);
-      }
+        if (isset($validatedData['status'])) {
+
+            $predefinedTasks = PredefineTask::select('pre_task_name')
+                ->where('pre_task_type', $validatedData['status'])
+                ->get();
+        
+            foreach ($predefinedTasks as $task) {
+                $existingTask = TripTask::where('tr_id', $id)
+                    ->where('trvt_name', $task->pre_task_name)
+                    ->first();
+                
+                if (!$existingTask) {
+                    $tripTask = new TripTask();
+                    $tableName = $tripTask->getTable();
+                    $uniqueId1 = $this->GenerateUniqueRandomString($tableName, 'trvt_id', 6);
+        
+                    TripTask::create([
+                        'id' => $user->users_id,
+                        'trvt_id' => $uniqueId1,
+                        'tr_id' => $id,
+                        'trvt_name' => $task->pre_task_name,
+                        'trvt_status' => 1
+                    ]);
+                }
+            }
         }
+        
       
         if ($request->travelers == "travelers") {
             \MasterLogActivity::addToLog('Master Admin Travelers Updated.');

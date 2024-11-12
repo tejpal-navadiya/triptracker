@@ -349,7 +349,8 @@ class AgencyController extends Controller
 
     $masteruser = new MasterUserDetails();
     $masteruser->setTableForUniqueId($user->user_id);
-    $agency = $masteruser->where('users_id', $id)->firstOrFail();
+    $agency = $masteruser->where('users_id', $id)->with('country','state','city')->firstOrFail();
+    // dd($agency);
 
     return view('masteradmin.agency.view', compact('agency'));
   }
