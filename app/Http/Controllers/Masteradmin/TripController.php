@@ -117,7 +117,7 @@ class TripController extends Controller
 
 
         $trip = $tripQuery->get();
-    
+        
 
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
@@ -396,7 +396,8 @@ class TripController extends Controller
         $trip = Trip::where('tr_id', $id)->firstOrFail();
         $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
         $triptinerary = TripItineraryDetail::where('tr_id', $trip->tr_id)->get();
-        //dd($triptinerary);
+        $typeoftrip = TypeOfTrip::where('tr_id', $trip->tr_id)->orderBy('trip_type_name','asc')->get();
+        // dd($typeoftrip);
 
         $triptype = TripType::all();
 
@@ -419,7 +420,7 @@ class TripController extends Controller
         $selectedStatus = $trip->status;
         //$status = Trip::where('status', $selectedStatus)->get();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary'));
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 
@@ -427,8 +428,9 @@ class TripController extends Controller
 
     public function update(Request $request, $id): RedirectResponse
     {
-
-        //dd($request->all());
+        // $rawItems = $request->input('items');
+        // dd($rawItems);
+     //dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
@@ -492,15 +494,7 @@ class TripController extends Controller
                 'tr_address' => 'nullable|string',
                 'status' => 'nullable|numeric',
                 'tr_zip' => 'nullable|numeric|digits_between:1,6',
-                'items.*.trtm_type' => 'nullable|string',
-                'items.*.trtm_first_name' => 'nullable|string',
-                'items.*.trtm_middle_name' => 'nullable|string',
-                'items.*.trtm_last_name' => 'nullable|string',
-                'items.*.trtm_nick_name' => 'nullable|string',
-                'items.*.trtm_relationship' => 'nullable:items.*.trtm_type,1',
-                'items.*.trtm_gender' => 'nullable:items.*.trtm_type,2',
-                'items.*.trtm_dob' => 'nullable|string',
-                'items.*.trtm_age' => 'nullable|string',
+               
             ], [
     
                 'tr_name.required' => 'Traveler name is required',
@@ -513,7 +507,7 @@ class TripController extends Controller
        
         // Update Trip record
 
-
+        $validatedData['tr_type_trip'] = json_encode($request->input('tr_type_trip'));
 
         $trip->where(['tr_id' => $id])->update($validatedData);
 
@@ -566,6 +560,53 @@ class TripController extends Controller
                         'trvt_status' => 1
                     ]);
                 }
+            }
+        }
+
+        $typeoftripDelete = TypeOfTrip::where('tr_id', $id)->delete();
+
+        $tripTypes = $request->input('trip_types');
+        if (isset($tripTypes) && is_array($tripTypes) && count($tripTypes) > 0) {
+            if (!empty($tripTypes)) {
+                foreach ($tripTypes as $tripTypeId => $tripTypeEntries) {
+                    foreach ($tripTypeEntries as $entry) {
+                        $tripTypeText = $entry['trip_type_text'];
+                        $tripTypeConfirmation = $entry['trip_type_confirmation'];
+                        $tripTypeName = $entry['trip_type_name'];
+
+                        $typeOfTrip = new TypeOfTrip();
+                        $tableNameType = $typeOfTrip->getTable();
+                        $uniqueIdType = $this->GenerateUniqueRandomString($table = $tableNameType, $column = "trip_type_id", $chars = 6);
+                        $typeOfTrip->trip_type_id =  $uniqueIdType;
+                        $typeOfTrip->tr_id = $id;
+                        $typeOfTrip->id = $user->users_id;
+                        $typeOfTrip->trip_type_name = $tripTypeName;
+                        $typeOfTrip->trip_type_text = $tripTypeText;
+                        $typeOfTrip->trip_type_confirmation = $tripTypeConfirmation;
+                        $typeOfTrip->trip_status = '1';
+                        $typeOfTrip->save();
+                    }
+                }
+            }
+        }
+
+        $tripItineraryDelete = TripItineraryDetail::where('tr_id', $id)->delete();
+        $rawItemsItinerary = $request->input('itinerary');
+        if (isset($rawItemsItinerary) && is_array($rawItemsItinerary) && count($rawItemsItinerary) > 0) {
+
+            foreach ($rawItemsItinerary as $item) {
+                $itineraryItem = new TripItineraryDetail();
+                $tableNameitineraryItem = $itineraryItem->getTable();
+                $uniqueId1itinerary = $this->GenerateUniqueRandomString($table = $tableNameitineraryItem, $column = "trit_id", $chars = 6);
+
+                $itineraryItem->fill($item);
+
+                $itineraryItem->tr_id = $id;
+                $itineraryItem->id = $user->users_id;
+                $itineraryItem->trit_status = 1;
+                $itineraryItem->trit_id = $uniqueId1itinerary;
+
+                $itineraryItem->save();
             }
         }
 
@@ -666,10 +707,9 @@ class TripController extends Controller
                 $trip = Trip::where('tr_status', 1) 
                 ->from($tripTable)  
                 ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                ->leftJoin('ta_countries', 'ta_countries.id', '=', $masterUserTable . '.tr_country') 
-                ->leftJoin('ta_cities', 'ta_cities.id', '=', $masterUserTable . '.tr_city') 
-                ->leftJoin('ta_states', 'ta_states.id', '=', $masterUserTable . '.tr_state'
-                )
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $masterUserTable . '.users_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $masterUserTable . '.users_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $masterUserTable . '.users_state') 
                 ->where(function($query) use ($tripTable, $user, $specificId) {
                     $query->where($tripTable . '.tr_agent_id', $user->users_id)
                         ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
@@ -900,8 +940,33 @@ class TripController extends Controller
           $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
           
           $trip_id=$id;
-        // dd($trip);
-        return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id'));
+
+            $masterUserDetails = new MasterUserDetails();
+            $masterUserDetails->setTableForUniqueId($user->user_id); 
+            $masterUserTable = $masterUserDetails->getTable();
+            //dd($masterUserTable);
+             $trips = new Trip();
+             $tripTable = $trips->getTable();  
+
+             $trip_status = TripStatus::get();
+
+           $trip_history = Trip::where($tripTable . '.tr_status', 1) 
+                ->from($tripTable)  
+                ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
+                ->where($tripTable . '.tr_id', $id)
+                ->select([
+                    $tripTable . '.*',  
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name',
+                    $masterUserTable . '.users_email',
+                    $masterUserTable . '.users_zip',
+                    $masterUserTable . '.user_emergency_phone_number'
+                ])
+                ->with(['trip_status'])
+                ->get();
+
+        // dd($trip_history);
+        return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history'));
     }
 
     public function booked_after(Request $request): View

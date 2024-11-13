@@ -39,6 +39,9 @@
             <div class="tab-pane" id="Documentsinfo">
                 @include('masteradmin.traveler.document-information')
             </div>
+            <div class="tab-pane" id="Emailsinfo">
+                @include('masteradmin.traveler.trip-history-information')
+            </div>
           <!-- /.tab-pane -->
           </div>
           <!-- /.tab-content -->
