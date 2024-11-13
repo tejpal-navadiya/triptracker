@@ -1,7 +1,7 @@
 @extends('masteradmin.layouts.app')
 
 
-<title>Library Category Details | Trip Tracker</title>
+<title>Email Category Details | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
@@ -11,17 +11,17 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Library Category') }}</h1>
+                            <h1 class="m-0">{{ __('Email Category') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Library Category') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Email Category') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['book_trip']) && $access['book_trip'])
-                                    <a href="{{ route('library_category.create') }}" id="createNew"><button
-                                            class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Library
+                                    <a href="{{ route('email_category.create') }}" id="createNew"><button
+                                            class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Email
                                             Category</button></a>
                                 @endif
                             </ol>
@@ -60,13 +60,13 @@
                                     </thead>
                                     <tbody>
 
-                                        @foreach ($library_category as $value)
+                                        @foreach ($email_category as $value)
                                             <tr>
-                                                <td>{{ $value->lib_cat_name }}</td>
+                                                <td>{{ $value->email_cat_name }}</td>
 
 
                                                 <td>
-                                                    @if ($value->lib_cat_status == 1)
+                                                    @if ($value->email_cat_status == 1)
                                                         <button class="btn btn-success btn-sm">Active</button>
                                                     @else
                                                         <button class="btn btn-danger btn-sm">Deactive</button>
@@ -74,23 +74,20 @@
                                                 </td>
 
                                                 <td>
-                                                   
-
-                                                    <!-- <a href="{{ route('masteradmin.library.view') }}"><i
-                                                                                                                                                                                                                                                                                                                                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
-
-                                                    <a href="{{ route('library_category.edit', $value->lib_cat_id) }}"><i
+                                                 
+                                                            
+                                                    <a href="{{ route('email_category.edit', $value->email_cat_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
 
 
                                                     <a data-toggle="modal"
-                                                        data-target="#delete-library-modal-{{ $value->lib_cat_id }}">
+                                                        data-target="#delete-email-modal-{{ $value->email_cat_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
 
                                                     <div class="modal fade"
-                                                        id="delete-library-modal-{{ $value->lib_cat_id }}" tabindex="-1"
+                                                        id="delete-email-modal-{{ $value->email_cat_id }}" tabindex="-1"
                                                         role="dialog" aria-labelledby="exampleModalCenterTitle"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog modal-sm modal-dialog-centered"
@@ -98,7 +95,7 @@
                                                             <div class="modal-content">
 
                                                                 <form id="delete-plan-form"
-                                                                    action="{{ route('library_category.destroy', $value->lib_cat_id) }}"
+                                                                    action="{{ route('email_category.destroy', $value->email_cat_id) }}"
                                                                     method="POST">
                                                                     @csrf
                                                                     @method('DELETE') <!-- Spoofing DELETE method -->
@@ -106,9 +103,9 @@
                                                                     <div class="modal-body  pad-1 text-center">
                                                                         <i class="fas fa-solid fa-trash delete_icon"></i>
                                                                         <p class="company_business_name px-10"> <b>Delete
-                                                                                Library</b></p>
+                                                                                email</b></p>
                                                                         <p class="company_details_text">Are You Sure You
-                                                                            Want to Delete This Library?</p>
+                                                                            Want to Delete This email?</p>
                                                                         <button type="button" class="add_btn px-15"
                                                                             data-dismiss="modal">Cancel</button>
                                                                         <button type="submit"

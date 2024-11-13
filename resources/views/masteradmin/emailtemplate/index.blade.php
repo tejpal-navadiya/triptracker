@@ -17,7 +17,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['add_role']) && $access['add_role'])
+                                @if (isset($access['add_email_template']) && $access['add_email_template'])
                                     <a href="{{ route('masteradmin.emailtemplate.create') }}"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Email Template</button></a>
                                 @endif
@@ -72,15 +72,17 @@
                                                 <td>{{ $template->title }}</td>
                                                 <td class="text-right">
                                                     <!-- Action buttons (Edit, Delete) -->
+                                                    @if (isset($access['view_email_template']) && $access['view_email_template'])
                                                     <a href="{{ route('masteradmin.emailtemplate.edit', $template->email_tid) }}"
                                                         class="btn btn-sm btn-primary">Edit</a>
+                                                        @endif
                                                     <form
                                                         action="{{ route('masteradmin.emailtemplate.destroy', $template->email_tid) }}"
                                                         method="POST" style="display:inline;"
                                                         id="delete-form-{{ $template->email_tid }}">
                                                         @csrf
                                                         @method('DELETE')
-
+                                                        @if (isset($access['delete_email_template']) && $access['delete_email_template'])
 
                                                         <button type="button" class="btn btn-sm btn-danger"
                                                             data-toggle="modal"
@@ -117,6 +119,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        @endif
                                                 </td>
                                             </tr>
                                         @endforeach

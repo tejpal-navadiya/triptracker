@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\EmailTemplate;
 use App\Models\EmailTemplateDetails;
 use App\Models\Trip;
+use App\Models\EmailCategory;
 
 use Illuminate\View\View;
 class EmailTemplateController extends Controller
@@ -29,7 +30,15 @@ class EmailTemplateController extends Controller
     }
     public function create(): View
     {
-        return view('masteradmin.emailtemplate.add_email_template');
+        $user = Auth::guard('masteradmins')->user();
+        if($user->users_id && $user->role_id ==0 ){
+            $emailcategory = EmailCategory::where('email_cat_status', 1)->get();
+        }else{
+            $emailcategory = EmailCategory::where('email_cat_status', 1)->where('id', $user->users_id)->get();
+        }
+        return view('masteradmin.emailtemplate.add_email_template', compact(
+            'emailcategory'
+        ));
     }
 
     public function store(Request $request): RedirectResponse
@@ -76,8 +85,14 @@ class EmailTemplateController extends Controller
 public function edit($email_tid): View
 {
     // dd($email_tid);
+    $user = Auth::guard('masteradmins')->user();
+    if($user->users_id && $user->role_id ==0 ){
+        $categories = EmailCategory::where('email_cat_status', 1)->get();
+    }else{
+        $categories = EmailCategory::where('email_cat_status', 1)->where('id', $user->users_id)->get();
+    }
     $emailTemplate = EmailTemplate::where('email_tid', $email_tid)->firstOrFail();
-    return view('masteradmin.emailtemplate.edit', compact('emailTemplate'));
+    return view('masteradmin.emailtemplate.edit', compact('emailTemplate','categories'));
 }
 
 // Update the email template
@@ -115,6 +130,7 @@ public function EmailTemplate(): View
     $user = Auth::guard('masteradmins')->user();
     $categories = EmailTemplate::select('category')->distinct()->get();
     $travellers = Trip::select('tr_traveler_name','tr_id')->distinct()->get();
+    
     // dd($traveller);
     return view('masteradmin.emailtemplate.details', compact('categories' ,'travellers'));
 }
