@@ -28,7 +28,7 @@ use App\Http\Controllers\Masteradmin\EmailTemplateController;
 use App\Http\Controllers\Masteradmin\AgencyController;
 use App\Http\Controllers\Masteradmin\BookedTripController;
 use App\Http\Controllers\Masteradmin\libraryCatgoryController;
-
+use App\Http\Controllers\Masteradmin\EmailCategoryController;
 
 
 
@@ -197,6 +197,11 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/booked_trips', [TripController::class, 'booked_after'])->name('masteradmin.trip.booked_after');
 
 
+        Route::get('/follow_up_trips', [TripController::class, 'follow_up_after'])->name('masteradmin.trip.follow_up_trip');
+        
+        
+
+
 
        //trip family member 
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
@@ -270,7 +275,8 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/fetch-traveller-details', [EmailTemplateController::class, 'fetchTravellerDetails'])->name('fetchTravellerDetails');
         Route::post('/email-template/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
 
-
+        Route::resource('email_category',EmailCategoryController::class);
+        
         //Agency
         Route::resource( 'agency', AgencyController::class);
         Route::get('/agency/view/{id}', [AgencyController::class, 'view'])->name('masteradmin.agency.view');
@@ -302,6 +308,8 @@ Route::group(['prefix' => $busadminRoute], function () {
 
         //task category
         Route::resource('task-category', TaskCategoryController::class);
+
+        
 
 
     });

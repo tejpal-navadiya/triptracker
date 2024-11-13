@@ -63,7 +63,7 @@
                         @endif
                         @if (isset($access['view_role']) && $access['view_role'])
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('masteradmin.trip.follow_up_trip') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h*') ||
                                     request()->is($busadminRoutes . '/h/*')
@@ -156,7 +156,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        @if (isset($access['edit_profile']) && $access['edit_profile'])
+                        @if (isset($access['add_email_template']) && $access['add_email_template'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
@@ -166,7 +166,7 @@
                             </li>
                         @endif
 
-                        @if (isset($access['view_role']) && $access['view_role'])
+                        @if (isset($access['view_email_template']) && $access['view_email_template'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
@@ -179,7 +179,7 @@
                                 </a>
                             </li>
                         @endif
-                        @if (isset($access['view_role']) && $access['view_role'])
+                        @if (isset($access['view_email_template']) && $access['view_email_template'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.emailtemplate.EmailTemplate') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/h*') ||
@@ -189,6 +189,16 @@
                                         : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Email Template</p>
+                                </a>
+                            </li>
+                        @endif
+                        @if (isset($access['view_role']) && $access['view_role'])
+                            <li class="nav-item">
+                                <a href="{{ route('email_category.index') }}"
+                                    class="nav-link {{ request()->is($busadminRoutes . '/h*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Category
+                                    </p>
                                 </a>
                             </li>
                         @endif

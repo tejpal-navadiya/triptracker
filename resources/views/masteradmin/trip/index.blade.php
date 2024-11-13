@@ -213,6 +213,7 @@
                                                                 'trip sold' => '#C5A070',
                                                                 'trip lost' => '#F56B62',
                                                                 'trip completed' => '#F56B62',
+                                                                'trip pending' => '#F6A96D',
                                                             };
                                                         @endphp
 

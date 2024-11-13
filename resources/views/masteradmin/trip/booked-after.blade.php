@@ -123,7 +123,7 @@
                                                 <th>Traveler Name</th>
                                                 <th>Price</th>
                                                 <th>Start to End Date</th>
-                                                <th>Status</th>
+                                                <th class="sorting_disabled text-right">Status</th>
                                                 <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
                                             </tr>
                                         </thead>
@@ -140,18 +140,6 @@
                                                         {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
                                                     </td>
 
-                                                    @foreach ($tripQuery as $value)
-                                                <tr>
-                                                    <td>
-                                                        {{ \Carbon\Carbon::parse($value->tr_start_date ?? now())->format('M d, Y') }}
-                                                        -
-                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? now())->format('M d, Y') }}
-                                                    </td>
-                                                    <td>{{ $value->users_first_name }}</td>
-                                                    <td>{{ $value->users_last_name }}</td>
-                                                    <!-- Add other fields as needed -->
-                                                </tr>
-                                            @endforeach
 
                                             <td>
                                                         @php
