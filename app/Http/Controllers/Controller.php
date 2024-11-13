@@ -433,7 +433,24 @@ class Controller extends BaseController
                     }
                 });
             }
+  //email Category
+  if (!Schema::hasTable($storeId.'_tc_email_category')){   
+    Schema::create($storeId.'_tc_email_category', function (Blueprint $table) use ($storeId) {
+        $table->increments('main_id');
+        $table->string('email_cat_id');
+        $table->string('id')->nullable()->default(0);
+        $table->string('email_cat_name')->nullable();
+        $table->tinyInteger('email_cat_status')->default(0)->nullable();
+        $table->timestamps();
+    });
 
+}else{
+    Schema::table($storeId.'_tc_library_category', function (Blueprint $table) use ($storeId) {
+        if (!Schema::hasColumn($storeId.'_tc_library_category', 'id')) {
+            $table->string('id')->nullable()->default(0);
+        }
+    });
+}
             //Library 
             if (!Schema::hasTable($storeId.'_tc_library')){   
                 Schema::create($storeId.'_tc_library', function (Blueprint $table) use ($storeId) {

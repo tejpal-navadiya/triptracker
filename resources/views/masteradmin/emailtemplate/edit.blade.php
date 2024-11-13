@@ -47,30 +47,16 @@
               <!-- Category Dropdown -->
               <div class="form-group">
                   <label for="category">Category</label>
-                  <select class="form-control" id="category" name="category">
-                      <option value="cancel" {{ $emailTemplate->category == 'cancel' ? 'selected' : '' }}>Cancel</option>
-                      <option value="birthday" {{ $emailTemplate->category == 'birthday' ? 'selected' : '' }}>Birthday</option>
-                
-                  <option value="Final Payment"{{ $emailTemplate->category == 'Final Payment' ? 'selected' : '' }}>Final Payment</option> 
-                  <option value="Anniversary"{{ $emailTemplate->category == 'Anniversary' ? 'selected' : '' }}>Anniversary</option>
-                  <option value="Initial Contact"{{ $emailTemplate->category == 'Initial Contact' ? 'selected' : '' }}>Initial Contact</option>
-                  <option value="Princess Cruises"{{ $emailTemplate->category == 'Princess Cruises' ? 'selected' : '' }}>Princess Cruises</option>
-                  <option value="ny Cruise Line"{{ $emailTemplate->category == 'ny Cruise Line' ? 'selected' : '' }}>Any Cruise Line</option>
-                  <option value="Carnival"{{ $emailTemplate->category == 'Carnival' ? 'selected' : '' }}>Carnival</option>
-                  <option value="Celebrity Cruises"{{ $emailTemplate->category == 'Celebrity Cruises' ? 'selected' : '' }}>Celebrity Cruises</option>
-                  <option value="Cunard Cruises"{{ $emailTemplate->category == 'Cunard Cruises' ? 'selected' : '' }}>Cunard Cruises</option>
-                  <option value="Holland America Line"{{ $emailTemplate->category == 'Holland America Line' ? 'selected' : '' }}>Holland America Line</option>
-                  <option value="MSC Cruises"{{ $emailTemplate->category == 'MSC Cruises' ? 'selected' : '' }}>MSC Cruises</option> 
-                  <option value="Oceania Cruises"{{ $emailTemplate->category == 'Oceania Cruises' ? 'selected' : '' }}>Oceania Cruises</option>
-                  <option value="Virgin Voyages"{{ $emailTemplate->category == 'Virgin Voyages' ? 'selected' : '' }}>Virgin Voyages</option>
-                  <option value="Royal Caribbean"{{ $emailTemplate->category == 'Royal Caribbean' ? 'selected' : '' }}>Royal Caribbean</option>
-                  <option value="Payments Email"{{ $emailTemplate->category == 'Payments Email' ? 'selected' : '' }}>Payments Email</option>
-                  <option value="booking Email"{{ $emailTemplate->category == 'booking Email' ? 'selected' : '' }}>booking Email</option>
-                  <option value="Agency and Agent"{{ $emailTemplate->category == 'Agency and Agent' ? 'selected' : '' }}>Agency and Agent</option>
-                  <option value="Home Email"{{ $emailTemplate->category == 'Home Email' ? 'selected' : '' }}>Home Email</option>
-                  <option value="Review Link"{{ $emailTemplate->category == 'Review Link' ? 'selected' : '' }}>Review Link</option>
-                  <option value="Agency Email"{{ $emailTemplate->category == 'Agency Email' ? 'selected' : '' }}>Agency Email</option>
-                  </select>
+                  <select class="form-control" id="category" name="category" autofocus>
+                  <option value="" disabled>Select Category</option>
+                                                @foreach ($categories as $category)
+                                                    <option value="{{ $category->email_cat_id }}"
+                                                        {{ old('category', $emailTemplate->category) == $category->email_cat_id ? 'selected' : '' }}>
+                                                        {{ $category->email_cat_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error class="mt-2" :messages="$errors->get('email_category')" />
               </div>
                           <div class="form-group">
                   <label for="category">Title</label>

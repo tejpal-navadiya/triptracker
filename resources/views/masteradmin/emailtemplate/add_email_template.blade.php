@@ -33,30 +33,18 @@
 
                                 <!-- Category Dropdown -->
                                 <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <select class="form-control" id="category" name="category">
-                                        <option value="cancel">Cancel</option>
-                                        <option value="birthday">Birthday</option>
-                                        <option value="Final Payment">Final Payment</option>
-                                        <option value="Anniversary">Anniversary</option>
-                                        <option value="Initial Contact">Initial Contact</option>
-                                        <option value="Princess Cruises">Princess Cruises</option>
-                                        <option value="ny Cruise Line">Any Cruise Line</option>
-                                        <option value="Carnival">Carnival</option>
-                                        <option value="Celebrity Cruises">Celebrity Cruises</option>
-                                        <option value="Cunard Cruises">Cunard Cruises</option>
-                                        <option value="Holland America Line">Holland America Line</option>
-                                        <option value="MSC Cruises">MSC Cruises</option>
-                                        <option value="Oceania Cruises">Oceania Cruises</option>
-                                        <option value="Virgin Voyages">Virgin Voyages</option>
-                                        <option value="Royal Caribbean">Royal Caribbean</option>
-                                        <option value="Payments Email">Payments Email</option>
-                                        <option value="booking Email">Booking Email</option>
-                                        <option value="Agency and Agent">Agency and Agent</option>
-                                        <option value="Home Email">Home Email</option>
-                                        <option value="Review Link">Review Link</option>
-                                        <option value="Agency Email">Agency Email</option>
-                                    </select>
+                                <label for="tr_name">Category <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="category" name="category" autofocus>
+                                                <option value="" disabled {{ old('email_category') ? '' : 'selected' }}>
+                                                    Select Category</option>
+                                                @foreach ($emailcategory as $category)
+                                                    <option value="{{ $category->email_cat_id }}"
+                                                        {{ old('email_category') === $category->email_cat_name ? 'selected' : '' }}>
+                                                        {{ $category->email_cat_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error class="mt-2" :messages="$errors->get('email_category')" />
                                 </div>
                                 <div class="form-group">
                                     <label for="category">Title</label>
