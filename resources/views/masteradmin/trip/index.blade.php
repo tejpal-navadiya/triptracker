@@ -206,7 +206,7 @@
                                                             $statusName = $value->trip_status->tr_status_name ?? '';
 
                                                             $buttonColor = match (strtolower($statusName)) {
-                                                                'trip request' => '#DB9ACA',
+                                                              'trip request' => '#DB9ACA',
                                                                 'trip proposal' => '#F6A96D',
                                                                 'trip modification' => '#FBC11E',
                                                                 'trip accepted' => '#28C76F',
@@ -214,6 +214,7 @@
                                                                 'trip lost' => '#F56B62',
                                                                 'trip completed' => '#F56B62',
                                                                 'trip pending' => '#F6A96D',
+                                                                'in process' => '#F6A96D',
                                                             };
                                                         @endphp
 
