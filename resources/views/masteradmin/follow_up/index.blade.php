@@ -10,10 +10,10 @@
         <div class="container-fluid">
             <div class="row mb-2 align-items-center justify-content-between">
                 <div class="col-auto">
-                    <h1 class="m-0">Trip Detail</h1>
+                    <h1 class="m-0">Trip Follow Up (After Travel)</h1>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Trip Information</li>
+                        <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
+                        <li class="breadcrumb-item active">Trip Follow Up (After Travel)</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->

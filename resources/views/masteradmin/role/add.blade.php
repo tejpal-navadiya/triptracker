@@ -11,7 +11,7 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('New User Role') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('New User Role') }}</li>
                             </ol>
                         </div><!-- /.col -->

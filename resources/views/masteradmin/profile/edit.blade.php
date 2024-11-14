@@ -11,7 +11,7 @@
           <div class="col-sm-12">
             <h1 class="m-0">Personal Profile</h1>
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
               <li class="breadcrumb-item active">Personal Profile</li>
             </ol>
           </div><!-- /.col -->
