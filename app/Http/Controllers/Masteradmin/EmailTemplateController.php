@@ -18,12 +18,13 @@ class EmailTemplateController extends Controller
     public function index(): View
     {
         $user = Auth::guard('masteradmins')->user();
-        $EmailTemplate = EmailTemplate::where(['id' =>$user->users_id])->get();
-      
-        $EmailTemplate = new EmailTemplate();
-        $EmailTemplate = $EmailTemplate->get();
+        // dd($user);
+      $EmailTemplate = EmailTemplate::with('emailcategory')->where('id', $user->users_id)->get();
+    //   dd($EmailTemplate);
+        // $EmailTemplate = new EmailTemplate();
+        // $EmailTemplaste = $EmailTemplate->get();
 
-        //dd($EmailTemplate);
+        // dd($EmailTemplate);
 
 
         return view('masteradmin.emailtemplate.index', compact('EmailTemplate'));
@@ -66,7 +67,7 @@ class EmailTemplateController extends Controller
    // dd($uniqueId);
 
 
-    $emailTemplate->id= $user->id ;
+    $emailTemplate->id= $user->users_id ;
     $emailTemplate->email_tid= $uniqueId;
     $emailTemplate->category = $validatedData['category'];
     $emailTemplate->title = $validatedData['title'];

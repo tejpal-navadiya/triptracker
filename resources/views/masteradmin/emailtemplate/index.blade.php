@@ -66,9 +66,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    
                                         @foreach ($EmailTemplate as $template)
+                                        <?php //dd($template->category->email_cat_id ?? ''); ?>
                                             <tr>
-                                                <td>{{ $template->category }}</td>
+                                                <td>{{ $template->emailcategory->email_cat_name ?? '' }}</td>
                                                 <td>{{ $template->title }}</td>
                                                 <td class="text-right">
                                                     <!-- Action buttons (Edit, Delete) -->
