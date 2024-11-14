@@ -212,7 +212,7 @@ class AgencyController extends Controller
   {
     $user = Auth::guard('masteradmins')->user();
 
-    //dd($request->all());
+    // dd($request->all());
 
     $masteruser = new MasterUserDetails();
     $masteruser->setTableForUniqueId($user->user_id);
@@ -261,6 +261,7 @@ class AgencyController extends Controller
       'users_password' => Hash::make($validatedData['users_password']), // Hash the password here
       'user_emergency_contact_person' => $validatedData['user_emergency_contact_person'],
       'user_emergency_email' => $validatedData['user_emergency_email'],
+      'user_emergency_phone_number' => $validatedData['user_emergency_phone_number'],
       'users_address' => $validatedData['users_address'],
       'users_city' => $validatedData['users_city'],
       'users_country' => $validatedData['users_country'],
@@ -268,8 +269,7 @@ class AgencyController extends Controller
       'users_zip' => $validatedData['users_zip'],
   ];
 
-
-  $userdetailu->where('users_id', $users_id)->update($updateData);
+  $userdetailu->where(['users_id' => $users_id,'id' => $user->id])->update($validatedData);
 
   AgencyPhones::where('age_id', $users_id)->delete();
 
