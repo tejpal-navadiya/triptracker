@@ -997,11 +997,10 @@ class TripController extends Controller
         $currentDate = Carbon::now()->format('m/d/Y');
 
         // \DB::enableQueryLog();
-
+        if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.id', $user->users_id)
             ->where($tripTable . '.tr_start_date', '>=', $currentDate)
             ->select([
                 $tripTable . '.*', 
@@ -1009,7 +1008,22 @@ class TripController extends Controller
                 $masterUserTable . '.users_last_name' 
             ]);
 
-
+        }else{
+            $specificId = $user->users_id;
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->where($tripTable . '.tr_start_date', '>=', $currentDate)
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }
 
         //filter do not touch
 
@@ -1070,11 +1084,10 @@ class TripController extends Controller
         $tripTable = $trips->getTable();
 
         $traveller = Trip::where('id',$user->users_id)->get();
-    
+        if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.id', $user->users_id)
             ->where($tripTable . '.status', 9) // Pending trips
             ->with('trip_status')
             ->select([
@@ -1082,7 +1095,23 @@ class TripController extends Controller
                 $masterUserTable . '.users_first_name', 
                 $masterUserTable . '.users_last_name' 
             ]);
-    
+        }else{
+            $specificId = $user->users_id;
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.status', 9) // Pending trips
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->with('trip_status')
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }
         // Apply filters if available
         if ($trip_agent) {
             $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
@@ -1162,7 +1191,7 @@ class TripController extends Controller
         $tripTable = $trips->getTable();
 
         $traveller = Trip::where('id',$user->users_id)->get();
-    
+        if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
@@ -1174,7 +1203,25 @@ class TripController extends Controller
                 $masterUserTable . '.users_first_name', 
                 $masterUserTable . '.users_last_name' 
             ]);
-    
+        }else{
+            $specificId = $user->users_id;
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.id', $user->users_id)
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->where($tripTable . '.status', 7) // complete trips
+            ->with('trip_status')
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+
+        }
         // Apply filters if available
         if ($trip_agent) {
             $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
