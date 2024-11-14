@@ -1,8 +1,18 @@
-@extends('masteradmin.layouts.app')
 <!DOCTYPE html>
-<title>Add Category | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
-    @section('content')
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Library Category Details | Trip Tracker</title>
+    @include('layouts.headerlink')
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @include('layouts.navigation')
+        @include('layouts.sidebar')
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -12,7 +22,7 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('Edit Category') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __(' Edit Category ') }}</li>
                             </ol>
                         </div><!-- /.col -->
@@ -28,12 +38,12 @@
                     <!-- card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Add Category</h3>
+                            <h3 class="card-title">Edit Category</h3>
                         </div>
 
                         <!-- /.card-header -->
                         <form method="POST"
-                            action="{{ route('library_category.update', $Library_categories->lib_cat_id) }}"
+                            action="{{ route('libraries-category.update', $Library_categories->lib_cat_id) }}"
                             enctype="multipart/form-data">
 
                             @csrf
@@ -80,7 +90,7 @@
 
                                 <div class="row py-20 px-10">
                                     <div class="col-md-12 text-center">
-                                        <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
+                                        <a href="{{ route('libraries-category.index') }}" class="add_btn_br px-10">Cancel</a>
                                         <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
                                     </div>
                                 </div>
@@ -94,6 +104,7 @@
         </div>
         <!-- /.content-wrapper -->
 
+
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
@@ -101,5 +112,7 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
-    @endsection
-@endif
+    @include('layouts.footerlink')
+</body>
+
+</html>

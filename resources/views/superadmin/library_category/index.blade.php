@@ -1,9 +1,18 @@
-@extends('masteradmin.layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Category Details | Trip Tracker</title>
+    @include('layouts.headerlink')
+</head>
 
-<title>Library Category Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
-    @section('content')
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @include('layouts.navigation')
+        @include('layouts.sidebar')
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -13,17 +22,15 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('Library Category') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Library Category') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
-                                    <a href="{{ route('library_category.create') }}" id="createNew"><button
+                                    <a href="{{ route('libraries-category.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Library
                                             Category</button></a>
-                                @endif
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -54,7 +61,7 @@
                                     <thead>
                                         <tr>
                                             <th>Category Name</th>
-                                            <th>Status</th>
+                                            <th data-orderable="false">Status</th>
                                             <th class="sorting_disabled" data-orderable="false">Actions</th>
                                         </tr>
                                     </thead>
@@ -79,7 +86,7 @@
                                                     <!-- <a href="{{ route('masteradmin.library.view') }}"><i
                                                                                                                                                                                                                                                                                                                                                                         class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
 
-                                                    <a href="{{ route('library_category.edit', $value->lib_cat_id) }}"><i
+                                                    <a href="{{ route('libraries-category.edit', $value->lib_cat_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
 
@@ -98,7 +105,7 @@
                                                             <div class="modal-content">
 
                                                                 <form id="delete-plan-form"
-                                                                    action="{{ route('library_category.destroy', $value->lib_cat_id) }}"
+                                                                    action="{{ route('libraries-category.destroy', $value->lib_cat_id) }}"
                                                                     method="POST">
                                                                     @csrf
                                                                     @method('DELETE') <!-- Spoofing DELETE method -->
@@ -144,5 +151,7 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
-    @endsection
-@endif
+    @include('layouts.footerlink')
+</body>
+
+</html>

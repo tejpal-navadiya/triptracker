@@ -1,9 +1,18 @@
-@extends('masteradmin.layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Details | Trip Tracker</title>
+    @include('layouts.headerlink')
+</head>
 
-<title>Library Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
-    @section('content')
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @include('layouts.navigation')
+        @include('layouts.sidebar')
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -13,16 +22,14 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('Library') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Library') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
-                                    <a href="{{ route('library.create') }}" id="createNew"><button class="add_btn"><i
-                                                class="fas fa-plus add_plus_icon"></i>Add Library Item</button></a>
-                                @endif
+                                    <a href="{{ route('libraries.create') }}" id="createNew"><button class="add_btn"><i
+                                    class="fas fa-plus add_plus_icon"></i>Add Library Item</button></a>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -63,7 +70,7 @@
                                             @php
                                                 $file = $files[0];
                                                 $imageUrl =
-                                                    config('app.image_url') . $userFolder . '/library_image/' . $file;
+                                                    config('app.image_url') . 'superadmin/library_image/' . $file;
                                             @endphp
 
                                             @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
@@ -85,10 +92,10 @@
                                     <p class="libary-name">{{ $library->lib_name }}</p>
 
                                     <div class="libary-btnbox">
-                                        <a href="{{ route('library.show', $library->lib_id) }}" class="l-view-btn">
+                                        <a href="{{ route('libraries.show', $library->lib_id) }}" class="l-view-btn">
                                             <i class="fas fa-eye"></i> View
                                         </a>
-                                        <a href="{{ route('library.edit', $library->lib_id) }}" class="l-edit-btn">
+                                        <a href="{{ route('libraries.edit', $library->lib_id) }}" class="l-edit-btn">
                                             <i class="fas fa-pen"></i> Edit
                                         </a>
                                         <a href="#" data-toggle="modal"
@@ -106,7 +113,7 @@
                                 aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                     <div class="modal-content">
-                                        <form action="{{ route('library.destroy', $library->lib_id) }}" method="POST">
+                                        <form action="{{ route('libraries.destroy', $library->lib_id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <div class="modal-body text-center">
@@ -172,6 +179,9 @@
             </div>
         </div>
 
+        <!-- /.content-wrapper -->
+
+
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
@@ -179,5 +189,7 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
-    @endsection
-@endif
+    @include('layouts.footerlink')
+</body>
+
+</html>

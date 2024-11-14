@@ -1,8 +1,18 @@
-@extends('masteradmin.layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
-<title>Library Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
-    @section('content')
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Details | Trip Tracker</title>
+    @include('layouts.headerlink')
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @include('layouts.navigation')
+        @include('layouts.sidebar')
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -12,14 +22,12 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('Library') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Library') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
-                                @endif
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -160,20 +168,20 @@
                                                     <div class="mr-3 mb-3 text-center">
                                                         @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
                                                             <!-- Display Image -->
-                                                            <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                            <img src="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}"
                                                                 alt="Uploaded Image" class="img-thumbnail"
                                                                 style="width: 100%; max-width: 200px;">
                                                         @elseif (preg_match('/\.pdf$/i', $file))
                                                             <!-- Display PDF as embedded viewer -->
                                                             <div class="embed-responsive embed-responsive-4by3">
                                                                 <embed
-                                                                    src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                    src="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}"
                                                                     type="application/pdf" class="embed-responsive-item">
                                                             </div>
                                                         @endif
                                                         <!-- Download and Print Options -->
                                                         <div class="mt-2">
-                                                            <a href="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                            <a href="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}"
                                                                 class="btn btn-outline-primary btn-sm" download>
                                                                 Download
                                                             </a>
@@ -197,12 +205,22 @@
                                     printWindow.print();
                                 }
                             </script>
-                            
+
+
+                           
                         </div>
                     </div>
             </section>
             <!-- /.content -->
         </div>
+
         <!-- /.content-wrapper -->
-    @endsection
-@endif
+
+
+        <!-- Control Sidebar -->
+      
+        <!-- ./wrapper -->
+    @include('layouts.footerlink')
+</body>
+
+</html>

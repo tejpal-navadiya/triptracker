@@ -29,6 +29,8 @@ use App\Http\Controllers\Masteradmin\AgencyController;
 use App\Http\Controllers\Masteradmin\BookedTripController;
 use App\Http\Controllers\Masteradmin\libraryCatgoryController;
 use App\Http\Controllers\Masteradmin\EmailCategoryController;
+use App\Http\Controllers\superadmin\LibrariesCatgoryController;
+use App\Http\Controllers\superadmin\LibrariesController;
 
 
 
@@ -106,6 +108,14 @@ Route::group(['prefix' => $adminRoute], function () {
 
         //logs
         Route::get('/logActivity', [ProfileController::class, 'logActivity'])->name('adminlog.index');
+
+        //library Category
+        Route::resource('libraries-category',LibrariesCatgoryController::class);
+
+         //library
+       Route::resource('libraries', LibrariesController::class);
+        //library image delete
+       Route::post('/libraries/{id}/image/{image}', [LibrariesController::class, 'deleteImage'])->name('libraries.image.delete');
 
         
     });

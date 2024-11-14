@@ -1,12 +1,20 @@
-@extends('masteradmin.layouts.app')
 <!DOCTYPE html>
-<title>Edit Library | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
-    @section('content')
-        <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
+<html lang="en">
 
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Library Details | Trip Tracker</title>
+    @include('layouts.headerlink')
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @include('layouts.navigation')
+        @include('layouts.sidebar')
+
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
@@ -34,7 +42,7 @@
                             <h3 class="card-title">Edit Library Item</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('library.update', $library->lib_id) }}"
+                        <form method="POST" action="{{ route('libraries.update', $library->lib_id) }}"
                             enctype="multipart/form-data">
                             @csrf
 
@@ -137,7 +145,7 @@
 
                             <div class="row py-20 px-10">
                                 <div class="col-md-12 text-center">
-                                    <a href="{{ route('library.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <a href="{{ route('libraries.index') }}" class="add_btn_br px-10">Cancel</a>
                                     <button type="submit" class="add_btn px-10">Save</button>
                                 </div>
                             </div>
@@ -166,8 +174,8 @@
                                                 <td>
                                                     @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
                                                         <!-- Display Image Preview -->
-                                                        <a target="_blank" href="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}">
-                                                        <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                        <a target="_blank" href="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}">
+                                                        <img src="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}"
                                                             alt="Uploaded Image" class="img-thumbnail"
                                                             style="width: 100px; height: auto;">
                                                         </a>
@@ -177,17 +185,17 @@
                                                         <div class="embed-responsive embed-responsive-4by3"
                                                             style="max-width: 100px;">
                                                             <embed
-                                                                src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                                src="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}"
                                                                 type="application/pdf" class="embed-responsive-item" />
                                                         </div>
-                                                        <a target="_blank" href="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}">View
+                                                        <a target="_blank" href="{{ config('app.image_url') }}/superadmin/library_image/{{ $file }}">View
                                                         </a>
                                                     @endif
                                                     </td>
                                                 <td>
                                                     <!-- Delete Button -->
                                                     <form method="POST"
-                                                        action="{{ route('library.image.delete', ['id' => $library->lib_id, 'image' => basename($file)]) }}"
+                                                        action="{{ route('libraries.image.delete', ['id' => $library->lib_id, 'image' => basename($file)]) }}"
                                                         style="display: inline-block;">
                                                         @csrf
                                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -244,6 +252,8 @@
         </script>
 
 
+        <!-- ./wrapper -->
+    @include('layouts.footerlink')
+</body>
 
-    @endsection
-@endif
+</html>
