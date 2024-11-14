@@ -198,7 +198,8 @@ Route::group(['prefix' => $busadminRoute], function () {
 
 
         Route::get('/follow_up_trips', [TripController::class, 'follow_up_after'])->name('masteradmin.trip.follow_up_trip');
-        
+        Route::get('/complete_follow_up_trips', [TripController::class, 'follow_up_after_complete'])->name('masteradmin.trip.follow_up_complete_trip');
+
         
 
 
