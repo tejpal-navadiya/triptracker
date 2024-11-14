@@ -954,6 +954,7 @@ class TripController extends Controller
                 ->from($tripTable)  
                 ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
                 ->where($tripTable . '.tr_id', $id)
+                ->where($tripTable . '.status', 7)
                 ->select([
                     $tripTable . '.*',  
                     $masterUserTable . '.users_first_name', 
@@ -969,7 +970,7 @@ class TripController extends Controller
         return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history'));
     }
 
-    public function booked_after(Request $request): View
+    public function booked_after(Request $request)
     {
         $user = Auth::guard('masteradmins')->user();
 
@@ -993,12 +994,15 @@ class TripController extends Controller
         $trips = new Trip();
         $tripTable = $trips->getTable();
 
+        $currentDate = Carbon::now()->format('m/d/Y');
 
+        // \DB::enableQueryLog();
 
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
             ->where($tripTable . '.id', $user->users_id)
+            ->where($tripTable . '.tr_start_date', '>=', $currentDate)
             ->select([
                 $tripTable . '.*', 
                 $masterUserTable . '.users_first_name', 
@@ -1028,7 +1032,8 @@ class TripController extends Controller
             $tripQuery->where($tripTable . '.tr_status', $trip_status1);
         }
 
-        $trip = $tripQuery->get();
+        $trip = $tripQuery->orderBy($tripTable . '.tr_start_date', 'asc')->get();
+        // dd(\DB::getQueryLog()); 
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
              // dd($allEstimates);

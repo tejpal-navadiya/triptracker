@@ -22,7 +22,7 @@
                         <div class="row">
                             <div class="col-lg-3 col-1024 col-md-6 px-10">
                                 <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
-                                    <option value="" default disabled>Choose Agent</option>
+                                    <option value="" default >Choose Agent</option>
                                     @foreach ($agency as $value)
                                         <option value="{{ $value->users_id }}">
                                             {{ $value->users_first_name }} {{ $value->users_last_name }}
@@ -34,7 +34,7 @@
                             <div class="col-lg-3 col-1024 col-md-6 px-10">
                                 <select id="trip_traveler" class="form-control select2" style="width: 100%;"
                                     name="trip_traveler">
-                                    <option value="" default disabled>Choose Traveler</option>
+                                    <option value="" default >Choose Traveler</option>
                                     @foreach ($trip as $value)
                                         <option value="{{ $value->tr_traveler_name }}">
                                             {{ $value->tr_traveler_name }}
@@ -79,8 +79,8 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('Booked Trips (After Booked)') }}</h1>
                             <ol class="breadcrumb">
-                                {{-- <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li> --}}
-                                {{-- <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li> --}}
+                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
+                                 <li class="breadcrumb-item active">{{ __('Booked Trips (After Booked)') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         {{-- <div class="col-auto">
@@ -115,7 +115,7 @@
                         <div class="card px-20">
                             <div class="card-body1">
                                 <div class="col-md-12 table-responsive pad_table">
-                                    <table id="example1" class="table table-hover text-nowrap data-table">
+                                    <table id="bookafterDataTable" class="table table-hover text-nowrap data-table">
                                         <thead>
                                             <tr>
                                                 <th>Trip Name</th>
@@ -123,7 +123,7 @@
                                                 <th>Traveler Name</th>
                                                 <th>Price</th>
                                                 <th>Start to End Date</th>
-                                                <th class="sorting_disabled text-right">Status</th>
+                                                <th class="sorting_disabled" data-orderable="false">Status</th>
                                                 <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
                                             </tr>
                                         </thead>
@@ -141,7 +141,7 @@
                                                     </td>
 
 
-                                            <td>
+                                                    <td>
                                                         @php
                                                             $statusName = $value->trip_status->tr_status_name ?? '';
 
@@ -165,7 +165,7 @@
                                                     </td>
 
 
-                                            <td>
+                                                <td>
 
                                                 <a href="{{ route('trip.view', $value->tr_id) }}"><i
                                                         class="fas fa-regular fa-eye edit_icon_grid"></i></a>
@@ -284,6 +284,10 @@
 <script>
     $(document).ready(function() {
 
+        $('#bookafterDataTable').dataTable({
+            order: [[1, 'asc']]
+            });
+
 
         var defaultStartDate = "";
         var defaultEndDate = "";
@@ -363,7 +367,7 @@
             // alert('hii');
 
             $.ajax({
-                url: '{{ route('trip.index') }}',
+                url: '{{ route('masteradmin.trip.booked_after') }}',
                 type: 'GET',
                 data: formData,
                 success: function(response) {
