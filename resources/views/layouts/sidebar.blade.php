@@ -85,7 +85,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('masteradmin.emailtemplate.create') }}"
+                                <a href="{{ route('emails-templates.create') }}"
                                     class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Add Email Template</p>

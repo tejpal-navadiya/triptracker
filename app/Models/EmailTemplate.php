@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class EmailTemplate extends Model
 {
     use HasFactory;
-    protected $fillable = ['id','email_tid', 'category','email_text'];
+    protected $fillable = ['id','email_tid', 'title' ,'category','email_text'];
 
     public function __construct(array $attributes = [])
     {
