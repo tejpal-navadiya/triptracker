@@ -110,7 +110,7 @@ public function destroy($id)
 
     \MasterLogActivity::addToLog('Master Admin email Category Deleted.');
 
-    return redirect()->route(route: 'email_category.index')->with('success', 'Email Category deleted successfully');
+    return redirect()->route('email_category.index')->with('success', 'Email Category deleted successfully');
 }
 
 }

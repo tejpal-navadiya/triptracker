@@ -31,6 +31,9 @@ use App\Http\Controllers\Masteradmin\libraryCatgoryController;
 use App\Http\Controllers\Masteradmin\EmailCategoryController;
 use App\Http\Controllers\superadmin\LibrariesCatgoryController;
 use App\Http\Controllers\superadmin\LibrariesController;
+use App\Http\Controllers\superadmin\EmailCategoriesController;
+use App\Http\Controllers\superadmin\EmailsTemplatesController;
+
 
 
 
@@ -116,6 +119,11 @@ Route::group(['prefix' => $adminRoute], function () {
        Route::resource('libraries', LibrariesController::class);
         //library image delete
        Route::post('/libraries/{id}/image/{image}', [LibrariesController::class, 'deleteImage'])->name('libraries.image.delete');
+
+       //email category
+       Route::resource('email-categories',EmailCategoriesController::class);
+        //email template
+       Route::resource('emails-templates',EmailsTemplatesController::class);
 
         
     });
@@ -284,7 +292,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/emaildetail', [EmailTemplateController::class, 'EmailTemplate'])->name('masteradmin.emailtemplate.EmailTemplate');
         Route::post('/fetch-email-text', [EmailTemplateController::class, 'fetchEmailText'])->name('fetchEmailText');
         Route::post('/fetch-traveller-details', [EmailTemplateController::class, 'fetchTravellerDetails'])->name('fetchTravellerDetails');
-        Route::post('/email-template/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
+        Route::post('/email-templates/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
 
         Route::resource('email_category',EmailCategoryController::class);
         

@@ -48,7 +48,7 @@
                                 <a href="{{ route('libraries.index') }}"
                                     class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>View Library Deatails
+                                    <p>Library
                                     </p>
                                 </a>
                             </li>
@@ -66,11 +66,51 @@
                                 <a href="{{ route('libraries-category.index') }}"
                                     class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Add Library Category
+                                    <p>Add Category
                                     </p>
                                 </a>
                             </li>
 
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#"
+                        class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-envelope"></i>
+                        <p>Email Templates
+                            <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('masteradmin.emailtemplate.create') }}"
+                                    class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Email Template</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ route('emails-templates.index') }}"
+                                    class="nav-link {{ request()->is($adminRoute . '/h*') ||
+                                    request()->is($adminRoute . '/*') ||
+                                    request()->is($adminRoute . '//*')
+                                        ? 'active'
+                                        : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>View All Email Templates</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('email-categories.index') }}"
+                                    class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Category
+                                    </p>
+                                </a>
+                            </li>
 
                     </ul>
                 </li>

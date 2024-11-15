@@ -1,20 +1,29 @@
 <!DOCTYPE html>
+<html lang="en">
 
-@extends('masteradmin.layouts.app')
-<title>Personal Profile | Trip Tracker</title>
-@section('content')
-    @if (isset($access['edit_profile']) && $access['edit_profile'])
-        <!-- Content Wrapper. Contains page content -->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Email Template Details | Trip Tracker</title>
+    @include('layouts.headerlink')
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @include('layouts.navigation')
+        @include('layouts.sidebar')
+
+
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-12">
-                            <h1 class="m-0">Personal Profile</h1>
+                            <h1 class="m-0">Add Email Template</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Personal Profile</li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
+                                <li class="breadcrumb-item active">Add Email Template</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -28,7 +37,7 @@
                     <div class="card customcard">
                         <div class="row">
                             <!-- Category Dropdown Field -->
-                            <form id="emailForm" action="{{ route('emailtemplate.store') }}" method="POST">
+                            <form id="emailForm" action="{{ route('emails-templates.store') }}" method="POST">
                                 @csrf
 
                                 <!-- Category Dropdown -->
@@ -57,7 +66,13 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('lib_basic_information')" />
 
                                 <!-- Submit Button -->
-                                <button type="submit" id="submitButton" class="btn btn-primary mt-3">Save</button>
+                                <div class="row py-20 px-10">
+                                    <div class="col-md-12 text-center">
+                                        <a href="{{ route('emails-templates.index') }}" class="add_btn_br px-10">Cancel</a>
+                                        <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
+                                    </div>
+                                </div>
+
                             </form>
 
                         </div>
@@ -68,17 +83,14 @@
         </div>
         <!-- /.content-wrapper -->
 
+
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
         </aside>
         <!-- /.control-sidebar -->
         </div>
-        <!-- ./wrapper -->
-
         <script src="{{ url('public/js/tinymce/tinymce.min.js') }}"></script>
-
-
         <script>
             document.getElementById('emailForm').addEventListener('submit', function(e) {
                 const submitButton = document.getElementById('submitButton');
@@ -104,5 +116,8 @@
                 toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | table | image',
             });
         </script>
-    @endif
-@endsection
+        <!-- ./wrapper -->
+    @include('layouts.footerlink')
+</body>
+
+</html>
