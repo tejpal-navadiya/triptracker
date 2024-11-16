@@ -15,6 +15,7 @@ use App\Models\Cities;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 
 
 class LibraryController extends Controller
@@ -124,28 +125,34 @@ class LibraryController extends Controller
 
     public function deleteImage(Request $request, $id, $image)
     {
-        // Retrieve the library instance using the provided lib_id
         $library = Library::where('lib_id', $id)->firstOrFail();
 
-        // Decode existing images
         $images = json_decode($library->lib_image, true);
 
-        // Check if the image exists in the array
         if (($key = array_search($image, $images)) !== false) {
             $userFolder = session('userFolder');
 
-            // Remove the image from the array
+            Log::info('User  folder: ' . $userFolder);
+            Log::info('Image to delete: ' . $image);
+           
+
             unset($images[$key]);
 
-            // Update the library record with the new images
             $library->lib_image = json_encode(array_values($images)); // Re-index the array and encode it back to JSON
 
-            // Save the updated library record
-            $library->save(); // Call save on the library instance
+            $library->save(); 
 
-            // Optionally, delete the image file from storage
-            Storage::delete('public/' . $userFolder . '/library_image/' . $image);
+            $userFolder = storage_path('app/' . session('userFolder'). '/library_image/');
+            $filePath = $userFolder . $image; 
 
+            Log::info('Attempting to delete file at path: ' . $filePath);
+    
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+                Log::info('File deleted successfully: ' . $filePath);
+            } else {
+                Log::warning('File does not exist: ' . $filePath);
+            }
             return redirect()->back()->with('success', 'Image deleted successfully.');
         }
 
@@ -189,9 +196,7 @@ class LibraryController extends Controller
         $validatedData = $request->validate(
             [
                 'lib_category' => 'required|string',
-                
-            'lib_name' => 'required|string',
-
+                'lib_name' => 'required|string',
                 'tag_name' => 'nullable|string',
                 'lib_currency' => 'nullable|string',
                 'lib_country' => 'nullable|string',
@@ -274,6 +279,27 @@ class LibraryController extends Controller
 
         $library = Library::where('lib_id', $lib_id)->firstOrFail();
 
+        $images = json_decode($library->lib_image, true); // Decode the JSON array
+
+        $userFolder = storage_path('app/' . session('userFolder'). '/library_image/');
+        // Log::info('User  folder path: ' . $userFolder);
+
+        if (is_array($images)) {
+            foreach ($images as $image) {
+                $destinationFilePath = $userFolder . $image; 
+                // Log::info('Checking file: ' . $destinationFilePath);
+
+                if (File::exists($destinationFilePath)) {
+                    File::delete($destinationFilePath);
+                    // Log::info('Deleted file: ' . $destinationFilePath);
+
+                }else{
+                    // Log::warning('File does not exist: ' . $destinationFilePath);
+
+                }
+            }
+        }
+        
         $library->where('lib_id', $lib_id)->delete();
 
 

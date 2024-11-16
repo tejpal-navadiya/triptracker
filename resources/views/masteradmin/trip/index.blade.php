@@ -54,6 +54,7 @@
                                     @endforeach
                                 </select>
                             </div>
+
                             <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex">
                                 <div class="input-group date">
                                     <x-flatpickr id="from-datepicker" placeholder="From" />
@@ -75,14 +76,15 @@
 
                                  <!-- Toggle Buttons for Views -->
                                  <div class="col-md-2 d-flex justify-content-end align-items-center">
-                                    <button id="listViewBtn" class="btn btn-outline-secondary custom-margin me-2" type="button">
+                                    <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin me-2">
                                         <i class="fas fa-list"></i>
-                                    </button>
-                                    <button id="gridViewBtn" class="btn btn-primary" type="button">
+                                    </a>
+                                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active">
                                         <i class="fas fa-th-large"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="row mb-2 align-items-center justify-content-between">
@@ -107,7 +109,7 @@
             <div id="viewContainer">
             <!-- /.content-header -->
             <!-- Main content -->
-            <section class="content px-10">
+            <section class="content px-10" id="list-info" class="tab">
                 <div class="container-fluid">
                     @if (Session::has('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -139,65 +141,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($trip as $value)
-                                                <tr>
-                                                    <td>{{ $value->tr_name ?? ''}}</td>
-                                                    <td>{{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? ''}}</td>
-                                                    <td>{{ $value->tr_traveler_name ?? ''}}</td>
-                                                    <td>{{ $value->tr_value_trip ?? ''}}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }} -
-                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-info">
-                                                        {{ $value->trip_status->tr_status_name ?? '' }}</button>
-                                                    </td>
-
-
-                                                    <td>
-
-                                                        <a href="{{ route('trip.view', $value->tr_id) }}"><i
-                                                                class="fas fa-regular fa-eye edit_icon_grid"></i></a>
-
-                                                        <a href="{{ route('trip.edit', $value->tr_id) }}"><i
-                                                                class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
-
-                                                        <a data-toggle="modal"
-                                                            data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i
-                                                                class="fas fa-solid fa-trash delete_icon_grid"></i></a>
-
-                                                        <div class="modal fade"
-                                                            id="delete-product-modal-{{ $value->sale_product_id }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                            <div class="modal-dialog modal-sm modal-dialog-centered"
-                                                                role="document">
-                                                                <div class="modal-content">
-                                                                    <form id="delete-plan-form"
-                                                                        action="{{ route('trip.destroy', $value->tr_id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <div class="modal-body pad-1 text-center">
-                                                                            <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                                            <p class="company_business_name px-10"><b>Delete
-                                                                                    Trip</b></p>
-                                                                            <p class="company_details_text">Are You Sure You
-                                                                                Want to Delete This Trip?</p>
-                                                                            <button type="button" class="add_btn px-15"
-                                                                                data-dismiss="modal">Cancel</button>
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <button type="submit"
-                                                                                class="delete_btn px-15">Delete</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach --}}
-
+                                           
 
                                             @foreach ($trip as $value)
                                                 <tr>
@@ -490,35 +434,46 @@
     });
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
     // Function to load list view
-    
+    $('#listViewBtn').click(function (e) {
+        e.preventDefault();
 
-    $('#listViewBtn').click(function() {
-        // alert('LIST..');
+        // Update button active states
+        $('#listViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
+        $('#gridViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+
+        // Load list view via AJAX
         $.ajax({
             url: "{{ route('trip.listView') }}",
             type: 'GET',
-            success: function(response) {
+            success: function (response) {
                 $('#viewContainer').html(response);
-                var allTable = $('#listview4').DataTable();
+                // Initialize DataTable
+                $('#listview4').DataTable();
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Error loading list view:', xhr);
             }
         });
     });
 
     // Function to load grid view
-    $('#gridViewBtn').click(function() {
-        // alert('ABC');
+    $('#gridViewBtn').click(function (e) {
+        e.preventDefault();
+
+        // Update button active states
+        $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
+        $('#listViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+
+        // Load grid view via AJAX
         $.ajax({
             url: "{{ route('trip.gridView') }}",
             type: 'GET',
-            success: function(response) {
+            success: function (response) {
                 $('#viewContainer').html(response);
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Error loading grid view:', xhr);
             }
         });

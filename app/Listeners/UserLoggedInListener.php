@@ -16,6 +16,7 @@ use App\Models\LibrariesCatgory;
 use App\Models\LibraryCategory;
 use App\Models\Libraries;
 use App\Models\Library;
+use App\Models\MasterUser;
 
 class UserLoggedInListener
 {
@@ -34,9 +35,13 @@ class UserLoggedInListener
     {
         if (Auth::guard('masteradmins')->check()) {
             session()->flash('alert-configured-data', "We're currently configuring your data. Please wait a few moments.");
-
+            // dd($event);
             $user = $event->user;
             $uniq_id = $user->user_id;
+          
+ 
+
+
 
             // Get all email categories
             $emailCategories = EmailCategories::get();
@@ -121,6 +126,7 @@ class UserLoggedInListener
                     ->exists();
 
                 if (!$exists) {
+                    // Create the library entry
                     $libraryModel->create([
                         'lib_id' => $library->lib_id,
                         'id' => $user->users_id, 
@@ -128,9 +134,33 @@ class UserLoggedInListener
                         'lib_name' => $library->lib_name,
                         'tag_name' => $library->tag_name,
                         'lib_basic_information' => $library->lib_basic_information,
-                        'lib_image' => $library->lib_image,
+                        'lib_image' => $library->lib_image, // Assuming this is the string of image names
                         'lib_status' => $library->lib_status
                     ]);
+
+                    $masterUser    = MasterUser ::where('buss_unique_id', $uniq_id)->first();
+                    $userFolder = storage_path('app/masteradmin/' . $masterUser ->buss_unique_id . '_' . $masterUser ->user_first_name . '/library_image/');
+                    
+                    $imageArray = json_decode($library->lib_image, true); // Assuming lib_image is a JSON string
+                    
+                    if (!file_exists($userFolder)) {
+                        mkdir($userFolder, 0755, true);
+                    }
+
+                    foreach ($imageArray as $image) {
+                        $sourceFilePath = storage_path('app/superadmin/library_image/' . $image); // Source path
+                        $destinationFilePath = $userFolder . $image; // Destination path
+
+                        if (file_exists($sourceFilePath)) {
+                            if (copy($sourceFilePath, $destinationFilePath)) {
+                                Log::info("Copied file: " . $image . " to " . $userFolder);
+                            } else {
+                                Log::error("Failed to copy file: " . $image);
+                            }
+                        } else {
+                            Log::warning("Source file does not exist: " . $sourceFilePath);
+                        }
+                    }
                 }
             }
         }

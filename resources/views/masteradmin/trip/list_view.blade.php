@@ -1,4 +1,4 @@
-<section class="content px-10">
+<section class="content px-10" id="list-info" class="tab">
                 <div class="container-fluid">
                     @if (Session::has('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
