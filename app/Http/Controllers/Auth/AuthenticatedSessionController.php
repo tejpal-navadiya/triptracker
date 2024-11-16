@@ -35,6 +35,8 @@ class AuthenticatedSessionController extends Controller
     {
         // dd($request);
         $request->authenticate();
+        session()->setId('admin_' . session_id());
+
 
         $request->session()->regenerate();
 

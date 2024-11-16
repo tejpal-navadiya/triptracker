@@ -218,8 +218,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/follow_up_trips', [TripController::class, 'follow_up_after'])->name('masteradmin.trip.follow_up_trip');
         Route::get('/complete_follow_up_trips', [TripController::class, 'follow_up_after_complete'])->name('masteradmin.trip.follow_up_complete_trip');
 
-        
-
+        Route::get('/tripdetails/list-view', [TripController::class, 'listView'])->name('trip.listView');
+        Route::get('/tripdetails/grid-view', [TripController::class, 'gridView'])->name('trip.gridView');
+        Route::post('/trip/update-status', [TripController::class, 'updateStatus'])->name('trip.updateStatus');
 
 
        //trip family member 

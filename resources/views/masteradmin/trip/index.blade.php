@@ -72,6 +72,16 @@
                                         </span>
                                     </div>
                                 </div>
+
+                                 <!-- Toggle Buttons for Views -->
+                                 <div class="col-md-2 d-flex justify-content-end align-items-center">
+                                    <button id="listViewBtn" class="btn btn-outline-secondary custom-margin me-2" type="button">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                    <button id="gridViewBtn" class="btn btn-primary" type="button">
+                                        <i class="fas fa-th-large"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -79,7 +89,7 @@
                         <div class="col-auto">
                             <h1 class="m-0">{{ __('Trip Workflow') }}</h1>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
                                 <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li>
                             </ol>
                         </div><!-- /.col -->
@@ -94,6 +104,7 @@
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
+            <div id="viewContainer">
             <!-- /.content-header -->
             <!-- Main content -->
             <section class="content px-10">
@@ -315,13 +326,14 @@
                 </div>
             </div>
         </div>
-
+</div>
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
         </aside>
         <!-- /.control-sidebar -->
         </div>
+                                                        
         <!-- ./wrapper -->
     @endsection
 @endif
@@ -476,4 +488,41 @@
 
 
     });
+
+
+    $(document).ready(function() {
+    // Function to load list view
+    
+
+    $('#listViewBtn').click(function() {
+        // alert('LIST..');
+        $.ajax({
+            url: "{{ route('trip.listView') }}",
+            type: 'GET',
+            success: function(response) {
+                $('#viewContainer').html(response);
+                var allTable = $('#listview4').DataTable();
+            },
+            error: function(xhr) {
+                console.error('Error loading list view:', xhr);
+            }
+        });
+    });
+
+    // Function to load grid view
+    $('#gridViewBtn').click(function() {
+        // alert('ABC');
+        $.ajax({
+            url: "{{ route('trip.gridView') }}",
+            type: 'GET',
+            success: function(response) {
+                $('#viewContainer').html(response);
+            },
+            error: function(xhr) {
+                console.error('Error loading grid view:', xhr);
+            }
+        });
+    });
+});
+
 </script>

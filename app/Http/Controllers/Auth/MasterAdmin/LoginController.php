@@ -33,6 +33,7 @@ class LoginController extends Controller
     {
         // dd($request);
         $request->authenticate();
+        session()->setId('master_admin_' . session_id());
 
         $request->session()->regenerate();
 
@@ -48,9 +49,9 @@ class LoginController extends Controller
         Cache::forget('masteradmins_user_' . Auth::guard('masteradmins')->id());
 
         
-        // $request->session()->invalidate();
+        $request->session()->invalidate();
         
-        // $request->session()->regenerateToken();
+        $request->session()->regenerateToken();
         
         Cookie::queue(Cookie::forget('user_session'));
 
