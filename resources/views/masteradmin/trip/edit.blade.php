@@ -40,9 +40,8 @@
 
                             <ol class="breadcrumb float-sm-right">
 
-                                <a href="#"><button class="add_btn_br">Cancel</button></a>
-
-                                <a href="#"><button class="add_btn">Save</button></a>
+                            <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                            <button type="submit" form="trip-edit-form" class="add_btn px-10">Save</button>
 
                             </ol>
 
@@ -80,7 +79,7 @@
 
                         <!-- /.card-header -->
 
-                        <form action="{{ route('trip.update', $trip->tr_id) }}" method="POST">
+                        <form id="trip-edit-form" action="{{ route('trip.update', $trip->tr_id) }}" method="POST">
 
                             @csrf
 

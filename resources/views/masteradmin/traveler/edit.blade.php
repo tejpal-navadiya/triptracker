@@ -19,8 +19,8 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                <a href="#"><button class="add_btn_br">Cancel</button></a>
-                                <a href="#"><button class="add_btn">Save</button></a>
+                            <a href="{{ route('masteradmin.travelers.travelersDetails') }}" class="add_btn_br px-10">Cancel</a>
+                            <button type="submit" form="travelerFormedit" class="add_btn px-10">Save</button>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -39,7 +39,7 @@
                             <h3 class="card-title">Edit Traveler</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form action="{{ route('masteradmin.travelers.update', $trip->tr_id) }}" method="POST">
+                        <form id="travelerFormedit" action="{{ route('masteradmin.travelers.update', $trip->tr_id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <input type="hidden" value="travelers" name="travelers">

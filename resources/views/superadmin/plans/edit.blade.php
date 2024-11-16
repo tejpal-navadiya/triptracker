@@ -28,8 +28,8 @@
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <a href="#"><button class="add_btn_br">Cancel</button></a>
-                                <a href="#"><button class="add_btn">Save</button></a>
+                            <a href="{{ route('plans.index') }}" class="add_btn_br px-10">Cancel</a>
+                            <button type="submit" form="planForm" class="add_btn px-10">Save</button>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -58,7 +58,7 @@
                         </div>
                         <?php //dd($plan);
                         ?>
-                        <form method="POST" action="{{ route('plans.update', ['plan' => $plan->sp_id]) }}">
+                        <form id="planForm" method="POST" action="{{ route('plans.update', ['plan' => $plan->sp_id]) }}">
                             @csrf
                             @method('PUT')
                             <div class="card-body2">
