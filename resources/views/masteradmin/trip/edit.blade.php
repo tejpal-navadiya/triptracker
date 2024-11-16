@@ -619,7 +619,7 @@
                                                             
                                                             @php
 
-                                                                $rowtriptype = 0; // Initialize a counter for row trip type
+                                                                $rowtriptypeIndex = 0; // Initialize a counter for row trip type
 
                                                             @endphp
 
@@ -652,7 +652,11 @@
                                                                         @endphp
 
                                                                        
+                                                                        @php
 
+                                                                        $rowtriptype = 0; // Initialize a counter for row trip type
+
+                                                                        @endphp
                                                                         @foreach ($tripFields as $fieldIndex => $tripField)
 
                                                                         @php
@@ -684,15 +688,15 @@
 
 
 
-                                                                                @if ($rowtriptype === 0) 
+                                                                                @if ($rowtriptypeIndex === 0) 
 
                                                                                     <div class="col-md-2">
 
-                                                                                        <button type="button" class="add_btn w-100 add-btn" data-target="{{ $index }}">+ Add Another</button>
+                                                                                        <button type="button" class="add_btn w-100 add-btn1" data-target="{{ $index }}">+ Add Another</button>
 
                                                                                     </div>
 
-                                                                            
+                                                                           
 
 
 
@@ -742,7 +746,11 @@
                                                                         @endforeach
 
                                                                     </div>
+                                                                    @php
 
+                                                                    $rowtriptypeIndex = $rowtriptypeIndex + 1; // Initialize a counter for row trip type
+
+                                                                    @endphp
                                                             @endforeach
 
                                                         </div>
@@ -2045,8 +2053,6 @@
 
         </script>
 
-
-
 <script>
 
    document.addEventListener('DOMContentLoaded', function () {
@@ -2324,7 +2330,6 @@
        
 
        </script>
-
 
 
         

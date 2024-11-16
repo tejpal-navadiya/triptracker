@@ -41,6 +41,11 @@ class Controller extends BaseController
         if ($userFolder) {
             $directory = $userFolder . '/' . $directory;
         }
+
+        $fullDirectoryPath = storage_path('app/' . $directory);
+        if (!file_exists($fullDirectoryPath)) {
+            mkdir($fullDirectoryPath, 0755, true); // Create the directory with 0755 permissions
+        }
     
         $uploadedImages = [];
         
@@ -58,11 +63,22 @@ class Controller extends BaseController
                 $uniqueFilename = Str::uuid() . '.' . $extension;
     
                 // Store the new image
-                $file->storeAs($directory, $uniqueFilename);
-                
-                // Add the filename to the list of uploaded images
-                $uploadedImages[] = $uniqueFilename;
-            }
+                $filePath = $file->storeAs($directory, $uniqueFilename);
+                // dd($filePath);
+               // dd(storage_path('app/' . $filePath));
+                // chmod(storage_path('app/' . $filePath), 0755);
+
+                // chmod($filePath, 0755);
+                $fullPath = storage_path('app/' . $filePath);
+                if (file_exists($fullPath)) {
+                    chmod($fullPath, 0755);
+                } else {
+                    // Handle the error, e.g., log it or throw an exception
+                    \Log::error("File does not exist: " . $fullPath);
+                }
+                    // Add the filename to the list of uploaded images
+                    $uploadedImages[] = $uniqueFilename;
+                }
     
             return $uploadedImages; // Return the list of filenames
         }
@@ -82,6 +98,9 @@ class Controller extends BaseController
     
             // Store the new image
             $request->file($type)->storeAs($directory, $uniqueFilename);
+            $fullPath = storage_path('app/' . $directory . '/' . $uniqueFilename);
+            chmod($fullPath, 0755); // Set file permissions
+
     
             return $uniqueFilename; // Return the filename for a single file
         }
