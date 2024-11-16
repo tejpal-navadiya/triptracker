@@ -19,8 +19,8 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                <a href="#"><button class="add_btn_br">Cancel</button></a>
-                                <a href="#"><button class="add_btn">Save</button></a>
+                                <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
+                                <button type="submit" form="trip-form" class="add_btn px-10">Save</button>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -37,7 +37,7 @@
                             <h3 class="card-title">Add Trip</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('trip.store') }}">
+                        <form id="trip-form" method="POST" action="{{ route('trip.store') }}">
                             @csrf
                             <div class="card-body2">
                                 <div class="row pxy-15 px-10">

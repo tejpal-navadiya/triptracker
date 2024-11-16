@@ -28,8 +28,8 @@
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <a href="#"><button class="add_btn_br">Cancel</button></a>
-                                <a href="#"><button class="add_btn">Save</button></a>
+                            <a href="{{ route('businessdetails.index') }}" class="add_btn_br px-10">Cancel</a>
+                            <button type="submit" form="bdetails" class="add_btn px-10">Save</button>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -45,7 +45,7 @@
                             <h3 class="card-title">Edit Agencies</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ route('businessdetails.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                        <form id="bdetails" method="POST" action="{{ route('businessdetails.update', $user->id) }}"  enctype="multipart/form-data">
                             @csrf
                             {{-- @method('PUT') --}}
 

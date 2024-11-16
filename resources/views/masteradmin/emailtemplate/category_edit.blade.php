@@ -80,8 +80,8 @@
 
                                 <div class="row py-20 px-10">
                                     <div class="col-md-12 text-center">
-                                        <a href="" class="add_btn_br px-10">Cancel</a>
-                                        <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
+                                    <a href="{{ route('email_category.index') }}" class="add_btn_br px-10">Cancel</a>
+                                    <button id="submitButton" type="submit" class="add_btn px-10">Save</button>
                                     </div>
                                 </div>
                             </div>

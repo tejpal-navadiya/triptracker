@@ -82,7 +82,13 @@ class TripController extends Controller
                 $masterUserTable . '.users_first_name', 
                 $masterUserTable . '.users_last_name' 
             ]);
+
         }
+            // Execute the query
+            $tripResults = $tripQuery->get();
+
+            // Group the results by 'tr_id'
+            $tripsGrouped = $tripResults->groupBy('tr_id');
 
        
 
@@ -126,7 +132,7 @@ class TripController extends Controller
          }
         // dd($trip);
 
-        return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status'));
+        return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status','tripsGrouped'));
     }
 
     public function create(): View
@@ -954,7 +960,6 @@ class TripController extends Controller
                 ->from($tripTable)  
                 ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
                 ->where($tripTable . '.tr_id', $id)
-                ->where($tripTable . '.status', 7)
                 ->select([
                     $tripTable . '.*',  
                     $masterUserTable . '.users_first_name', 
@@ -970,7 +975,7 @@ class TripController extends Controller
         return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history'));
     }
 
-    public function booked_after(Request $request)
+    public function booked_after(Request $request): View
     {
         $user = Auth::guard('masteradmins')->user();
 
@@ -994,36 +999,19 @@ class TripController extends Controller
         $trips = new Trip();
         $tripTable = $trips->getTable();
 
-        $currentDate = Carbon::now()->format('m/d/Y');
 
-        // \DB::enableQueryLog();
-        if($user->users_id && $user->role_id ==0 ){
+
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.tr_start_date', '>=', $currentDate)
+            ->where($tripTable . '.id', $user->users_id)
             ->select([
                 $tripTable . '.*', 
                 $masterUserTable . '.users_first_name', 
                 $masterUserTable . '.users_last_name' 
             ]);
 
-        }else{
-            $specificId = $user->users_id;
-            $tripQuery = Trip::where('tr_status', 1)
-            ->from($tripTable)
-            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where(function($query) use ($tripTable, $user, $specificId) {
-                $query->where($tripTable . '.tr_agent_id', $user->users_id)
-                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
-            })
-            ->where($tripTable . '.tr_start_date', '>=', $currentDate)
-            ->select([
-                $tripTable . '.*', 
-                $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name' 
-            ]);
-        }
+
 
         //filter do not touch
 
@@ -1046,8 +1034,7 @@ class TripController extends Controller
             $tripQuery->where($tripTable . '.tr_status', $trip_status1);
         }
 
-        $trip = $tripQuery->orderBy($tripTable . '.tr_start_date', 'asc')->get();
-        // dd(\DB::getQueryLog()); 
+        $trip = $tripQuery->get();
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
              // dd($allEstimates);
@@ -1082,12 +1069,11 @@ class TripController extends Controller
     
         $trips = new Trip();
         $tripTable = $trips->getTable();
-
-        $traveller = Trip::where('id',$user->users_id)->get();
-        if($user->users_id && $user->role_id ==0 ){
+    
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.id', $user->users_id)
             ->where($tripTable . '.status', 9) // Pending trips
             ->with('trip_status')
             ->select([
@@ -1095,23 +1081,7 @@ class TripController extends Controller
                 $masterUserTable . '.users_first_name', 
                 $masterUserTable . '.users_last_name' 
             ]);
-        }else{
-            $specificId = $user->users_id;
-            $tripQuery = Trip::where('tr_status', 1)
-            ->from($tripTable)
-            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.status', 9) // Pending trips
-            ->where(function($query) use ($tripTable, $user, $specificId) {
-                $query->where($tripTable . '.tr_agent_id', $user->users_id)
-                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
-            })
-            ->with('trip_status')
-            ->select([
-                $tripTable . '.*', 
-                $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name' 
-            ]);
-        }
+    
         // Apply filters if available
         if ($trip_agent) {
             $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
@@ -1147,10 +1117,10 @@ class TripController extends Controller
                     return '<button type="button" class="btn text-white" style="background-color: ' . $buttonColor . ';">' . $statusName . '</button>';
                 })
                 ->addColumn('tr_start_date', function ($document) {
-                    return optional($document->tr_start_date) ? Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
+                    return optional($document->tr_start_date) ? \Carbon\Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
                 })
                 ->addColumn('due_date', function ($document) {
-                    return optional($document->tr_start_date) ? Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
+                    return optional($document->tr_start_date) ? \Carbon\Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
                 })
                 ->rawColumns(['task_status_name'])
                 ->toJson();
@@ -1160,142 +1130,12 @@ class TripController extends Controller
         $trip = $tripQuery->get();
         // dd($trip);
         // If the request is AJAX, return the filtered results
-      
-    
-        // Return the main page view
-        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller'));
-    }
-
-    public function follow_up_after_complete(Request $request)
-    {
-        $access = view()->shared('access');
-    
-        $user = Auth::guard('masteradmins')->user();
-    
-        $trip_agent = $request->input('trip_agent');   
-        $trip_traveler = $request->input('trip_traveler');   
-    
-        $masterUserDetails = new MasterUserDetails();
-        $masterUserDetails->setTableForUniqueId($user->user_id); 
-        $masterUserTable = $masterUserDetails->getTable();
-    
-        if($user->users_id && $user->role_id == 0) {
-            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
-        } else {
-            $agency = $masterUserDetails->where('users_id', $user->users_id)->get(); 
-        }
-    
-        $trip_status = TripStatus::get();
-    
-        $trips = new Trip();
-        $tripTable = $trips->getTable();
-
-        $traveller = Trip::where('id',$user->users_id)->get();
-        if($user->users_id && $user->role_id ==0 ){
-        $tripQuery = Trip::where('tr_status', 1)
-            ->from($tripTable)
-            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.id', $user->users_id)
-            ->where($tripTable . '.status', 7) // complete trips
-            ->with('trip_status')
-            ->select([
-                $tripTable . '.*', 
-                $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name' 
-            ]);
-        }else{
-            $specificId = $user->users_id;
-            $tripQuery = Trip::where('tr_status', 1)
-            ->from($tripTable)
-            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.id', $user->users_id)
-            ->where(function($query) use ($tripTable, $user, $specificId) {
-                $query->where($tripTable . '.tr_agent_id', $user->users_id)
-                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
-            })
-            ->where($tripTable . '.status', 7) // complete trips
-            ->with('trip_status')
-            ->select([
-                $tripTable . '.*', 
-                $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name' 
-            ]);
-
-        }
-        // Apply filters if available
-        if ($trip_agent) {
-            $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
-        }
-    
-        if ($trip_traveler) {
-            $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
-        }
-    
-        // If the request is an AJAX request, return the filtered data
         if ($request->ajax()) {
-            return Datatables::of($tripQuery)
-                ->addIndexColumn()
-                ->addColumn('trip_name', function ($document) {
-                    return optional($document->trip)->tr_name ?? '';
-                })
-                ->addColumn('agent_name', function ($document) {
-                    return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));
-                })
-                ->addColumn('traveler_name', function ($document) {
-                    return optional($document->trip)->tr_traveler_name ?? '';
-                })
-                ->addColumn('task_status_name', function ($document) {
-                    $statusName = optional($document->trip_status)->tr_status_name ?? '';
-
-                    if ($statusName == 'Trip Completed') {
-                        $buttonColor = '#C5A070';
-                    } else{
-                        $buttonColor = '';
-                    }
-    
-                    // Return the button HTML
-                    return '<button type="button" class="btn text-white" style="background-color: ' . $buttonColor . ';">' . $statusName . '</button>';
-                })
-                ->addColumn('trip_date', function ($document) {
-                    $startDate = optional($document->tr_start_date) ? Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
-                    $endDate = optional($document->tr_end_date) ? Carbon::parse($document->tr_end_date)->format('M d, Y') : '';
-                    
-                    return $startDate && $endDate ? "$startDate - $endDate" : ($startDate ?: $endDate);
-                })
-                ->addColumn('complete_days', function ($document) {
-                    $currentDate = Carbon::now()->startOfDay(); 
-                    $endDate = $document->tr_end_date;
-                
-                    // Check if end date exists
-                    if (!$endDate) {
-                        return '';
-                    }
-                
-                    // Parse the end date and ensure it's in the correct format
-                    try {
-                        $endDateParsed = Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
-                    } catch (\Exception $e) {
-                        return ''; // Return empty if the date format is invalid
-                    }
-                
-                    // Calculate days since completion (positive if in the past, 0 if today, negative if future)
-                    $daysSinceCompletion = $endDateParsed->lt($currentDate) 
-                        ? $endDateParsed->diffInDays($currentDate) 
-                        : 0;
-                
-                    return $daysSinceCompletion.' days';
-                })
-                ->rawColumns(['task_status_name'])
-                ->toJson();
+            return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status'))->render();
         }
     
-        // For the initial page load, fetch the trips
-        $trip = $tripQuery->get();
-        // dd($trip);
-        // If the request is AJAX, return the filtered results
-       
         // Return the main page view
-        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller'));
+        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status'));
     }
     
 
@@ -1388,6 +1228,324 @@ class TripController extends Controller
 
     //     return view('masteradmin.follow_up.index', compact('pendingTrips', 'completeTrips', 'agency', 'trip_status','trip'));
     // }
+    public function listView(Request $request)
+    {
+        // dd('hello');
+        $user = Auth::guard('masteradmins')->user();
+
+        $startDate = $request->input('start_date'); 
+        $endDate = $request->input('end_date');   
+        $trip_agent = $request->input('trip_agent');   
+        $trip_traveler = $request->input('trip_traveler');   
+        $trip_status1 = $request->input('trip_status');   
+
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+
+        if ($user->users_id && $user->role_id == 0) {
+            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
+        
+        } else {
+            $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
+        }
+       // $agency = $masterUserTable->get();
+        $trip_status = TripStatus::get();
+
+        
+        $trips = new Trip();
+        
+        $tripTable = $trips->getTable();
+        $specificId = $user->users_id;
+        if($user->users_id && $user->role_id ==0 ){
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }else{
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }
+
+       
+
+                
+        $today = Carbon::today('Asia/Kolkata'); 
+        
+        //$tripQuery->orderByRaw("CASE WHEN tr_start_date = ? THEN 0 ELSE 1 END, tr_start_date ASC", [$today]);
+        
+        $tripQuery->orderByRaw("CASE WHEN tr_start_date = ? THEN 0 ELSE 1 END, tr_start_date DESC", [$today]);
+
 
     
+
+        if ($startDate && !$endDate) {
+            $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+        } elseif ($startDate && $endDate) {
+            $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+                ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+        }
+
+        if ($trip_agent) {
+            $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+        }
+
+        if ($trip_traveler) {
+            $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
+        }
+
+        if ($trip_status1) {
+            $tripQuery->where($tripTable . '.status', $trip_status1);
+        }
+
+
+        $trip = $tripQuery->get();
+        
+
+        if ($request->ajax()) {
+            // dd(\DB::getQueryLog()); 
+             // dd($allEstimates);
+             return view('masteradmin.trip.list_view', compact('trip', 'agency', 'trip_status'))->render();
+         }
+        // dd($trip);
+
+        return view('masteradmin.trip.list_view', compact('trip', 'agency', 'trip_status'));
+ }
+ 
+    
+//  public function gridView(Request $request)
+//  {
+//      $user = Auth::guard('masteradmins')->user();
+ 
+//      $startDate = $request->input('start_date'); 
+//      $endDate = $request->input('end_date');   
+//      $trip_agent = $request->input('trip_agent');   
+//      $trip_traveler = $request->input('trip_traveler');   
+//      $trip_status1 = $request->input('trip_status');   
+ 
+//      $masterUserDetails = new MasterUserDetails();
+//      $masterUserDetails->setTableForUniqueId($user->user_id); 
+//      $masterUserTable = $masterUserDetails->getTable();
+ 
+//      if ($user->users_id && $user->role_id == 0) {
+//          $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
+//      } else {
+//          $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
+//      }
+ 
+//      $trip_status = TripStatus::get();
+// //  dd(     $trip_status);
+//      $trips = new Trip();
+//      $tripTable = $trips->getTable();
+//      $specificId = $user->users_id;
+ 
+//      // Define the query based on user's role
+//      if ($user->users_id && $user->role_id == 0) {
+//          $tripQuery = Trip::where('tr_status', 1)
+//              ->from($tripTable)
+//              ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+//              ->select([
+//                  $tripTable . '.*', 
+//                  $masterUserTable . '.users_first_name', 
+//                  $masterUserTable . '.users_last_name' 
+//              ]);
+//      } else {
+//          $tripQuery = Trip::where('tr_status', 1)
+//              ->from($tripTable)
+//              ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+//              ->where(function($query) use ($tripTable, $user, $specificId) {
+//                  $query->where($tripTable . '.tr_agent_id', $user->users_id)
+//                        ->orWhere($tripTable . '.id', $specificId);  
+//              })
+//              ->select([
+//                  $tripTable . '.*', 
+//                  $masterUserTable . '.users_first_name', 
+//                  $masterUserTable . '.users_last_name' 
+//              ]);
+//      }
+ 
+//      $today = Carbon::today('Asia/Kolkata'); 
+ 
+//      $tripQuery->orderByRaw("CASE WHEN tr_start_date = ? THEN 0 ELSE 1 END, tr_start_date DESC", [$today]);
+ 
+//      // Apply filters based on date, agent, traveler, and status
+//      if ($startDate && !$endDate) {
+//          $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+//      } elseif ($startDate && $endDate) {
+//          $tripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+//                    ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+//      }
+ 
+//      if ($trip_agent) {
+//          $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+//      }
+ 
+//      if ($trip_traveler) {
+//          $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
+//      }
+ 
+//      if ($trip_status1) {
+//          $tripQuery->where($tripTable . '.status', $trip_status1);
+//      }
+ 
+//      // Execute the query and group results by 'status' or 'tr_status' (adjust field name if necessary)
+//      $tripResults = $tripQuery->get();
+//      $tripsGrouped = $tripResults->groupBy('status'); // Adjust 'status' based on actual field in your table
+ 
+//      // Return the view with the grouped data
+//      if ($request->ajax()) {
+//          return view('masteradmin.trip.workflow', compact('tripResults', 'agency', 'trip_status', 'tripsGrouped'))->render();
+//      }
+ 
+//      return view('masteradmin.trip.workflow', compact('tripResults', 'agency', 'trip_status', 'tripsGrouped'));
+//  }
+ 
+    
+public function gridView(Request $request)
+{
+    $user = Auth::guard('masteradmins')->user();
+    
+    // Input data from request
+    $startDate = $request->input('start_date'); 
+    $endDate = $request->input('end_date');   
+    $trip_agent = $request->input('trip_agent');   
+    $trip_traveler = $request->input('trip_traveler');   
+    $trip_status1 = $request->input('trip_status');   
+
+    // Initialize the MasterUserDetails model with dynamic table
+    $masterUserDetails = new MasterUserDetails();
+    $masterUserDetails->setTableForUniqueId($user->user_id); 
+    $masterUserTable = $masterUserDetails->getTable();
+
+    // Fetch TripStatus records
+    $trip_status = TripStatus::get();
+    
+    $trips = new Trip();
+    $tripTable = $trips->getTable();
+    $specificId = $user->users_id;
+    
+    // Define the query based on user's role
+    if ($user->users_id && $user->role_id == 0) {
+        // Admin or superuser role query
+        $tripQuery = Trip::from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->join('trip_status', 'trip_status.tr_status_id', '=', $tripTable . '.status')  // Adjust join condition
+            ->select([
+                $tripTable . '.*',
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name', 
+                'trip_status.tr_status_name'  // Fetch status name
+            ]); // Default status filter for active records
+    } else {
+        // Other user role logic
+        $tripQuery = Trip::from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->join('trip_status', 'trip_status.tr_status_id', '=', $tripTable . '.status')  // Adjust join condition
+            ->where(function ($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId for filtering
+            })
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name', 
+                'trip_status.tr_status_name'  // Fetch status name
+            ]);  // Default status filter for active records
+    }
+
+    // Apply filters for date range, agent, traveler, and status
+    if ($startDate && !$endDate) {
+        $tripQuery->whereDate($tripTable . '.tr_start_date', '=', Carbon::parse($startDate)->format('Y-m-d'));
+    } elseif ($startDate && $endDate) {
+        $tripQuery->whereBetween($tripTable . '.tr_start_date', [
+            Carbon::parse($startDate)->format('Y-m-d'),
+            Carbon::parse($endDate)->format('Y-m-d')
+        ]);
+    }
+
+    if ($trip_agent) {
+        $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+    }
+
+    if ($trip_traveler) {
+        $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
+    }
+
+    if ($trip_status1) {
+        $tripQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    // Execute the query
+    $tripResults = $tripQuery->get();
+    
+    // Group the trips by status id (status)
+    $tripsGrouped = $tripResults->groupBy('status'); // Grouping by status ID
+    $totalsByStatus = $tripResults->groupBy('status')->map(function ($group) {
+        return $group->sum('tr_value_trip'); // Sum the 'tr_value_trip' for each group
+    });
+// dd($tripsGrouped);
+    // Return the view with grouped results
+    if ($request->ajax()) {
+        return view('masteradmin.trip.workflow', compact('tripResults', 'trip_status', 'tripsGrouped','totalsByStatus'))->render();
+    }
+
+    return view('masteradmin.trip.workflow', compact('tripResults', 'trip_status', 'tripsGrouped','totalsByStatus'));
+}
+
+public function updateStatus(Request $request)
+{
+  
+    $tripId = $request->input('trip_id');
+    $newStatus = $request->input('status');
+// dd($newStatus);
+    // Initialize the Trip model
+    $trip = new Trip();
+
+    // Set the table dynamically
+    $user = Auth::guard('masteradmins')->user();
+    if (!$user) {
+        return response()->json(['error' => 'User not authenticated'], 401);
+    }
+    $trip->setTableForUniqueId($user->user_id);
+
+    // Log the table name
+    \Log::info('Using table: ' . $trip->getTable());
+
+    // Fetch the trip record
+    $tripRecord = $trip->where('tr_id', $tripId);
+
+    if (!$tripRecord->exists()) {
+        \Log::error('Trip not found. Query Log: ' . print_r(\DB::getQueryLog(), true));
+        return response()->json(['error' => 'Trip not found'], 404);
+    }
+    
+    // Update the status
+    $updated = $tripRecord->where('tr_id', $tripId)->update(['status' => $newStatus]);
+    
+    if ($updated) {
+        return response()->json(['success' => 'Trip status updated successfully']);
+    } else {
+        return response()->json(['error' => 'Failed to update trip status'], 500);
+    }
+}
+
+
+
+
+
+   
 }
