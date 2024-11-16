@@ -23,7 +23,7 @@
 
                 <li class="nav-item ">
                     <a href="{{ route('businessdetails.index') }}"
-                        class="nav-link {{ request()->is($adminRoute . '/businessdetails*') ? 'active' : '' }}">
+                        class="nav-link {{ request()->is($adminRoute . '/businessdetails*') || request()->is($adminRoute . '/editbusinessdetails*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-regular fa-building"></i>
                         <p>Agencies List</p>
                     </a>
@@ -35,7 +35,7 @@
                         <p>Subscription Plans </p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Library
@@ -73,7 +73,43 @@
 
 
                     </ul>
-                </li>
+                </li> -->
+                <li class="nav-item">
+    <a href="#" class="nav-link {{ request()->is($adminRoute . '/library*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-envelope"></i>
+        <p>Library
+            <i class="fas fa-angle-right right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+
+        <li class="nav-item">
+            <a href="{{ route('libraries.index') }}"
+               class="nav-link {{ request()->is($adminRoute . '/library*') || request()->is($adminRoute . '/libraries/*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Library</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('libraries.create') }}"
+               class="nav-link {{ request()->is($adminRoute . '/library*') || request()->is($adminRoute . '/libraries/create*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Add Library Item</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('libraries-category.index') }}"
+               class="nav-link {{ request()->is($adminRoute . '/library*') || request()->is($adminRoute . '/libraries-category*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Add Category</p>
+            </a>
+        </li>
+
+    </ul>
+</li>
+
 
                 <li class="nav-item">
                     <a href="#"
