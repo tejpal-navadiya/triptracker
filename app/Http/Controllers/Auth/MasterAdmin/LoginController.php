@@ -48,9 +48,9 @@ class LoginController extends Controller
         Cache::forget('masteradmins_user_' . Auth::guard('masteradmins')->id());
 
         
-        $request->session()->invalidate();
+        // $request->session()->invalidate();
         
-        $request->session()->regenerateToken();
+        // $request->session()->regenerateToken();
         
         Cookie::queue(Cookie::forget('user_session'));
 

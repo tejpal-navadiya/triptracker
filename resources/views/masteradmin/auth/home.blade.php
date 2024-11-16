@@ -42,7 +42,7 @@
                         // }, 5000);
                           setTimeout(function () {
                             $('#alertConfigured').hide();
-                        }, 2000);
+                        }, 5000);
                     });
                 </script>
             <!-- @endif -->
