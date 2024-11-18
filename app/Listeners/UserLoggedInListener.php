@@ -42,7 +42,8 @@ class UserLoggedInListener
  
 
 
-
+            if($user->role_id == 0)
+            {
             // Get all email categories
             $emailCategories = EmailCategories::get();
 
@@ -165,4 +166,5 @@ class UserLoggedInListener
             }
         }
     }
+}
 }
