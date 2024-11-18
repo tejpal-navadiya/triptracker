@@ -19,7 +19,7 @@
                     <a href="{{ route('masteradmin.home') }}"
                         class="nav-link {{ request()->is($busadminRoutes . '/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
+                        <p>Analytics</p>
                     </a>
                 </li>
 
