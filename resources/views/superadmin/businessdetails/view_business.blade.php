@@ -77,15 +77,19 @@
                                         <div class="col-auto">
                                             <table class="table estimate_detail_table">
                                                 <tbod>
+                                                    
                                                     <tr>
-                                                    <td><strong>
-                                                        @if($userdetailss->users_iata_clia_number ?? '')
-                                                            {{ $userdetailss->users_iata_clia_number ? $userdetailss->users_iata_clia_number : 'IATA or CLIA Number' }}
-                                                        
-                                                        @endif
-                                                    </strong></td>
-                                                    <td>{{ ':'.$userdetailss->users_iata_number ?? '' }}</td>
-                                                    </tr>  
+                                                        <td><strong>IATA or CLIA Number :</strong></td>
+                                                        <td>{{ $userdetailss->users_iata_clia_number ?? '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Personal CLIA Number :</strong></td>
+                                                        <td>{{ $userdetailss->users_clia_number ?? '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Personal IATA Number :</strong></td>
+                                                        <td>{{ $userdetailss->users_iata_number ?? '' }}</td>
+                                                    </tr>
                                                     </tr>
                                                     
                                                     <tr>

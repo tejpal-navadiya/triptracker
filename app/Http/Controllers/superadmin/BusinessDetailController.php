@@ -158,7 +158,7 @@ class BusinessDetailController extends Controller
          
 public function update(Request $request, $id)
 {
-    //dd($request->all());
+    // dd($id);
     $user = Auth::guard('masteradmins')->user();
     $user = MasterUser::findOrFail($id);
 
@@ -166,7 +166,7 @@ public function update(Request $request, $id)
     $userDetails->setTableForUniqueId($user->buss_unique_id);
 
     $userdetails = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->firstOrFail();
-
+    //dd($userdetails);
     $validatedData = $request->validate([
         'users_agencies_name' => 'required|string',
         'users_first_name' => 'required|string',
@@ -204,7 +204,7 @@ public function update(Request $request, $id)
         'users_image.mimes' => 'Image must be a file of type: jpeg, png, jpg, pdf.',
         'users_image.max' => 'Image size must not exceed 2MB.',
     ]);
-
+    // dd($validatedData);
     
 
     $userdetails->updated_at = now(); 
@@ -221,6 +221,7 @@ public function update(Request $request, $id)
         }else{
             $validatedData['users_image'] = $userdetails->users_image ?? '';
         }
+
 
         $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->update($validatedData);
 

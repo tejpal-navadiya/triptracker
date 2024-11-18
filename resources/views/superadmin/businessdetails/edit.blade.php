@@ -133,46 +133,56 @@
                                 <div class="row pxy-15 px-10">
 
                                 <div class="col-md-6 col-xl-4">
-                                    <label class="form-label">Select IATA or CLIA Number</label>
+                                    <label for="users_iata_clia_number" class="form-label">IATA or CLIA Number</label>
                                     <span class="text-danger">*</span>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="users_iata_clia_number" id="clia_iata_option" value="IATA or CLIA Number" {{ $userdetails->users_iata_clia_number === 'IATA or CLIA Number' ? 'checked' : '' }} >
-                                        <label class="form-check-label" for="clia_iata_option">
-                                            IATA or CLIA Number
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="users_iata_clia_number" id="iata_option" value="Personal IATA Number" {{ $userdetails->users_iata_clia_number === 'Personal IATA Number' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="iata_option">
-                                            Personal IATA Number
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="users_iata_clia_number" id="clia_option" value="Personal CLIA Number" {{ $userdetails->users_iata_clia_number === 'Personal CLIA Number' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="clia_option">
-                                            Personal CLIA Number
-                                        </label>
-                                    </div>
-                                
-                                </div>
-
-                                
-
-                                <div class="col-md-6 col-xl-4">
-                                    <label for="user_agencies_name" class="form-label">IATA or CLIA Number</label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-append">
                                             <div class="input-group-text">
-                                                <span class="fas fa-regular fa-phone"></span>
+                                                <span class="fas fa-regular fa-envelope"></span>
                                             </div>
                                         </div>
-                                        <x-text-input type="text" min="0" class="form-control"
-                                                id="user_clia_number" placeholder="Enter Personal Number" name="users_iata_number"
-                                                autofocus autocomplete="user_iata_number" value="{{ $userdetails->users_iata_number }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('user_iata_number')" />
+                                        <input type="number" class="form-control @error('users_iata_clia_number') is-invalid @enderror"
+                                            id="users_iata_clia_number" name="users_iata_clia_number" placeholder="Enter IATA or CLIA Number"
+                                            value="{{ old('users_iata_clia_number') }}">
                                     </div>
+                                    @error('users_iata_clia_number')
+                                        <div class="invalid-feedback mb-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
+                                <div class="col-md-6 col-xl-4">
+                                    <label for="users_clia_number" class="form-label">Personal CLIA Number</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-regular fa-envelope"></span>
+                                            </div>
+                                        </div>
+                                        <input type="number" class="form-control @error('users_clia_number') is-invalid @enderror"
+                                        id="users_clia_number" name="users_clia_number" placeholder="Enter Personal CLIA Number"
+                                        value="{{ old('users_clia_number') }}">
+                                    </div>
+                                    @error('users_clia_number')
+                                        <div class="invalid-feedback mb-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6 col-xl-4">
+                                    <label for="users_iata_number" class="form-label">Personal IATA Number</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-regular fa-envelope"></span>
+                                            </div>
+                                        </div>
+                                        <input type="number" class="form-control @error('users_iata_number') is-invalid @enderror"
+                                            id="users_iata_number" name="users_iata_number" placeholder="Enter Personal IATA Number"
+                                            value="{{ old('users_iata_number') }}">
+                                    </div>
+                                    @error('users_iata_number')
+                                        <div class="invalid-feedback mb-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
                                     <div class="col-md-12">
                                         <div class="form-group">
