@@ -38,9 +38,8 @@
                   <select class="form-control" id="category" name="category_id">
                   <option>Select</option>
                       @foreach($categories as $category)
-                      
-                          <option value="{{ $category->category }}" {{ isset($emailTemplate) && $emailTemplate->category == $category->category ? 'selected' : '' }}>
-                              {{ $category->category }}
+                          <option value="{{ $category->email_cat_id }}" {{ isset($emailTemplate) && $emailTemplate->category == $category->email_cat_id ? 'selected' : '' }}>
+                              {{ $category->email_cat_name }}
                           </option>
                       @endforeach
                   </select>

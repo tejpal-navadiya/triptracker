@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Redirect /website to the root of triptracker
+    RewriteCond %{REQUEST_URI} ^/laravel/triptracker/website/?$ [NC]
+    RewriteRule ^ /laravel/triptracker/ [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

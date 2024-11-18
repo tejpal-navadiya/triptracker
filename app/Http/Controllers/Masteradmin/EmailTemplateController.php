@@ -121,7 +121,7 @@ public function EmailTemplate(): View
     $user = Auth::guard('masteradmins')->user();
     $EmailTemplate = EmailTemplateDetails::where(['id' => $user->users_id])->get();
     $user = Auth::guard('masteradmins')->user();
-    $categories = EmailTemplate::select('category')->distinct()->get();
+    $categories = EmailCategory::get();
     $travellers = Trip::select('tr_traveler_name','tr_id')->distinct()->get();
     
     // dd($traveller);

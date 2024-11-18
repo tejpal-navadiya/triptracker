@@ -171,7 +171,12 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::patch('/profile', [ProfilesController::class, 'update'])->name('masteradmin.profile.update');
         Route::delete('/profile', [ProfilesController::class, 'destroy'])->name('masteradmin.profile.destroy');
         Route::get('fetch-users', [ProfilesController::class, 'fetchUser'])->name('masteradmin.profile.fetchUser');
+        Route::get('dashboard-task-incomplete-details/', [HomeController::class, 'incompleteDetailshome'])->name('masteradmin.dashboardtask.incomplete');
 
+        Route::get('dashboard-task-edit/{id}/{trip_id}', [TripTaskController::class, 'edit'])->name('masteradmin.dashboardtask.edit');
+        Route::patch('/dashboard-task-update/{trip_id}/{trvt_id}', [TripTaskController::class, 'update'])->name('masteradmin.dashboardtask.update');
+
+        
         Route::put('password', [MasterPasswordController::class, 'update'])->name('masteradmin.password.update');
         Route::post('logout', [LoginController::class, 'destroy'])->name('masteradmin.logout');
         
