@@ -73,45 +73,53 @@
 
 
                     </ul>
-                </li> -->
-                <li class="nav-item">
-    <a href="#" class="nav-link {{ request()->is($adminRoute . '/library*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-envelope"></i>
-        <p>Library
-            <i class="fas fa-angle-right right"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
+                </li>  -->
+                <li class="nav-item {{ request()->is($adminRoute . '/libraries*') || 
+                      request()->is($adminRoute . '/libraries-category*') 
+                      ? 'menu-open' : '' }}">
+                    <a href="#"
+                    class="nav-link {{ request()->is($adminRoute . '/libraries*') || 
+                                        request()->is($adminRoute . '/libraries-category*') 
+                                        ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-envelope"></i>
+                        <p>Library
+                            <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- Library -->
+                        <li class="nav-item">
+                            <a href="{{ route('libraries.index') }}" 
+                            class="nav-link {{ request()->is($adminRoute . '/libraries') || 
+                                                request()->is($adminRoute . '/libraries/view*') 
+                                                ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Library</p>
+                            </a>
+                        </li>
 
-        <li class="nav-item">
-            <a href="{{ route('libraries.index') }}"
-               class="nav-link {{ request()->is($adminRoute . '/library*') || request()->is($adminRoute . '/libraries/*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Library</p>
-            </a>
-        </li>
+                        <!-- Add Library Item -->
+                        <li class="nav-item">
+                            <a href="{{ route('libraries.create') }}" 
+                            class="nav-link {{ request()->is($adminRoute . '/libraries/create') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Add Library Item</p>
+                            </a>
+                        </li>
 
-        <li class="nav-item">
-            <a href="{{ route('libraries.create') }}"
-               class="nav-link {{ request()->is($adminRoute . '/library*') || request()->is($adminRoute . '/libraries/create*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Add Library Item</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ route('libraries-category.index') }}"
-               class="nav-link {{ request()->is($adminRoute . '/library*') || request()->is($adminRoute . '/libraries-category*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Add Category</p>
-            </a>
-        </li>
-
-    </ul>
-</li>
+                        <!-- Add Category -->
+                        <li class="nav-item">
+                            <a href="{{ route('libraries-category.index') }}" 
+                            class="nav-link {{ request()->is($adminRoute . '/libraries-category*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Add Category</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="#"
                         class="nav-link {{ request()->is($adminRoute . '/h*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
@@ -149,7 +157,50 @@
                             </li>
 
                     </ul>
-                </li>
+                </li> -->
+                <li class="nav-item {{ request()->is($adminRoute . '/emails-templates*') || 
+                      request()->is($adminRoute . '/email-categories*') 
+                      ? 'menu-open' : '' }}">
+                            <a href="#"
+                            class="nav-link {{ request()->is($adminRoute . '/emails-templates*') || 
+                                                request()->is($adminRoute . '/email-categories*') 
+                                                ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-envelope"></i>
+                                <p>Email Templates
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <!-- Add Email Template -->
+                                <li class="nav-item">
+                                    <a href="{{ route('emails-templates.create') }}" 
+                                    class="nav-link {{ request()->is($adminRoute . '/emails-templates/create') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Email Template</p>
+                                    </a>
+                                </li>
+
+                                <!-- View All Email Templates -->
+                                <li class="nav-item">
+                                    <a href="{{ route('emails-templates.index') }}" 
+                                    class="nav-link {{ request()->is($adminRoute . '/emails-templates') || 
+                                                        request()->is($adminRoute . '/emails-templates/view*') 
+                                                        ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>View All Email Templates</p>
+                                    </a>
+                                </li>
+
+                                <!-- Add Category -->
+                                <li class="nav-item">
+                                    <a href="{{ route('email-categories.index') }}" 
+                                    class="nav-link {{ request()->is($adminRoute . '/email-categories*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Category</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
 
                 <li class="nav-item ">
