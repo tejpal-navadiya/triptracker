@@ -28,7 +28,9 @@
                     @if (count($task) > 0)
                     @foreach ($task as $taskvalue)
                     <tr>
-                        <td>{{ $taskvalue->trvt_name ?? ''}}</td>
+                        <td>
+                            <span data-toggle="tooltip" data-placement="top" title="{{$taskvalue->trvt_name}}">{{ \Illuminate\Support\Str::limit(strip_tags($taskvalue->trvt_name), 30, '...') }}</span>
+                        </td>
                         <td>{{ $taskvalue->tripCategory->task_cat_name ?? '' }}</td>
                         <td>{{ \Carbon\Carbon::parse($taskvalue->trvt_date)->format('M d, Y')  ?? '' }}</td>
                         <td>{{ \Carbon\Carbon::parse($taskvalue->trvt_due_date)->format('M d, Y')  ?? '' }}</td>
@@ -100,14 +102,16 @@
                                 <label for="trvt_agent_id">Assign Agent</label>
                                 <div class="d-flex">
                                     <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
-                                        class="form-control select2">
+                                        class="form-control select2" disabled>
                                         <option value="">Select Agent</option>
                                         @foreach ($agency_user as $value)
-                                            <option value="{{ $value->users_id }}">
+                                            <option value="{{ $value->users_id }}"  {{ old('tr_agent_id', $trip->tr_agent_id ?? '') == $value->users_id ? 'selected' : '' }}>
                                                 {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" id="selected_agent_id" name="selected_agent_id" value="{{ old('tr_agent_id', $trip->tr_agent_id ?? '') }}">
+
                                 </div>
                             </div>
                         </div>
@@ -200,7 +204,7 @@
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="trvt_status"
                                         name="status">
-                                        <option default>Select Status</option>
+                                        <option value="" default>Select Status</option>
                                         @foreach ($taskstatus as $value)
                                             <option value="{{ $value->ts_status_id }}">
                                                 {{ $value->ts_status_name }}
@@ -307,6 +311,8 @@
 
             var formData = new FormData($('#FormTask')[0]);
             formData.append('_token', "{{ csrf_token() }}");
+            formData.append('trvt_agent_id', $('#selected_agent_id').val());
+            
 
             var url = '';
             var method = 'POST'; // Default to POST for new tasks

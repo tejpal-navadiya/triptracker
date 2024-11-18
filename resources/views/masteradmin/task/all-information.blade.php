@@ -45,6 +45,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
+
             <form id="FormTask" name="FormTask" class="mt-6 space-y-6" enctype="multipart/form-data">
 
                 <input type="hidden" name="trvt_id" id="trvt_id">
@@ -66,9 +68,15 @@
                             <div class="form-group">
                                 <label for="trvt_agent_id">Assign Agent</label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trvt_agent_id" name="trvt_agent_id"
-                                        placeholder="Enter Assign Agent">
-                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_agent_id')" />
+                                    <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
+                                        class="form-control select2">
+                                        <option value="">Select Agent</option>
+                                        @foreach ($agency_user as $value)
+                                            <option value="{{ $value->users_id }}">
+                                                {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -146,14 +154,34 @@
                             <div class="form-group">
                                 <label for="trvt_document">Upload Documents</label>
                                 <div class="d-flex">
-                                    <x-text-input type="file" name="trvt_document" id="trvt_document"
-                                        accept="image/*" class="" />
+                                    <x-text-input type="file" name="trvt_document" id="trvt_document" />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
                                 <p id="task_document"></p>
+                                <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6" id="statusField" style="display: none;"> <!-- Initially hidden -->
+                            <div class="form-group">
+                                <label for="trvt_category">Status<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_status"
+                                        name="status">
+                                        <option value="0" default>Select Status</option>
+                                        @foreach ($taskstatus as $value)
+                                            <option value="{{ $value->ts_status_id }}">
+                                                {{ $value->ts_status_name }}
+                                            </option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_status')" />
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
+
 
                     <div class="modal-footer">
                         <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
@@ -166,6 +194,19 @@
     </div>
 </div>
 
+<!-- Success Modal -->
+<div class="modal fade" id="task-success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body pad-1 text-center">
+                <i class="fas fa-check-circle success_icon"></i>
+                <p class="company_business_name px-10"><b>Success!</b></p>
+                <p class="company_details_text px-10" id="task-success-message">Data has been successfully inserted!</p>
+                <button type="button" class="add_btn px-15" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
@@ -201,7 +242,7 @@
                 },
                 {
                     data: 'agent_name',
-                     name: 'agent_name'
+                    name: 'agent_name'
                 },
                 {
                     data: 'traveler_name',
@@ -236,6 +277,20 @@
             ]
         });
 
+        //create task
+        $('#createNewTask').click(function() {
+            $('#saveBtnTask').val("create-product");
+            $('#trvt_id').val('');
+            $('#FormTask')[0].reset();
+            $('#modelHeadingTask').html("Add Task");
+            $('body').addClass('modal-open');
+            $('#task_document').html('');
+
+            $('#statusField').hide(); // Hide status field during add
+
+            var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+            editModal.show();
+        });
 
         //insert/update data
         $('#saveBtnTask').click(function(e) {

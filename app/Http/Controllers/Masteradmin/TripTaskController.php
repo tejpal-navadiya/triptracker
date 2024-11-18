@@ -10,6 +10,9 @@ use App\Models\TripTask;
 use App\Models\TaskCategory;
 use App\Models\MasterUserDetails;
 use App\Models\Trip;
+use App\Models\TaskStatus;
+use Illuminate\Support\Str;
+
 
 
 
@@ -42,6 +45,13 @@ class TripTaskController extends Controller
 
 
                     ->addIndexColumn()
+                    ->addColumn('trvt_name', function($task_name) {
+                        $fullName = strip_tags($task_name->trvt_name);
+                        $truncatedName = Str::limit($fullName, 30, '...');
+                        
+                        return '<span data-toggle="tooltip" data-placement="top" title="' . htmlspecialchars($fullName) . '">' . $truncatedName . '</span>';
+                    })
+
                     ->addColumn('status_name', function($status) {
                         return $status->taskstatus->ts_status_name ?? '';
                     })
@@ -102,7 +112,7 @@ class TripTaskController extends Controller
                         // dd($access);
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action','trvt_name'])
                     ->toJson();
                   
         }
@@ -113,29 +123,23 @@ class TripTaskController extends Controller
 
     public function store(Request $request, $id)
     {
-        // dd($request->all());
+    //    dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id; 
 
             $validatedData = $request->validate([
-                'trvt_name' => 'required|string',
-                'trvt_agent_id' => 'required|string',
+                'trvt_name' => 'nullable|string',
+                'trvt_agent_id' => 'nullable|string',
                 'trvt_category' => 'required|string',
-                'trvt_priority' => 'required|string',
-                'trvt_date' => 'required|string',
-                'trvt_due_date' => 'required|string',
+                'trvt_priority' => 'nullable|string',
+                'trvt_date' => 'nullable|string',
+                'trvt_due_date' => 'nullable|string',
                'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
                'trvt_document.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // Multiple files validation
 
             ], [
-                'trvt_name.required' => 'Task Name is required',    
-                'trvt_agent_id.required' => 'Assign Agent is required',
                 'trvt_category.required' => 'Category is required',
                 'trvt_priority.required' => 'Priority is required',
-                'image.image' => 'The Document field is required.',
-
-                'trvt_document.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for single file
-                'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
 
             ]);
 
@@ -155,7 +159,14 @@ class TripTaskController extends Controller
                 
                 $tripTask->fill($validatedData);
 
-                $tripTask->tr_id = $id;
+                // if($tripTask->tr_id == "")
+                // {
+                //     $tripTask->tr_id = "";
+                // }else{
+                    $tripTask->tr_id = $id;
+                // }
+                //dd( $tripTask);
+                
                 $tripTask->id = $dynamicId;
                 $tripTask->trvt_status = 1;
                 $tripTask->status = 1;
@@ -228,50 +239,7 @@ class TripTaskController extends Controller
 
 
 
-    
-    // public function update(Request $request, $tr_id, $trvt_id)
-    // {
-    //    dd($request->all());
-    //     $user = Auth::guard('masteradmins')->user();
-    //     $dynamicId = $user->users_id; 
-    //     $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id, 'tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
 
-    //     // dd($task);
-    //     if($task)
-    //     {
-    //         $validatedData = $request->validate([
-    //             'trvt_name' => 'required|string',
-    //             'trvt_agent_id' => 'required|string',
-    //             'trvt_category' => 'required|string',
-    //             'trvt_priority' => 'required|string',
-    //             'trvt_date' => 'required|string',
-    //             'trvt_due_date' => 'required|string',
-
-    //             'trvt_document.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // For multiple file validation
-                 
-    //             'status' => 'nullables',
-    //         ], [
-    //             'trvt_name.required' => 'Task Name is required',
-    //             'trvt_agent_id.required' => 'Assign Agent is required',
-    //             'trvt_category.required' => 'Category is required',
-    //             'trvt_priority.required' => 'Priority is required',
-    //             'image.image' => 'The Document field is required.',
-
-    //             'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
-
-
-    //         ]);
-    //         $task->where('trvt_id' , $trvt_id)->update($validatedData);
-
-    //         $task->save();
-
-    //         \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
-
-    //         return response()->json(['success'=>'Record updated successfully.']);
-    //     }
-    // }
-    
-    
     public function destroy($trip_id, $trvt_id)
     {
         //
@@ -285,112 +253,7 @@ class TripTaskController extends Controller
         return response()->json(['success'=>'Record deleted successfully.']);
     }
 
-    // public function allDetails(Request $request)
-    // {  
-                 
-    //     $trip_agent = trim($request->input('trip_agent'));   
-    //     $trip_traveler = trim($request->input('trip_traveler'));   
-
-    //     $access = view()->shared('access');
-    //     $user = Auth::guard('masteradmins')->user();
-    
-    //     // Get master user details for filtering
-    //     $masterUserDetails = new MasterUserDetails();
-    //     $masterUserDetails->setTableForUniqueId($user->user_id); 
-    //     $agency = $masterUserDetails->get();
-
-    //     $task = TripTask::where(['id' => Auth::guard('masteradmins')->user()->id])->with(['trip','tripCategory','taskstatus'])->latest()->first();
-
-    //     $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
-
-    //     $trips = new Trip();
-    //     $tripTable = $trips->getTable();
-        
-    //     if ($trip_agent) {
-    //         $tripQuery->where('tr_agent_id', $trip_agent);
-    //     }
-    
-    //     if ($trip_traveler) {
-    //         $tripQuery->where('tr_traveler_name', 'LIKE', "%{$trip_traveler}%");
-    //     }
-    
-    //     $trip = $tripQuery->get();
-
-    //     if ($request->ajax()) {
-
-    //         $task = TripTask::where(['id' => $user->id])->with(['trip','tripCategory','taskstatus'])->latest()->get();
-    //         //    dd($task);
-    //         return Datatables::of($task)
-    //                 ->addIndexColumn()
-    //                 ->addColumn('trip_name', function($document) {
-    //                     $trip_name = $document->trip->tr_name ?? '';
-                        
-    //                     return $trip_name;
-    //                 })
-    //                 ->addColumn('agent_name', function($document) {
-    //                     $agent_name = $document->trip->tr_agent_id ?? '';
-                        
-    //                     return $agent_name;
-    //                 })
-    //                 ->addColumn('traveler_name', function($document) {
-    //                     $traveler_name = $document->trip->tr_traveler_name ?? '';
-                        
-    //                     return $traveler_name;
-    //                 })
-    //                 ->addColumn('task_status_name', function($document) {
-    //                     $task_status_name = $document->taskstatus->ts_status_name ?? '';
-                        
-    //                     return $task_status_name;
-    //                 })
-    //                 ->addColumn('task_cat_name', function($document) {
-    //                     $task_cat_name = $document->tripCategory->task_cat_name ?? '';
-                        
-    //                     return $task_cat_name;
-    //                 })
-    //                 ->addColumn('trvt_due_date', function($document) {
-    //                     $trvt_due_date = \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y')  ?? '';
-                        
-    //                     return $trvt_due_date;
-    //                 })
-    //                 ->addColumn('action', function($members) use ($access){
-    //                     $btn = '';
-                        
-    //                     if(isset($access['edit_role']) && $access['edit_role']) {
-    //                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
-    //                     }
-                        
-    //                     if(isset($access['delete_role']) && $access['delete_role']) {
-    //                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members->trvt_id.'">
-    //                                     <i class="fas fa-trash delete_icon_grid"></i>
-    //                                     <div class="modal fade" id="delete-role-modal-'.$members->trvt_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    //                                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-    //                                             <div class="modal-content">
-    //                                                 <div class="modal-body pad-1 text-center">
-    //                                                     <i class="fas fa-solid fa-trash delete_icon"></i>
-    //                                                     <p class="company_business_name px-10"><b>Delete Task </b></p>
-    //                                                     <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
-    //                                                     <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-    //                                                     <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id='.$members->trvt_id.'>Delete</button>
-    //                                                 </div>
-    //                                             </div>
-    //                                         </div>
-    //                                     </div>
-    //                                 </a>';
-    //                     }
-    //                     // dd($access);
-    //                     return $btn;
-    //                 })
-    //                 ->rawColumns(['action'])
-    //                 ->toJson();
-                  
-    //     }
-      
-    //     $taskCategory = TaskCategory::where(['task_cat_status' => 1, 'id' => Auth::guard('masteradmins')->user()->id])->get();
-
-    //     return view('masteradmin.task.index',compact('task','taskCategory','agency','trip'));
-    // }
-    
-    public function allDetails(Request $request)
+     public function allDetails(Request $request)
     {
         $tripAgent = trim($request->input('trip_agent'));
         $tripTraveler = trim($request->input('trip_traveler'));
@@ -406,9 +269,9 @@ class TripTaskController extends Controller
         $masterUserDetails->setTableForUniqueId($user->user_id);
         $tableName = $masterUserDetails->getTable();
         if($user->users_id && $user->role_id ==0 ){
-            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
+            $agency_user = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
         }else{
-            $agency = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
+            $agency_user = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
         }
 
 
@@ -463,6 +326,12 @@ class TripTaskController extends Controller
             
             return Datatables::of($tasks)
                 ->addIndexColumn()
+                ->addColumn('trvt_name', function($task_name) {
+                    $fullName = strip_tags($task_name->trvt_name);
+                    $truncatedName = Str::limit($fullName, 30, '...');
+                    
+                    return '<span data-toggle="tooltip" data-placement="top" title="' . htmlspecialchars($fullName) . '">' . $truncatedName . '</span>';
+                })
                 ->addColumn('trip_name', function ($document) {
                     return optional($document->trip)->tr_name ?? '';
                 })
@@ -509,7 +378,7 @@ class TripTaskController extends Controller
     
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','trvt_name'])
                 ->toJson();
        
         }
@@ -518,9 +387,10 @@ class TripTaskController extends Controller
         }else{
             $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
         }
-        
+        $taskstatus = TaskStatus::all();
+
        
-        return view('masteradmin.task.index', compact('task', 'taskCategory','trip','agency'));
+        return view('masteradmin.task.index', compact('task', 'taskCategory','trip','agency_user','taskstatus'));
     }
     
 
@@ -538,7 +408,11 @@ class TripTaskController extends Controller
     
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id);
-        $agency = $masterUserDetails->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $agency_user = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
+        }else{
+            $agency_user = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
+        }
 
         
     
@@ -595,6 +469,12 @@ class TripTaskController extends Controller
             
             return Datatables::of($tasks)
                 ->addIndexColumn()
+                ->addColumn('trvt_name', function($task_name) {
+                    $fullName = strip_tags($task_name->trvt_name);
+                    $truncatedName = Str::limit($fullName, 30, '...');
+                    
+                    return '<span data-toggle="tooltip" data-placement="top" title="' . htmlspecialchars($fullName) . '">' . $truncatedName . '</span>';
+                })
                 ->addColumn('trip_name', function ($document) {
                     return optional($document->trip)->tr_name ?? '';
                 })
@@ -641,7 +521,7 @@ class TripTaskController extends Controller
     
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','trvt_name'])
                 ->toJson();
        
         }
@@ -651,7 +531,7 @@ class TripTaskController extends Controller
             $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
         }
 
-        return view('masteradmin.task.reminder-information',compact('task','taskCategory', 'agency','trip'));
+        return view('masteradmin.task.reminder-information',compact('task','taskCategory', 'agency_user','trip'));
     }
 
 }

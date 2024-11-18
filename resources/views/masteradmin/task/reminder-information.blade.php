@@ -37,22 +37,25 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title" id="modelHeadingTask1"></h4>
+                <h4 class="modal-title" id="modelHeadingTask"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="FormTask1" name="FormTask1" class="mt-6 space-y-6" enctype="multipart/form-data">
-                
-                <input type="hidden" name="trvt_id" id="trvt_id1">
+
+
+            <form id="FormTask" name="FormTask" class="mt-6 space-y-6" enctype="multipart/form-data">
+
+                <input type="hidden" name="trvt_id" id="trvt_id">
                 <ul id="update_msgList"></ul>
                 <div class="modal-body">
                     <div class="row pxy-15 px-10">
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trvt_name">Task</label>
+                                <label for="trvt_name">Task</label>
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" id="trvt_name1" name="trvt_name" placeholder="Enter Task" >
+                                    <input type="text" class="form-control" id="trvt_name" name="trvt_name"
+                                        placeholder="Enter Task">
                                     <x-input-error class="mt-2" :messages="$errors->get('trvt_name')" />
                                 </div>
                             </div>
@@ -65,7 +68,7 @@
                                     <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
                                         class="form-control select2">
                                         <option value="">Select Agent</option>
-                                        @foreach ($agency as $value)
+                                        @foreach ($agency_user as $value)
                                             <option value="{{ $value->users_id }}">
                                                 {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
                                             </option>
@@ -77,12 +80,14 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trvt_category">Category<span class="text-danger">*</span></label>
+                                <label for="trvt_category">Category<span class="text-danger">*</span></label>
                                 <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trvt_category1" name="trvt_category" >
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_category"
+                                        name="trvt_category">
                                         <option default>Select Category</option>
                                         @foreach ($taskCategory as $taskcat)
-                                        <option value="{{ $taskcat->task_cat_id }}">{{  $taskcat->task_cat_name }}</option>
+                                            <option value="{{ $taskcat->task_cat_id }}">{{ $taskcat->task_cat_name }}
+                                            </option>
                                         @endforeach
                                         <x-input-error class="mt-2" :messages="$errors->get('trvt_category')" />
                                     </select>
@@ -92,9 +97,10 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trvt_priority">Priority</label>
+                                <label for="trvt_priority">Priority</label>
                                 <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trvt_priority1" name="trvt_priority" >
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_priority"
+                                        name="trvt_priority">
                                         <option default>Select Priority</option>
                                         <option value="Medium">Medium</option>
                                         <option value="High">High</option>
@@ -107,14 +113,14 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trvt_date">Create Date</label>
+                                <label for="trvt_date">Create Date</label>
                                 <div class="d-flex">
                                     <div class="input-group date" id="trvt_date" data-target-input="nearest">
-                                        <x-flatpickr id="create_date1" name="trvt_date" placeholder="mm/dd/yyyy" />
+                                        <x-flatpickr id="create_date" name="trvt_date" placeholder="mm/dd/yyyy" />
                                         <div class="input-group-append">
-                                            <div class="input-group-text" id="create-date-icon1">
+                                            <div class="input-group-text" id="create-date-icon">
                                                 <i class="fa fa-calendar-alt"></i>
-                                                <input type="hidden" id="trvt_date_hidden1"  />
+                                                <input type="hidden" id="trvt_date_hidden" />
                                             </div>
                                         </div>
                                         <x-input-error class="mt-2" :messages="$errors->get('trvt_date')" />
@@ -125,14 +131,14 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                            <label for="trvt_due_date">Due Date</label>
+                                <label for="trvt_due_date">Due Date</label>
                                 <div class="d-flex">
                                     <div class="input-group date" id="trvt_due_date" data-target-input="nearest">
-                                        <x-flatpickr id="due_date1" name="trvt_due_date" placeholder="mm/dd/yyyy" />
+                                        <x-flatpickr id="due_date" name="trvt_due_date" placeholder="mm/dd/yyyy" />
                                         <div class="input-group-append">
-                                            <div class="input-group-text" id="due-date-icon1">
+                                            <div class="input-group-text" id="due-date-icon">
                                                 <i class="fa fa-calendar-alt"></i>
-                                                <input type="hidden" id="trvt_due_date_hidden1"  />
+                                                <input type="hidden" id="trvt_due_date_hidden" />
                                             </div>
                                         </div>
                                     </div>
@@ -140,22 +146,44 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6 family-member-field">
                             <div class="form-group">
-                            <label for="trvt_document">Upload Documents</label>
+                                <label for="trvt_document">Upload Documents</label>
                                 <div class="d-flex">
-                                    <x-text-input type="file" name="trvt_document" id="trvt_document1" accept="image/*" class="" />
+                                    <x-text-input type="file" name="trvt_document" id="trvt_document" />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
-                                <p id="task_document1"></p>
+                                <p id="task_document"></p>
+                                <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6" id="statusField" style="display: none;"> <!-- Initially hidden -->
+                            <div class="form-group">
+                                <label for="trvt_category">Status<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_status"
+                                        name="status">
+                                        <option default>Select Status</option>
+                                        @foreach ($taskstatus as $value)
+                                            <option value="{{ $value->ts_status_id }}">
+                                                {{ $value->ts_status_name }}
+                                            </option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_status')" />
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
+
+
                     <div class="modal-footer">
                         <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
-                        <button type="submit" id="saveBtnTask1" value="create" class="add_btn">{{ __('Save Changes') }}</button>
+                        <button type="submit" id="saveBtnTask" value="create"
+                            class="add_btn">{{ __('Save Changes') }}</button>
                     </div>
                 </div>
             </form>

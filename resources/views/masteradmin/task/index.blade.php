@@ -15,6 +15,8 @@
               <li class="breadcrumb-item active">Trip Information</li>
             </ol>
           </div><!-- /.col -->
+          <div class="col-auto"><button href="javascript:void(0)" id="createNewTask" class="reminder_btn">Add
+                    Task</button></div>
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -36,7 +38,7 @@
               <div class="col-lg-3 col-1024 col-md-6 px-10">
                   <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
                       <option value="" default >Choose Agent</option>
-                      @foreach($agency as $value)
+                      @foreach($agency_user as $value)
                       <option value="{{ $value->users_id }}">
                           {{ $value->users_first_name }} {{ $value->users_last_name }}
                       </option>

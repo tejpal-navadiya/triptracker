@@ -359,7 +359,8 @@ class TripController extends Controller
           TripTask::create([
               'id'=>$user->users_id,
               'trvt_id' =>$uniqueId1,
-             'tr_id' => $traveler->tr_id, 
+              'trvt_agent_id' =>$traveler->tr_agent_id,
+              'tr_id' => $traveler->tr_id, 
               'trvt_name' => $task->pre_task_name, 
               'trvt_status' => 1
           ]);
@@ -561,6 +562,7 @@ class TripController extends Controller
                     TripTask::create([
                         'id' => $user->users_id,
                         'trvt_id' => $uniqueId1,
+                        'trvt_agent_id' =>$trip->tr_agent_id,
                         'tr_id' => $id,
                         'trvt_name' => $task->pre_task_name,
                         'trvt_status' => 1
