@@ -55,7 +55,7 @@ class LoginController extends Controller
         
         Cookie::queue(Cookie::forget('user_session'));
 
-        return redirect('/company/login/');
+        return redirect('/agency/login/');
     }
 
 }
