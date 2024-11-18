@@ -234,7 +234,10 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::get('task/{id}', [TripTaskController::class, 'index'])->name('masteradmin.task.index');
        Route::post('/task-store/{id}', [TripTaskController::class, 'store'])->name('masteradmin.task.store');
        Route::get('task-edit/{id}/{trip_id}', [TripTaskController::class, 'edit'])->name('masteradmin.task.edit');
+       Route::get('task-edit/{id}', [TripTaskController::class, 'edit_task'])->name('masteradmin.task.editTask');
        Route::patch('/task-update/{trip_id}/{trvt_id}', [TripTaskController::class, 'update'])->name('masteradmin.task.update');
+       Route::patch('/task-update/{trvt_id}', [TripTaskController::class, 'updateTask'])->name('masteradmin.task.updateTask');
+
        Route::delete('/task-delete/{trip_id}/{trtm_id}', [TripTaskController::class, 'destroy'])->name('masteradmin.task.destroy');
 
         //library

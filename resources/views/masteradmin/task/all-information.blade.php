@@ -207,6 +207,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
@@ -219,11 +220,11 @@
         });
 
         //datatable list
-        var allTable = $('#example11').DataTable();
-        allTable.destroy();
+        var allTableList = $('#example11').DataTable();
+        allTableList.destroy();
 
         //list
-        allTable = $('#example11').DataTable({
+        allTableList = $('#example11').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -277,21 +278,22 @@
             ]
         });
 
-        //create task
-        $('#createNewTask').click(function() {
-            $('#saveBtnTask').val("create-product");
-            $('#trvt_id').val('');
-            $('#FormTask')[0].reset();
-            $('#modelHeadingTask').html("Add Task");
-            $('body').addClass('modal-open');
-            $('#task_document').html('');
+        // $('#createNewTask').click(function() {
+        //     $('#saveBtnTask').val("create-product");
+        //     $('#trvt_id').val('');
+        //     $('#FormTask')[0].reset();
+        //     $('#modelHeadingTask').html("Add Task");
+        //     $('body').addClass('modal-open');
+        //     $('#task_document').html('');
 
-            $('#statusField').hide(); // Hide status field during add
+        //     $('#statusField').hide(); // Hide status field during add
 
-            var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
-            editModal.show();
-        });
+        //     var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+        //     editModal.show();
+        // });
 
+
+      
         //insert/update data
         $('#saveBtnTask').click(function(e) {
             e.preventDefault();
@@ -303,17 +305,20 @@
 
             var url = '';
             var method = 'POST'; // Default to POST for new tasks
-
+            var tasksuccessMessage = '';
             if ($('#trvt_id').val() === '') {
                 // Create new task
-                url = "{{ $task && $task->trip ? route('masteradmin.task.store', $task->trip->tr_id) : '' }}";
+                url = "{{ $task && $task->trip ? route('masteradmin.task.store', 0) : '' }}";
                 formData.append('_method', 'POST');
+                tasksuccessMessage = 'Data has been successfully inserted!'; 
             } else {
                 // Update existing task
                 var trvt_id = $('#trvt_id').val();
-                url = "{{ $task && $task->trip ? route('masteradmin.task.update', [$task->trip->tr_id, ':trvt_id']) : '' }}";
+              //  alert(trvt_id);
+                url = "{{ route('masteradmin.task.updateTask', ':trvt_id') }}"; 
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
+                tasksuccessMessage = 'Data has been successfully updated!';
             }
 
             $.ajax({
@@ -324,7 +329,9 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    allTable.draw();
+                    allTableList.draw();
+                    $('#task-success-message').text(tasksuccessMessage);
+                    $('#task-success-modal').modal('show');
                     $('#example15').DataTable().ajax.reload();
                     $('#ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
@@ -347,18 +354,22 @@
 
 
             var id = $(this).data('id');
-            var url = "{{ $task && $task->trip ? route('masteradmin.task.edit', ['id' => ':id', 'trip_id' => $task->trip->tr_id]) : '' }}";
+            // alert(id);
+            var url;
+
+            url = "{{ route('masteradmin.task.editTask', ['id' => ':id']) }}";
+            url = url.replace(':id', id);
+           
             if (url) {
                 url = url.replace(':id', id);
             // alert(id);
              $.get(url, function(data) {
 
-
-                    // console.log(data);
-                    $('#modelHeadingTask').html("Edit Task");
+                $('#modelHeadingTask').html("Edit Task");
                     $('#saveBtnTask').val("edit-user");
 
-                    var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+                    var editModal = new bootstrap.Modal(document.getElementById(
+                        'ajaxModelTask'));
                     editModal.show();
 
                     $('#trvt_id').val(data.trvt_id);
@@ -367,6 +378,14 @@
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
+
+
+                    // Show status field during edit
+                    $('#statusField').show();
+                    $('#trvt_status').val(data.status).trigger(
+                        'change.select2'); // set the selected status
+
+
 
                     $('#trvt_date_hidden').val(data.trvt_date);
                     $('#trvt_due_date_hidden').val(data.trvt_due_date);
@@ -377,7 +396,8 @@
                     var baseUrl = "{{ config('app.image_url') }}";
                     if (data.trvt_document) {
                         $('#task_document').append(
-                            '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' + data
+                            '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' +
+                            data
                             .trvt_document + '" target="_blank">' +
                             data.trvt_document +
                             '</a>'
@@ -426,7 +446,7 @@
             e.preventDefault();
             //  alert(trtm_id);
              var trvt_id = $(this).data("id");
-            var trip_id = "{{ $task && $task->trip ? $task->trip->tr_id : '' }}";
+            var trip_id = "0";
             
                 if (trip_id) {
                 var url = "{{ route('masteradmin.task.destroy', [':trip_id', ':trvt_id']) }}";
@@ -437,14 +457,15 @@
                 type: "DELETE",
                 url: url,
                 success: function(data) {
-                    alert(data.success);
+                    $('#task-success-message').text('Data has been successfully Deleted!');
+                    $('#task-success-modal').modal('show');
 
                     $('.ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
                     $('.ajaxModelTask').css('display', 'none');
 
-                    allTable.draw();
+                    allTableList.draw();
                     $('#example15').DataTable().ajax.reload();
 
                 },
@@ -458,13 +479,13 @@
       
 
         $('#trip_agent, #trip_traveler').on('change', function() {
-            allTable.draw();
+            allTableList.draw();
         });
 
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
-            allTable.draw();
+            allTableList.draw();
         });
 
     });

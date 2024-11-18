@@ -188,33 +188,42 @@ class TripTaskController extends Controller
         return response()->json($role);
     }
 
+    public function edit_task($id)
+    {   
+        
+        $role = TripTask::where(['trvt_id' => $id])->firstOrFail();
+
+        return response()->json($role);
+    }
+    
 
 
     public function update(Request $request, $tr_id, $trvt_id)
 {
+   dd($request->all());
     $user = Auth::guard('masteradmins')->user();
     $dynamicId = $user->users_id; 
 
     // Fetch the existing task
-    $task = TripTask::where(['tr_id' => $tr_id, 'trvt_id' => $trvt_id])->firstOrFail();
+    $task = TripTask::where(['trvt_id' => $trvt_id])->firstOrFail();
 
     if ($task) {
         // Validate request data
         $validatedData = $request->validate([
-            'trvt_name' => 'required|string',
-            'trvt_agent_id' => 'required|string',
+            'trvt_name' => 'nullable|string',
+            'trvt_agent_id' => 'nullable|string',
             'trvt_category' => 'required|string',
-            'trvt_priority' => 'required|string',
-            'trvt_date' => 'required|string',
-            'trvt_due_date' => 'required|string',
+            'trvt_priority' => 'nullable|string',
+            'trvt_date' => 'nullable|string',
+            'trvt_due_date' => 'nullable|string',
             'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
             'status' => 'nullable',
         ], [
-            'trvt_name.required' => 'Task Name is required',
-            'trvt_agent_id.required' => 'Assign Agent is required',
+            // 'trvt_name.required' => 'Task Name is required',
+            // 'trvt_agent_id.required' => 'Assign Agent is required',
             'trvt_category.required' => 'Category is required',
-            'trvt_priority.required' => 'Priority is required',
-            'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
+            // 'trvt_priority.required' => 'Priority is required',
+            // 'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
         ]);
 
         // Check if new document files are uploaded
@@ -226,7 +235,7 @@ class TripTaskController extends Controller
         }
 
         // Update task with validated data
-        $task->where(['tr_id' => $tr_id, 'trvt_id' => $trvt_id])->update($validatedData);
+        $task->where(['trvt_id' => $trvt_id])->update($validatedData);
         // $task->save();
 
         \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
@@ -497,13 +506,13 @@ class TripTaskController extends Controller
                     $btn = '';
     
                     if(isset($access['workflow']) && $access['workflow']) {
-                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTaskreminder"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
                     if (isset($access['workflow']) && $access['workflow']) {
-                        $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-' . $members->trvt_id . '">
+                        $btn .= '<a data-toggle="modal" data-target="#delete-role-modalreminder-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
-                                    <div class="modal fade" id="delete-role-modal-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal fade" id="delete-role-modalreminder-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body pad-1 text-center">
@@ -511,7 +520,7 @@ class TripTaskController extends Controller
                                                     <p class="company_business_name px-10"><b>Delete Task </b></p>
                                                     <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
                                                     <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id=' . $members->trvt_id . '>Delete</button>
+                                                    <button type="submit" class="delete_btn px-15 deleteTaskbtnreminder" data-id=' . $members->trvt_id . '>Delete</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -532,6 +541,54 @@ class TripTaskController extends Controller
         }
 
         return view('masteradmin.task.reminder-information',compact('task','taskCategory', 'agency_user','trip'));
+    }
+
+    public function updateTask(Request $request, $trvt_id)
+    {
+    //    dd($request->all());
+        $user = Auth::guard('masteradmins')->user();
+        $dynamicId = $user->users_id; 
+    
+        // Fetch the existing task
+        $task = TripTask::where(['trvt_id' => $trvt_id])->firstOrFail();
+    
+        if ($task) {
+            // Validate request data
+            $validatedData = $request->validate([
+                'trvt_name' => 'nullable|string',
+                'trvt_agent_id' => 'nullable|string',
+                'trvt_category' => 'required|string',
+                'trvt_priority' => 'nullable|string',
+                'trvt_date' => 'nullable|string',
+                'trvt_due_date' => 'nullable|string',
+                'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
+                'status' => 'nullable',
+            ], [
+                // 'trvt_name.required' => 'Task Name is required',
+                // 'trvt_agent_id.required' => 'Assign Agent is required',
+                'trvt_category.required' => 'Category is required',
+                // 'trvt_priority.required' => 'Priority is required',
+                // 'trvt_document.*.mimes' => 'Only jpg, jpeg, png, and pdf files are allowed.', // Error message for multiple files
+            ]);
+    
+            // Check if new document files are uploaded
+            if ($request->hasFile('trvt_document')) {
+                $userFolder = session('userFolder');
+                // Handle file upload like in the store method
+                $users_cert_document = $this->handleImageUpload($request, 'trvt_document', null, 'task_image', $userFolder);
+                $validatedData['trvt_document'] = $users_cert_document;
+            }
+    
+            // Update task with validated data
+            $task->where(['trvt_id' => $trvt_id])->update($validatedData);
+            // $task->save();
+    
+            \MasterLogActivity::addToLog('Master Admin Trip Task is Updated.');
+    
+            return response()->json(['success' => 'Record updated successfully.']);
+        }
+    
+        return response()->json(['error' => 'Record not found.'], 404);
     }
 
 }

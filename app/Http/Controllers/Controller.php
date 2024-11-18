@@ -435,20 +435,20 @@ class Controller extends BaseController
                     $table->string('email_tid') ->unique()->primary();
                     $table->string('id')->nullable()->default(0);
                     $table->string('category')->nullable()->default(0);
-                    $table->string('title')->nullable();
-                    $table->string('email_text')->nullable();
+                    $table->text('title')->nullable();
+                    $table->text('email_text')->nullable();
                     $table->timestamps();
                 
                 });
             }else{
                 Schema::table($storeId.'_tc_email_template', function (Blueprint $table) use ($storeId) {
                     if (!Schema::hasColumn($storeId.'_tc_email_template', 'title')) {
-                        $table->string('title')->nullable();
+                        $table->text('title')->nullable();
                     }
                 });
                 Schema::table($storeId.'_tc_email_template', function (Blueprint $table) use ($storeId) {
                     if (!Schema::hasColumn($storeId.'_tc_email_template', 'email_text')) {
-                        $table->string('email_text')->nullable();
+                        $table->text('email_text')->nullable();
                     }
                 });
             }
