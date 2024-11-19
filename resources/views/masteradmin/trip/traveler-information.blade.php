@@ -10,6 +10,7 @@
         </div>
     </div>
 </div>
+<?php //dd($trip_id); ?>
 <div class="card">
     <div class="card-header">
         <div class="row justify-content-between align-items-center">
@@ -243,7 +244,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ route('masteradmin.family-member.index', $trip_id) }}",
+                        url: "{{ route('masteradmin.family-member.index', $trip_id ?? '') }}",
                         type: 'GET',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -288,15 +289,15 @@
             
             if ($('#trtm_id').val() === '') {
                 // Add new data
-                url = "{{ route('masteradmin.family-member.store', $trip_id) }}";
+                url = "{{ route('masteradmin.family-member.store', $trip_id ?? '') }}";
                 method = "POST";
                 successMessage = 'Data has been successfully inserted!'; 
 
             } else {
                 var trtm_id = $('#trtm_id').val();
-                var trip_id = '{{ $trip_id }}'; 
+                var trip_id = '{{ $trip_id ?? '' }}'; 
                 var url =
-                    "{{ route('masteradmin.family-member.update', [$trip_id, ':trtm_id']) }}";
+                    "{{ route('masteradmin.family-member.update', [$trip_id ?? '', ':trtm_id']) }}";
                 url = url.replace(':trtm_id', trtm_id);
 
                 method = "PATCH";
@@ -337,8 +338,8 @@
         $('body').on('click', '.editMember', function() {
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
-                .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
+            $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id', 'trip_id' => $trip_id ?? '0']) }}"
+                .replace('id', id).replace('{{ $trip_id ?? '0' }}', '{{ $trip_id ?? '0' }}'),
                 function(data) {
                     // console.log(data);
                     $('#modelHeading').html("Edit Traveling Member");
@@ -388,7 +389,7 @@
             e.preventDefault();
             var trtm_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.family-member.destroy', [$trip_id, ':trtm_id']) }}";
+            var url = "{{ route('masteradmin.family-member.destroy', [$trip_id ?? '', ':trtm_id']) }}";
             url = url.replace(':trtm_id', trtm_id);
             // alert(url);
             $.ajax({

@@ -200,7 +200,7 @@ class TripTaskController extends Controller
 
     public function update(Request $request, $tr_id, $trvt_id)
 {
-   dd($request->all());
+//    dd($request->all());
     $user = Auth::guard('masteradmins')->user();
     $dynamicId = $user->users_id; 
 

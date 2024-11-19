@@ -23,7 +23,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\PlanLogCleaner::class,
         \App\Http\Middleware\SetUserDetails::class,
-
+        
+        
     ];
 
     /**
@@ -42,6 +43,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\MasterAdminLogCleaner::class,
             \App\Http\Middleware\PlanAccessMiddleware::class,
             \App\Http\Middleware\SetUserFolder::class,
+            
             
         ],
 
@@ -82,7 +84,8 @@ class Kernel extends HttpKernel
         'setUserFolder' => \App\Http\Middleware\SetUserFolder::class,
         'handleAuthErrors' => \App\Http\Middleware\HandleAuthErrors::class,
         'handle.ajax.session' => \App\Http\Middleware\HandleAjaxSession::class,
-
+        'UserLoggedInListener' => \App\Http\Middleware\UserLoggedInListener::class,
+        
 
         
     ];

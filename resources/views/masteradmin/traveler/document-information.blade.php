@@ -37,17 +37,17 @@
                             $images = json_decode($documentvalue->trvd_document, true);
                             $userFolder = session('userFolder');
                             $baseUrl = config('app.image_url');
-
+    
                             if (is_array($images)) {
                                 foreach ($images as $image) {
-                                    $imageUrl = $baseUrl . '/' . $userFolder . '/document_image/' . $image;
-                    
+                                    $imageUrl = route('document.access', ['filename' => $image]);
                                     echo "<a href='" . htmlspecialchars($imageUrl) . "' target='_blank'>" . htmlspecialchars($image) . "</a><br>";
                                 }
                             } else {
-                                $imageUrl = $baseUrl . '/' . $userFolder . '/document_image/' . $images;
+                                $imageUrl = route('document.access', ['filename' => $images]);
                                 echo "<a href='" . htmlspecialchars($imageUrl) . "' target='_blank'>" . htmlspecialchars($images) . "</a>";
                             }
+
                         ?>
 
                         </td>
@@ -81,23 +81,20 @@
                                 ?>
                                   
                               
-                                          <div class="dropdown">
-                                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                  <i class="fas fa-download download_icon_grid"></i>
-                                              </button>
-                                              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                             <?php foreach ($images as $image) {
-                                                  $imagePath = $userFolder . '/document_image/' . $image;
-                                                  $imageUrl = ($imagePath);
-                                                  
-                                                  $baseUrl = rtrim($baseUrl, '/');
-                                                  
-                                                  $fullImageUrl = $baseUrl . '/'.$imageUrl;
-                                                  ?>
-                                                  <a class="dropdown-item" href="{{$fullImageUrl}}" download> {{ $image }}</a>
-                                             <?php } ?>
-                                 </div>
-                                          </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-download download_icon_grid"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <?php
+                                        foreach ($images as $image) {
+                                            $imageUrl = route('document.access', ['filename' => $image]);
+                                        ?>
+                                            <a class="dropdown-item" href="{{ $imageUrl }}" download> {{ $image }}</a>
+                                        <?php
+                                        } ?>
+                                        </div>
+                                    </div>
                               
                                 
                             </div>
@@ -278,10 +275,8 @@
                             var baseUrl = "{{ config('app.image_url') }}";
 
                             data.forEach(function(image) {
-                                var imageUrl = baseUrl + userFolder +
-                                    '/document_image/' + image;
-                                imageLinks += '<a href="' + imageUrl +
-                                    '" target="_blank">' + image + '</a>, ';
+                                var imageUrl = baseUrl + '/document/' + image;
+                                imageLinks += '<a href="' + imageUrl + '" target="_blank">' + image + '</a>, ';
                             });
 
                             return imageLinks.slice(0, -2);
@@ -415,8 +410,8 @@
                             imageHtml += '<tbody>';
                             imageHtml += '<tr>';
                             imageHtml += '<td>';
-                            imageHtml += '<img src="' + baseUrl + userFolder +
-                                '/document_image/' + image +
+                            imageHtml += '<img src="' + baseUrl  +
+                                '/document/' + image +
                                 '" alt="Uploaded Image" class="img-thumbnail" style="max-width: 100px; height: auto;">';
                             imageHtml += '</td>';
 

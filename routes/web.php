@@ -33,6 +33,7 @@ use App\Http\Controllers\superadmin\LibrariesCatgoryController;
 use App\Http\Controllers\superadmin\LibrariesController;
 use App\Http\Controllers\superadmin\EmailCategoriesController;
 use App\Http\Controllers\superadmin\EmailsTemplatesController;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -162,7 +163,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
     });
 
-    Route::middleware(['auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
+    Route::middleware(['UserLoggedInListener','auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
         
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');
@@ -336,6 +337,37 @@ Route::group(['prefix' => $busadminRoute], function () {
 
         //task category
         Route::resource('task-category', TaskCategoryController::class);
+
+        //document image/document security 
+        Route::get('/document/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
+
+                $filePath = storage_path('app/'.$userFolder.'/document_image/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
+        
+
+        })->name('document.access');
+
+        //task image/document security 
+        Route::get('/tasks/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
+
+                $filePath = storage_path('app/'.$userFolder.'/task_image/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
+        
+
+        })->name('task.access');
+
 
         
 

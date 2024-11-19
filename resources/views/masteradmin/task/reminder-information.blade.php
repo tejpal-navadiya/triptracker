@@ -366,7 +366,7 @@
                     var baseUrl = "{{ config('app.image_url') }}";
                     if (data.trvt_document) {
                         $('#task_documentReminder').append(
-                            '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' + data
+                            '<a href="' + baseUrl + '/tasks/' + data
                             .trvt_document + '" target="_blank">' +
                             data.trvt_document +
                             '</a>'

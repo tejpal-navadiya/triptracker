@@ -102,6 +102,7 @@ class MasterLoginRequest extends FormRequest
 
         Auth::guard('masteradmins')->setUser($users);
 
+        
 
         Cache::put('masteradmins_user_' . Auth::guard('masteradmins')->user()->users_id, Auth::guard('masteradmins')->user(), now()->addMinutes(30));
         

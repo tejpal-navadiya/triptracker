@@ -157,7 +157,7 @@
                                     <x-text-input type="file" name="trvt_document" id="trvt_document" />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
-                                <p id="task_document"></p>
+                                <p id="task_document1"></p>
                                 <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
                             </div>
                         </div>
@@ -167,7 +167,7 @@
                             <div class="form-group">
                                 <label for="trvt_category">Status<span class="text-danger">*</span></label>
                                 <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trvt_status"
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_status1"
                                         name="status">
                                         <option value="0" default>Select Status</option>
                                         @foreach ($taskstatus as $value)
@@ -382,7 +382,7 @@
 
                     // Show status field during edit
                     $('#statusField').show();
-                    $('#trvt_status').val(data.status).trigger(
+                    $('#trvt_status1').val(data.status).trigger(
                         'change.select2'); // set the selected status
 
 
@@ -392,11 +392,11 @@
 
                     $('#trvt_priority').val(data.trvt_priority).trigger('change.select2');
 
-                    $('#task_document').html('');
+                    $('#task_document1').html('');
                     var baseUrl = "{{ config('app.image_url') }}";
                     if (data.trvt_document) {
-                        $('#task_document').append(
-                            '<a href="' + baseUrl + '{{ $userFolder }}/task_image/' +
+                        $('#task_document1').append(
+                            '<a href="' + baseUrl + '/tasks/' +
                             data
                             .trvt_document + '" target="_blank">' +
                             data.trvt_document +

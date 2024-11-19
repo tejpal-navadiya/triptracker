@@ -1,15 +1,11 @@
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
     RewriteEngine On
 
-    # Redirect /website to the root of triptracker
-    RewriteCond %{REQUEST_URI} ^/laravel/triptracker/website/?$ [NC]
-    RewriteRule ^ /laravel/triptracker/ [L,R=301]
+    # Ensure the /website/ folder is hidden in the URL
+    RewriteCond %{REQUEST_URI} ^/laravel/triptracker/?$
+    RewriteRule ^(.*)$ /laravel/triptracker/website/$1 [L,P]
 
-    # Handle Authorization Header
+    # Handle Authorization Header (if required for authentication)
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
@@ -18,7 +14,7 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Send Requests to Front Controller (WordPress or Laravel)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]

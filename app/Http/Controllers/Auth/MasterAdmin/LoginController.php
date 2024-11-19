@@ -37,6 +37,10 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::guard('masteradmins')->user();
+
+        $this->createTable($user->id);
+
         return redirect()->intended(RouteServiceProvider::MASTER_HOME);
     }
 
@@ -47,7 +51,8 @@ class LoginController extends Controller
     
         // Clear masteradmins-specific cache if needed
         Cache::forget('masteradmins_user_' . Auth::guard('masteradmins')->id());
-
+        
+        session()->forget('user_configured');
         
         $request->session()->invalidate();
         

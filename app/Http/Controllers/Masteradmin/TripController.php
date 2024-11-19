@@ -670,7 +670,7 @@ class TripController extends Controller
         $documentType = DocumentType::get();
 
          $trip_id=$id;
-     
+        // dd($trip_id);
      
             $agency_users = new MasterUserDetails();
             $agency_users->setTableForUniqueId($user->user_id);
