@@ -10,888 +10,114 @@
 	<body>
 		
 	<div class="wrapper">
-    <div class="board">
-        @foreach ($trip_status as $status)
-            @php
-                // Set the button color based on the status
-                $buttonColor = '#CCCCCC'; // Default color
-                switch ($status->tr_status_id) {
-                    case 1: $buttonColor = '#DB9ACA'; break;
-                    case 2: $buttonColor = '#F6A96D'; break;
-                    case 3: $buttonColor = '#FBC11E'; break;
-                    case 4: $buttonColor = '#28C76F'; break;
-                    case 5: $buttonColor = '#C5A070'; break;
-                    case 6: $buttonColor = '#F56B62'; break;
-                    case 7: $buttonColor = '#FBC11E'; break;
-                    case 8: $buttonColor = '#F6A96D'; break;
-                    case 9: $buttonColor = '#DB9ACA'; break;
-                    default: $buttonColor = '#CCCCCC'; break;
-                }
-            @endphp
-
-            <!-- Status Title as List Title -->
-            <div class="list">
-                <div class="list-title" style="background-color: {{ $buttonColor }}; color: #fff;">
-                    <a href="#status-{{ $status->tr_status_id }}" style="color: #fff; text-decoration: none;">
-                        {{ $status->tr_status_name }} <!-- Display the status name directly -->
-                    </a>
-                </div>
-				<div class="additional-info">
-                                        <table class="table">
-                                            <tr>
-                                                <td>Total Price: {{ $totalsByStatus[$status->tr_status_id] ?? 0 }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                <!-- Trip Cards for this Status -->
-				<div 
-                        class="list-content" 
-                        id="status-{{ $status->tr_status_id }}" 
-                        ondragover="allowDrop(event)" 
-                        ondrop="drop(event, {{ $status->tr_status_id }})"
-                    >
-                        @if (isset($tripsGrouped[$status->tr_status_id]) && $tripsGrouped[$status->tr_status_id]->isNotEmpty())
-                            @foreach ($tripsGrouped[$status->tr_status_id] as $value)
-                                <div 
-                                    class="card" 
-                                    style="cursor: grab;" 
-                                    draggable="true" 
-                                    ondragstart="drag(event)" 
-                                    id="trip-{{ $value->tr_id }}" 
-                                    data-status="{{ $status->tr_status_id }}"
-                                >
-                                    <div class="card-cover">
-                                        <a href="#">{{ $value->tr_name ?? 'Trip Name' }}</a>
-                                    </div>
-                                    <div class="card-details">
-                                        <div class="watching">
-                                            <i class="fas fa-user"></i>
-                                            {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
-                                        </div>
-                                        <div class="comments">
-                                            <i class="fas fa-user-friends"></i>
-                                            Traveler: {{ $value->tr_traveler_name ?? '' }}
-                                        </div>
-                                        <div class="attachment">
-                                            <i class="fas fa-dollar-sign"></i>
-                                            Trip Price: {{ $value->tr_value_trip ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="additional-info">
-                                        <table class="table">
-                                            <tr>
-                                                <td>Created Date: {{ $value->created_at ?? 'N/A' }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Updated Date: {{ $value->updated_at ?? 'N/A' }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <a href="{{ route('trip.edit', $value->tr_id) }}" class="edit-icon">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                </div>
-                            @endforeach
-                        @else
-                            <p>No trips available for this status.</p>
-                        @endif
-                    </div>
-            </div>
-        @endforeach
-    </div>
-</div>
-
-
-
-
-
-				
-				<!-- <div class="list">
-					<div class="list-title" style="cursor: grab;">To Do</div>
-					<div class="list-content">
-						
-						
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Write unit tests for API
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date">
-										<i class="far fa-clock"></i>
-										12 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										3
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Create blog post feature
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date overdue">
-										<i class="far fa-clock"></i>
-										13 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Add comments section to posts
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date">
-										<i class="far fa-clock"></i>
-										14 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										2
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
+		<div class="board">
+			@foreach ($trip_status as $status)
+				@php
+					// Set the button color based on the status
+					$buttonColor = '#CCCCCC'; // Default color
+					switch ($status->tr_status_id) {
+						case 1: $buttonColor = '#DB9ACA'; break;
+						case 2: $buttonColor = '#F6A96D'; break;
+						case 3: $buttonColor = '#FBC11E'; break;
+						case 4: $buttonColor = '#28C76F'; break;
+						case 5: $buttonColor = '#C5A070'; break;
+						case 6: $buttonColor = '#F56B62'; break;
+						case 7: $buttonColor = '#FBC11E'; break;
+						case 8: $buttonColor = '#F6A96D'; break;
+						case 9: $buttonColor = '#DB9ACA'; break;
+						default: $buttonColor = '#CCCCCC'; break;
+					}
+				@endphp
+				<div class="list">
+					<div class="list-title" style="background-color: {{ $buttonColor }}; color: #fff;">
+						<a href="#status-{{ $status->tr_status_id }}" style="color: #fff; text-decoration: none;">
+							{{ $status->tr_status_name }}
+						</a>
 					</div>
-				</div> -->
-				
-				<!-- <div class="list">
-					<div class="list-title" style="cursor: grab;">In Progress</div>
-					<div class="list-content">
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=4&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Implement payment gateway
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										11 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										4
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										3
-									</div>
-								</div>
-							</div>
-						</div><div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-orange"></div>
-								</div>
-								<div class="card-title">
-									Conduct user testing
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										15 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										2
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Integrate third-party APIs
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date overdue">
-										<i class="far fa-clock"></i>
-										16 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										3
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=6&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Optimize website performance
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date">
-										<i class="far fa-clock"></i>
-										18 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										5
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Finalize website design
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										19 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=7&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Prepare deployment scripts
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date overdue">
-										<i class="far fa-clock"></i>
-										20 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										3
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
+					<div class="additional-info">
+						<table class="table">
+							<tr>
+								<td>Total Price: {{ $totalsByStatus[$status->tr_status_id] ?? 0 }}</td>
+							</tr>
+						</table>
 					</div>
-				</div> -->
-				
-				<!-- <div class="list">
-					<div class="list-title" style="cursor: grab;">Review</div>
-					<div class="list-content">
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
+					<div 
+						class="list-content" 
+						id="status-{{ $status->tr_status_id }}" 
+						data-status="{{ $status->tr_status_id }}"
+					>
+						@if (isset($tripsGrouped[$status->tr_status_id]) && $tripsGrouped[$status->tr_status_id]->isNotEmpty())
+							@foreach ($tripsGrouped[$status->tr_status_id] as $value)
+								<div 
+									class="card" 
+									style="cursor: grab;" 
+									draggable="true" 
+									id="trip-{{ $value->tr_id }}" 
+									data-status="{{ $status->tr_status_id }}"
+								>
+									<div class="card-title">
+										<a href="#">{{ $value->tr_name ?? 'Trip Name' }}</a>
+									</div>
+									<div class="card-details">
+										<div class="watching">
+											<i class="fas fa-user"></i>
+											{{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
+										</div>
+										<div class="comments">
+											<i class="fas fa-user-friends"></i>
+											Traveler: {{ $value->tr_traveler_name ?? '' }}
+										</div>
+										<div class="attachment">
+											<i class="fas fa-dollar-sign"></i>
+											Trip Price: {{ $value->tr_value_trip ?? 'N/A' }}
+										</div>
+									</div>
+									<div class="additional-info">
+										<table class="table">
+											<tr>
+												<td>Created Date: {{ $value->created_at ?? 'N/A' }}</td>
+											</tr>
+											<tr>
+												<td>Updated Date: {{ $value->updated_at ?? 'N/A' }}</td>
+											</tr>
+										</table>
+									</div>
+									<a href="{{ route('trip.edit', $value->tr_id) }}" class="edit-icon">
+										<i class="fas fa-pen"></i>
+									</a>
 								</div>
-								<div class="card-title">
-									Design homepage layout
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date overdue">
-										<i class="far fa-clock"></i>
-										10 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div><div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=8&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Review tech partner pages
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										21 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										2
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-orange"></div>
-								</div>
-								<div class="card-title">
-									Conduct peer code review
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date">
-										<i class="far fa-clock"></i>
-										22 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Review design mockups
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										23 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										2
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=9&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Verify database migrations
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date overdue">
-										<i class="far fa-clock"></i>
-										24 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Review API documentation
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date">
-										<i class="far fa-clock"></i>
-										25 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										3
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
+							@endforeach
+						@else
+							<p>No trips available for this status.</p>
+						@endif
 					</div>
-				</div> -->
+				</div>
+			@endforeach
+		</div>
+	</div>
 
-				<!-- <div class="list">
-					<div class="list-title" style="cursor: grab;">Testing</div>
-					<div class="list-content">
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=5&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Test new user roles
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date">
-										<i class="far fa-clock"></i>
-										15 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Conduct integration testing
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										16 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> -->
-				
-				<!-- <div class="list">
-					<div class="list-title" style="cursor: grab;">Done</div>
-					<div class="list-content">
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Launch website
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										26 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=10&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Set up hosting
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										27 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Prepare marketing materials
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										28 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=11&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-orange"></div>
-								</div>
-								<div class="card-title">
-									Publish blog post
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										29 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										3
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Submit final report
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										30 May
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> -->
-				
-				<!-- <div class="list">
-					<div class="list-title" style="cursor: grab;">Archived</div>
-					<div class="list-content">
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=12&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Archive old project files
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										1 June
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-blue"></div>
-								</div>
-								<div class="card-title">
-									Remove outdated resources
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										2 June
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										1
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=13&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-green"></div>
-								</div>
-								<div class="card-title">
-									Update documentation
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date overdue">
-										<i class="far fa-clock"></i>
-										3 June
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										2
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										0
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-orange"></div>
-								</div>
-								<div class="card-title">
-									Consolidate project feedback
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										4 June
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										1
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										3
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card" style="cursor: grab;">
-							<div class="card-cover" style="background-image: url(&#39;https://picsum.photos/400/300?random=14&#39;);"></div>
-							<div class="card-content">
-								<div class="label-group">
-									<div class="label label-purple"></div>
-								</div>
-								<div class="card-title">
-									Prepare for project review
-								</div>
-								<div class="card-details">
-									<div class="watching">
-										<i class="fas fa-eye"></i>
-									</div>
-									<div class="due-date complete">
-										<i class="far fa-clock"></i>
-										5 June
-									</div>
-									<div class="comments">
-										<i class="fas fa-comment"></i>
-										0
-									</div>
-									<div class="attachment">
-										<i class="fas fa-paperclip"></i>
-										2
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> -->
-				
+</div>		
 			</div>
 		</div>
-		
+<div class="modal fade" id="document-success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body pad-1 text-center">
+                <i class="fas fa-check-circle success_icon"></i>
+                <p class="company_business_name px-10"><b>Success!</b></p>
+                <p class="company_details_text px-10" id="document-success-message">Data has been successfully inserted!</p>
+                <button type="button" class="add_btn px-15" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>	
        
 
 		<script src="{{url('public/dist/js/drag.min.js') }}"></script>
 		<script src="{{url('public/dist/js/kanban.script.js') }}"></script>
 	
 </html>
-<script>
+<!-- <script>
     // Allow dropping on status containers
     function allowDrop(event) {
         event.preventDefault();
@@ -936,6 +162,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+				alert(data.success);
                 console.log("Trip status updated successfully!");
             } else {
                 console.error("Failed to update status:", data.message);
@@ -944,4 +171,91 @@
         .catch(error => console.error("Error:", error));
     }
 	
+</script> -->
+<script>
+$(document).ready(function() {
+    // Flag to prevent multiple AJAX calls
+    var ajaxCallInProgress = false;
+
+    $(".card").draggable({
+        revert: true,
+        start: function(event, ui) {
+            $(this).data("origin", $(this).data("status")); // Store the original status
+        }
+    });
+
+    $(".list-content").droppable({
+        drop: function(event, ui) {
+            var originStatus = ui.draggable.data("origin"); // Get the original status
+            var newStatus = $(this).data("status"); // Get the new status
+
+            // Prevent moving to the same status
+            if (originStatus === newStatus) {
+                return;
+            }
+
+            // Move the card to the new status
+            $(this).append(ui.draggable);
+
+            // Update the status attribute of the card
+            ui.draggable.data("status", newStatus);
+
+            // Prevent further AJAX calls until this one is complete
+            if (ajaxCallInProgress) {
+                alert("Please wait, the status is being updated.");
+                return;
+            }
+            ajaxCallInProgress = true; // Set the flag to true
+
+            // Send AJAX request to update the status in the backend
+            $.ajax({
+                url: "{{ route('trip.updateStatus') }}", // Update this URL as needed
+                method: "POST",
+                data: {
+                    trip_id: ui.draggable.attr("id").replace("trip-", ""), // Get the trip ID
+                    status: newStatus, // Send the new status
+                    _token: "{{ csrf_token() }}" // Include CSRF token for Laravel
+                },
+                success: function(response) {
+					
+						// // Update the card's status or any other relevant UI elements
+						// ui.draggable.find('.status-indicator').text(newStatus); // Assuming you have an element to show status
+
+						// // Perform additional actions after the successful update
+						// // Example: Log the response to the console
+						// console.log("Updated trip ID: " + response.trip_id + ", New Status: " + newStatus);
+
+						// // Optionally update any counters or other UI elements
+						// // Example: Update a counter for the status column
+						// var statusCounter = $(this).find('.status-counter'); // Assuming you have a counter element
+						// statusCounter.text(parseInt(statusCounter.text()) + 1); // Increment the counter
+						
+
+						$.ajax({
+							url: "{{ route('trip.gridView') }}",
+							type: 'GET',
+							success: function (response) {
+								
+								$('#viewContainer').html(response);
+								$('#document-success-message').text("Trip status updated successfully!");
+                    
+                    			$('#document-success-modal').modal('show');
+							},
+							error: function (xhr) {
+								console.error('Error loading grid view:', xhr);
+							}
+						});
+						
+					},
+                error: function() {
+                    alert("An error occurred while updating the status.");
+                },
+                complete: function() {
+                    // Reset the flag regardless of success or error
+                    ajaxCallInProgress = false;
+                }
+            });
+        }
+    });
+});
 </script>

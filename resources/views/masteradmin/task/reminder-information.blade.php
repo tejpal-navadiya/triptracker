@@ -49,7 +49,26 @@
                 <input type="hidden" name="trvt_id" id="trvt_idReminder">
                 <ul id="update_msgList"></ul>
                 <div class="modal-body">
+               
+
                     <div class="row pxy-15 px-10">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tr_idReminder">Trip Name<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="tr_idReminder"
+                                        name="tr_id">
+                                        <option default>Select Trip Name</option>
+                                        @foreach ($trip as $tripvalue)
+                                            <option value="{{ $tripvalue->tr_id }}">{{ $tripvalue->tr_name }}
+                                            </option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trvt_name">Task</label>
@@ -286,12 +305,12 @@
             var tasksuccessMessage = '';
             
             if ($('#trvt_idReminder').val() === '') {
-                url = "{{ $task && $task->trip ? route('masteradmin.task.store', 0) : '' }}";
+                url = "{{  route('masteradmin.taskdetails.store') }}";
                 tasksuccessMessage = 'Data has been successfully inserted!'; 
             } else {
                 var trvt_id = $('#trvt_idReminder').val();
               //  alert(trvt_id);
-                url = "{{ route('masteradmin.task.updateTask', ':trvt_id') }}"; 
+              var url = "{{ route('masteradmin.taskdetails.update', ':trvt_id') }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
                 tasksuccessMessage = 'Data has been successfully updated!';
@@ -334,7 +353,7 @@
             // alert(id);
             var url;
 
-            url = "{{ route('masteradmin.task.editTask', ['id' => ':id']) }}";
+            var url = "{{ route('masteradmin.taskdetails.editTask', ['id' => ':id']) }}";
             url = url.replace(':id', id);
             if (url) {
                 url = url.replace(':id', id);
@@ -372,6 +391,9 @@
                             '</a>'
                         );
                     }
+
+                    
+                    $('#tr_idReminder').val(data.tr_id).trigger('change.select2');
 
                     $('#statusFieldReminder').show();
                     $('#trvt_statusReminder').val(data.status).trigger(
@@ -420,17 +442,17 @@
             e.preventDefault();
             //  alert(trtm_id);
              var trvt_id = $(this).data("id");
-            var trip_id = "0";
             
-                if (trip_id) {
-                var url = "{{ route('masteradmin.task.destroy', [':trip_id', ':trvt_id']) }}";
-                url = url.replace(':trip_id', trip_id).replace(':trvt_id', trvt_id);
+                if (trvt_id) {
+                    var url = "{{ route('masteradmin.taskdetails.destroy', ':trvt_id') }}";
+                    url = url.replace(':trvt_id', trvt_id);
           
             // alert(url);
             $.ajax({
                 type: "DELETE",
                 url: url,
                 success: function(data) {
+                    table.draw();
                     $('#task-success-message2').text('Data has been successfully Deleted!');
                     $('#task-success-modal2').modal('show');
                     $('.ajaxModelTask1').modal('hide');
@@ -438,7 +460,7 @@
                     $('body').removeClass('modal-open');
                     $('.ajaxModelTask1').css('display', 'none');
 
-                    table.draw();
+                    // table.draw();
                     $('#example15').DataTable().ajax.reload();
 
                 },

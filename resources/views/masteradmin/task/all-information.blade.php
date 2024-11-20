@@ -53,6 +53,23 @@
                 <ul id="update_msgList"></ul>
                 <div class="modal-body">
                     <div class="row pxy-15 px-10">
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tr_id">Trip Name<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="tr_id"
+                                        name="tr_id">
+                                        <option default>Select Trip Name</option>
+                                        @foreach ($trip as $tripvalue)
+                                            <option value="{{ $tripvalue->tr_id }}">{{ $tripvalue->tr_name }}
+                                            </option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trvt_name">Task</label>
@@ -157,7 +174,7 @@
                                     <x-text-input type="file" name="trvt_document" id="trvt_document" />
                                 </div>
                                 <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
-                                <p id="task_document1"></p>
+                                <p id="task_document"></p>
                                 <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
                             </div>
                         </div>
@@ -167,7 +184,7 @@
                             <div class="form-group">
                                 <label for="trvt_category">Status<span class="text-danger">*</span></label>
                                 <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trvt_status1"
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_status"
                                         name="status">
                                         <option value="0" default>Select Status</option>
                                         @foreach ($taskstatus as $value)
@@ -207,7 +224,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 
@@ -220,11 +236,11 @@
         });
 
         //datatable list
-        var allTableList = $('#example11').DataTable();
-        allTableList.destroy();
+        var allTable = $('#example11').DataTable();
+        allTable.destroy();
 
         //list
-        allTableList = $('#example11').DataTable({
+        allTable = $('#example11').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -278,22 +294,21 @@
             ]
         });
 
-        // $('#createNewTask').click(function() {
-        //     $('#saveBtnTask').val("create-product");
-        //     $('#trvt_id').val('');
-        //     $('#FormTask')[0].reset();
-        //     $('#modelHeadingTask').html("Add Task");
-        //     $('body').addClass('modal-open');
-        //     $('#task_document').html('');
+        //create task
+        $('#createNewTask').click(function() {
+            $('#saveBtnTask').val("create-product");
+            $('#trvt_id').val('');
+            $('#FormTask')[0].reset();
+            $('#modelHeadingTask').html("Add Task");
+            $('body').addClass('modal-open');
+            $('#task_document').html('');
 
-        //     $('#statusField').hide(); // Hide status field during add
+            $('#statusField').hide(); // Hide status field during add
 
-        //     var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
-        //     editModal.show();
-        // });
+            var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
+            editModal.show();
+        });
 
-
-      
         //insert/update data
         $('#saveBtnTask').click(function(e) {
             e.preventDefault();
@@ -306,16 +321,18 @@
             var url = '';
             var method = 'POST'; // Default to POST for new tasks
             var tasksuccessMessage = '';
+
             if ($('#trvt_id').val() === '') {
                 // Create new task
-                url = "{{ $task && $task->trip ? route('masteradmin.task.store', 0) : '' }}";
+                url = "{{  route('masteradmin.taskdetails.store') }}";
                 formData.append('_method', 'POST');
                 tasksuccessMessage = 'Data has been successfully inserted!'; 
+
             } else {
                 // Update existing task
                 var trvt_id = $('#trvt_id').val();
-              //  alert(trvt_id);
-                url = "{{ route('masteradmin.task.updateTask', ':trvt_id') }}"; 
+                // alert(trvt_id);
+                var url = "{{ route('masteradmin.taskdetails.update', ':trvt_id') }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
                 tasksuccessMessage = 'Data has been successfully updated!';
@@ -329,7 +346,7 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    allTableList.draw();
+                    allTable.draw();
                     $('#task-success-message').text(tasksuccessMessage);
                     $('#task-success-modal').modal('show');
                     $('#example15').DataTable().ajax.reload();
@@ -354,56 +371,48 @@
 
 
             var id = $(this).data('id');
-            // alert(id);
-            var url;
-
-            url = "{{ route('masteradmin.task.editTask', ['id' => ':id']) }}";
-            url = url.replace(':id', id);
-           
+            var url = "{{ route('masteradmin.taskdetails.editTask', ['id' => ':id']) }}";
             if (url) {
                 url = url.replace(':id', id);
             // alert(id);
              $.get(url, function(data) {
 
-                $('#modelHeadingTask').html("Edit Task");
+
+                    // console.log(data);
+                    $('#modelHeadingTask').html("Edit Task");
                     $('#saveBtnTask').val("edit-user");
 
-                    var editModal = new bootstrap.Modal(document.getElementById(
-                        'ajaxModelTask'));
+                    var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
                     editModal.show();
 
                     $('#trvt_id').val(data.trvt_id);
                     $('#trvt_name').val(data.trvt_name);
+                    $('#tr_id').val(data.tr_id).trigger('change.select2');
+
                     $('#trvt_agent_id').val(data.trvt_agent_id).trigger('change.select2');
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
-
-
-                    // Show status field during edit
-                    $('#statusField').show();
-                    $('#trvt_status1').val(data.status).trigger(
-                        'change.select2'); // set the selected status
-
-
 
                     $('#trvt_date_hidden').val(data.trvt_date);
                     $('#trvt_due_date_hidden').val(data.trvt_due_date);
 
                     $('#trvt_priority').val(data.trvt_priority).trigger('change.select2');
 
-                    $('#task_document1').html('');
+                    $('#task_document').html('');
                     var baseUrl = "{{ config('app.image_url') }}";
                     if (data.trvt_document) {
-                        $('#task_document1').append(
-                            '<a href="' + baseUrl + '/tasks/' +
-                            data
+                        $('#task_document').append(
+                            '<a href="' + baseUrl + '/tasks/' + data
                             .trvt_document + '" target="_blank">' +
                             data.trvt_document +
                             '</a>'
                         );
                     }
-
+                    
+                    $('#statusField').show();
+                    $('#trvt_status').val(data.status).trigger(
+                        'change.select2'); // set the selected status
                     var trvt_date_hidden = document.getElementById('trvt_date_hidden');
                     var trvt_due_date_hidden = document.getElementById('trvt_due_date_hidden');
 
@@ -446,26 +455,26 @@
             e.preventDefault();
             //  alert(trtm_id);
              var trvt_id = $(this).data("id");
-            var trip_id = "0";
             
-                if (trip_id) {
-                var url = "{{ route('masteradmin.task.destroy', [':trip_id', ':trvt_id']) }}";
-                url = url.replace(':trip_id', trip_id).replace(':trvt_id', trvt_id);
+                if (trvt_id) {
+                    var url = "{{ route('masteradmin.taskdetails.destroy', ':trvt_id') }}";
+                    url = url.replace(':trvt_id', trvt_id);
           
             // alert(url);
             $.ajax({
                 type: "DELETE",
                 url: url,
                 success: function(data) {
+                    // alert(data.success);
+                    allTable.draw();
                     $('#task-success-message').text('Data has been successfully Deleted!');
                     $('#task-success-modal').modal('show');
-
                     $('.ajaxModelTask').modal('hide');
                     $('.modal-backdrop').hide();
                     $('body').removeClass('modal-open');
                     $('.ajaxModelTask').css('display', 'none');
 
-                    allTableList.draw();
+                    allTable.draw();
                     $('#example15').DataTable().ajax.reload();
 
                 },
@@ -479,17 +488,18 @@
       
 
         $('#trip_agent, #trip_traveler').on('change', function() {
-            allTableList.draw();
+            allTable.draw();
         });
 
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
-            allTableList.draw();
+            allTable.draw();
         });
 
     });
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 

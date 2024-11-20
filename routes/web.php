@@ -240,7 +240,6 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::get('task/{id}', [TripTaskController::class, 'index'])->name('masteradmin.task.index');
        Route::post('/task-store/{id}', [TripTaskController::class, 'store'])->name('masteradmin.task.store');
        Route::get('task-edit/{id}/{trip_id}', [TripTaskController::class, 'edit'])->name('masteradmin.task.edit');
-       Route::get('task-edit/{id}', [TripTaskController::class, 'edit_task'])->name('masteradmin.task.editTask');
        Route::patch('/task-update/{trip_id}/{trvt_id}', [TripTaskController::class, 'update'])->name('masteradmin.task.update');
        Route::patch('/task-update/{trvt_id}', [TripTaskController::class, 'updateTask'])->name('masteradmin.task.updateTask');
 
@@ -324,8 +323,12 @@ Route::group(['prefix' => $busadminRoute], function () {
         //Task list
         Route::get('task-details/', [TripTaskController::class, 'allDetails'])->name('masteradmin.task.all');
         Route::get('task-incomplete-details/', [TripTaskController::class, 'incompleteDetails'])->name('masteradmin.task.incomplete');
+        Route::post('/task-details-store', [TripTaskController::class, 'storeTask'])->name('masteradmin.taskdetails.store');
+        Route::patch('/task-details-update/{trvt_id}', [TripTaskController::class, 'updateTask'])->name('masteradmin.taskdetails.update');
+        Route::get('task-edit/{id}', [TripTaskController::class, 'edit_task'])->name('masteradmin.taskdetails.editTask');
+        Route::delete('/task-details-delete/{trvt_id}', [TripTaskController::class, 'destroy'])->name('masteradmin.taskdetails.destroy');
 
-
+        
          //Travelers  
          Route::get('/travelers-details', [TripController::class, 'travelersDetails'])->name('masteradmin.travelers.travelersDetails');
          Route::get('/travelers-create', [TripController::class, 'createTravelers'])->name('masteradmin.travelers.create');

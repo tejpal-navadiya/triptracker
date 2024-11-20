@@ -1572,7 +1572,14 @@ public function updateStatus(Request $request)
   
     $tripId = $request->input('trip_id');
     $newStatus = $request->input('status');
-// dd($newStatus);
+
+    if(!empty( $newStatus))
+    {
+        $newStatus = $request->input('status'); 
+    }else{
+        $newStatus = '0';
+    }
+    // dd($newStatus);
     // Initialize the Trip model
     $trip = new Trip();
 
@@ -1590,7 +1597,6 @@ public function updateStatus(Request $request)
     $tripRecord = $trip->where('tr_id', $tripId);
 
     if (!$tripRecord->exists()) {
-        \Log::error('Trip not found. Query Log: ' . print_r(\DB::getQueryLog(), true));
         return response()->json(['error' => 'Trip not found'], 404);
     }
     

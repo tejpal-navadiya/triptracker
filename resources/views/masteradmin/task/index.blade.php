@@ -86,7 +86,7 @@
   </div>
   <!-- /.content-wrapper -->
 
-  @endsection
+
   <div class="modal fade" id="ajaxModelTask3" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -104,6 +104,23 @@
                 <ul id="update_msgList"></ul>
                 <div class="modal-body">
                     <div class="row pxy-15 px-10">
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tr_id">Trip Name<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="tr_id"
+                                        name="tr_id">
+                                        <option default>Select Trip Name</option>
+                                        @foreach ($trip as $tripvalue)
+                                            <option value="{{ $tripvalue->tr_id }}">{{ $tripvalue->tr_name }}
+                                            </option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trvt_name">Task</label>
@@ -360,13 +377,13 @@
             var tasksuccessMessage = '';
             if ($('#trvt_id').val() === '') {
                 // Create new task
-                url = "{{ route('masteradmin.task.store', 0) }}";
+                url = "{{  route('masteradmin.taskdetails.store') }}";
                 formData.append('_method', 'POST');
                 tasksuccessMessage = 'Data has been successfully inserted!'; 
             } else {
                 // Update existing task
                 var trvt_id = $('#trvt_id').val();
-                url = "{{ route('masteradmin.task.update', [0, ':trvt_id'])  }}";
+                var url = "{{ route('masteradmin.taskdetails.update', ':trvt_id') }}";
                 url = url.replace(':trvt_id', trvt_id);
                 formData.append('_method', 'PATCH');
                 tasksuccessMessage = 'Data has been successfully updated!';
@@ -438,3 +455,5 @@
     });
 </script>
 
+
+  @endsection
