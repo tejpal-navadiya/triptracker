@@ -505,7 +505,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                     defaultDate: fromdatepicker.value || null,
                 });
@@ -514,7 +514,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                     defaultDate: todatepicker.value || null,
                 });
@@ -533,7 +533,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                     defaultDate: birthdatedate.value || null,
                 });
@@ -554,7 +554,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                     defaultDate: hiddenInput.value || null,
                 });
@@ -720,7 +720,7 @@
                         locale: 'en',
                         altInput: true,
                         dateFormat: "m/d/Y",
-                        altFormat: "d/m/Y",
+                        altFormat: "m/d/Y",
                         allowInput: true,
                     });
 

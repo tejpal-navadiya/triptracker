@@ -568,7 +568,7 @@
                                 locale: 'en',
                                 altInput: true,
                                 dateFormat: "m/d/Y",
-                                altFormat: "d/m/Y",
+                                altFormat: "m/d/Y",
                                 allowInput: true,
                                 defaultDate: fromdatepicker.value || null,
                             });

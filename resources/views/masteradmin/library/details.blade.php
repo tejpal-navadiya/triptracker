@@ -160,20 +160,20 @@
                                                     <div class="mr-3 mb-3 text-center">
                                                         @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
                                                             <!-- Display Image -->
-                                                            <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                            <img src="{{ config('app.image_url') }}/library_images/{{ $file }}"
                                                                 alt="Uploaded Image" class="img-thumbnail"
                                                                 style="width: 100%; max-width: 200px;">
                                                         @elseif (preg_match('/\.pdf$/i', $file))
                                                             <!-- Display PDF as embedded viewer -->
                                                             <div class="embed-responsive embed-responsive-4by3">
                                                                 <embed
-                                                                    src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                                    src="{{ config('app.image_url') }}/library_images/{{ $file }}"
                                                                     type="application/pdf" class="embed-responsive-item">
                                                             </div>
                                                         @endif
                                                         <!-- Download and Print Options -->
                                                         <div class="mt-2">
-                                                            <a href="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
+                                                            <a href="{{ config('app.image_url') }}/library_images/{{ $file }}"
                                                                 class="btn btn-outline-primary btn-sm" download>
                                                                 Download
                                                             </a>

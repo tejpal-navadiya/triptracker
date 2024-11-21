@@ -14,7 +14,7 @@ class EmailCategoryController extends Controller
 
         $user = Auth::guard('masteradmins')->user();
 
-        $email_category = EmailCategory::all();
+        $email_category = EmailCategory::where(['email_cat_status' => 1, 'id' => $user->users_id])->get();
 
 
         return view('masteradmin.emailtemplate.category_index',compact('email_category'));

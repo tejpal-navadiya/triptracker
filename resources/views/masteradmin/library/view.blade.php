@@ -91,7 +91,7 @@
                                                         <!-- Display only the first image from the array -->
                                                         <tr>
                                                             <td>
-                                                                <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $images[0] }}"
+                                                                <img src="{{ config('app.image_url') }}/library_images/{{ $images[0] }}"
                                                                     alt="Uploaded Image" class="img-thumbnail"
                                                                     style="max-width: 100px; height: auto;">
                                                             </td>

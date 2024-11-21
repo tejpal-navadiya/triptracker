@@ -318,7 +318,7 @@ body{
     background: #F3E8FF;
 }
 .small-box .total_text{
-    font-size: 16px;
+    font-size: 18px;
     line-height: normal;
     font-weight: 500;
     color: #242424;
@@ -326,7 +326,7 @@ body{
 }
 .col-lg-2 .small-box .customer_total{
     color: #FF4E80;
-    font-size: 26px;
+    font-size: 30px;
     margin-bottom: 0;
 }
 .small-box .vendor_total{
@@ -2670,12 +2670,6 @@ body .select2-container--default .select2-selection--single .select2-selection__
 .col-lg-12.fillter_box .col-lg-4.col-1024.col-md-6.px-10.d-flex {
     column-gap: 15px;
 }
-.col-lg-12.fillter_box .col-lg-4.col-1024.col-md-6.px-10.d-flex.new-space-remove {
-    column-gap: 0;
-}
-.col-lg-12.fillter_box .col-lg-4.input-group.date {
-    flex: auto;
-}
 button.btn.btn-info {
     font-size: 14px;
     background: #1678FF;
@@ -2769,6 +2763,7 @@ button.btn.btn-info {
     border: 1px solid #DBE0E6;
     border-radius: 6px;
     padding: 15px;
+    height: 100%;
 }
 
 .edit-profile-view-l .epv-top {

@@ -371,8 +371,36 @@ Route::group(['prefix' => $busadminRoute], function () {
 
         })->name('task.access');
 
+        //library image/document security 
+        Route::get('/library_images/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
 
+                $filePath = storage_path('app/'.$userFolder.'/library_image/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
         
+
+        })->name('library_images.access');
+
+        //user certification image/document security 
+        Route::get('/library_images/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
+
+                $filePath = storage_path('app/'.$userFolder.'/library_image/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
+        
+
+        })->name('library.access');
+
 
 
     });

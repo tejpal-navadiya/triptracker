@@ -98,7 +98,7 @@
             </div>
 
             <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Email Address</label>
+                <label for="user_agencies_name" class="form-label">Business Email Address</label>
                 <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
@@ -107,9 +107,59 @@
                         </div>
                     </div>
                     <input type="email" class="form-control @error('user_email') is-invalid @enderror" id="user_email"
-                        name="user_email" placeholder="Email Address *" value="{{ old('user_email') }}">
+                        name="user_email" placeholder="Business Email Address *" value="{{ old('user_email') }}">
                 </div>
                 @error('user_email')
+                    <div class="invalid-feedback mb-2">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 col-xl-4">
+                <label for="user_personal_email" class="form-label">Personal Email Address</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-regular fa-envelope"></span>
+                        </div>
+                    </div>
+                    <input type="email" class="form-control @error('user_personal_email') is-invalid @enderror" id="user_personal_email"
+                        name="user_personal_email" placeholder="Personal Email Address" value="{{ old('user_personal_email') }}">
+                </div>
+                @error('user_personal_email')
+                    <div class="invalid-feedback mb-2">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 col-xl-4">
+                <label for="user_business_phone" class="form-label">Business Phone</label>
+                <span class="text-danger">*</span>
+                <div class="input-group mb-2">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-regular fa-envelope"></span>
+                        </div>
+                    </div>
+                    <input type="number" class="form-control @error('user_business_phone') is-invalid @enderror" id="user_business_phone"
+                        name="user_business_phone" placeholder="Business Phone" value="{{ old('user_business_phone') }}">
+                </div>
+                @error('user_business_phone')
+                    <div class="invalid-feedback mb-2">{{ $message }}</div>
+                @enderror
+            </div>
+
+
+            <div class="col-md-6 col-xl-4">
+                <label for="user_personal_phone" class="form-label">Personal Phone</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-regular fa-envelope"></span>
+                        </div>
+                    </div>
+                    <input type="number" class="form-control @error('user_personal_phone') is-invalid @enderror" id="user_personal_phone"
+                        name="user_personal_phone" placeholder="Personal Phone" value="{{ old('user_personal_phone') }}">
+                </div>
+                @error('user_personal_phone')
                     <div class="invalid-feedback mb-2">{{ $message }}</div>
                 @enderror
             </div>
@@ -121,7 +171,7 @@
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-regular fa-envelope"></span>
+                            <span class="fas fa-solid fa-info"></span>
                         </div>
                     </div>
                     <input type="number" class="form-control @error('user_iata_clia_number') is-invalid @enderror"
@@ -138,7 +188,7 @@
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-regular fa-envelope"></span>
+                            <span class="fas fa-solid fa-info"></span>
                         </div>
                     </div>
                     <input type="number" class="form-control @error('user_clia_number') is-invalid @enderror"
@@ -155,7 +205,7 @@
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-regular fa-envelope"></span>
+                            <span class="fas fa-solid fa-info"></span>
                         </div>
                     </div>
                     <input type="number" class="form-control @error('user_iata_number') is-invalid @enderror"
@@ -177,7 +227,7 @@
                         </div>
                     </div>
                     <input type="text" class="form-control @error('user_address') is-invalid @enderror"
-                        id="user_address" name="user_address" placeholder="Enter Address*"
+                        id="user_address" name="user_address" placeholder="Enter Address"
                         value="{{ old('user_address') }}">
                 </div>
                 @error('user_address')
@@ -246,7 +296,7 @@
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-regular fa-phone"></span>
+                            <span class="fas fa-map-pin"></span>
                         </div>
                     </div>
                     <input type="number" class="form-control @error('user_zip') is-invalid @enderror"
@@ -262,7 +312,7 @@
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-regular fa-phone"></span>
+                            <span class="fas fa-solid fa-paper-plane"></span>
                         </div>
                     </div>
                     <select id="sp_id" name="sp_id" class="form-control select2" style="width: 100%;">
@@ -282,7 +332,7 @@
 
 
             <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Agency Logo / Profile Image</label>
+                <label for="user_agencies_name" class="form-label">Agency Logo</label>
                 <div class="input-group">
                     <input type="file" name="image" accept="image/*" class="form-control form-control-file">
                 </div>

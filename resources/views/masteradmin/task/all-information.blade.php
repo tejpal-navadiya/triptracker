@@ -10,7 +10,7 @@
        
             <div class="card-body">
                 <div class="col-md-12 table-responsive pad_table">
-                    <table id="example11" class="table table-hover text-nowrap">
+                    <table id="allTaskDataTable" class="table table-hover text-nowrap">
                         <thead>
                             <tr>
                                 <th>Trip Name</th>
@@ -235,12 +235,12 @@
             }
         });
 
+    //     function initializeTaskDataTable() {
+    // if ($.fn.dataTable.isDataTable('#allTaskDataTable')) {
+    //     allTable.clear().draw();
+    // }else{
         //datatable list
-        var allTable = $('#example11').DataTable();
-        allTable.destroy();
-
-        //list
-        allTable = $('#example11').DataTable({
+        allTable = $('#allTaskDataTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -293,6 +293,9 @@
                 },
             ]
         });
+
+        //}
+   // }
 
         //create task
         $('#createNewTask').click(function() {
@@ -507,7 +510,7 @@
             locale: 'en',
             altInput: true,
             dateFormat: "m/d/Y",
-            altFormat: "d/m/Y",
+            altFormat: "m/d/Y",
             allowInput: true,
         });
 
@@ -515,7 +518,7 @@
             locale: 'en',
             altInput: true,
             dateFormat: "m/d/Y",
-            altFormat: "d/m/Y",
+            altFormat: "m/d/Y",
             allowInput: true,
         });
 

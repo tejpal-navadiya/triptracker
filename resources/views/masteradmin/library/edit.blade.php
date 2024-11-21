@@ -166,8 +166,8 @@
                                                 <td>
                                                     @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
                                                         <!-- Display Image Preview -->
-                                                        <a target="_blank" href="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}">
-                                                        <img src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                        <a target="_blank" href="{{ config('app.image_url') }}/library_images/{{ $file }}">
+                                                        <img src="{{ config('app.image_url') }}/library_images/{{ $file }}"
                                                             alt="Uploaded Image" class="img-thumbnail"
                                                             style="width: 100px; height: auto;">
                                                         </a>
@@ -177,10 +177,10 @@
                                                         <div class="embed-responsive embed-responsive-4by3"
                                                             style="max-width: 100px;">
                                                             <embed
-                                                                src="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}"
+                                                                src="{{ config('app.image_url') }}/library_images/{{ $file }}"
                                                                 type="application/pdf" class="embed-responsive-item" />
                                                         </div>
-                                                        <a target="_blank" href="{{ config('app.image_url') }}{{ $userFolder }}/library_image/{{ $file }}">View
+                                                        <a target="_blank" href="{{ config('app.image_url') }}/library_images/{{ $file }}">View
                                                         </a>
                                                     @endif
                                                     </td>

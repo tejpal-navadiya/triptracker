@@ -74,10 +74,11 @@
                                                 <td>{{ $template->title }}</td>
                                                 <td class="text-right">
                                                     <!-- Action buttons (Edit, Delete) -->
-                                                    @if (isset($access['view_email_template']) && $access['view_email_template'])
-                                                    <a href="{{ route('masteradmin.emailtemplate.edit', $template->email_tid) }}"
-                                                        class="btn btn-sm btn-primary">Edit</a>
-                                                        @endif
+                                                  @if (isset($access['view_email_template']) && $access['view_email_template'])
+
+                                                    <a href="{{ route('masteradmin.emailtemplate.edit', $template->email_tid) }}"><i
+                                                            class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                                    @endif
                                                     <form
                                                         action="{{ route('masteradmin.emailtemplate.destroy', $template->email_tid) }}"
                                                         method="POST" style="display:inline;"
@@ -85,12 +86,11 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         @if (isset($access['delete_email_template']) && $access['delete_email_template'])
-
-                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                            data-toggle="modal"
+                                                        <a data-toggle="modal"
                                                             data-target="#delete-product-modal-{{ $template->email_tid }}">
-                                                            Delete</button>
-
+                                                            <i class="fas fa-solid fa-trash delete_icon_grid"></i>
+                                                        </a>
+                                                       
                                                         <div class="modal fade"
                                                             id="delete-product-modal-{{ $template->email_tid }}"
                                                             tabindex="-1" role="dialog"

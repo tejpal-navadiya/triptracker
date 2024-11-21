@@ -279,7 +279,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                 });
 
@@ -287,7 +287,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                 });
 

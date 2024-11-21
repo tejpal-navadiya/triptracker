@@ -165,6 +165,7 @@ class TripController extends Controller
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
+        
         if ($request->travelers == "travelers") {
             $validatedData = $request->validate([
                 'tr_name' => 'required|string',
@@ -172,7 +173,7 @@ class TripController extends Controller
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
                 'tr_age' => 'nullable|string',
-                'tr_email' => 'required|email',
+                'tr_email' => 'required|email|regex:/^.+@.+\.com$/',
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
@@ -200,6 +201,7 @@ class TripController extends Controller
                 'tr_agent_id.required' => 'Agent ID is required',
                 'tr_traveler_name.required' => 'Traveler name is required',
                 'tr_email.required' => 'Email is required',
+                'tr_email.regex' => 'Please enter a valid email address.',
                 'tr_start_date.required' => 'Start date is required',
                 'tr_end_date.required' => 'End Date Is Required',
       
@@ -211,7 +213,7 @@ class TripController extends Controller
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
                 'tr_age' => 'nullable|string',
-                'tr_email' => 'nullable|email',
+                'tr_email' => 'required|email|regex:/^.+@.+\.com$/',
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
@@ -235,9 +237,10 @@ class TripController extends Controller
                 'items.*.trtm_age' => 'nullable|string',
             ], [
     
-                'tr_name.required' => 'Traveler name is required',
+                'tr_name.required' => 'Trip Name is required',
                 'tr_agent_id.required' => 'Agent ID is required',
-                'tr_traveler_name.required' => 'Traveler name is required',
+                'tr_traveler_name.required' => 'Lead Traveler is required',
+                'tr_email.regex' => 'Please enter a valid email address.',
       
             ]);
     
@@ -448,7 +451,7 @@ class TripController extends Controller
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
                 'tr_age' => 'nullable|string',
-                'tr_email' => 'required|email',
+                'tr_email' => 'required|email|regex:/^.+@.+\.com$/',
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
@@ -478,6 +481,7 @@ class TripController extends Controller
                 'tr_email.email' => 'Invalid email address',
                 'tr_start_date.required' => 'Start date is required',
                 'tr_end_date.required' => 'End Date Is Required',
+                'tr_email.regex' => 'Please enter a valid email address.',
       
             ]);
         }else{
@@ -487,7 +491,7 @@ class TripController extends Controller
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
                 'tr_age' => 'nullable|string',
-                'tr_email' => 'nullable|email',
+                'tr_email' => 'required|email|regex:/^.+@.+\.com$/',
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
@@ -504,10 +508,11 @@ class TripController extends Controller
                
             ], [
     
-                'tr_name.required' => 'Traveler name is required',
+                'tr_name.required' => 'Trip name is required',
                 'tr_agent_id.required' => 'Agent ID is required',
-                'tr_traveler_name.required' => 'Traveler name is required',
-      
+                'tr_traveler_name.required' => 'Lead Traveler is required',
+                'tr_email.regex' => 'Please enter a valid email address.',
+            
             ]);
     
         }

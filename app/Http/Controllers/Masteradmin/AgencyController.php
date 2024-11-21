@@ -41,22 +41,22 @@ class AgencyController extends Controller
     }
 
     public function create(): View
-{
-  $user = Auth::guard('masteradmins')->user();
+    {
+      $user = Auth::guard('masteradmins')->user();
 
-    $phones_type = StaticAgentPhone::all();
-    $users_role = UserRole::all();
-    $country = Countries::all();
+        $phones_type = StaticAgentPhone::all();
+        $users_role = UserRole::all();
+        $country = Countries::all();
 
-    $agency = new MasterUserDetails();
-    $agency->setTableForUniqueId($user->user_id);
-    $agency = $agency->count();
+        $agency = new MasterUserDetails();
+        $agency->setTableForUniqueId($user->user_id);
+        $agency = $agency->count();
 
-    $nextAgencyNumber = str_pad($agency + 1, 3, '0', STR_PAD_LEFT); // Auto-increment logic
-  // dd($nextAgencyNumber);
-  
-    return view('masteradmin.agency.create', compact('phones_type','users_role','country','nextAgencyNumber'));
-}
+        $nextAgencyNumber = str_pad($agency + 1, 3, '0', STR_PAD_LEFT); // Auto-increment logic
+      // dd($nextAgencyNumber);
+      
+        return view('masteradmin.agency.create', compact('phones_type','users_role','country','nextAgencyNumber'));
+    }
 
     public function store(Request $request){
 
@@ -70,19 +70,19 @@ class AgencyController extends Controller
       $validatedData = $request->validate([
         'users_first_name' => 'required|string|max:255',
         'users_last_name' => 'required|string|max:255',
-        'users_email' => 'required|email|max:255',
+        'users_email' => 'required|email|max:255|regex:/^.+@.+\.com$/',
         'users_address' => 'nullable|string|max:255',
         'users_zip' => 'nullable|numeric|digits_between:1,6',
         'user_agency_numbers' => 'required|string|max:255',
-        'user_work_email' => 'required|email|max:255',
+        'user_work_email' => 'required|email|max:255|regex:/^.+@.+\.com$/',
         'user_dob' => 'nullable|date',
         'user_emergency_contact_person' => 'nullable|string|max:255',
         'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
-        'user_emergency_email' => 'nullable|email|max:255',
+        'user_emergency_email' => 'nullable|email|max:255|regex:/^.+@.+\.com$/',
         'users_country' => 'nullable|string|max:255',
         'users_state' => 'nullable|string|max:255',
         'users_city' => 'nullable|string|max:255',
-        'role_id' => 'nullable|string|max:255',
+        'role_id' => 'required|string|max:255',
         'users_password' => 'required|string|min:6', // Assuming min length for password
     ], [
         'users_first_name.required' => 'First name is required',
@@ -91,6 +91,10 @@ class AgencyController extends Controller
         'user_agency_numbers.required' => 'ID Number is required',
         'users_password.required' => 'Password is required',
         'users_password.min' => 'Password must be at least 6 characters long',
+        'role_id.required' => 'Role is required',
+        'user_work_email.regex' => 'Please enter a valid email address.',
+        'users_email.regex' => 'Please enter a valid email address.',
+        'user_emergency_email.regex' => 'Please enter a valid email address.',
     ]);
 
 
@@ -108,15 +112,15 @@ class AgencyController extends Controller
 
     $existingAgency = $agency->where('users_email', $validatedData['users_email'])->first();
 
-    if ($existingAgency) {
-        return redirect()->back()->withErrors(['users_email' => 'The email address is already in use.'])->withInput();
-    }
+    // if ($existingAgency) {
+    //     return redirect()->back()->withErrors(['users_email' => 'The email address is already in use.'])->withInput();
+    // }
 
-    $existingWorkemail = $agency->where('user_work_email', $validatedData['user_work_email'])->first();
+    // $existingWorkemail = $agency->where('user_work_email', $validatedData['user_work_email'])->first();
 
-    if ($existingWorkemail) {
-        return redirect()->back()->withErrors(['user_work_email' => 'The email address is already in use.'])->withInput();
-    }
+    // if ($existingWorkemail) {
+    //     return redirect()->back()->withErrors(['user_work_email' => 'The email address is already in use.'])->withInput();
+    // }
 
 
         $agency->user_id = $user->user_id;   
@@ -173,7 +177,7 @@ class AgencyController extends Controller
 
       return redirect()->route('agency.index')->with('success', 'Agecy User entry created successfully.');
 
-      \MasterLogActivity::addToLog('Master Admin Users Certification Created.');
+      \MasterLogActivity::addToLog('Master Admin Agency Users is Created.');
 
     }
 
@@ -226,15 +230,15 @@ class AgencyController extends Controller
      $validatedData = $request->validate([
       'users_first_name' => 'required|string|max:255',
       'users_last_name' => 'required|string|max:255',
-      'users_email' => 'required|email|max:255',
+      'users_email' => 'required|email|max:255|regex:/^.+@.+\.com$/',
       'users_address' => 'nullable|string|max:255',
       'users_zip' => 'nullable|numeric|digits_between:1,6',
       'user_agency_numbers' => 'required|string|max:255',
-      'user_work_email' => 'required|email|max:255',
+      'user_work_email' => 'required|email|max:255|regex:/^.+@.+\.com$/',
       'user_dob' => 'nullable|date',
       'user_emergency_contact_person' => 'nullable|string|max:255',
       'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
-      'user_emergency_email' => 'nullable|email|max:255',
+      'user_emergency_email' => 'nullable|email|max:255|regex:/^.+@.+\.com$/',
       'users_country' => 'nullable|string|max:255',
       'users_state' => 'nullable|string|max:255',
       'users_city' => 'nullable|string|max:255',
@@ -247,6 +251,10 @@ class AgencyController extends Controller
       'user_agency_numbers.required' => 'ID Number is required',
       'users_password.required' => 'Password is required',
       'users_password.min' => 'Password must be at least 6 characters long',
+      'role_id.required' => 'Role is required',
+      'user_work_email.regex' => 'Please enter a valid email address.',
+      'users_email.regex' => 'Please enter a valid email address.',
+      'user_emergency_email.regex' => 'Please enter a valid email address.',
   ]);
 
   // Prepare data for update
@@ -326,7 +334,7 @@ class AgencyController extends Controller
 
 
       // Log the deletion
-      \MasterLogActivity::addToLog('Master Admin Library Deleted.');
+      \MasterLogActivity::addToLog('Master Admin Agency User is Deleted.');
 
       return redirect()->route(route: 'agency.index')->with('success', 'Agency deleted successfully');
    }
@@ -378,7 +386,7 @@ class AgencyController extends Controller
   
       $agencyUser->where('users_id', $userId)->update($validatedData);
   
-      \MasterLogActivity::addToLog("User role assigned for user ID: {$userId}");
+      \MasterLogActivity::addToLog("Master Admin Agency User role assigned for user ID: {$userId}");
   
       return redirect()->route('agency.index')->with('success', 'User role assigned successfully.');
   }

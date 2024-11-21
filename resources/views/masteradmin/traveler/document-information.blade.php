@@ -410,9 +410,19 @@
                             imageHtml += '<tbody>';
                             imageHtml += '<tr>';
                             imageHtml += '<td>';
-                            imageHtml += '<img src="' + baseUrl  +
-                                '/document/' + image +
-                                '" alt="Uploaded Image" class="img-thumbnail" style="max-width: 100px; height: auto;">';
+                            if (/\.(jpg|jpeg|png|gif)$/i.test(image)) {
+                                // Image Preview
+                                imageHtml += '<a target="_blank" href="' + baseUrl + '/document/' + image + '">';
+                                imageHtml += '<img src="' + baseUrl + '/document/' + image + '" ';
+                                imageHtml += 'alt="Uploaded Image" class="img-thumbnail" style="max-width: 100px; height: auto;">';
+                                imageHtml += '</a>';
+                            } else if (/\.pdf$/i.test(image)) {
+                                // PDF Preview
+                                imageHtml += '<div class="embed-responsive embed-responsive-4by3" style="max-width: 100px;">';
+                                imageHtml += '<embed src="' + baseUrl + '/document/' + image + '" type="application/pdf" />';
+                                imageHtml += '</div>';
+                                imageHtml += '<a target="_blank" href="' + baseUrl + '/document/' + image + '">View PDF</a>';
+                            }
                             imageHtml += '</td>';
 
                             var routeUrl =

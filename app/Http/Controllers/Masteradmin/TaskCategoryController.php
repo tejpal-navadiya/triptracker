@@ -15,7 +15,7 @@ class TaskCategoryController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
 
-        $taskcategory = TaskCategory::all();
+        $taskcategory = TaskCategory::where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
         return view('masteradmin.task_category.index',compact('taskcategory'));
     }
 

@@ -26,7 +26,7 @@
           <div class="card px-20">
             <div class="card-body1">
               <div class="col-md-12 table-responsive pad_table">
-                <table id="example1" class="table table-hover text-nowrap">
+                <table id="allLogDataTable" class="table table-hover text-nowrap">
                 <thead>
                             <tr>
                                 <th>Subject</th>
@@ -73,6 +73,13 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
+<script>
+      $(document).ready(function() {
+ $('#allLogDataTable').dataTable({
+            order: [[1, 'asc']]
+            });
+          });
+</script>
 @endsection

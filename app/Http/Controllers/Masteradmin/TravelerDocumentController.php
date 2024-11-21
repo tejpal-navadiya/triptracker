@@ -74,7 +74,7 @@ class TravelerDocumentController extends Controller
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
                                         foreach ($images as $image) {
-                                            $imagePath = $userFolder . '/document_image/' . $image;
+                                            $imagePath ='document/' . $image;
                                             $imageUrl = ($imagePath);
                                             
                                             $baseUrl = rtrim($baseUrl, '/');

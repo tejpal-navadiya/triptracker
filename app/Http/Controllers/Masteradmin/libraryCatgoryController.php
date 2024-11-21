@@ -16,7 +16,7 @@ class libraryCatgoryController extends Controller
 
         $user = Auth::guard('masteradmins')->user();
 
-        $library_category = LibraryCategory::all();
+        $library_category = LibraryCategory::where(['lib_cat_status' => 1, 'id' => $user->users_id])->get();
 
 
         return view('masteradmin.library.category_index',compact('library_category'));

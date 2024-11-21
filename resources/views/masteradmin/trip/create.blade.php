@@ -68,9 +68,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="tr_agent_id">Traveler Name<span class="text-danger">*</span></label>
+                                            <label for="tr_agent_id">Lead Traveler<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_traveler_name"
-                                                placeholder="Traveler Name" name="tr_traveler_name" autofocus
+                                                placeholder="Lead Traveler" name="tr_traveler_name" autofocus
                                                 autocomplete="tr_traveler_name" value="{{ old('tr_traveler_name') }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
@@ -311,7 +311,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                 });
 
@@ -319,7 +319,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                 });
 
@@ -336,7 +336,7 @@
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
-                    altFormat: "d/m/Y",
+                    altFormat: "m/d/Y",
                     allowInput: true,
                 });
 
@@ -486,7 +486,7 @@
                         locale: 'en',
                         altInput: true,
                         dateFormat: "m/d/Y",
-                        altFormat: "d/m/Y",
+                        altFormat: "m/d/Y",
                         allowInput: true,
                     });
 

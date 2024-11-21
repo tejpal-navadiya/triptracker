@@ -158,6 +158,9 @@ class Controller extends BaseController
                     $table->string('users_first_name')->nullable();
                     $table->string('users_last_name')->nullable();
                     $table->string('users_email')->nullable()->unique();
+                    $table->string('users_personal_email')->nullable()->unique();
+                    $table->string('users_business_phone')->nullable()->unique();
+                    $table->string('users_personal_phone')->nullable()->unique();
                     $table->string('users_iata_clia_number')->nullable();
                     $table->string('users_clia_number')->nullable();
                     $table->string('users_iata_number')->nullable();

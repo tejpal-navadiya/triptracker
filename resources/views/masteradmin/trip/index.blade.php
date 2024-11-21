@@ -55,8 +55,8 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex">
-                                <div class="input-group date">
+                            <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex new-space-remove">
+                                <div class="col-lg-4 input-group date">
                                     <x-flatpickr id="from-datepicker" placeholder="From" />
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="from-calendar-icon">
@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
 
-                                <div class="input-group date">
+                                <div class="col-lg-4 input-group date">
                                     <x-flatpickr id="to-datepicker" placeholder="To" />
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="to-calendar-icon">
@@ -75,11 +75,11 @@
                                 </div>
 
                                  <!-- Toggle Buttons for Views -->
-                                 <div class="col-md-2 d-flex justify-content-end align-items-center">
+                                 <div class="col-lg-4 d-flex justify-content-end align-items-center">
                                     <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin me-2">
                                         <i class="fas fa-list"></i>
                                     </a>
-                                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active">
+                                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active ml-2">
                                         <i class="fas fa-th-large"></i>
                                     </a>
                                 </div>

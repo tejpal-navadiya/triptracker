@@ -39,7 +39,7 @@
                                         <a href="{{ route('trip.index') }}" 
                                         class="nav-link {{ request()->is($busadminRoutes . '/trip*') || request()->is($busadminRoutes . '/view-trip*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Workflow</p>
+                                            <p>Pre Booked Trips</p>
                                         </a>
                                     </li>
 

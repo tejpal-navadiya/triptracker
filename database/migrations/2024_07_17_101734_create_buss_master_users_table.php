@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('user_first_name')->nullable();
             $table->string('user_last_name')->nullable();
             $table->string('user_email')->nullable();
+            $table->string('user_personal_email')->nullable();
+            $table->string('user_business_phone')->nullable();
+            $table->string('user_personal_phone')->nullable();
             $table->string('user_iata_clia_number')->nullable();
             $table->string('user_clia_number')->nullable();
             $table->string('user_iata_number')->nullable();

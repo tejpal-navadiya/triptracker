@@ -24,8 +24,8 @@ class LibraryController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
 
+        $libraries = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id])->get();
         $library = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id])->get();
-        $libraries = Library::all();
 
 
         return view('masteradmin.library.index', compact('library','libraries'));
@@ -117,7 +117,7 @@ class LibraryController extends Controller
 
         $library->save();
 
-        \MasterLogActivity::addToLog('Library Created.');
+        \MasterLogActivity::addToLog('Master Admin Library is Created.');
 
 
         return redirect()->route('library.index')->with('success', 'Library entry created successfully.');
@@ -155,6 +155,7 @@ class LibraryController extends Controller
             }
             return redirect()->back()->with('success', 'Image deleted successfully.');
         }
+        \MasterLogActivity::addToLog('Master Admin Library is Deleted.');
 
         return redirect()->back()->with('error', 'Image not found.');
     }
@@ -238,7 +239,7 @@ class LibraryController extends Controller
         $library->where('lib_id', $id)->update($validatedData);
 
 
-        \MasterLogActivity::addToLog('Master Admin Library Updated.');
+        \MasterLogActivity::addToLog('Master Admin Library is Updated.');
 
         return redirect()->route('library.index')->with('success', 'Library updated successfully.');
     }
@@ -303,7 +304,7 @@ class LibraryController extends Controller
         $library->where('lib_id', $lib_id)->delete();
 
 
-        \MasterLogActivity::addToLog('Master Admin Library Deleted.');
+        \MasterLogActivity::addToLog('Master Admin Library is Deleted.');
 
         return redirect()->route('library.index')->with('success', 'Library deleted successfully');
     }

@@ -63,7 +63,7 @@
                                             @php
                                                 $file = $files[0];
                                                 $imageUrl =
-                                                    config('app.image_url') . $userFolder . '/library_image/' . $file;
+                                                    config('app.image_url').'/library_images/' . $file;
                                             @endphp
 
                                             @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
