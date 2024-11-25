@@ -20,7 +20,7 @@
                             </div><!-- /.col -->
                         </div><!-- /.row -->
                         <div class="row">
-                            <div class="col-lg-3 col-1024 col-md-6 px-10">
+                            <div class="col-lg-2 col-1024 col-md-6 px-10">
                                 <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
                                     <option value="" default disabled>Choose Agent</option>
                                     @foreach ($agency as $value)
@@ -55,7 +55,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex new-space-remove">
+                            <div class="col-lg-5 col-1024 col-md-6 px-10 d-flex new-space-remove">
                                 <div class="col-lg-4 input-group date">
                                     <x-flatpickr id="from-datepicker" placeholder="From" />
                                     <div class="input-group-append">
@@ -188,25 +188,32 @@
                                                             data-target="#delete-product-modal-{{ $value->tr_id }}"><i
                                                                 class="fas fa-trash delete_icon_grid"></i></a>
 
-                                                        <!-- Delete Modal -->
+
                                                         <div class="modal fade"
-                                                            id="delete-product-modal-{{ $value->tr_id }}" tabindex="-1"
-                                                            role="dialog">
-                                                            <div class="modal-dialog modal-sm modal-dialog-centered">
+                                                            id="delete-product-modal-{{ $value->tr_id }}"
+                                                            tabindex="-1" role="dialog"
+                                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm modal-dialog-centered"
+                                                                role="document">
                                                                 <div class="modal-content">
-                                                                    <form
+                                                                    <form id="delete-plan-form"
                                                                         action="{{ route('trip.destroy', $value->tr_id) }}"
                                                                         method="POST">
                                                                         @csrf
                                                                         @method('DELETE')
-                                                                        <div class="modal-body text-center">
-                                                                            <p><b>Delete Trip</b></p>
+                                                                        <div class="modal-body pad-1 text-center">
+                                                                            <i
+                                                                                class="fas fa-solid fa-trash delete_icon"></i>
+                                                                            <p class="company_business_name px-10"><b>Delete
+                                                                                    Trip</b></p>
                                                                             <p>Are you sure you want to delete this trip?
-                                                                            </p>
-                                                                            <button type="button" class="btn btn-secondary"
+                                                                                    </p>
+                                                                            <button type="button" class="add_btn px-15"
                                                                                 data-dismiss="modal">Cancel</button>
+                                                                            @csrf
+                                                                            @method('DELETE')
                                                                             <button type="submit"
-                                                                                class="btn btn-danger">Delete</button>
+                                                                                class="delete_btn px-15">Delete</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -215,9 +222,6 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-
-
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -287,7 +291,6 @@
 <script src="https://cdn.jsdelivr.net/npm/moment"></script>
 <script>
     $(document).ready(function() {
-
 
         var defaultStartDate = "";
         var defaultEndDate = "";

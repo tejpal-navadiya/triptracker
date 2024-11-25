@@ -90,14 +90,16 @@
                 <ul id="update_msgList"></ul>
                 <div class="modal-body">
                     <div class="row pxy-15 px-10">
-                        <div class="col-md-6">
-                            <div class="form-group">
+                        <div class="col-md-12 mb-3">
+                            <div class="custom-control custom-radio custom-control-inline">
                                 <input type="hidden" name="trtm_type_hidden" class="trtm_type_hidden"
                                     id="trtm_type_hidden" value="" />
-                                <input type="radio" class="trtm_type" id="trtm_type_family" name="trtm_type"
-                                    value="1"><label for="trtm_type_family">Family Member</label>
-                                <input type="radio" class="trtm_type" id="trtm_type_trip" name="trtm_type"
-                                    value="2"><label for="trtm_type_trip">Trip Member</label>
+                                <input type="radio" class="trtm_type custom-control-input" id="trtm_type_family" name="trtm_type"
+                                    value="1"><label for="trtm_type_family" class="custom-control-label">Family Member</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="trtm_type custom-control-input" id="trtm_type_trip" name="trtm_type"
+                                    value="2"><label for="trtm_type_trip" class="custom-control-label">Trip Member</label>
                                 @error('role_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -440,7 +442,7 @@
         locale: 'en',
         altInput: true,
         dateFormat: "m/d/Y",
-        altFormat: "m/d/Y",
+        altFormat: "d/m/Y",
         allowInput: true,
     });
 

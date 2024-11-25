@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Masteradmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\LeadTravelerEmail;
 
 
 class LibraryController extends Controller
@@ -316,10 +319,12 @@ class LibraryController extends Controller
 
         $user = Auth::guard('masteradmins')->user();
         $libraries = Library::all();
+        $lead_traveler = Trip::where('id', $user->users_id)->get();
+
         $library = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id, 'lib_id' => $id])->firstOrFail();
 
         // dd($trip);
-        return view('masteradmin.library.details', compact('library', 'libraries'));
+        return view('masteradmin.library.details', compact('library', 'libraries','lead_traveler'));
     }
 
     public function view()
@@ -341,6 +346,71 @@ class LibraryController extends Controller
 
 
         return view('masteradmin.library.view', compact('libraries'));
+    }
+
+    public function sendEmail(Request $request,$id)
+    {
+       // dd($id);
+        //dd($request->all());
+        // Validate the request to ensure a traveler is selected
+        $request->validate([
+            'traveler_id' => 'required', // Validate ID exists in the table
+        ]);
+
+        // Retrieve the selected lead traveler by ID
+        $leadTraveler = Trip::where('tr_id', $request->traveler_id)->firstOrFail();
+        // dd($leadTraveler);
+        if (!$leadTraveler || !$leadTraveler->tr_email) {
+            return back()->withErrors(['error' => 'Invalid traveler selected or email is missing.']);
+        }
+        
+        $library = Library::with('libcategory')->where('lib_id', $id)->firstOrFail();
+        // dd($library);
+        if (!$library) {
+            return back()->withErrors(['error' => 'Invalid traveler selected or email is missing.']);
+        }
+
+         // Prepare attachments
+         $attachments = [];
+         if ($library->lib_image) {
+             $files = json_decode($library->lib_image, true);
+             if (is_array($files)) {
+                 foreach ($files as $file) {
+                     $userFolder = session('userFolder');
+ 
+                     $filePath = storage_path('app/'.$userFolder.'/library_image/' . $file);
+                     
+                     if (file_exists($filePath)) {
+                         $attachments[] = $filePath; // Add the file path to the attachments array
+                     }
+                 }
+             }
+         }
+
+         
+        // Prepare email data
+        $emailData = [
+            'subject' => $library->lib_name, 
+            'travelerName' => $leadTraveler->tr_traveler_name,
+            'category' => $library->libcategory->lib_cat_name ?? '',
+            'basicinformation' => $library->lib_basic_information ?? '',
+            'attachment' =>  $attachments ?? '',
+        ];
+        
+
+       
+        // dd($attachments);
+
+        // Send the email
+        try {
+            Mail::to($leadTraveler->tr_email)->send(new LeadTravelerEmail($emailData));
+            session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
+        } catch (\Exception $e) {
+            session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
+        }
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'Email sent successfully to ' . $leadTraveler->tr_traveler_name);
     }
 
 }

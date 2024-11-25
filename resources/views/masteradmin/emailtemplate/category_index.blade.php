@@ -1,6 +1,4 @@
 @extends('masteradmin.layouts.app')
-
-
 <title>Email Category Details | Trip Tracker</title>
 @if (isset($access['book_trip']) && $access['book_trip'])
     @section('content')

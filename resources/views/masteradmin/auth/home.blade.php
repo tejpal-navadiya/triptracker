@@ -5,7 +5,7 @@
     <img class="animation__shake" src="{{ url('public/dist/img/logo.png') }}" alt="Trip Tracker Logo">
 </div>
 <!-- Content Wrapper. Contains page content -->
- 
+
 <style>.container {
     margin-top: 20px;
 }
@@ -73,69 +73,69 @@
 </style>
 <div class="content-wrapper">
 
-@if(session('alert-configured-data'))
-        <div class="alert alert-info" id="alertConfigured">
-            {{ session('alert-configured-data') }}
-        </div>
+    @if(session('alert-configured-data'))
+    <div class="alert alert-info" id="alertConfigured">
+        {{ session('alert-configured-data') }}
+    </div>
     @endif
     <!-- Main content -->
 
     <section class="content">
         <div class="container-fluid">
             <!-- @if (session('alert-configured-data')) -->
-                <div class="modal fade" id="configured-modal" tabindex="-1" role="dialog"
-                    aria-labelledby="configuredModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body text-center">
-                                <i class="fas fa-trash fa-2x text-danger mb-3"></i>
-                                <p><strong>
-                                        <div class="alert alert-info">
-                                            {{ session('alert-configured-data') }}
-                                        </div>
-                                    </strong></p>
+            <div class="modal fade" id="configured-modal" tabindex="-1" role="dialog"
+            aria-labelledby="configuredModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <i class="fas fa-trash fa-2x text-danger mb-3"></i>
+                        <p><strong>
+                            <div class="alert alert-info">
+                                {{ session('alert-configured-data') }}
                             </div>
-                        </div>
+                        </strong></p>
                     </div>
                 </div>
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script>
-                    $(document).ready(function () {
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
                         // $('#configured-modal').modal('show');
 
                         // setTimeout(function () {
                         //     $('#configured-modal').modal('hide');
                         // }, 5000);
-                          setTimeout(function () {
+                        setTimeout(function () {
                             $('#alertConfigured').hide();
                         }, 5000);
                     });
                 </script>
-            <!-- @endif -->
-            <!-- Small boxes (Stat box) -->
-          
-            <!-- /.row -->
-            <!-- Main row -->
-            
-            <!-- /.row (main row) -->
-        </div><!-- /.container-fluid -->
-    </section>
+                <!-- @endif -->
+                <!-- Small boxes (Stat box) -->
 
-    <!-- add by dx -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="dadh_bord_heding">Analytics</div>
-        <!-- Small boxes (Stat box) -->
-        <div class="row px-20">
-         
-          <!-- ./col -->
-          <div class="col-lg-2 col-md-6 col-mdash-box">
-            <!-- small box -->
-            <div class="small-box bg-customers">
-              <img src="{{url('public/dist/img/customer.png')}}" alt="customer_img" class="small_box_icon">
-              <p class="total_text">Total Trips</p>
-              <h3 class="customer_total">{{$totalTrips}}</h3>
-            </div>
+                <!-- /.row -->
+                <!-- Main row -->
+
+                <!-- /.row (main row) -->
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- add by dx -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="dadh_bord_heding">Analytics</div>
+            <!-- Small boxes (Stat box) -->
+            <div class="row px-20">
+
+              <!-- ./col -->
+              <div class="col-lg-2 col-md-6 col-mdash-box">
+                <!-- small box -->
+                <div class="small-box bg-customers">
+                  <img src="{{url('public/dist/img/customer.png')}}" alt="customer_img" class="small_box_icon">
+                  <p class="total_text">Total Trips</p>
+                  <h3 class="customer_total">{{$totalTrips}}</h3>
+              </div>
           </div>
           <!-- ./col --> 
           <div class="col-lg-2 col-md-6 col-mdash-box">
@@ -144,48 +144,48 @@
               <img src="{{url('public/dist/img/vendor.png')}}" alt="vendor" class="small_box_icon">
               <p class="total_text">Total Trip Accept</p>
               <h3 class="customer_total vendor_total">{{$acceptTrips}}</h3>
-            </div>
           </div>
-          <!-- ./col -->
-          <div class="col-lg-2 col-md-6 col-mdash-box">
-            <!-- small box -->
-            <div class="small-box bg-invoices">
-              <img src="{{url('public/dist/img/invoice.png')}}" alt="invoice" class="small_box_icon">
-              <p class="total_text">In Progress Trips</p>
-              <h3 class="customer_total invoice_total">{{$inProgressTrips}}</h3>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-2 col-md-6 col-mdash-box">
-            <!-- small box -->
-            <div class="small-box bg-bills">
-              <img src="{{url('public/dist/img/bill.png')}}" alt="bill" class="small_box_icon">
-              <p class="total_text">Completed Trips</p>
-              <h3 class="customer_total bill_total">{{$totalcompletedTrips}}</h3>
-            </div>
-          </div>
-          <!-- ./col -->
-              <!-- ./col -->
-          @if ($user->role_id == 0)
-          <div class="col-lg-2 col-md-6 col-mdash-box">
-            <!-- small box -->
-            <div class="small-box bg-customers">
-              <img src="{{url('public/dist/img/customer.png')}}" alt="customer_img" class="small_box_icon">
-              <p class="total_text">Total Users</p>
-              <h3 class="customer_total">{{$totalUserCount}}</h3>
-            </div>
-          </div>
-          @endif
-          <!-- ./col --> 
-          <div class="col-lg-2 col-md-6 col-mdash-box">
-            <!-- small box -->
-            <div class="small-box bg-vendors">
-              <img src="{{url('public/dist/img/vendor.png')}}" alt="vendor" class="small_box_icon">
-              <p class="total_text">Total Travelers</p>
-              <h3 class="customer_total vendor_total">{{$totalTrips}}</h3>
-            </div>
-          </div>
-          <!-- ./col -->
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-2 col-md-6 col-mdash-box">
+        <!-- small box -->
+        <div class="small-box bg-invoices">
+          <img src="{{url('public/dist/img/invoice.png')}}" alt="invoice" class="small_box_icon">
+          <p class="total_text">In Progress Trips</p>
+          <h3 class="customer_total invoice_total">{{$inProgressTrips}}</h3>
+      </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-2 col-md-6 col-mdash-box">
+    <!-- small box -->
+    <div class="small-box bg-bills">
+      <img src="{{url('public/dist/img/bill.png')}}" alt="bill" class="small_box_icon">
+      <p class="total_text">Completed Trips</p>
+      <h3 class="customer_total bill_total">{{$totalcompletedTrips}}</h3>
+  </div>
+</div>
+<!-- ./col -->
+<!-- ./col -->
+@if ($user->role_id == 0)
+<div class="col-lg-2 col-md-6 col-mdash-box">
+    <!-- small box -->
+    <div class="small-box bg-customers">
+      <img src="{{url('public/dist/img/customer.png')}}" alt="customer_img" class="small_box_icon">
+      <p class="total_text">Total Users</p>
+      <h3 class="customer_total">{{$totalUserCount}}</h3>
+  </div>
+</div>
+@endif
+<!-- ./col --> 
+<div class="col-lg-2 col-md-6 col-mdash-box">
+    <!-- small box -->
+    <div class="small-box bg-vendors">
+      <img src="{{url('public/dist/img/vendor.png')}}" alt="vendor" class="small_box_icon">
+      <p class="total_text">Total Travelers</p>
+      <h3 class="customer_total vendor_total">{{$totalTrips}}</h3>
+  </div>
+</div>
+<!-- ./col -->
           <!-- <div class="col-lg-2 col-md-6 col-mdash-box">
             <!-- small box --
             <div class="small-box bg-invoices">
@@ -193,25 +193,47 @@
               <p class="total_text">Total Suppliers</p>
               <h3 class="customer_total invoice_total">0</h3>
             </div>
-          </div> -->
-          <!-- ./col -->
-        </div>
+        </div> -->
+        <!-- ./col -->
+    </div>
 
-       
-        <!-- /.row -->
-        <!-- Main row -->
-       
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
-    </section>
-    <div class="card">
+
+    <!-- /.row -->
+    <!-- Main row -->
+
+    
+            <div class="row">
+                <div class="col-md-6">
+                <div class="card">
+        <div class="card-header">            
+                    <h6>Trip Completed ({{$totalcompletedTrips}})</h6>
+                    <canvas id="monthlyTripChart"></canvas>            
+                </div>
+            </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+        <div class="card-header">
+                    <div>
+                        <h6>Trip Request vs Booked</h6>
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        </div>
+        <div class="row">
+                <div class="col-md-12">
+        <div class="card">
     <div class="card-header">
         <div class="row justify-content-between align-items-center">
             <div class="col-auto">
                 <h3 class="card-title">View All Reminder Task</h3>
             </div>
         </div>
-    <!-- /.card-header -->
+        <!-- /.card-header -->
         <div class="card-body">
             <div class="col-md-12 table-responsive pad_table">
                 <table id="exampledashboard" class="table table-hover text-nowrap">
@@ -229,7 +251,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                       
+
                     </tbody>
                 </table>
             </div>
@@ -237,18 +259,25 @@
         </div>
     </div>
 </div>
-    <!-- end by dx -->
-    <!-- /.content -->
+</div>
+
+
+
+
+
+    </div>
+
+
+</section>
+
+
 </div>
 
 
 <!-- barchart -->
 
 
-<div class="container" style="max-width: 600px; margin: auto;">
-    <h6>Trip Completed ({{$totalcompletedTrips}})</h6>
-    <canvas id="monthlyTripChart" style="max-width: 200%; height: 600;"></canvas>
-</div>
+
 
 
 <!-- end barchart -->
@@ -265,23 +294,23 @@
 <!-- ./wrapper -->
 <p>{{ session('showModal') }}</p>
 @if (session()->has('showModal'))
-    <!-- Bootstrap Modal -->
-    <div class="modal fade show" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-        aria-hidden="true" style="display: block;">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Notice</h5>
-                </div>
-                <div class="modal-body">
-                    <p>{{ session('showModal') }}</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-primary">Purchase Plan</a>
-                </div>
-            </div>
+<!-- Bootstrap Modal -->
+<div class="modal fade show" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+aria-hidden="true" style="display: block;">
+<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Notice</h5>
+        </div>
+        <div class="modal-body">
+            <p>{{ session('showModal') }}</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-primary">Purchase Plan</a>
         </div>
     </div>
+</div>
+</div>
 
 @endif
 @endsection
@@ -298,62 +327,62 @@
         });
 
         //datatable list
-        var table = $('#exampledashboard').DataTable();
-        table.destroy();
+        // var table = $('#exampledashboard').DataTable();
+        // table.destroy();
 
-        //list
-        table = $('#exampledashboard').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('masteradmin.dashboardtask.incomplete') }}",
-                type: 'GET',
-                data: function(d) {
-                    d.trip_agent = $('#trip_agent').val(); 
-                    d.trip_traveler = $('#trip_traveler').val(); 
-                    d._token = '{{ csrf_token() }}';
-                }
-            },
-            columns: [{
-                    data: 'trip_name',
-                    name: 'trip_name'
-                },
-                {
-                    data: 'agent_name',
-                    name: 'agent_name'
-                },
-                {
-                    data: 'traveler_name',
-                    name: 'traveler_name'
-                },
-                {
-                    data: 'trvt_name',
-                    name: 'trvt_name'
-                },
-                {
-                    data: 'task_cat_name',
-                    name: 'task_cat_name'
-                },
-                {
-                    data: 'trvt_due_date',
-                    name: 'trvt_due_date'
-                },
-                {
-                    data: 'trvt_priority',
-                    name: 'trvt_priority'
-                },
-                {
-                    data: 'task_status_name',
-                    name: 'task_status_name'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
+        // //list
+        // table = $('#exampledashboard').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: {
+        //         url: "{{ route('masteradmin.dashboardtask.incomplete') }}",
+        //         type: 'GET',
+        //         data: function(d) {
+        //             d.trip_agent = $('#trip_agent').val(); 
+        //             d.trip_traveler = $('#trip_traveler').val(); 
+        //             d._token = '{{ csrf_token() }}';
+        //         }
+        //     },
+        //     columns: [{
+        //             data: 'trip_name',
+        //             name: 'trip_name'
+        //         },
+        //         {
+        //             data: 'agent_name',
+        //             name: 'agent_name'
+        //         },
+        //         {
+        //             data: 'traveler_name',
+        //             name: 'traveler_name'
+        //         },
+        //         {
+        //             data: 'trvt_name',
+        //             name: 'trvt_name'
+        //         },
+        //         {
+        //             data: 'task_cat_name',
+        //             name: 'task_cat_name'
+        //         },
+        //         {
+        //             data: 'trvt_due_date',
+        //             name: 'trvt_due_date'
+        //         },
+        //         {
+        //             data: 'trvt_priority',
+        //             name: 'trvt_priority'
+        //         },
+        //         {
+        //             data: 'task_status_name',
+        //             name: 'task_status_name'
+        //         },
+        //         {
+        //             data: 'action',
+        //             name: 'action',
+        //             orderable: false,
+        //             searchable: false
+        //         },
+        //     ]
+        // });
 
 
     });
@@ -361,37 +390,37 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-    var fromdatepicker = flatpickr("#create_date", {
-      locale: 'en',
-      altInput: true,
-      dateFormat: "m/d/Y",
-      altFormat: "m/d/Y",
-      allowInput: true,
+        var fromdatepicker = flatpickr("#create_date", {
+          locale: 'en',
+          altInput: true,
+          dateFormat: "m/d/Y",
+          altFormat: "m/d/Y",
+          allowInput: true,
+      });
+
+        var todatepicker = flatpickr("#due_date", {
+          locale: 'en',
+          altInput: true,
+          dateFormat: "m/d/Y",
+          altFormat: "m/d/Y",
+          allowInput: true,
+      });
+
+        document.getElementById('create-date-icon').addEventListener('click', function () {
+          fromdatepicker.open();
+      });
+
+        document.getElementById('due-date-icon').addEventListener('click', function () {
+          todatepicker.open();
+      });
+
+
     });
 
-    var todatepicker = flatpickr("#due_date", {
-      locale: 'en',
-      altInput: true,
-      dateFormat: "m/d/Y",
-      altFormat: "m/d/Y",
-      allowInput: true,
-    });
 
-    document.getElementById('create-date-icon').addEventListener('click', function () {
-      fromdatepicker.open();
-    });
-
-    document.getElementById('due-date-icon').addEventListener('click', function () {
-      todatepicker.open();
-    });
-
-
-    });
-
-
-  </script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-  <script>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
     $(document).ready(function() {
         // Monthly data passed from the backend
         const monthlyData = @json($monthlyData);
@@ -442,3 +471,42 @@
 
     
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Data from controller
+        const requestPercentage = {{ $requestPercentage }};
+        const bookedPercentage = {{ $bookedPercentage }};
+
+        // Create chart
+        const ctx = document.getElementById('doughnutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Requested Trips', 'Accepted Trips'],
+                datasets: [{
+                    data: [requestPercentage, bookedPercentage],
+                    backgroundColor: ['#FF6384', '#36A2EB'], // Colors
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: ${value}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+

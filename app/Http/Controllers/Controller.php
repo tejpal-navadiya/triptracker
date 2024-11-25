@@ -276,6 +276,33 @@ class Controller extends BaseController
 
                 Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
 
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_personal_email')) {
+
+                        $table->string('users_personal_email')->nullable()->unique();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_business_phone')) {
+
+                        $table->string('users_business_phone')->nullable()->unique();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'users_personal_phone')) {
+
+                        $table->string('users_personal_phone')->nullable()->unique();
+    
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+
                     if (!Schema::hasColumn($storeId.'_tc_users_details', 'api_token')) {
 
                         $table->text('api_token')->nullable();
@@ -558,10 +585,17 @@ class Controller extends BaseController
                     $table->string('id')->nullable()->default(0);
                     $table->string('category_id')->nullable();
                     $table->string('traveller_id')->nullable();
+                    $table->text('email_subject')->nullable();
                     $table->text('email_text')->nullable();
                     $table->tinyInteger('emt_status')->default(0)->nullable();
                     $table->tinyInteger('status')->default(0)->nullable();
                     $table->timestamps();
+                });
+            }else{
+                Schema::table($storeId.'_tc_email_template_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_email_template_details', 'email_subject')) {
+                        $table->text('email_subject')->nullable();
+                    }
                 });
             }
 

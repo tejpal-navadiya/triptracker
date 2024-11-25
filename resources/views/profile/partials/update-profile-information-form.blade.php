@@ -52,7 +52,7 @@
                 <div>
                     <input type="file" name="image" accept="image/*" class="add_btn fileinput-button">
                     @if (Auth::user()->image)
-                        <a href="{{ url(env('IMAGE_URL').'superadmin/profile_image/' . Auth::user()->image) }} " target="_blank"><div title="{{ Auth::user()->image }}" class="ptm pbm">{{ Auth::user()->image }}</div></a>
+                        <a href="{{ url(env('IMAGE_PATH').'/superadmin/profile_image/' . Auth::user()->image) }} " target="_blank"><div title="{{ Auth::user()->image }}" class="ptm pbm">{{ Auth::user()->image }}</div></a>
                     @endif
                     <!-- <button class="add_btn fileinput-button"><i class="fas fa-upload mr-2"></i>Choose file here</button> -->
                     <span>Please upload a valid image file. Size of image should not be more than 2MB.</span>

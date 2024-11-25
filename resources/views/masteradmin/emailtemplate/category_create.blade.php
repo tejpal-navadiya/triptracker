@@ -10,10 +10,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">{{ __('Add Category') }}</h1>
+                            <h1 class="m-0">{{ __('Add Email Category') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">{{ __('Category') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Add Email Category') }}</li>
                             </ol>
                         </div><!-- /.col -->
 
@@ -28,7 +28,7 @@
                     <!-- card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Add Category</h3>
+                            <h3 class="card-title">Add Email Category</h3>
                         </div>
                         <!-- /.card-header -->
                         <form id="emailForm" method="POST" action="{{ route('email_category.store') }}"

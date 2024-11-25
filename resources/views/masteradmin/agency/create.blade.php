@@ -304,7 +304,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <x-input-label for="users_zip" :value="__('zip')"> </x-input-label>
+                                        <x-input-label for="users_zip" :value="__('Zip')"> </x-input-label>
                                         <x-text-input type="number" class="form-control" id="users_zip"
                                             placeholder="Enter Zip" name="users_zip" autofocus autocomplete="users_zip"
                                             value="{{ old('users_zip') }}" />

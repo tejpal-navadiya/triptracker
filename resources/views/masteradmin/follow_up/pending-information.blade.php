@@ -29,6 +29,30 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach ($trip as $value)
+                                <tr>
+                                    <td>{{ $value->tr_name ?? '' }}</td>
+                                    <td>{{ $value->users_first_name ?? ''}} {{$value->users_last_name ?? '' }}</td>
+                                    <td>{{ $value->tr_traveler_name ?? ''}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}</td>
+                                    <td>
+                                        <?php 
+                                        if (isset($value->trip_status) && $value->trip_status->tr_status_name == 'In Process') {
+                                            $buttonColor = '#F6A96D';
+                                        } else {
+                                            $buttonColor = '';
+                                        }
+
+                                        // Check if trip_status is not null and then access tr_status_name
+                                        $statusName = $value->trip_status->tr_status_name ?? ''; 
+
+                                        echo '<button type="button" class="btn text-white" style="background-color: ' . $buttonColor . ';">' . $statusName . '</button>';
+                                        ?>
+                                    </td>
+
+                                </tr>
+                            @endforeach
+
                               
                             </tbody>
                         </table>
@@ -53,37 +77,43 @@
         var allTable = $('#pendingDataTable').DataTable();
         allTable.destroy();
 
+        function reloadpending()
+        {
+            var allTable = $('#pendingDataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('masteradmin.trip.follow_up_trip') }}",
+                    type: 'GET',
+                    data: function(d) {
+                        d.trip_agent = $('#trip_agent').val(); 
+                        d.trip_traveler = $('#trip_traveler').val(); 
+                        d._token = '{{ csrf_token() }}';
+                    }
+                },
+                columns: [
+                    { data: 'tr_name', name: 'tr_name' },
+                    { data: 'agent_name', name: 'agent_name' },
+                    { data: 'tr_traveler_name', name: 'tr_traveler_name' },
+                    { data: 'tr_start_date', name: 'tr_start_date' },
+                    { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false }, // Button column
+
+                ]
+            });
+
+        }
         //list
-        var allTable = $('#pendingDataTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: "{{ route('masteradmin.trip.follow_up_trip') }}",
-            type: 'GET',
-            data: function(d) {
-                d.trip_agent = $('#trip_agent').val(); 
-                d.trip_traveler = $('#trip_traveler').val(); 
-                d._token = '{{ csrf_token() }}';
-            }
-        },
-        columns: [
-            { data: 'tr_name', name: 'tr_name' },
-            { data: 'agent_name', name: 'agent_name' },
-            { data: 'tr_traveler_name', name: 'tr_traveler_name' },
-            { data: 'tr_start_date', name: 'tr_start_date' },
-            { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false }, // Button column
-
-        ]
-    });
-
+    
         $('#trip_agent, #trip_traveler').on('change', function() {
-            allTable.draw();
+            // allTable.draw();
+            reloadpending();
         });
 
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
-            allTable.draw();
+            // allTable.draw();
+            reloadpending();
         });
 
     });

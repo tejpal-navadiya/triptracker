@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 @extends('masteradmin.layouts.app')
-<title>Personal Profile | Trip Tracker</title>
+<title>Email Templates | Trip Tracker</title>
 @section('content')
     @if (isset($access['edit_profile']) && $access['edit_profile'])
         <!-- Content Wrapper. Contains page content -->
@@ -11,10 +11,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-12">
-                            <h1 class="m-0">Personal Profile</h1>
+                            <h1 class="m-0">Email Templates</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Personal Profile</li>
+                                <li class="breadcrumb-item active">Email Templates</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->

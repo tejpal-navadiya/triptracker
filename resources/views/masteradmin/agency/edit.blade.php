@@ -402,7 +402,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <x-input-label for="tr_agent_id" :value="__('zip')"> </x-input-label>
+                                        <x-input-label for="tr_agent_id" :value="__('Zip')"> </x-input-label>
                                         <x-text-input type="number" class="form-control" id="tr_agent_id"
                                             placeholder="Enter Zip" name="users_zip" :value="old('age_user_id', $agency->users_zip ?? '')" autofocus
                                             autocomplete="tr_agent_id" />

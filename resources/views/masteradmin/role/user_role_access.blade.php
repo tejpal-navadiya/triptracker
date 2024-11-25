@@ -61,7 +61,9 @@
                                             </div>
                                         </div>
                                     @endforeach
-                                    <button type="submit" class="add_btn px-10 m-auto p-auto">Submit</button>
+                                    <div class="col-md-12">
+                                        <button type="submit" class="add_btn px-10 m-auto p-auto">Submit</button>
+                                    </div>
                                 </div>
                             </form>
 

@@ -55,6 +55,8 @@ return [
     */
     'image_url' => env('IMAGE_URL', 'http://localhost/laravel/triptracker/storage/app'), 
 
+    'image_path' => env('IMAGE_PATH', 'http://localhost/laravel/triptracker/storage/app'), 
+    
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', '/'),

@@ -152,12 +152,12 @@ class TripController extends Controller
             $agency_user = $agency_users->where('users_id', $user->users_id)->get();
         }
     
-
+        $tripstatus = TripStatus::all();
        
        
     //    dd($aency_user);
 
-        return view('masteradmin.trip.create', compact('triptype','agency_user'));
+        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -213,7 +213,7 @@ class TripController extends Controller
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
                 'tr_age' => 'nullable|string',
-                'tr_email' => 'required|email|regex:/^.+@.+\.com$/',
+                'tr_email' => 'nullable|email|regex:/^.+@.+\.com$/',
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
@@ -226,6 +226,7 @@ class TripController extends Controller
                 'tr_city' => 'nullable|string',
                 'tr_address' => 'nullable|string',
                 'tr_zip' => 'nullable|numeric|digits_between:1,6',
+                'status' => 'nullable|numeric',
                 'items.*.trtm_type' => 'nullable|string',
                 'items.*.trtm_first_name' => 'nullable|string',
                 'items.*.trtm_middle_name' => 'nullable|string',
@@ -284,7 +285,7 @@ class TripController extends Controller
         $traveler->tr_address = $validatedData['tr_address'] ?? null;
         $traveler->tr_zip = $validatedData['tr_zip'] ?? null;
 
-        $traveler->status = 1;
+        $traveler->status = $validatedData['status'] ?? '1';
         $traveler->tr_status = 1;
         $traveler->save();
 
@@ -352,22 +353,28 @@ class TripController extends Controller
             }
         }
 
-        $predefinedTasks = PredefineTask::select('pre_task_name')->where('pre_task_type' , '1')->get();
 
-      foreach ($predefinedTasks as $task) {
-        $tripTask = new TripTask();
-        $tableName = $tripTask->getTable();
-        $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
-  
-          TripTask::create([
-              'id'=>$user->users_id,
-              'trvt_id' =>$uniqueId1,
-              'trvt_agent_id' =>$traveler->tr_agent_id,
-              'tr_id' => $traveler->tr_id, 
-              'trvt_name' => $task->pre_task_name, 
-              'trvt_status' => 1
-          ]);
-      }
+      if (isset($validatedData['status'])) {
+
+        $predefinedTasks = PredefineTask::select('pre_task_name')
+            ->where('pre_task_type', $validatedData['status'])
+            ->get();
+    
+            foreach ($predefinedTasks as $task) {
+                $tripTask = new TripTask();
+                $tableName = $tripTask->getTable();
+                $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
+          
+                  TripTask::create([
+                      'id'=>$user->users_id,
+                      'trvt_id' =>$uniqueId1,
+                      'trvt_agent_id' =>$traveler->tr_agent_id,
+                      'tr_id' => $traveler->tr_id, 
+                      'trvt_name' => $task->pre_task_name, 
+                      'trvt_status' => 1
+                  ]);
+              }
+         }
     
       $predefinedTasksCategory = PredefineTaskCategory::select('task_cat_name')->get();
       foreach ($predefinedTasksCategory as $taskcate) {
@@ -491,7 +498,7 @@ class TripController extends Controller
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
                 'tr_age' => 'nullable|string',
-                'tr_email' => 'required|email|regex:/^.+@.+\.com$/',
+                'tr_email' => 'nullable|email|regex:/^.+@.+\.com$/',
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
@@ -982,7 +989,7 @@ class TripController extends Controller
         return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history'));
     }
 
-    public function booked_after(Request $request): View
+    public function booked_after(Request $request)
     {
         $user = Auth::guard('masteradmins')->user();
 
@@ -1038,7 +1045,7 @@ class TripController extends Controller
         }
 
         if ($trip_status1) {
-            $tripQuery->where($tripTable . '.tr_status', $trip_status1);
+            $tripQuery->where($tripTable . '.status', $trip_status1);
         }
 
         $trip = $tripQuery->get();
@@ -1051,6 +1058,144 @@ class TripController extends Controller
     //end do not touch
 
       return view('masteradmin.trip.booked-after',compact('trip', 'agency', 'trip_status','tripQuery'));
+    }
+
+    public function follow_up_details(Request $request)
+    {
+        $access = view()->shared('access');
+    
+        $user = Auth::guard('masteradmins')->user();
+    
+        $trip_agent = $request->input('trip_agent');   
+        $trip_traveler = $request->input('trip_traveler');   
+    
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+    
+        if($user->users_id && $user->role_id == 0) {
+            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
+        } else {
+            $agency = $masterUserDetails->where('users_id', $user->users_id)->get(); 
+        }
+    
+        $trip_status = TripStatus::get();
+    
+        $trips = new Trip();
+        $tripTable = $trips->getTable();
+
+        $traveller = Trip::where('id',$user->users_id)->get();
+        if($user->users_id && $user->role_id ==0 ){
+        $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.status', 9) // Pending trips
+            ->with('trip_status')
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }else{
+            $specificId = $user->users_id;
+            $tripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.status', 9) // Pending trips
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->with('trip_status')
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }
+        // Apply filters if available
+        if ($trip_agent) {
+            $tripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+        }
+    
+        if ($trip_traveler) {
+            $tripQuery->where($tripTable . '.tr_traveler_name', $trip_traveler);
+        }
+    
+        // For the initial page load, fetch the trips
+        $trip = $tripQuery->get();
+        // dd($trip);
+        // If the request is AJAX, return the filtered results
+
+        if($user->users_id && $user->role_id ==0 ){
+            $tripQuery = Trip::where('tr_status', 1)
+                ->from($tripTable)
+                ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                ->where($tripTable . '.id', $user->users_id)
+                ->where($tripTable . '.status', 7) // complete trips
+                ->with('trip_status')
+                ->select([
+                    $tripTable . '.*', 
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name' 
+                ]);
+            }else{
+                $specificId = $user->users_id;
+                $tripQuery = Trip::where('tr_status', 1)
+                ->from($tripTable)
+                ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                ->where($tripTable . '.id', $user->users_id)
+                ->where(function($query) use ($tripTable, $user, $specificId) {
+                    $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                        ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                })
+                ->where($tripTable . '.status', 7) // complete trips
+                ->with('trip_status')
+                ->select([
+                    $tripTable . '.*', 
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name' 
+                ]);
+    
+            }
+      
+            if($user->users_id && $user->role_id ==0 ){
+                $tripQueryCompleted = Trip::where('tr_status', 1)
+                    ->from($tripTable)
+                    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                    ->where($tripTable . '.id', $user->users_id)
+                    ->where($tripTable . '.status', 7) // complete trips
+                    ->with('trip_status')
+                    ->select([
+                        $tripTable . '.*', 
+                        $masterUserTable . '.users_first_name', 
+                        $masterUserTable . '.users_last_name' 
+                    ]);
+                }else{
+                    $specificId = $user->users_id;
+                    $tripQueryCompleted = Trip::where('tr_status', 1)
+                    ->from($tripTable)
+                    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                    ->where($tripTable . '.id', $user->users_id)
+                    ->where(function($query) use ($tripTable, $user, $specificId) {
+                        $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                            ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                    })
+                    ->where($tripTable . '.status', 7) // complete trips
+                    ->with('trip_status')
+                    ->select([
+                        $tripTable . '.*', 
+                        $masterUserTable . '.users_first_name', 
+                        $masterUserTable . '.users_last_name' 
+                    ]);
+        
+                }
+
+                $tripCompleted = $tripQueryCompleted->get();
+                // dd($tripCompleted);
+    
+        // Return the main page view
+        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller','tripCompleted'));
     }
 
     public function follow_up_after(Request $request)

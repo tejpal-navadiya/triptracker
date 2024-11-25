@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                                 <div class="row pxy-15 px-10">
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_dob" :value="__('Birthdate')" />
                                             <div class="input-group date" id="tr_dob" data-target-input="nearest">
@@ -93,8 +93,8 @@
                                             </div>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    </div> -->
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_age" :value="__('Age')" />
                                             <x-text-input type="text" class="form-control" id="tr_age"
@@ -102,7 +102,7 @@
                                                 autocomplete="users_cert_name" readonly />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_number" :value="__('Trip Number')" />
@@ -191,6 +191,20 @@
                                             <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
                                                 autofocus autocomplete="tr_desc"> {{ old('tr_desc') }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="status" :value="__('Status')" />
+                                            <select id="status" name="status" class="form-control select2">
+                                                <option disabled selected>Select Status</option>
+                                                @foreach ($tripstatus as $value)
+                                                    <option value="{{ $value->tr_status_id }}" >
+                                                        {{ $value->tr_status_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
                                         </div>
                                     </div>
 
@@ -356,7 +370,7 @@
                     rowCount++;
                     $('#dynamic_field').append(`
          <div class="item-row row" id="row${rowCount}">
-         <div class="col-md-3">
+         <div class="col-md-12">
          <div class="form-group">
          <div class="d-flex">
          <div class="custom-control custom-radio custom-control-inline">
@@ -537,24 +551,24 @@
                     $('#tr_num_people').val(rowCount);
                 });
 
-                var birthdateInput = document.querySelector('#birthdate_date');
-                var ageInput = document.querySelector('#tr_age');
+                // var birthdateInput = document.querySelector('#birthdate_date');
+                // var ageInput = document.querySelector('#tr_age');
 
-                birthdateInput.addEventListener('change', function() {
-                    var birthdate = new Date(birthdateInput.value);
-                    var today = new Date();
-                    var age = today.getFullYear() - birthdate.getFullYear();
-                    var m = today.getMonth() - birthdate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-                        age--;
-                    }
-                    if (age < 0) {
-                        ageInput.value = 0;
-                        // alert("Invalid birthdate. Please enter a valid birthdate.");
-                    } else {
-                        ageInput.value = age;
-                    }
-                });
+                // birthdateInput.addEventListener('change', function() {
+                //     var birthdate = new Date(birthdateInput.value);
+                //     var today = new Date();
+                //     var age = today.getFullYear() - birthdate.getFullYear();
+                //     var m = today.getMonth() - birthdate.getMonth();
+                //     if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                //         age--;
+                //     }
+                //     if (age < 0) {
+                //         ageInput.value = 0;
+                //         // alert("Invalid birthdate. Please enter a valid birthdate.");
+                //     } else {
+                //         ageInput.value = age;
+                //     }
+                // });
 
             });
         </script>

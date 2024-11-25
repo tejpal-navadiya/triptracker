@@ -220,7 +220,7 @@ Route::group(['prefix' => $busadminRoute], function () {
       
         Route::get('/booked_trips', [TripController::class, 'booked_after'])->name('masteradmin.trip.booked_after');
 
-
+        Route::get('/follow_up_trips_details', [TripController::class, 'follow_up_details'])->name('masteradmin.trip.follow_up_trip_details');
         Route::get('/follow_up_trips', [TripController::class, 'follow_up_after'])->name('masteradmin.trip.follow_up_trip');
         Route::get('/complete_follow_up_trips', [TripController::class, 'follow_up_after_complete'])->name('masteradmin.trip.follow_up_complete_trip');
 
@@ -277,6 +277,9 @@ Route::group(['prefix' => $busadminRoute], function () {
        //Library Search
        Route::get('/library/search', [LibraryController::class, 'search'])->name('masteradmin.library.search');
 
+       //lib email send to traveller 
+       Route::post('/send-library/{id}', [LibraryController::class, 'sendEmail'])->name('masteradmin.library.send.email');
+
 
 
 
@@ -298,7 +301,6 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::delete('/emailtemplate/{emailTemplate}', [EmailTemplateController::class, 'destroy'])->name('masteradmin.emailtemplate.destroy');
         Route::get('/emailtemplate/{emailTemplate}', [EmailTemplateController::class, 'edit'])->name('masteradmin.emailtemplate.edit');
         Route::patch('/emailtemplate/{emailTemplate}', [EmailTemplateController::class, 'update'])->name('masteradmin.emailtemplate.update');
-        Route::get('/emaildetail', [EmailTemplateController::class, 'EmailTemplate'])->name('masteradmin.emailtemplate.EmailTemplate');
         Route::post('/fetch-email-text', [EmailTemplateController::class, 'fetchEmailText'])->name('fetchEmailText');
         Route::post('/fetch-traveller-details', [EmailTemplateController::class, 'fetchTravellerDetails'])->name('fetchTravellerDetails');
         Route::post('/email-templates/store', [EmailTemplateController::class, 'storeEmailTemplate'])->name('email-template.store');
@@ -402,6 +404,11 @@ Route::group(['prefix' => $busadminRoute], function () {
         })->name('library.access');
 
 
+        //sent email template
+        Route::get('/emaildetail', [EmailTemplateController::class, 'EmailTemplate'])->name('masteradmin.emailtemplate.EmailTemplate');
+        Route::get('/add-emailtemplate', [EmailTemplateController::class, 'add_emailtemplate'])->name('masteradmin.emailtemplate.addemailtemplate');
+        Route::delete('/delete-emailtemplate/{id}', [EmailTemplateController::class, 'delete_emailtemplate'])->name('masteradmin.emailtemplate.destroyemailtemplate');
+        Route::get('/view-emailtemplate/{id}', [EmailTemplateController::class, 'view_emailtemplate'])->name('masteradmin.emailtemplate.viewemailtemplate');
 
     });
      

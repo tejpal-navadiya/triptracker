@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class EmailTemplateDetails extends Model
 {
     use HasFactory;
-    protected $fillable = ['id','emt_id', 'category_id','traveller_id','email_text','status','emt_status'];
+    protected $fillable = ['id','emt_id', 'category_id','traveller_id','email_subject','email_text','status','emt_status'];
 
     public function __construct(array $attributes = [])
     {
@@ -20,4 +20,14 @@ class EmailTemplateDetails extends Model
         $uniq_id = $user->user_id;
         $this->setTable($uniq_id . '_tc_email_template_details');
     }
+    public function email_category()
+    {
+        return $this->belongsTo(EmailCategory::class, 'category_id', 'email_cat_id');
+    }
+
+    public function lead_traveler()
+    {
+        return $this->belongsTo(Trip::class, 'traveller_id', 'tr_id');
+    }
+
 }

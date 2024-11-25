@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'masteradmin',
         ],
+        'masteradmins_users' => [
+            'driver' => 'session',
+            'provider' => 'masteradmin',
+        ],
        
     ],
 

@@ -16,8 +16,8 @@
 <div class="card-body2">
     <div id="CertificationList">
     </div>
-   <div class="text-center pb-3">
-    <a class="btn add_btn" href="javascript:void(0)" id="createNewCertification"><i class="fas fa-plus add_plus_icon"></i> Create Certification</a>
+   <div class="text-center py-3">
+    <a class="btn add_btn" href="javascript:void(0)" id="createNewCertification"><i class="fas fa-plus add_plus_icon"></i> Add Certification</a>
     </div>
     <div class="modal fade" id="ajaxModel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">

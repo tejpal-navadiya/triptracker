@@ -199,7 +199,6 @@ class TripTaskController extends Controller
 
             ], [
                 'trvt_category.required' => 'Category is required',
-                'trvt_priority.required' => 'Priority is required',
 
             ]);
 
@@ -373,9 +372,6 @@ class TripTaskController extends Controller
             // ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
             // ->where('trvt_agent_id', $user->users_id)
             // ->with(['trip', 'tripCategory', 'taskstatus']);
-      
-     
-
     
             if ($tripAgent) {
                 $taskQuery->where($tripTaskTable . '.trvt_agent_id', $tripAgent);
@@ -493,6 +489,8 @@ class TripTaskController extends Controller
         $trip = $tripQuery->get();
       //  dd($trip);
         // dd($request->ajax());
+      
+
         if ($request->ajax()) {
             try {
             $masterUserDetails = new MasterUserDetails();
@@ -502,17 +500,24 @@ class TripTaskController extends Controller
             $tripTable = (new Trip())->getTable(); 
             $tripTaskTable = (new TripTask())->getTable();  
             // dd($tripTaskTable);
+            $today = date('m/d/Y');
+           // dd($today);
+        //    \DB::enableQueryLog();
             if($user->users_id && $user->role_id ==0 ){
                 $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
-                ->where($tripTaskTable.'.status', 3)
+                ->where($tripTaskTable.'.status', 1)
+                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
                 ->with(['trip', 'tripCategory', 'taskstatus']);
                 
             }else{
                 $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where('trvt_agent_id', $user->users_id)
-                ->where($tripTaskTable.'.status', 3)
+                ->where($tripTaskTable.'.status', 1)
+                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
                 ->with(['trip', 'tripCategory', 'taskstatus']);
             }
            
@@ -521,7 +526,7 @@ class TripTaskController extends Controller
             // ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
             // ->where('trvt_agent_id', $user->users_id)
             // ->with(['trip', 'tripCategory', 'taskstatus']);
-
+      
      
 
     
@@ -537,6 +542,7 @@ class TripTaskController extends Controller
     
             $tasks = $taskQuery->get();
          
+            // dd(\DB::getQueryLog()); 
 
             return Datatables::of($tasks)
                 

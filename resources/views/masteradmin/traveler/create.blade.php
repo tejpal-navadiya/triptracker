@@ -81,8 +81,34 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
                                         </div>
                                     </div>
+                                    
                                 </div>
                                 <div class="row pxy-15 px-10">
+                                <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_dob" :value="__('Birthdate')" />
+                                            <div class="input-group date" id="tr_dob" data-target-input="nearest">
+
+                                                <x-flatpickr id="birthdate_date" name="tr_dob" placeholder="mm/dd/yyyy" />
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text" id="birthdate-hidden-icon">
+                                                        <i class="fa fa-calendar-alt"></i>
+                                                        <input type="hidden" id="birthdate_hidden" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_age" :value="__('Age')" />
+                                            <x-text-input type="text" class="form-control" id="tr_age"
+                                                placeholder="Enter Age" name="tr_age" autofocus
+                                                autocomplete="users_cert_name" readonly />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Start Date<span class="text-danger">*</span></label>
@@ -137,6 +163,7 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_email')" />
                                         </div>
                                     </div>
+                                   
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Phone Number')" />
@@ -375,6 +402,39 @@
                         // Reset the city dropdown if no state is selected
                         $('#lib_city').empty();
                         $('#lib_city').append('<option value="">Select a City...</option>');
+                    }
+                });
+            });
+        </script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var birthdatedate = flatpickr("#birthdate_date", {
+                    locale: 'en',
+                    altInput: true,
+                    dateFormat: "m/d/Y",
+                    altFormat: "m/d/Y",
+                    allowInput: true,
+                });
+
+                document.getElementById('birthdate-hidden-icon').addEventListener('click', function() {
+                    birthdatedate.open();
+                });
+                var birthdateInput = document.querySelector('#birthdate_date');
+                var ageInput = document.querySelector('#tr_age');
+
+                birthdateInput.addEventListener('change', function() {
+                    var birthdate = new Date(birthdateInput.value);
+                    var today = new Date();
+                    var age = today.getFullYear() - birthdate.getFullYear();
+                    var m = today.getMonth() - birthdate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                        age--;
+                    }
+                    if (age < 0) {
+                        ageInput.value = 0;
+                        // alert("Invalid birthdate. Please enter a valid birthdate.");
+                    } else {
+                        ageInput.value = age;
                     }
                 });
             });

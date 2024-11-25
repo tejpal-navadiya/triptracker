@@ -106,11 +106,11 @@
                     <div class="row pxy-15 px-10">
                     <div class="col-md-6">
                             <div class="form-group">
-                                <label for="tr_id">Trip Name<span class="text-danger">*</span></label>
+                                <label for="tr_id">Trip Name</label>
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="tr_id"
                                         name="tr_id">
-                                        <option default>Select Trip Name</option>
+                                        <option value="" default>Select Trip Name</option>
                                         @foreach ($trip as $tripvalue)
                                             <option value="{{ $tripvalue->tr_id }}">{{ $tripvalue->tr_name }}
                                             </option>
@@ -155,7 +155,7 @@
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="trvt_category1"
                                         name="trvt_category">
-                                        <option default>Select Category</option>
+                                        <option value="" default>Select Category</option>
                                         @foreach ($taskCategory as $taskcat)
                                             <option value="{{ $taskcat->task_cat_id }}">{{ $taskcat->task_cat_name }}
                                             </option>
@@ -172,7 +172,7 @@
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="trvt_priority1"
                                         name="trvt_priority">
-                                        <option default>Select Priority</option>
+                                        <option value="" default>Select Priority</option>
                                         <option value="Medium">Medium</option>
                                         <option value="High">High</option>
                                         <option value="Low">Low</option>

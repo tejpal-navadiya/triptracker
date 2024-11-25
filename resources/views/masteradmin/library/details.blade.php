@@ -31,6 +31,13 @@
             <!-- Main content -->
             <section class="content px-10">
                 <div class="container-fluid">
+                @if(Session::has('link-success'))
+                <p class="text-success" > {{ Session::get('link-success') }}</p>
+                @endif
+                @if(Session::has('link-error'))
+                <p class="text-danger" > {{ Session::get('link-error') }}</p>
+                @endif
+                
                     @if (Session::has('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ Session::get('success') }}
@@ -102,48 +109,6 @@
                             </div>
 
 
-
-
-                            {{-- <div class="col-md-12">
-                                <div class="card m-2 p-3">
-                                    <h4>Files</h4>
-
-                                    @if ($library->lib_image)
-                                        @php
-                                            // Decode the JSON to get an array of file paths
-                                            $files = json_decode($library->lib_image, true);
-                                        @endphp
-
-                                        @if (!empty($files) && is_array($files))
-                                            <div class="d-flex flex-wrap mt-3">
-                                                @foreach ($files as $file)
-                                                    <div class="mr-3 mb-3">
-                                                        @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
-                                                            <!-- Display Image -->
-                                                            <img src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
-                                                                alt="Uploaded Image" class="img-thumbnail"
-                                                                style="width: 200px; height: 200px;">
-                                                        @elseif (preg_match('/\.pdf$/i', $file))
-                                                            <!-- Display PDF as embedded viewer -->
-                                                            <div class="embed-responsive embed-responsive-4by3"
-                                                                style="width: 200px; height: 200px;">
-                                                                <embed
-                                                                    src="{{ config('app.image_url') }}{{ session('userFolder') }}/library_image/{{ $file }}"
-                                                                    type="application/pdf" class="embed-responsive-item">
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <p>No files available.</p>
-                                        @endif
-                                    @else
-                                        <p>No files available.</p>
-                                    @endif
-                                </div>
-                            </div> --}}
-
                             <div class="col-md-12">
                                 <div class="card m-2 p-3">
                                     <h4>Files</h4>
@@ -190,6 +155,39 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <!-- First Block -->
+                                <div class="col-md-4">
+                                    <div class="card m-2 p-3">
+                                        <h4>Email send to Lead Traveler</h4>
+                                        <form action="{{ route('masteradmin.library.send.email',$library->lib_id) }}" method="POST">
+                                        @csrf
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="traveler_id">Lead Traveler</label>
+                                                <select class="form-control" id="traveler_id" name="traveler_id" autofocus>
+                                                    <option value="" > Select Lead Traveler </option>
+                                                    @foreach ($lead_traveler as $value)
+                                                        <option value="{{ $value->tr_id }}"  >
+                                                            {{ $value->tr_traveler_name ?? '' }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <x-input-error class="mt-2" :messages="$errors->get('traveler_id')" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-20 px-10">
+                                            <div class="col-md-12 text-center">
+                                                <button id="submitButton" type="submit" class="add_btn px-10">Send</button>
+                                            </div>
+                                        </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <script>
                                 function printFile(url) {

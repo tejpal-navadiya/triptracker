@@ -87,6 +87,7 @@ class RegisterController extends Controller
         ]);
 
 
+
        
         $plan = Plan::where('sp_id', $request->sp_id)->firstOrFail();
 
@@ -193,7 +194,7 @@ class RegisterController extends Controller
             'role_id' => 0,
             'users_password' => Hash::make($request->user_password),
             'user_id' => strtolower($buss_unique_id),
-            'users_status' => '1',
+            'users_status' => 1,
             'users_id' => $users_id
         ]);
 

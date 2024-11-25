@@ -59,7 +59,7 @@ class EmailTemplateController extends Controller
    // dd($uniqueId);
 
 
-    $emailTemplate->id= $user->users_id ;
+    $emailTemplate->id= $dynamicId;
     $emailTemplate->email_tid= $uniqueId;
     $emailTemplate->category = $validatedData['category'];
     $emailTemplate->title = $validatedData['title'];
@@ -119,13 +119,22 @@ public function destroy($email_tid): RedirectResponse
 public function EmailTemplate(): View
 {
     $user = Auth::guard('masteradmins')->user();
+    $EmailTemplate = EmailTemplateDetails::with(['email_category','lead_traveler'])->where(['id' => $user->users_id])->get();
+    
+    // dd($EmailTemplate);
+    return view('masteradmin.emailtemplate.details', compact('EmailTemplate'));
+}
+
+public function add_emailtemplate(): View
+{
+    $user = Auth::guard('masteradmins')->user();
     $EmailTemplate = EmailTemplateDetails::where(['id' => $user->users_id])->get();
     $user = Auth::guard('masteradmins')->user();
     $categories = EmailCategory::get();
     $travellers = Trip::select('tr_traveler_name','tr_id')->distinct()->get();
     
     // dd($traveller);
-    return view('masteradmin.emailtemplate.details', compact('categories' ,'travellers'));
+    return view('masteradmin.emailtemplate.add_email', compact('categories' ,'travellers'));
 }
 
 public function fetchEmailText(Request $request)
@@ -169,7 +178,7 @@ public function fetchTravellerDetails(Request $request)
 
     // Fetch traveller by id
     $traveller = Trip::where('tr_id',$request->traveller_id)->firstOrFail();
-//    dd($traveller);
+  // dd($traveller);
     if (!$traveller) {
         // If traveller is not found, return an error response or handle it accordingly
         return response()->json(['error' => 'Traveller not found.'], 404);
@@ -178,6 +187,7 @@ public function fetchTravellerDetails(Request $request)
     // Now safely access traveller properties
     return response()->json([
         'tr_traveler_name' => $traveller->tr_traveler_name,
+        'tr_number' => $traveller->tr_number,
         // 'other_details' => $traveller->other_details, // Replace with actual fields
     ]);
 }
@@ -186,7 +196,7 @@ public function storeEmailTemplate(Request $request): RedirectResponse
 //    dd($request->all());
     // Get the authenticated user (master admin in this case)
     $user = Auth::guard('masteradmins')->user();
-    $dynamicId = $user->user_id; // Use the user ID to dynamically set the table name
+    $dynamicId = $user->users_id; // Use the user ID to dynamically set the table name
 
     // Validate the request data
     $validatedData = $request->validate([
@@ -202,8 +212,14 @@ public function storeEmailTemplate(Request $request): RedirectResponse
     $emailTemplate = new EmailTemplateDetails();
     $tableName = $emailTemplate->getTable();
     $uniqueId = $this->GenerateUniqueRandomString($tableName, 'emt_id', 6);
+    // EmailTemplate
+
+    $emailsubject = EmailTemplate::where('category', $request->category_id)->firstOrFail();
+    $subject = $emailsubject->title ?? '';
 
     // Set the attributes for the model
+    $emailTemplate->email_subject = $subject;
+    $emailTemplate->id = $dynamicId;
     $emailTemplate->emt_id = $uniqueId; // Generate a unique email template ID
     $emailTemplate->traveller_id = $validatedData['traveller_id'];
     $emailTemplate->category_id = $validatedData['category_id'];
@@ -218,9 +234,31 @@ public function storeEmailTemplate(Request $request): RedirectResponse
     \MasterLogActivity::addToLog('Email Template Created by Master Admin.');
 
     // Redirect to the index page with a success message
-    return redirect()->route('masteradmin.emailtemplate.index') // Adjust this to your actual route name
+    return redirect()->route('masteradmin.emailtemplate.EmailTemplate') // Adjust this to your actual route name
         ->with('success', 'Email template saved successfully!');
 }
+
+    public function delete_emailtemplate($id)
+    {
+        $emailTemplate = EmailTemplateDetails::where('emt_id', $id)->firstOrFail();
+        $emailTemplate->where('emt_id', $id)->delete();
+        \MasterLogActivity::addToLog('Email Template is Deleted.');
+        return redirect()->route('masteradmin.emailtemplate.EmailTemplate')->with('success', 'Email Template deleted successfully.');
+    }
+
+    public function view_emailtemplate($id)
+    {
+        $user = Auth::guard('masteradmins')->user();
+        $EmailTemplate = EmailTemplateDetails::with(['email_category','lead_traveler'])->where(['emt_id' => $id])->firstOrFail();
+        
+        // dd($traveller);
+        return view('masteradmin.emailtemplate.view_email', compact( 'EmailTemplate'));
+    }
+
+
+
+
+
 
 
 }

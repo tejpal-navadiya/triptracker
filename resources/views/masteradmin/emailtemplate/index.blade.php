@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Email Template | Trip Tracker</title>
-@if (isset($access['view_role']) && $access['view_role'])
+@if (isset($access['add_email_template']) && $access['add_email_template'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -12,7 +12,7 @@
                             <h1 class="m-0">{{ __('Email Template') }}</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">{{ __('User Role') }}</li>
+                                <li class="breadcrumb-item active">{{ __('Email Template') }}</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
@@ -106,8 +106,8 @@
                                                                         <div class="modal-body pad-1 text-center">
                                                                             <i
                                                                                 class="fas fa-solid fa-trash delete_icon"></i>
-                                                                            <p class="company_business_name px-10"><b>Delete
-                                                                                    Trip</b></p>
+                                                                            <p class="company_business_name px-10"><b>Delete 
+                                                                            Email Template</b></p>
                                                                             <p class="company_details_text">Are You Sure You
                                                                                 Want to Delete This Email Template?</p>
                                                                             <button type="button" class="add_btn px-15"

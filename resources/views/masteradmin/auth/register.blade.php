@@ -345,6 +345,7 @@
 
             <div class="col-md-6 col-xl-4">
                 <label for="user_agencies_name" class="form-label">Password</label>
+                <span class="text-danger">*</span>
                 <div class="input-group mb-2">
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -364,6 +365,7 @@
 
             <div class="col-md-6 col-xl-4">
                 <label for="user_agencies_name" class="form-label">Confirm Password</label>
+                <span class="text-danger">*</span>
                 <div class="input-group mb-3">
                     <div class="input-group-append">
                         <div class="input-group-text">
