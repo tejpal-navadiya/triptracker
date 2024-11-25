@@ -213,7 +213,7 @@ class TravelerDocumentController extends Controller
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
-        $document = TravelerDocument::where(['id' =>$user->users_id, 'tr_id' => $tr_id, 'trvd_id' => $trvd_id])->firstOrFail();
+        $document = TravelerDocument::where([ 'tr_id' => $tr_id, 'trvd_id' => $trvd_id])->firstOrFail();
 
         // dd($task);
         if($document)

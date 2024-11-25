@@ -43,14 +43,43 @@
                             Session::forget('success');
                         @endphp
                     @endif
-
-
-                    @foreach ($library as $value)
-                    @endforeach
-
-
-
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-auto">
+                            <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
+                        </div><!-- /.col -->
+                        <div class="col-auto">
+                            <p class="m-0 float-sm-right filter-text">Clear Filters<i
+                                    class="fas fa-regular fa-circle-xmark"></i></p>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
                     <div class="row">
+                        <div class="col-lg-2 col-1024 col-md-6 px-10">
+                            <select id="lib_category" class="form-control select2" style="width: 100%;" name="lib_category">
+                                <option value="" default >Choose Category</option>
+                                @foreach ($librarycategory as $value)
+                                    <option value="{{ $value->lib_cat_id }}">
+                                        {{ $value->lib_cat_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-1024 col-md-6 px-10">
+                            <div class="input-group">
+                                <input type="search" class="form-control" name="tag_name"  placeholder="Enter tag #" id="tag_name">
+                                <div class="input-group-append" id="tag_name_submit">
+                                    <button type="submit" class="btn btn-default" >
+                                    <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>   
+                        </div>   
+                        
+                    </div>
+
+                </div>
+                <div id="filter_data">
+                    <div class="row">
+                    @if(!empty($libraries) && $libraries->count())
                         @foreach ($libraries as $library)
                             <div class="col-lg-3">
                                 <div class="libary-box">
@@ -122,8 +151,20 @@
                                 </div>
                             </div>
                         @endforeach
+                        @else
+                        <div>
+                            <h5 colspan="10">There are no data.</h5>
+                        </div>
+                        @endif
                     </div>
 
+                    <!-- Pagination Links -->
+                    <div class="row">
+                        <div class="col-12">
+                            {{ $libraries->links() }} 
+                        </div>
+                    </div>
+                </div>
 
                 </div><!-- /.container-fluid -->
             </section>
@@ -132,46 +173,6 @@
         </div>
         <!-- /.content-wrapper -->
 
-
-        <div class="modal fade" id="ajaxModel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modelHeading"></h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="Form" name="Form" class="mt-6 space-y-6" enctype="multipart/form-data">
-
-                        <input type="hidden" name="role_id" id="role_id">
-                        <ul id="update_msgList"></ul>
-                        <div class="modal-body">
-                            <div class="row pxy-15 px-10">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="role_name">Role Name</label>
-                                        <input type="text" class="form-control @error('role_name') is-invalid @enderror"
-                                            id="role_name" name="role_name" placeholder="Enter Role Name"
-                                            value="{{ old('role_name') }}" />
-                                        @error('role_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
-                                <button type="submit" id="saveBtn" value="create"
-                                    class="add_btn">{{ __('Save Changes') }}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
@@ -179,5 +180,72 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+    $(document).ready(function() {
+
+        var defaultcategory = "";
+        var defaulttagname = "";
+       
+
+        $('#lib_category').val(defaultcategory);
+
+        $('#tag_name').val(defaulttagname);
+
+
+        $('.filter-text').on('click', function() {
+            clearFilters();
+        });
+
+
+        function fetchFilteredData() {
+            var formData = {
+                category: $('#lib_category').val(),
+                tag_name: $('#tag_name').val(),
+                _token: '{{ csrf_token() }}'
+            };
+            // alert('hii');
+
+            $.ajax({
+                url: '{{ route('library.index') }}',
+                type: 'GET',
+                data: formData,
+                success: function(response) {
+                    $('#filter_data').html(
+                        response); 
+
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    //alert('An error occurred while fetching data.');
+                }
+            });
+
+        }
+
+        // Attach change event handlers to filter inputs
+        $('#lib_category, #tag_name').on('change keyup', function(e) {
+
+            e.preventDefault();
+            //   alert('hii');
+            fetchFilteredData();
+        });
+
+
+        function clearFilters() {
+            // Clear filters
+            $('#lib_category').val('').trigger('change');
+            $('#tag_name').val('').trigger('change');
+
+          
+        }
+
+
+    });
+
+
+    
+</script>
     @endsection
 @endif

@@ -32,18 +32,16 @@ class LeadTravelerEmail extends Mailable
         ->view('masteradmin.emails.lead_traveler_email')
         ->with('data', $this->emailData);
 
-            // Attach files, make sure this is an array
-            if (isset($this->emailData['attachment']) && is_array($this->emailData['attachment'])) {
+        // Attach files
+        if (isset($this->emailData['attachment']) && is_array($this->emailData['attachment'])) {
             foreach ($this->emailData['attachment'] as $file) {
-            if (file_exists($file)) {
-                $email->attach($file, [
-                    'as' => basename($file),
-                    'mime' => mime_content_type($file),
-                ]);
-            }
-            }
-            }
+                if (file_exists($file)) {
+                    $email->attach($file);
 
-            return $email;
+                }
+            }
+        }
+
+        return $email;
     }
 }

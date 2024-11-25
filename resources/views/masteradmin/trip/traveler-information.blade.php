@@ -112,6 +112,8 @@
                                 <div class="d-flex">
                                     <input type="text" class="form-control" id="trtm_first_name"
                                         name="trtm_first_name" placeholder="Enter First Name">
+                                    <div class="invalid-feedback" id="trtm_first_name_error" >error msg</div>
+
                                 </div>
                             </div>
                         </div>
@@ -152,6 +154,8 @@
                                 <div class="d-flex">
                                     <input type="text" class="form-control" id="trtm_relationship"
                                         name="trtm_relationship" placeholder="Enter Relationship">
+                                    <div class="invalid-feedback" id="trtm_relationship_error" >error msg</div>
+
                                 </div>
                             </div>
                         </div>
@@ -167,6 +171,8 @@
                                         <option value="Female">Female</option>
                                         <option value="Other">Other</option>
                                     </select>
+                                    
+                                    <div class="invalid-feedback" id="trtm_gender_error" >error msg</div>
                                 </div>
                             </div>
                         </div>
@@ -277,48 +283,87 @@
             $('body').addClass('modal-open');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
+
+            // Clear error messages and invalid classes
+            $('#Form .form-control').removeClass('is-invalid');
+            $('#Form .invalid-feedback').hide();
         });
 
-        //insert/update data
+        // Insert/Update data with validation
         $('#saveBtn').click(function(e) {
 
-            e.preventDefault();
-            $(this).html('Sending..');
+        e.preventDefault();
+        
+         // Clear any previous error messages and invalid styles
+        $('#Form .form-control').removeClass('is-invalid');
+        $('#Form .invalid-feedback').hide();
 
-            var url = '';
-            var method = '';
-            var successMessage = '';
-            
-            if ($('#trtm_id').val() === '') {
-                // Add new data
-                url = "{{ route('masteradmin.family-member.store', $trip_id ?? '') }}";
-                method = "POST";
-                successMessage = 'Data has been successfully inserted!'; 
+        // Validation: Check required fields
+        var isValid = true;
 
-            } else {
-                var trtm_id = $('#trtm_id').val();
-                var trip_id = '{{ $trip_id ?? '' }}'; 
-                var url =
-                    "{{ route('masteradmin.family-member.update', [$trip_id ?? '', ':trtm_id']) }}";
-                url = url.replace(':trtm_id', trtm_id);
+        // Clear validation messages and invalid classes before checking new validation
+        $('#Form .form-control').removeClass('is-invalid');
+        $('#Form .invalid-feedback').hide();
 
-                method = "PATCH";
-                successMessage = 'Data has been successfully updated!';
-            }
+        // Custom validation logic
+        if ($('#trtm_first_name').val().trim() === '') {
+            $('#trtm_first_name').addClass('is-invalid');
+            $('#trtm_first_name_error').text('First Name is required').show();
+            isValid = false;
+        }
 
-            $.ajax({
-                data: $('#Form').serialize(),
-                url: url,
-                type: method,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                },
-                dataType: 'json',
-                success: function(data) {
-                    if (data && data.success) {
+        if ($('#trtm_relationship').val().trim() === '') {
+            $('#trtm_relationship').addClass('is-invalid');
+            $('#trtm_relationship_error').text('Relationship is required').show();
+            isValid = false;
+        }
+
+        if ($('#trtm_gender').val() === '') {
+            $('#trtm_gender').addClass('is-invalid');
+            $('#trtm_gender_error').text('Gender is required').show();
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return; // Don't proceed with the AJAX request if validation fails
+        }
+
+        // Proceed with the AJAX request if validation passes
+        $(this).html('Sending..');
+        var url = '';
+        var method = '';
+        var successMessage = '';
+
+        if ($('#trtm_id').val() === '') {
+            // Add new data
+            url = "{{ route('masteradmin.family-member.store', $trip_id ?? '') }}";
+            method = "POST";
+            successMessage = 'Data has been successfully inserted!';
+        } else {
+            var trtm_id = $('#trtm_id').val();
+            var trip_id = '{{ $trip_id ?? '' }}'; 
+            var url = "{{ route('masteradmin.family-member.update', [$trip_id ?? '', ':trtm_id']) }}";
+            url = url.replace(':trtm_id', trtm_id);
+
+            method = "PATCH";
+            successMessage = 'Data has been successfully updated!';
+        }
+
+        $.ajax({
+            data: $('#Form').serialize(),
+            url: url,
+            type: method,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.success) {
+                    // resetForm();
+                    $('#Form .form-control').removeClass('is-invalid');
+                    $('#Form .invalid-feedback').remove();
+
                     initializeDataTable();
-                    
-                    // tableTraveler.ajax.reload();
                     $('#success-message').text(successMessage);
                     $('#success-modal').modal('show');
                     $('#ajaxModel').modal('hide');
@@ -327,15 +372,16 @@
                     $('#ajaxModel').css('display', 'none');
                     $('#saveBtn').html('Save');
                     $('#Form')[0].reset();
-                    }
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                    $('#saveBtn').html('Save Changes');
                 }
-            });
+            },
+            error: function(data) {
+                console.log('Error:', data);
+                $('#saveBtn').html('Save Changes');
+            }
+        });
         });
 
+        
         //edit popup
         $('body').on('click', '.editMember', function() {
             var id = $(this).data('id');

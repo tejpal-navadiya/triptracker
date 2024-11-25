@@ -23,17 +23,37 @@ use App\Notifications\LeadTravelerEmail;
 
 class LibraryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
+        $category = $request->input('category'); 
+        $tag_name = $request->input('tag_name'); 
+
         $user = Auth::guard('masteradmins')->user();
+        
+        $librariesQuery = Library::with('libcategory', 'currency', 'state', 'city', 'country')
+            ->where(['lib_status' => 1, 'id' => $user->users_id]);
 
-        $libraries = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id])->get();
-        $library = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id])->get();
+        if ($category) {
+            $librariesQuery->where('lib_category', $category);
+        }
 
+        if ($tag_name) {
+            $librariesQuery->where('tag_name', 'LIKE', '%' . $tag_name . '%'); 
+        }
 
-        return view('masteradmin.library.index', compact('library','libraries'));
+        $libraries = $librariesQuery->paginate(10); 
+
+        if ($user->users_id && $user->role_id == 0) {
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->get();
+        } else {
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+        }
+        if ($request->ajax()) {
+             return view('masteradmin.library.filtered_results', compact('libraries', 'librarycategory'))->render();
+         }
+        
+        return view('masteradmin.library.index', compact('libraries', 'librarycategory'));
     }
-
     public function create(): View
     {
         $user = Auth::guard('masteradmins')->user();
@@ -370,22 +390,21 @@ class LibraryController extends Controller
             return back()->withErrors(['error' => 'Invalid traveler selected or email is missing.']);
         }
 
-         // Prepare attachments
-         $attachments = [];
-         if ($library->lib_image) {
-             $files = json_decode($library->lib_image, true);
-             if (is_array($files)) {
-                 foreach ($files as $file) {
-                     $userFolder = session('userFolder');
- 
-                     $filePath = storage_path('app/'.$userFolder.'/library_image/' . $file);
-                     
-                     if (file_exists($filePath)) {
-                         $attachments[] = $filePath; // Add the file path to the attachments array
-                     }
-                 }
-             }
-         }
+          // Prepare attachments
+        $attachments = [];
+        if ($library->lib_image) {
+            $files = json_decode($library->lib_image, true);
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    $userFolder = session('userFolder');
+                    $filePath = storage_path('app/' . $userFolder . '/library_image/' . $file);
+
+                    if (file_exists($filePath) && !in_array($filePath, $attachments)) {
+                        $attachments[] = $filePath; // Add only unique file paths
+                    }
+                }
+            }
+        }
 
          
         // Prepare email data
@@ -404,6 +423,7 @@ class LibraryController extends Controller
         // Send the email
         try {
             Mail::to($leadTraveler->tr_email)->send(new LeadTravelerEmail($emailData));
+            
             session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
         } catch (\Exception $e) {
             session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));

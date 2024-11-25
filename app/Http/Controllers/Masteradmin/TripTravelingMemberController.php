@@ -68,30 +68,32 @@ class TripTravelingMemberController extends Controller
 
     public function store(Request $request, $id)
     {
-        // dd($request->all());
+       // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id; 
 
-        $trip = Trip::where(['id' =>$user->users_id, 'tr_id' => $id])->firstOrFail();
+        $trip = Trip::where(['tr_id' => $id])->firstOrFail();
+        
         if($trip)
         {
             $validatedData = $request->validate([
-                'trtm_type' => 'required|string',
+                'trtm_type' => 'nullable|string',
                 'trtm_first_name' => 'required|string',
                 'trtm_middle_name' => 'nullable|string',
                 'trtm_last_name' => 'nullable|string',
                 'trtm_nick_name' => 'nullable|string',
-                'trtm_relationship' => 'nullable:items.*.trtm_type,1',
-                'trtm_gender' => 'nullable:items.*.trtm_type,2',
-                'trtm_dob' => 'required|string',
+                'trtm_relationship' => 'required:items.*.trtm_type,1',
+                'trtm_gender' => 'required:items.*.trtm_type,2',
+                'trtm_dob' => 'nullable|string',
                 'trtm_age' => 'nullable|string',
             ], [
-                'trtm_type.required' => 'Traveling member type is required',
+                // 'trtm_type.required' => 'Traveling member type is required',
                 'trtm_first_name.required' => 'First name is required',
-                'trtm_last_name.required' => 'Last name is required',
+                // 'trtm_last_name.required' => 'Last name is required',
                 'trtm_gender.required' => 'Gender is required',
-                'trtm_dob.required' => 'Birthdate is required',
-                'trtm_age.required' => 'Age is required',
+                'trtm_relationship.required' => 'Relationship is required',
+                // 'trtm_dob.required' => 'Birthdate is required',
+                // 'trtm_age.required' => 'Age is required',
             ]);
 
 
