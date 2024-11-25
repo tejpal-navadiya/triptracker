@@ -287,9 +287,11 @@
 
            //datatable list
            var allTableList = $('#example11').DataTable();
-        allTableList.destroy();
+         allTableList.destroy();
 
         //list
+        setTimeout(function(){
+
         allTableList = $('#example11').DataTable({
             processing: true,
             serverSide: true,
@@ -343,7 +345,7 @@
                 },
             ]
         });
-
+    },1000);  
 
 
         //create task

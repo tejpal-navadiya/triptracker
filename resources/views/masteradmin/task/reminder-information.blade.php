@@ -227,20 +227,23 @@
 
 <script>
     $(document).ready(function() {
-        $.ajaxSetup({
+        /*$.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-        });
+        });*/
 
         //datatable list
+        
         var table = $('#example15').DataTable();
         table.destroy();
 
         //list
-        table = $('#example15').DataTable({
+        setTimeout(function(){
+            table = $('#example15').DataTable({
             processing: true,
             serverSide: true,
+            async:true,
             ajax: {
                 url: "{{ route('masteradmin.task.incomplete') }}",
                 type: 'GET',
@@ -290,6 +293,8 @@
                 },
             ]
         });
+        },2500);
+        
 
 
         //insert/update data

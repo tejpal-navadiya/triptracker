@@ -229,19 +229,26 @@
 
 <script>
     $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        // $.ajaxSetup({
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     }
+        // });
 
     //     function initializeTaskDataTable() {
     // if ($.fn.dataTable.isDataTable('#allTaskDataTable')) {
     //     allTable.clear().draw();
     // }else{
         //datatable list
-        allTable = $('#allTaskDataTable').DataTable({
+        // var allTable;
+        //datatable list
+        var allTable = $('#allTaskDataTable').DataTable();
+        allTable.destroy();
+
+        setTimeout(function(){
+           allTable = $('#allTaskDataTable').DataTable({
             processing: true,
+            async:true,
             serverSide: true,
             ajax: {
                 url: "{{ route('masteradmin.task.all') }}",
@@ -293,10 +300,11 @@
                 },
             ]
         });
+    },1000);    
+        
 
         //}
    // }
-
         //create task
         $('#createNewTask').click(function() {
             $('#saveBtnTask').val("create-product");
@@ -311,7 +319,8 @@
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
             editModal.show();
         });
-
+        
+        
         //insert/update data
         $('#saveBtnTask').click(function(e) {
             e.preventDefault();
@@ -359,6 +368,8 @@
                     $('#ajaxModelTask').css('display', 'none');
                     $('#saveBtnTask').html('Save');
                     $('#FormTask')[0].reset();
+                    table.draw();
+
 
                 },
                 error: function(data) {
@@ -368,6 +379,7 @@
             });
         });
 
+        
         //edit popup open
         $(document).on('click', '.editTask', function(e) {
             e.preventDefault();
