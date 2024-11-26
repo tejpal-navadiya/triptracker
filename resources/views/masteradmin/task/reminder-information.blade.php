@@ -243,7 +243,6 @@
             table = $('#example15').DataTable({
             processing: true,
             serverSide: true,
-            async:true,
             ajax: {
                 url: "{{ route('masteradmin.task.incomplete') }}",
                 type: 'GET',

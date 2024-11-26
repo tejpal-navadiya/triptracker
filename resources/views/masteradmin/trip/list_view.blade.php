@@ -20,7 +20,7 @@
                                     <table id="listview4" class="table table-hover text-nowrap data-table">
                                         <thead>
                                             <tr>
-                                                <th>daxa Name</th>
+                                                <th>Trip Name</th>
                                                 <th>Agent Name</th>
                                                 <th>Traveler Name</th>
                                                 <th>Price</th>

@@ -52,6 +52,7 @@ class Trip extends Model
 
     protected $casts = [
         'id' => 'string',
+        'tr_start_date' => 'date',
     ];
 
 

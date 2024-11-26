@@ -541,7 +541,7 @@ class TripTaskController extends Controller
             }
     
             $tasks = $taskQuery->get();
-         
+            // dd($tasks);
             // dd(\DB::getQueryLog()); 
 
             return Datatables::of($tasks)
@@ -612,7 +612,7 @@ class TripTaskController extends Controller
             $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
         }
         $taskstatus = TaskStatus::all();
-    //    dd($task);
+      
         
     return view('masteradmin.task.index',compact('task','taskCategory', 'agency_user','trip'));
     }

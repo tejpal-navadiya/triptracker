@@ -15,7 +15,7 @@
 			@php
 			// Set the button color based on the status
 			$buttonColor = '#CCCCCC'; // Default color
-			switch ($status->tr_status_id) {
+			switch ($status['tr_status_id']) {
 			case 1: $buttonColor = '#DB9ACA'; break;
 			case 2: $buttonColor = '#F6A96D'; break;
 			case 3: $buttonColor = '#FBC11E'; break;
@@ -30,30 +30,30 @@
 		@endphp
 		<div class="list">
 			<div class="list-title" style="background-color: {{ $buttonColor }}; color: #fff;">
-				<a href="#status-{{ $status->tr_status_id }}" style="color: #fff; text-decoration: none;">
-					{{ $status->tr_status_name }}
+				<a href="#status-{{ $status['tr_status_id'] }}" style="color: #fff; text-decoration: none;">
+					{{ $status['tr_status_name'] }}
 				</a>
 			</div>
 			<div class="additional-info price">
 				<table class="table">
 					<tr>
-						<td>Total Price: <strong>${{ $totalsByStatus[$status->tr_status_id] ?? 0 }}</strong></td>
+						<td>Total Price: <strong>${{ $totalsByStatus[$status['tr_status_id']] ?? 0 }}</strong></td>
 					</tr>
 				</table>
 			</div>
 			<div 
 			class="list-content" 
-			id="status-{{ $status->tr_status_id }}" 
-			data-status="{{ $status->tr_status_id }}"
+			id="status-{{ $status['tr_status_id'] }}" 
+			data-status="{{ $status['tr_status_id'] }}"
 			>
-			@if (isset($tripsGrouped[$status->tr_status_id]) && $tripsGrouped[$status->tr_status_id]->isNotEmpty())
-			@foreach ($tripsGrouped[$status->tr_status_id] as $value)
+			@if (isset($tripsGrouped[$status['tr_status_id']]) && $tripsGrouped[$status['tr_status_id']]->isNotEmpty())
+			@foreach ($tripsGrouped[$status['tr_status_id']] as $value)
 			<div 
 			class="card" 
 			style="cursor: grab;" 
 			draggable="true" 
 			id="trip-{{ $value->tr_id }}" 
-			data-status="{{ $status->tr_status_id }}"
+			data-status="{{ $status['tr_status_id'] }}"
 			>
 			<div class="card-title">
 				<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

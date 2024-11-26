@@ -20,9 +20,9 @@
                             </div><!-- /.col -->
                         </div><!-- /.row -->
                         <div class="row">
-                            <div class="col-lg-3 col-1024 col-md-6 px-10">
+                            <div class="col-lg-2 col-1024 col-md-6 px-10">
                                 <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
-                                    <option value="" default >Choose Agent</option>
+                                    <option value="" default disabled>Choose Agent</option>
                                     @foreach ($agency as $value)
                                         <option value="{{ $value->users_id }}">
                                             {{ $value->users_first_name }} {{ $value->users_last_name }}
@@ -34,7 +34,7 @@
                             <div class="col-lg-3 col-1024 col-md-6 px-10">
                                 <select id="trip_traveler" class="form-control select2" style="width: 100%;"
                                     name="trip_traveler">
-                                    <option value="" default >Choose Traveler</option>
+                                    <option value="" default disabled>Choose Traveler</option>
                                     @foreach ($trip as $value)
                                         <option value="{{ $value->tr_traveler_name }}">
                                             {{ $value->tr_traveler_name }}
@@ -54,8 +54,9 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-lg-4 col-1024 col-md-6 px-10 d-flex">
-                                <div class="input-group date">
+
+                            <div class="col-lg-5 col-1024 col-md-6 px-10 d-flex new-space-remove">
+                                <div class="col-lg-4 input-group date">
                                     <x-flatpickr id="from-datepicker" placeholder="From" />
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="from-calendar-icon">
@@ -64,7 +65,7 @@
                                     </div>
                                 </div>
 
-                                <div class="input-group date">
+                                <div class="col-lg-4 input-group date">
                                     <x-flatpickr id="to-datepicker" placeholder="To" />
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="to-calendar-icon">
@@ -72,7 +73,18 @@
                                         </span>
                                     </div>
                                 </div>
+
+                                 <!-- Toggle Buttons for Views -->
+                                 <div class="col-lg-4 d-flex justify-content-end align-items-center">
+                                    <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin me-2">
+                                        <i class="fas fa-list"></i>
+                                    </a>
+                                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active ml-2">
+                                        <i class="fas fa-th-large"></i>
+                                    </a>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="row mb-2 align-items-center justify-content-between">
@@ -96,135 +108,137 @@
             </div>
             <!-- /.content-header -->
             <!-- Main content -->
-            <section class="content px-10">
-                <div class="container-fluid">
-                    @if (Session::has('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ Session::get('success') }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        @php
-                            Session::forget('success');
-                        @endphp
-                    @endif
+            <div id="viewContainer">
+                <section class="content px-10">
+                    <div class="container-fluid">
+                        @if (Session::has('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ Session::get('success') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            @php
+                                Session::forget('success');
+                            @endphp
+                        @endif
 
-                    <!-- Main row -->
-                    <div id="filter_data">
-                        <div class="card px-20">
-                            <div class="card-body1">
-                                <div class="col-md-12 table-responsive pad_table">
-                                    <table id="bookafterDataTable" class="table table-hover text-nowrap data-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Trip Name</th>
-                                                <th>Agent Name</th>
-                                                <th>Traveler Name</th>
-                                                <th>Price</th>
-                                                <th>Start to End Date</th>
-                                                <th class="sorting_disabled" data-orderable="false">Status</th>
-                                                <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($trip as $value)
+                        <!-- Main row -->
+                        <div id="filter_data">
+                            <div class="card px-20">
+                                <div class="card-body1">
+                                    <div class="col-md-12 table-responsive pad_table">
+                                        <table id="bookafterDataTable" class="table table-hover text-nowrap data-table">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $value->tr_name ?? '' }}</td>
-                                                    <td>{{ $value->users_first_name ?? '' }}
-                                                        {{ $value->users_last_name ?? '' }}</td>
-                                                    <td>{{ $value->tr_traveler_name ?? '' }}</td>
-                                                    <td>{{ $value->tr_value_trip ?? '' }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
-                                                        -
-                                                        {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
-                                                    </td>
+                                                    <th>Trip Name</th>
+                                                    <th>Agent Name</th>
+                                                    <th>Traveler Name</th>
+                                                    <th>Price</th>
+                                                    <th>Start to End Date</th>
+                                                    <th class="sorting_disabled" data-orderable="false">Status</th>
+                                                    <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($trip as $value)
+                                                    <tr>
+                                                        <td>{{ $value->tr_name ?? '' }}</td>
+                                                        <td>{{ $value->users_first_name ?? '' }}
+                                                            {{ $value->users_last_name ?? '' }}</td>
+                                                        <td>{{ $value->tr_traveler_name ?? '' }}</td>
+                                                        <td>{{ $value->tr_value_trip ?? '' }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
+                                                            -
+                                                            {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}
+                                                        </td>
+
+
+                                                        <td>
+                                                            @php
+                                                                $statusName = $value->trip_status->tr_status_name ?? '';
+
+                                                                $buttonColor = match (strtolower($statusName)) {
+                                                                    'trip request' => '#DB9ACA',
+                                                                    'trip proposal' => '#F6A96D',
+                                                                    'trip modification' => '#FBC11E',
+                                                                    'trip accepted' => '#28C76F',
+                                                                    'trip sold' => '#C5A070',
+                                                                    'trip lost' => '#F56B62',
+                                                                    'trip completed' => '#F56B62',
+                                                                    'trip pending' => '#F6A96D',
+                                                                    'in process' => '#F6A96D',
+                                                                };
+                                                            @endphp
+
+                                                            <button type="button" class="btn text-white"
+                                                                style="background-color: {{ $buttonColor }};">
+                                                                {{ $statusName }}
+                                                            </button>
+                                                        </td>
 
 
                                                     <td>
-                                                        @php
-                                                            $statusName = $value->trip_status->tr_status_name ?? '';
 
-                                                            $buttonColor = match (strtolower($statusName)) {
-                                                                'trip request' => '#DB9ACA',
-                                                                'trip proposal' => '#F6A96D',
-                                                                'trip modification' => '#FBC11E',
-                                                                'trip accepted' => '#28C76F',
-                                                                'trip sold' => '#C5A070',
-                                                                'trip lost' => '#F56B62',
-                                                                'trip completed' => '#F56B62',
-                                                                'trip pending' => '#F6A96D',
-                                                                'in process' => '#F6A96D',
-                                                            };
-                                                        @endphp
-
-                                                        <button type="button" class="btn text-white"
-                                                            style="background-color: {{ $buttonColor }};">
-                                                            {{ $statusName }}
-                                                        </button>
-                                                    </td>
-
-
-                                                <td>
-
-                                                <a href="{{ route('trip.view', $value->tr_id) }}"><i
-                                                        class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                                                    <a href="{{ route('trip.view', $value->tr_id) }}"><i
+                                                            class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
 
 
 
-                                                <a href="{{ route('trip.edit', $value->tr_id) }}"><i
-                                                        class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                                    <a href="{{ route('trip.edit', $value->tr_id) }}"><i
+                                                            class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
-                                                {{-- <a data-toggle="modal"
-                                                            data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i
-                                                                class="fas fa-solid fa-trash delete_icon_grid"></i></a> --}}
+                                                    {{-- <a data-toggle="modal"
+                                                                data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i
+                                                                    class="fas fa-solid fa-trash delete_icon_grid"></i></a> --}}
 
-                                                {{-- <div class="modal fade"
-                                                            id="delete-product-modal-{{ $value->sale_product_id }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                            <div class="modal-dialog modal-sm modal-dialog-centered"
-                                                                role="document">
-                                                                <div class="modal-content">
-                                                                    <form id="delete-plan-form"
-                                                                        action="{{ route('trip.destroy', $value->tr_id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <div class="modal-body pad-1 text-center">
-                                                                            <i
-                                                                                class="fas fa-solid fa-trash delete_icon"></i>
-                                                                            <p class="company_business_name px-10">
-                                                                                <b>Delete
-                                                                                    Trip</b>
-                                                                            </p>
-                                                                            <p class="company_details_text">Are You Sure
-                                                                                You
-                                                                                Want to Delete This Trip?</p>
-                                                                            <button type="button" class="add_btn px-15"
-                                                                                data-dismiss="modal">Cancel</button>
+                                                    {{-- <div class="modal fade"
+                                                                id="delete-product-modal-{{ $value->sale_product_id }}"
+                                                                tabindex="-1" role="dialog"
+                                                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                                <div class="modal-dialog modal-sm modal-dialog-centered"
+                                                                    role="document">
+                                                                    <div class="modal-content">
+                                                                        <form id="delete-plan-form"
+                                                                            action="{{ route('trip.destroy', $value->tr_id) }}"
+                                                                            method="POST">
                                                                             @csrf
                                                                             @method('DELETE')
-                                                                            <button type="submit"
-                                                                                class="delete_btn px-15">Delete</button>
-                                                                        </div>
-                                                                    </form>
+                                                                            <div class="modal-body pad-1 text-center">
+                                                                                <i
+                                                                                    class="fas fa-solid fa-trash delete_icon"></i>
+                                                                                <p class="company_business_name px-10">
+                                                                                    <b>Delete
+                                                                                        Trip</b>
+                                                                                </p>
+                                                                                <p class="company_details_text">Are You Sure
+                                                                                    You
+                                                                                    Want to Delete This Trip?</p>
+                                                                                <button type="button" class="add_btn px-15"
+                                                                                    data-dismiss="modal">Cancel</button>
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button type="submit"
+                                                                                    class="delete_btn px-15">Delete</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div> --}}
-                                            </td>
-                                            </tr>
-    @endforeach
-    </tbody>
-    </table>
-    </div>
-    </div><!-- /.card-body -->
-    </div><!-- /.card-->
-    </div>
-    <!-- /.row (main row) -->
-    </div><!-- /.container-fluid -->
-    </section>
+                                                            </div> --}}
+                                                </td>
+                                                </tr>
+        @endforeach
+        </tbody>
+        </table>
+        </div>
+        </div><!-- /.card-body -->
+        </div><!-- /.card-->
+        </div>
+        <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
+                </section>
+            </div>
     <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
@@ -284,9 +298,10 @@
 <script>
     $(document).ready(function() {
 
-        $('#bookafterDataTable').dataTable({
-            order: [[1, 'asc']]
-            });
+       $('#bookafterDataTable').DataTable({
+            "order": [],
+            "ordering": false // Completely disable ordering
+        });
 
 
         var defaultStartDate = "";
@@ -433,4 +448,51 @@
 
 
     });
+
+    $(document).ready(function () {
+    // Function to load list view
+    $('#listViewBtn').click(function (e) {
+        e.preventDefault();
+
+        // Update button active states
+        $('#listViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
+        $('#gridViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+
+        // Load list view via AJAX
+        $.ajax({
+            url: "{{ route('masteradmin.trip.booked_after') }}",
+            type: 'GET',
+            success: function (response) {
+                $('#viewContainer').html(response);
+                // Initialize DataTable
+                $('#listview4').DataTable();
+            },
+            error: function (xhr) {
+                console.error('Error loading list view:', xhr);
+            }
+        });
+    });
+
+    // Function to load grid view
+    $('#gridViewBtn').click(function (e) {
+        e.preventDefault();
+
+        // Update button active states
+        $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
+        $('#listViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+
+        // Load grid view via AJAX
+        $.ajax({
+            url: "{{ route('bookingtrip.gridView') }}",
+            type: 'GET',
+            success: function (response) {
+                $('#viewContainer').html(response);
+            },
+            error: function (xhr) {
+                console.error('Error loading grid view:', xhr);
+            }
+        });
+    });
+});
+
 </script>

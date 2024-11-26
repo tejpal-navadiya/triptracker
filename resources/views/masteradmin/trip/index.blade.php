@@ -352,7 +352,8 @@
             todatepicker.open();
         });
 
-        $('.filter-text').on('click', function() {
+        $('.filter-text').on('click', function(e) {
+            e.preventDefault();
             clearFilters();
         });
 
