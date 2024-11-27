@@ -1,0 +1,118 @@
+/*
+ Theme Name:   Hello Elementor Child
+ Template:     hello-elementor
+ Version:      1.0.0
+*/
+#pricing-plans {
+    text-align: center;
+    margin: 20px 0;
+}
+.plan-price {
+    padding: 20px 0;
+}
+
+.plan-price p {
+    font-size: 25px;
+}
+/* Centered Switch Toggle Style */
+.toggle-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 20px;
+}
+.toggle-switch input[type="checkbox"] {
+    display: none;
+}
+.toggle-switch .switch-label {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #1678ff;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    left:0;
+}
+.toggle-switch .switch-label:before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 15px;
+    transition: 0.3s;
+    left: 0;
+    height: 18px;
+    top: 1px;
+}
+.toggle-switch input[type="checkbox"]:checked + .switch-label:before {
+    left: 60%;
+}
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+.toggle-switch-wrapper span {
+    font-weight: 500;
+}
+.plan-item {
+    border-radius: 8px;
+    background: #EDF5FF;
+}
+.plan-header {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    border-bottom: 1px solid #CECECE;
+    padding: 10px 20px;
+}
+.plan-header img {
+    width: 20%;
+    height: 20%;
+    margin: 0 10px 0 0;
+}
+.get-started-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #384150;
+    border: 1px solid #384150;
+    border-radius: 50px;
+    transition:all 0.5s ease;
+}
+.get-started-btn:hover {
+    background-color: #1678ff;
+    color: #fff;
+    border-color: #1678ff;
+}
+@media (max-width:991px){
+    .plans-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .banner .elementor-swiper-button {
+        display: none !important;
+    }
+}
+@media (max-width:767px){
+    .plans-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .plan-header{
+        justify-content: center;
+    }
+    .plan-header img {
+        width: 16%;
+    }
+}
