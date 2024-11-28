@@ -53,7 +53,7 @@ return [
     | your application so that it is used when running Artisan tasks.
     |
     */
-    'image_url' => env('IMAGE_URL', 'http://localhost/laravel/triptracker/storage/app'), 
+    'image_url' => env('IMAGE_URL', 'http://localhost/laravel/triptracker/crm/storage/app'), 
 
     'image_path' => env('IMAGE_PATH', 'http://localhost/laravel/triptracker/storage/app'), 
     

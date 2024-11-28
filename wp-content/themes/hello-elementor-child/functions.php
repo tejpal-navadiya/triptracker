@@ -9,7 +9,7 @@ add_action( 'wp_enqueue_scripts', 'elementor_child_enqueue_styles' );
 
 function subscription_plan_shortcode() {
     // Step 1: Fetch Data from the API
-    $response = wp_remote_get('https://tatriptracker.com/api/subscription_plans_list?page=1'); // Replace with actual API URL
+    $response = wp_remote_get('https://tatriptracker.com/crm/api/subscription_plans_list?page=1'); // Replace with actual API URL
     //echo $response;
     $plans = json_decode(wp_remote_retrieve_body($response), true);
     $plan = $plans['data'];
@@ -47,7 +47,7 @@ function subscription_plan_shortcode() {
                     </div>
                     <p class="plan-desc"><?php echo esc_html($plan['sp_desc']); ?></p>
                     <!-- Get Started Button with dynamic link -->
-                    <a target="_blank" href="https://tatriptracker.com/company/register?plan_id=<?php echo esc_attr($plan['sp_id']); ?>&period=monthly" 
+                    <a target="_blank" href="http://localhost/laravel/triptracker/crm/agency/register?plan_id=<?php echo esc_attr($plan['sp_id']); ?>&period=monthly" 
                        class="get-started-btn" 
                        data-plan-id="<?php echo esc_attr($plan['sp_id']); ?>"
                        data-period="monthly">
@@ -67,7 +67,7 @@ function subscription_plan_shortcode() {
             document.querySelectorAll('.annual-price').forEach(el => el.style.display = period === 'yearly' ? 'block' : 'none');
             
             document.querySelectorAll('.get-started-btn').forEach(button => {
-                button.href = `https://tatriptracker.com/company/register?plan_id=${button.dataset.planId}&period=${period}`;
+                button.href = `http://localhost/laravel/triptracker/crm/agency/register?plan_id=${button.dataset.planId}&period=${period}`;
                 button.dataset.period = period;
             });
         }

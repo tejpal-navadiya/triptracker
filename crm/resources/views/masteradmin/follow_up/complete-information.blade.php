@@ -38,18 +38,18 @@
                                     <td>
                                     <?php 
                                      $currentDate = \Carbon\Carbon::now()->startOfDay(); 
-                                     $endDate = $comvalue->tr_end_date;
+                                     $endDate = $comvalue->tr_end_date ?? '0';
                                  
                                      // Check if end date exists
                                      if (!$endDate) {
-                                         return '';
+                                        //  echo '0';
                                      }
                                  
                                      // Parse the end date and ensure it's in the correct format
                                      try {
                                          $endDateParsed = \Carbon\Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
                                      } catch (\Exception $e) {
-                                         return ''; // Return empty if the date format is invalid
+                                        //  echo '0'; // Return empty if the date format is invalid
                                      }
                                  
                                      // Calculate days since completion (positive if in the past, 0 if today, negative if future)
@@ -102,7 +102,7 @@
         allTable.destroy();
         function reloadcompleted()
         {
-            var allTable = $('#completedDatatable').DataTable({
+             allTable = $('#completedDatatable').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {

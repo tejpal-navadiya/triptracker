@@ -79,7 +79,7 @@
 
         function reloadpending()
         {
-            var allTable = $('#pendingDataTable').DataTable({
+             allTable = $('#pendingDataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {

@@ -1147,43 +1147,12 @@ class TripController extends Controller
         // dd($trip);
         // If the request is AJAX, return the filtered results
 
-        if($user->users_id && $user->role_id ==0 ){
-            $tripQuery = Trip::where('tr_status', 1)
-                ->from($tripTable)
-                ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-                ->where($tripTable . '.id', $user->users_id)
-                ->where($tripTable . '.status', 7) // complete trips
-                ->with('trip_status')
-                ->select([
-                    $tripTable . '.*', 
-                    $masterUserTable . '.users_first_name', 
-                    $masterUserTable . '.users_last_name' 
-                ]);
-            }else{
-                $specificId = $user->users_id;
-                $tripQuery = Trip::where('tr_status', 1)
-                ->from($tripTable)
-                ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-                ->where($tripTable . '.id', $user->users_id)
-                ->where(function($query) use ($tripTable, $user, $specificId) {
-                    $query->where($tripTable . '.tr_agent_id', $user->users_id)
-                        ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
-                })
-                ->where($tripTable . '.status', 7) // complete trips
-                ->with('trip_status')
-                ->select([
-                    $tripTable . '.*', 
-                    $masterUserTable . '.users_first_name', 
-                    $masterUserTable . '.users_last_name' 
-                ]);
-    
-            }
+      
       
             if($user->users_id && $user->role_id ==0 ){
                 $tripQueryCompleted = Trip::where('tr_status', 1)
                     ->from($tripTable)
                     ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-                    ->where($tripTable . '.id', $user->users_id)
                     ->where($tripTable . '.status', 7) // complete trips
                     ->with('trip_status')
                     ->select([

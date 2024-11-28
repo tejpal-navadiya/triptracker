@@ -56,7 +56,7 @@
                             <a href="{{ route('masteradmin.trip.follow_up_trip_details') }}"
                                 class="nav-link {{ request()->is($busadminRoutes . '/follow_up_trips*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Trip Follow Up (After Booked)</p>
+                                <p>Trip Follow Up (After Travel)</p>
                             </a>
                         </li>
                         <!-- Tasks -->
