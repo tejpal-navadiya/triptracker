@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4087797ceae98df32a60081890602dd",
+    "content-hash": "0a0826127fdd67b5b50dee1c20c5a729",
     "packages": [
         {
             "name": "asdh/laravel-flatpickr",
@@ -1472,13 +1472,13 @@
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "15.x-dev"
-                },
                 "laravel": {
                     "providers": [
                         "Laravel\\Cashier\\CashierServiceProvider"
                     ]
+                },
+                "branch-alias": {
+                    "dev-master": "15.x-dev"
                 }
             },
             "autoload": {

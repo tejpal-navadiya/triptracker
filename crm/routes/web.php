@@ -34,8 +34,9 @@ use App\Http\Controllers\superadmin\LibrariesController;
 use App\Http\Controllers\superadmin\EmailCategoriesController;
 use App\Http\Controllers\superadmin\EmailsTemplatesController;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\CheckoutController;
 
-
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -134,6 +135,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
 
 
+
        Route::get('auth_register_state/{countryId}', [RegisterController::class, 'getStates'])->name('authregisterStates');
        Route::get('auth_register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('authregisterCities');
         
@@ -161,10 +163,15 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/users/store-password/{user_id}', [UserController::class, 'storePassword'])
         ->name('masteradmin.userdetail.storePassword');
 
+        Route::get('checkout', [CheckoutController::class, 'stripe'])->name('stripe');
+        Route::get('success', [CheckoutController::class, 'success'])->name('success');
+        Route::get('cancel', [CheckoutController::class, 'cancel'])->name('cancel');
+
     });
 
     Route::middleware(['UserLoggedInListener','auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
-        
+
+
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');
         Route::get('/profile', [ProfilesController::class, 'edit'])->name('masteradmin.profile.edit');
@@ -411,7 +418,33 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/add-emailtemplate', [EmailTemplateController::class, 'add_emailtemplate'])->name('masteradmin.emailtemplate.addemailtemplate');
         Route::delete('/delete-emailtemplate/{id}', [EmailTemplateController::class, 'delete_emailtemplate'])->name('masteradmin.emailtemplate.destroyemailtemplate');
         Route::get('/view-emailtemplate/{id}', [EmailTemplateController::class, 'view_emailtemplate'])->name('masteradmin.emailtemplate.viewemailtemplate');
+       
+        Route::get('/checkout/{plan}', [CheckoutController::class])->name('checkout');
 
+
+
+       
+      
+        
+        // Route::get('/user/subscribe', function (Request $request) {
+        //     $user = Auth::guard('masteradmins')->user();
+        //     // dd($user);
+         
+        //     $subscription = $user->newSubscription('monthly', 'price_1QQ5LQCLWbq1l7svZaXNGW0J')->create();
+
+        //     // Add the master_user_details_id to the subscription record
+        //     $subscription->update([
+        //         'master_user_details_id' => $user->users_id,
+        //         'user_id' => $user->id,
+        //     ]);
+                        // $user->newSubscription(
+            //     'monthly', // Subscription name
+            //     'price_1QQ5LQCLWbq1l7svZaXNGW0J' // Stripe plan ID
+            // )->create($request->paymentMethodId);
+
+            
+        // });
+         
     });
      
 

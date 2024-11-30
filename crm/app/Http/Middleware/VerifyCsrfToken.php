@@ -15,7 +15,7 @@ class VerifyCsrfToken extends BaseVerifier
         //
         'data/*',
         'login',
-        'logout'
+        'logout',
     ];
 
     // public function handle($request, \Closure $next)

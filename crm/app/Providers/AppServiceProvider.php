@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Paginator::useBootstrap();
+        
         if (config('app.env') !== 'production') {
             Artisan::call('config:clear');
             Artisan::call('cache:clear');

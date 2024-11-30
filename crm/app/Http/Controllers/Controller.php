@@ -187,6 +187,11 @@ class Controller extends BaseController
                     $table->string('remember_token')->nullable();
                     $table->tinyInteger('users_status')->default(0)->nullable();
                     $table->text('api_token')->nullable();
+                    $table->text('stripe_id')->nullable();
+                    $table->text('stripe_status')->nullable();
+                    $table->text('plan_id')->nullable();
+                    $table->text('start_date')->nullable();
+                    $table->text('end_date')->nullable();
                     $table->timestamps();
                 });
             }else{
@@ -302,13 +307,41 @@ class Controller extends BaseController
                 });
 
                 Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
-
                     if (!Schema::hasColumn($storeId.'_tc_users_details', 'api_token')) {
-
                         $table->text('api_token')->nullable();
-    
                     }
                 });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'stripe_id')) {
+                        $table->text('stripe_id')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'stripe_status')) {
+                        $table->text('stripe_status')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'plan_id')) {
+                        $table->text('plan_id')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'start_date')) {
+                        $table->text('start_date')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'end_date')) {
+                        $table->text('end_date')->nullable();
+                    }
+                });
+
 
                 
             }

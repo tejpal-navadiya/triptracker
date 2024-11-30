@@ -9,6 +9,9 @@
 
     <form method="POST" action="{{ route('masteradmin.register.store') }}" enctype="multipart/form-data">
         @csrf
+        <input type="hidden" name="plan_id" id="plan_id" value="{{ request()->query('plan_id') ?? '' }}">      
+        <input type="hidden" name="period" id="period" value="{{ request()->query('period') ?? '' }}">       
+
         <div class="row">
             <div class="col-md-6 col-xl-4">
                 <label for="user_agencies_name" class="form-label">Agency Name</label>
@@ -245,7 +248,7 @@
                         </div>
                     </div>
                     <select id="tr_country" name="user_country" class="form-control" style="width: 100%;">
-                        <option>Select Country</option>
+                        <option value="">Select Country</option>
                         @foreach ($country as $value)
                             <option value="{{ $value->id }}">{{ $value->name }}</option>
                         @endforeach
@@ -265,7 +268,7 @@
                         </div>
                     </div>
                     <select id="tr_state" name="user_state" class="form-control" style="width: 100%;">
-                        <option>Select State</option>
+                        <option value="">Select State</option>
                     </select>
                 </div>
                 @error('user_state')
@@ -307,28 +310,7 @@
                 @enderror
             </div>
 
-            <div class="col-md-6 col-xl-4">
-                <label for="user_agencies_name" class="form-label">Subscription Plan</label>
-                <div class="input-group mb-2">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-solid fa-paper-plane"></span>
-                        </div>
-                    </div>
-                    <select id="sp_id" name="sp_id" class="form-control select2" style="width: 100%;">
-                        <option>Select Subscription Plan</option>
-                        @foreach ($plan as $value)
-                            <option value="{{ $value->sp_id }}"
-                                {{ $value->sp_id == old('sp_id') ? 'selected' : '' }}>
-                                {{ $value->sp_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                @error('sp_id')
-                    <div class="invalid-feedback mb-2">{{ $message }}</div>
-                @enderror
-            </div>
+            
 
 
             <div class="col-md-6 col-xl-4">

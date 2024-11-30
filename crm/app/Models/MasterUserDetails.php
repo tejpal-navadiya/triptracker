@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
+
 
 
 class MasterUserDetails extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Billable;
     // protected $fillable = ['id','users_name', 'users_email', 'users_phone', 'users_password', 'role_id','user_id','users_status', 'users_image', 'country_id', 'state_id', 'users_city_name', 'users_pincode'];
 
     protected $fillable = [
@@ -47,6 +49,12 @@ class MasterUserDetails extends Authenticatable
         'user_emergency_phone_number',
         'user_emergency_email',
         'api_token',
+
+        'stripe_id',
+        'stripe_status',
+        'plan_id',
+        'start_date',
+        'end_date',
     ];
 
     

@@ -22,8 +22,10 @@ use App\Notifications\UserRegistered;
 use App\Models\States;
 use App\Models\Countries;
 use Illuminate\Support\Facades\Storage;
-
 use App\Models\Cities;
+use App\Models\Customer;
+use App\Models\Subscription;
+use Stripe\Stripe;
 
 
 class RegisterController extends Controller
@@ -42,9 +44,12 @@ class RegisterController extends Controller
         return view('masteradmin.auth.register',compact('states','plan','country','librarycurrency','librarystate'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         //dd($request->all());
+        $plan_id = $request->plan_id;
+        $period = $request->period;
+
         $request->validate([
             'user_agencies_name' => ['required', 'string', 'max:255'],
             'user_franchise_name' => ['nullable', 'string', 'max:255'],
@@ -60,7 +65,6 @@ class RegisterController extends Controller
             'user_state' => ['nullable', 'string', 'max:255'],
             'user_city' => ['nullable', 'string', 'max:255'],
             'user_zip' => ['nullable', 'string', 'max:255'],
-            'sp_id' => ['nullable', 'string', 'max:255'],
             'user_email' => ['required', 'email', 'max:255', 'regex:/^.+@.+\.com$/' ,'unique:'.MasterUser::class],
             'user_personal_email' => ['nullable', 'string', 'lowercase', 'email', 'regex:/^.+@.+\.com$/' ,'max:255', 'unique:'.MasterUser::class],
             'user_business_phone' => ['required', 'string', 'max:255'],
@@ -89,10 +93,17 @@ class RegisterController extends Controller
 
 
        
-        $plan = Plan::where('sp_id', $request->sp_id)->firstOrFail();
+        $plan = Plan::where('sp_id', $plan_id)->firstOrFail();
+        $price_stripe_id = $plan->stripe_id ?? '';
 
         $startDate = Carbon::now();
-        $months = 6;
+        if($period == 'monthly'){
+            $months = 1;
+        }else if($period == 'yearly'){
+            $months = 12;
+        }else{
+            $months = 6;
+        }
         $expirationDate = $startDate->addMonths($months);
         $expiryDate = $expirationDate->toDateString();
         $uniqueId = $this->GenerateUniqueRandomString('buss_master_users', 'id', 6);  
@@ -124,7 +135,7 @@ class RegisterController extends Controller
             'user_state' => $request->user_state,
             'user_image' => '',
             'buss_unique_id' => '',
-            'sp_id' => $request->sp_id,
+            'sp_id' => $plan_id,
             'user_password' => Hash::make($request->user_password),
             'sp_expiry_date' => $expiryDate,
             'user_city' => $request->user_city,
@@ -199,16 +210,83 @@ class RegisterController extends Controller
         ]);
 
 
-        // login URL
-        $loginUrl = route('masteradmin.login');
+        $userDetails = new MasterUserDetails();
+        $userDetails->setTableForUniqueId(strtolower($buss_unique_id));
+        $user_data = $userDetails->orderBy('created_at', 'desc')->first();
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $stripePriceId = $price_stripe_id;
+     
+        $quantity = 1;
 
         try {
-            Mail::to($request->user_email)->send(new UserRegistered($buss_unique_id, $loginUrl, $request->user_email));
 
-            return back()->with(['link-success' => __('messages.masteradmin.register.link_send_success')]);
+            $stripeCustomer = \Stripe\Customer::create([
+                'email' => $request->user_email,
+                'name' => $request->user_first_name . ' ' . $request->user_last_name,
+            ]);
+
+            $customer = Customer::create([
+                'stripe_id' => $stripeCustomer->id,
+                'email' => $request->user_email,
+                'name' => $request->user_first_name . ' ' . $request->user_last_name,
+            ]);
+
+            $Stripesubscription = \Stripe\Subscription::create([
+                'customer' => $stripeCustomer->id,
+                'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
+                'trial_period_days' => ($request->period == 'monthly') ? 14 : null, // Trial period if needed
+            ]);
+
+            $subscription = Subscription::create([
+                'user_id' => $stripeCustomer->id, // Assuming you have a user_id to associate with the subscription
+                'master_user_details_id' => $user_data->users_id, // Set this if you have a master user details ID
+                'type' => $period, // Set the type of subscription
+                'stripe_id' => $Stripesubscription->id,
+                'stripe_status' => $Stripesubscription->status,
+                'stripe_price' => $Stripesubscription->items->data[0]->price->id, // Assuming you want to store the price ID
+                'quantity' => $Stripesubscription->items->data[0]->quantity,
+                'trial_ends_at' => $Stripesubscription->trial_end ? Carbon::createFromTimestamp($Stripesubscription->trial_end) : null,
+                'ends_at' => $Stripesubscription->ended_at ? Carbon::createFromTimestamp($Stripesubscription->ended_at) : null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // dd($subscription);
+     
+        return $user_data->checkout([$stripePriceId => $quantity], [
+            'success_url' => route('success', [
+                        'user_id' => $user_data->user_id,
+                        'email' => $user_data->users_email, 
+                        'stripe_id' => $subscription->stripe_id,
+                        'plan_id' => $plan_id,
+                        'period' => $period,
+
+                    ]),
+            'cancel_url' => route('cancel'),
+            'mode' => 'subscription',
+        ]);
+
+        
+        // return $user_data
+        // ->newSubscription($stripePriceId, $stripePriceId)
+        // ->checkout([
+        //     'success_url' => route('success', [
+        //         'session_id' => '{CHECKOUT_SESSION_ID}',
+        //         'user_id' => $user_data->user_id,
+        //         'email' => $user_data->users_email, // If email must be included
+        //     ]),
+        //     'cancel_url' => route('cancel'),
+        //     'mode' => 'subscription',
+        // ]);
+    
+
         } catch (\Exception $e) {
-            return back()->with(['link-error' => __('messages.masteradmin.register.link_send_error')]);
+            // Handle Stripe error
+            return back()->with(['link-error' => 'There was an issue creating the subscription: ' . $e->getMessage()]);
         }
+       
     }
 
     
