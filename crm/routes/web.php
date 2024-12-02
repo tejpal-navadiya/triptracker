@@ -35,7 +35,7 @@ use App\Http\Controllers\superadmin\EmailCategoriesController;
 use App\Http\Controllers\superadmin\EmailsTemplatesController;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\CheckoutController;
-
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -167,10 +167,18 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('success', [CheckoutController::class, 'success'])->name('success');
         Route::get('cancel', [CheckoutController::class, 'cancel'])->name('cancel');
 
+        Route::post('/webhook', [StripeWebhookController::class, 'handleWebhook']);
+        Route::get('/thank-you', function () {
+            return view('thank-you');
+        })->name('thank-you');
+
     });
 
-    Route::middleware(['UserLoggedInListener','auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder'])->group(function () {
+    Route::middleware(['UserLoggedInListener','auth_master', 'guard.session:masteradmins', 'prevent.back.history','set.user.details','setUserFolder','check.subscription.status'])->group(function () {
 
+
+        Route::get('agency-success', [CheckoutController::class, 'agencySuccess'])->name('agencysuccess');
+        Route::get('agency-cancel', [CheckoutController::class, 'agencyCancel'])->name('agencycancel');
 
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');

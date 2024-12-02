@@ -17,7 +17,11 @@ use App\Models\Cities;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\UsersDetails;
-
+use App\Models\Customer;
+use App\Models\Subscription;
+use Stripe\Stripe;
+use App\Models\Plan;
+use Carbon\Carbon;
 
 
 class AgencyController extends Controller
@@ -58,11 +62,31 @@ class AgencyController extends Controller
         return view('masteradmin.agency.create', compact('phones_type','users_role','country','nextAgencyNumber'));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
       $user = Auth::guard('masteradmins')->user();
-
+      // dd($user->plan_id);
       $dynamicId = $user->id;
+
+      // \DB::enableQueryLog();
+
+      $plan = Plan::where('sp_id', $user->plan_id)->first();
+      // dd(\DB::getQueryLog()); 
+
+      // dd($plan);
+      $price_stripe_id = $plan->stripe_id ?? '';
+
+      $period = $user->plan_type ?? '';
+      $startDate = Carbon::now();
+      if($period == 'monthly'){
+          $months = 1;
+      }else if($period == 'yearly'){
+          $months = 12;
+      }else{
+          $months = 6;
+      }
+    
 
       // dd($user);
      // dd($request->all());
@@ -143,7 +167,6 @@ class AgencyController extends Controller
       $agency->users_bio = '';  
       $agency->users_status = 1;  
       $agency->users_password = Hash::make($validatedData['users_password']);
-    
       $agency->save();
 
       
@@ -166,16 +189,102 @@ class AgencyController extends Controller
 
           $travelerItem->save();
       }
+      $userDetails = new MasterUserDetails();
+      $userDetails->setTableForUniqueId(strtolower($user->user_id));
+      $user_data = $userDetails->orderBy('created_at', 'desc')->first();
 
-      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->user_id]);
-        try {
-            Mail::to($request->users_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->users_email));
-            session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
-        } catch (\Exception $e) {
-            session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
-        }
 
-      return redirect()->route('agency.index')->with('success', 'Agecy User entry created successfully.');
+
+      Stripe::setApiKey(env('STRIPE_SECRET'));
+
+      $stripePriceId = $price_stripe_id;
+   
+      $quantity = 1;
+
+      try {
+
+          $stripeCustomer = \Stripe\Customer::create([
+              'email' => $request->users_email,
+              'name' => $request->users_first_name . ' ' . $request->users_last_name,
+          ]);
+          
+
+          $customer = Customer::create([
+              'stripe_id' => $stripeCustomer->id,
+              'email' => $request->users_email,
+              'name' => $request->users_first_name . ' ' . $request->users_last_name,
+          ]);
+
+          // dd($customer);
+
+          $Stripesubscription = \Stripe\Subscription::create([
+              'customer' => $stripeCustomer->id,
+              'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
+              'trial_period_days' => ($period == 'monthly') ? 14 : null, // Trial period if needed
+          ]);
+          $latestInvoiceId = $Stripesubscription->latest_invoice;
+          
+
+          $subscription = Subscription::create([
+              'user_id' => $stripeCustomer->id, // Assuming you have a user_id to associate with the subscription
+              'master_user_details_id' => $users_id, // Set this if you have a master user details ID
+              'type' => $period, // Set the type of subscription
+              'stripe_id' => $Stripesubscription->id,
+              'stripe_status' => $Stripesubscription->status,
+              'stripe_price' => $Stripesubscription->items->data[0]->price->id, // Assuming you want to store the price ID
+              'quantity' => $Stripesubscription->items->data[0]->quantity,
+              'trial_ends_at' => $Stripesubscription->trial_end ? Carbon::createFromTimestamp($Stripesubscription->trial_end) : null,
+              'ends_at' => $Stripesubscription->ended_at ? Carbon::createFromTimestamp($Stripesubscription->ended_at) : null,
+              'created_at' => now(),
+              'updated_at' => now(),
+          ]);
+
+
+          // dd($subscription);
+   
+        return $user_data->checkout([$stripePriceId => $quantity], [
+            'success_url' => route('agencysuccess', [
+                        'user_id' => $user_data->user_id,
+                        'email' => $user_data->users_email, 
+                        'stripe_id' => $subscription->stripe_id,
+                        'plan_id' => $user->plan_id,
+                        'period' => $period,
+                        'latestInvoiceId' => $latestInvoiceId,
+                        'users_id' => $users_id,
+
+                    ]),
+            'cancel_url' => route('agencycancel'),
+            'mode' => 'subscription',
+        ]);
+
+      
+      // return $user_data
+      // ->newSubscription($stripePriceId, $stripePriceId)
+      // ->checkout([
+      //     'success_url' => route('success', [
+      //         'session_id' => '{CHECKOUT_SESSION_ID}',
+      //         'user_id' => $user_data->user_id,
+      //         'email' => $user_data->users_email, // If email must be included
+      //     ]),
+      //     'cancel_url' => route('cancel'),
+      //     'mode' => 'subscription',
+      // ]);
+  
+
+      } catch (\Exception $e) {
+          // Handle Stripe error
+          return back()->with(['link-error' => 'There was an issue creating the subscription: ' . $e->getMessage()]);
+      }
+      
+      // $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->user_id]);
+      //   try {
+      //       Mail::to($request->users_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->users_email));
+      //       session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
+      //   } catch (\Exception $e) {
+      //       session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
+      //   }
+
+      // return redirect()->route('agency.index')->with('success', 'Agecy User entry created successfully.');
 
       \MasterLogActivity::addToLog('Master Admin Agency Users is Created.');
 

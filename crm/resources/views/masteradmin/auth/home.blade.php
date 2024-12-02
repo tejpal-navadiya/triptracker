@@ -80,6 +80,14 @@
     @endif
     <!-- Main content -->
 
+    
+    @if (session()->has('beforshowModal'))
+
+    <div class="alert alert-info" id="subscriptionStatus">
+        {{ session('beforshowModal') }}
+    </div>
+    @endif
+
     <section class="content">
         <div class="container-fluid">
             <!-- @if (session('alert-configured-data')) -->
@@ -98,6 +106,7 @@
                 </div>
             </div>
         </div>
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function () {
@@ -292,27 +301,7 @@
 <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-<p>{{ session('showModal') }}</p>
-@if (session()->has('showModal'))
-<!-- Bootstrap Modal -->
-<div class="modal fade show" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-aria-hidden="true" style="display: block;">
-<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Notice</h5>
-        </div>
-        <div class="modal-body">
-            <p>{{ session('showModal') }}</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn btn-primary">Purchase Plan</a>
-        </div>
-    </div>
-</div>
-</div>
 
-@endif
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>

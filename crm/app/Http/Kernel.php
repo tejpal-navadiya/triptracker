@@ -25,6 +25,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\SetUserDetails::class,
         
         
+        
     ];
 
     /**
@@ -85,6 +86,9 @@ class Kernel extends HttpKernel
         'handleAuthErrors' => \App\Http\Middleware\HandleAuthErrors::class,
         'handle.ajax.session' => \App\Http\Middleware\HandleAjaxSession::class,
         'UserLoggedInListener' => \App\Http\Middleware\UserLoggedInListener::class,
+        'check.subscription.status' => \App\Http\Middleware\CheckUserPlan::class,
+        
+
         
 
         

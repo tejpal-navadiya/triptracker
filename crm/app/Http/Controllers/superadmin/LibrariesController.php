@@ -33,7 +33,7 @@ class LibrariesController extends Controller
         }
 
         // Paginate results and append filter parameters
-        $libraries = $librariesQuery->paginate(2)->appends([
+        $libraries = $librariesQuery->paginate(10)->appends([
             'category' => $category,
             'tag_name' => $tag_name,
         ]);

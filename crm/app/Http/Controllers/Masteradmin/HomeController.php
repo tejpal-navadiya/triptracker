@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Trip;
 use Illuminate\Support\Facades\DB; // Add this line
+use Carbon\Carbon;
 
 use App\Models\TripTask;
 use App\Models\TaskCategory;
@@ -43,15 +44,7 @@ class HomeController extends Controller
         if (!$user) {
             return redirect()->route('masteradmin.login'); 
         }
-    
-        $masterUser = $user->masterUser()->first(); 
-        $plan = $masterUser->sp_id;
-    
-        if (!$plan) {
-            session()->flash('showModal', 'Please purchase a plan first.');
-        } elseif ($masterUser->sp_expiry_date < now()) {
-            session()->flash('showModal', 'Your plan has expired. Please purchase a new plan.');
-        }
+   
     
         // Fetch the total trip count
         $tripModel = new Trip();

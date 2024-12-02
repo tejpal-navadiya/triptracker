@@ -135,12 +135,12 @@ class RegisterController extends Controller
             'user_state' => $request->user_state,
             'user_image' => '',
             'buss_unique_id' => '',
-            'sp_id' => $plan_id,
+            'sp_id' => '',
             'user_password' => Hash::make($request->user_password),
-            'sp_expiry_date' => $expiryDate,
+            'sp_expiry_date' => '',
             'user_city' => $request->user_city,
             'user_zip' => $request->user_zip,
-            'isActive' => 1
+            'isActive' => '0'
         ]);
       
     
@@ -227,6 +227,10 @@ class RegisterController extends Controller
                 'name' => $request->user_first_name . ' ' . $request->user_last_name,
             ]);
 
+            $user_data->stripe_id = $stripeCustomer->id;
+            $user_data->save();
+
+
             $customer = Customer::create([
                 'stripe_id' => $stripeCustomer->id,
                 'email' => $request->user_email,
@@ -238,6 +242,8 @@ class RegisterController extends Controller
                 'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
                 'trial_period_days' => ($request->period == 'monthly') ? 14 : null, // Trial period if needed
             ]);
+            $latestInvoiceId = $Stripesubscription->latest_invoice;
+            
 
             $subscription = Subscription::create([
                 'user_id' => $stripeCustomer->id, // Assuming you have a user_id to associate with the subscription
@@ -253,6 +259,7 @@ class RegisterController extends Controller
                 'updated_at' => now(),
             ]);
 
+
             // dd($subscription);
      
         return $user_data->checkout([$stripePriceId => $quantity], [
@@ -262,6 +269,7 @@ class RegisterController extends Controller
                         'stripe_id' => $subscription->stripe_id,
                         'plan_id' => $plan_id,
                         'period' => $period,
+                        'latestInvoiceId' => $latestInvoiceId
 
                     ]),
             'cancel_url' => route('cancel'),

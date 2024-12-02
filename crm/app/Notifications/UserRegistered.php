@@ -12,6 +12,7 @@ class UserRegistered extends Mailable
     public $uniqueId;
     public $loginUrl;
     public $userEmail;
+    public $invoiceUrl;
 
 
     /**
@@ -21,12 +22,13 @@ class UserRegistered extends Mailable
      * @param  string  $email
      * @return void
      */
-    public function __construct($uniqueId, $loginUrl, $userEmail)
+    public function __construct($uniqueId, $loginUrl, $userEmail, $invoiceUrl)
     {   
         // dd($loginUrl);
         $this->uniqueId = $uniqueId;
         $this->loginUrl = $loginUrl;
         $this->userEmail = $userEmail;
+        $this->invoiceUrl = $invoiceUrl;
     }
     /**
      * Build the message.
@@ -41,6 +43,7 @@ class UserRegistered extends Mailable
                         'uniqueId' => $this->uniqueId,
                         'loginUrl' => $this->loginUrl,
                         'userEmail' => $this->userEmail,
+                        'invoiceUrl' => $this->invoiceUrl,
                     ]);
     }
 }

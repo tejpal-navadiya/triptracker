@@ -37,8 +37,12 @@ return new class extends Migration
             $table->string('user_zip')->nullable();
             $table->rememberToken();
             $table->string('sp_id')->nullable();
+            $table->string('plan_type')->nullable();
+            $table->string('start_date')->nullable();
             $table->string('sp_expiry_date')->nullable();
             $table->tinyInteger('isActive')->default(0)->nullable();
+            $table->string('stripe_id')->nullable();
+            $table->string('subscription_status')->nullable();
             $table->tinyInteger('user_status')->default(0)->nullable();
             $table->timestamps();
         });

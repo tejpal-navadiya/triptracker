@@ -192,6 +192,7 @@ class Controller extends BaseController
                     $table->text('plan_id')->nullable();
                     $table->text('start_date')->nullable();
                     $table->text('end_date')->nullable();
+                    $table->text('plan_type')->nullable();
                     $table->timestamps();
                 });
             }else{
@@ -339,6 +340,13 @@ class Controller extends BaseController
                 Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
                     if (!Schema::hasColumn($storeId.'_tc_users_details', 'end_date')) {
                         $table->text('end_date')->nullable();
+                    }
+                });
+
+
+                Schema::table($storeId.'_tc_users_details', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_users_details', 'plan_type')) {
+                        $table->text('plan_type')->nullable();
                     }
                 });
 

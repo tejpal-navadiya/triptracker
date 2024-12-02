@@ -12,10 +12,34 @@
     </head>
     <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper">
-        
+            
             @include('masteradmin.layouts.navigation')
             @include('masteradmin.layouts.sidebar')
+            <!-- <p>{{ session('showModal') }}</p> -->
+
             @yield('content')
+
+            @if (session()->has('showModal'))
+<!-- Bootstrap Modal -->
+<div class="modal fade show" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+aria-hidden="true" style="display: block;">
+<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Notice</h5>
+        </div>
+        <div class="modal-body">
+            <p>{{ session('showModal') }}</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-primary">Purchase Plan</a>
+        </div>
+    </div>
+</div>
+</div>
+
+@endif
+            
         </div>
         @include('masteradmin.layouts.footerlink')
         @yield('scripts')
