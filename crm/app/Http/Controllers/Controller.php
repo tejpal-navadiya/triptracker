@@ -15,6 +15,7 @@ use App\Models\MasterUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use PhpParser\Node\Stmt\Else_;
  
 class Controller extends BaseController
 {
@@ -483,9 +484,16 @@ class Controller extends BaseController
                     $table->string('trvt_date')->nullable();
                     $table->string('trvt_due_date')->nullable();
                     $table->text('trvt_document')->nullable();
+                    $table->text('trvt_note')->nullable();
                     $table->string('status')->nullable();
                     $table->tinyInteger('trvt_status')->default(0)->nullable();
                     $table->timestamps();
+                });
+            }else{
+                Schema::table($storeId.'_tc_traveling_task', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_traveling_task', 'trvt_note')) {
+                        $table->text('trvt_note')->nullable();
+                    }
                 });
             }
 

@@ -197,6 +197,16 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_note">Notes </label>
+                                <div class="d-flex">
+                                    <textarea type="text" class="form-control" id="trvt_note" placeholder="Enter Description or Notes" name="trvt_note"
+                                    autofocus autocomplete="trvt_note"> {{ old('trvt_note') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="col-md-6" id="statusField" style="display: none;"> <!-- Initially hidden -->
                             <div class="form-group">
@@ -259,11 +269,12 @@
 
     $(document).ready(function() {
         
-        function initializeTaskDataTable() {
-    if ($.fn.dataTable.isDataTable('#TaskDataTable')) {
-        TaskDataTable.clear().draw();
-    }else{
+    //     function initializeTaskDataTable() {
+    // if ($.fn.dataTable.isDataTable('#TaskDataTable')) {
+    //     TaskDataTable.clear().draw();
+    // }else{
     // Initialize DataTable
+    setTimeout(function(){
             TaskDataTable = $('#TaskDataTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -284,10 +295,10 @@
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
             });
-    }
-
+    
+},1000);  
  
-    }
+    // }
 
         //create task
         $('#createNewTask').click(function() {
@@ -344,7 +355,7 @@
                 success: function(data) {
 
                     // TaskDataTable.ajax.reload();
-                    initializeTaskDataTable()
+                    $('#TaskDataTable').DataTable().ajax.reload();
                     $('#task-success-message').text(tasksuccessMessage);
                     
                     $('#task-success-modal').modal('show');
@@ -388,6 +399,7 @@
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
+                    $('#trvt_note').val(data.trvt_note);
 
 
                     // Show status field during edit
@@ -467,10 +479,9 @@
                 },
                 success: function(data) {
                     // alert(data.success);
-
+                    $('#TaskDataTable').DataTable().ajax.reload();
                     $('#task-success-message').text('Data has been successfully Deleted!');
                     
-                    initializeTaskDataTable();
                     $('#task-success-modal').modal('show');
 
 

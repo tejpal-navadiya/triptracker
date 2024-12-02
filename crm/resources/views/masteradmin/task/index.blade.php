@@ -229,7 +229,15 @@
                                 <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
                             </div>
                         </div>
-
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_note">Notes </label>
+                                <div class="d-flex">
+                                    <textarea type="text" class="form-control" id="trvt_note" placeholder="Enter Description or Notes" name="trvt_note"
+                                    autofocus autocomplete="trvt_note"> {{ old('trvt_note') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-md-6" id="statusField1" style="display: none;"> <!-- Initially hidden -->
                             <div class="form-group">
@@ -449,6 +457,7 @@
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
+                    $('#trvt_note').val(data.trvt_note);
 
                     $('#trvt_date_hidden').val(data.trvt_date);
                     $('#trvt_due_date_hidden').val(data.trvt_due_date);

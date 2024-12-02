@@ -178,6 +178,15 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_note">Notes </label>
+                                <div class="d-flex">
+                                    <textarea type="text" class="form-control" id="trvt_noteReminder" placeholder="Enter Description or Notes" name="trvt_note"
+                                    autofocus autocomplete="trvt_note"> {{ old('trvt_note') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-md-6" id="statusFieldReminder" style="display: none;"> <!-- Initially hidden -->
                             <div class="form-group">

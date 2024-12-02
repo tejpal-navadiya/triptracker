@@ -135,6 +135,7 @@ class TripTaskController extends Controller
                 'trvt_priority' => 'nullable|string',
                 'trvt_date' => 'nullable|string',
                 'trvt_due_date' => 'nullable|string',
+                'trvt_note' => 'nullable|string',
                'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
                'trvt_document.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // Multiple files validation
 
@@ -168,6 +169,7 @@ class TripTaskController extends Controller
                 // }
                 //dd( $tripTask);
                 
+                $tripTask->trvt_note = $validatedData['trvt_note'];
                 $tripTask->id = $dynamicId;
                 $tripTask->trvt_status = 1;
                 $tripTask->status = 1;
@@ -193,6 +195,7 @@ class TripTaskController extends Controller
                 'trvt_category' => 'required|string',
                 'trvt_priority' => 'nullable|string',
                 'trvt_date' => 'nullable|string',
+                'trvt_note' => 'nullable|string',
                 'trvt_due_date' => 'nullable|string',
                'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
                'trvt_document.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048', // Multiple files validation
@@ -274,6 +277,7 @@ class TripTaskController extends Controller
                 'trvt_priority' => 'nullable|string',
                 'trvt_date' => 'nullable|string',
                 'trvt_due_date' => 'nullable|string',
+                'trvt_note' => 'nullable|string',
                 'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
                 'status' => 'nullable',
             ], [
@@ -305,12 +309,12 @@ class TripTaskController extends Controller
     }
 
 
-    public function destroy($trvt_id)
+    public function destroy($trip, $trvt_id)
     {
         //
-      // dd($trtm_id);
-        $task = TripTask::where(['trvt_id' => $trvt_id])->firstOrFail();
-        //dd($member);
+    //  dd($trip);
+        $task = TripTask::where(['trvt_id' => $trvt_id])->first();
+        // dd( $task);
         $task->where('trvt_id', $trvt_id)->delete();
         
         \MasterLogActivity::addToLog('Master Admin Trip Task is Deleted.');
@@ -779,6 +783,7 @@ class TripTaskController extends Controller
                 'trvt_priority' => 'nullable|string',
                 'trvt_date' => 'nullable|string',
                 'trvt_due_date' => 'nullable|string',
+                'trvt_note' => 'nullable|string',
                 'trvt_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Single file validation
                 'status' => 'nullable',
             ], [

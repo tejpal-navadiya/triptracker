@@ -47,9 +47,9 @@ class LibraryController extends Controller
         ]);
 
         if ($user->users_id && $user->role_id == 0) {
-            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->get();
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->orderBy('lib_cat_name', 'asc')->get();
         } else {
-            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->orderBy('lib_cat_name', 'asc')->get();
         }
         if ($request->ajax()) {
              return view('masteradmin.library.filtered_results', compact('libraries', 'librarycategory'))->render();
@@ -61,9 +61,9 @@ class LibraryController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
         if($user->users_id && $user->role_id ==0 ){
-            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->get();
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->orderBy('lib_cat_name', 'asc')->get();
         }else{
-            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+            $librarycategory = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->orderBy('lib_cat_name', 'asc')->get();
         }
 
       
@@ -195,9 +195,9 @@ class LibraryController extends Controller
         $selectedCountryId = $library->lib_country;
 
         if($user->users_id && $user->role_id ==0 ){
-            $categories = LibraryCategory::where('lib_cat_status', 1)->get();
+            $categories = LibraryCategory::where('lib_cat_status', 1)->orderBy('lib_cat_name', 'asc')->get();
         }else{
-            $categories = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->get();
+            $categories = LibraryCategory::where('lib_cat_status', 1)->where('id', $user->users_id)->orderBy('lib_cat_name', 'asc')->get();
         }
 
 

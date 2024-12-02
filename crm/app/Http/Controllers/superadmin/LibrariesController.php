@@ -38,7 +38,7 @@ class LibrariesController extends Controller
             'tag_name' => $tag_name,
         ]);
 
-        $librarycategory = LibrariesCatgory::where('lib_cat_status', 1)->get();
+        $librarycategory = LibrariesCatgory::where('lib_cat_status', 1)->orderBy('lib_cat_name', 'asc')->get();
 
 
         if ($request->ajax()) {
@@ -49,7 +49,7 @@ class LibrariesController extends Controller
 
     public function create(): View
     {
-        $librarycategory = LibrariesCatgory::where('lib_cat_status', 1)->get();
+        $librarycategory = LibrariesCatgory::where('lib_cat_status', 1)->orderBy('lib_cat_name', 'asc')->get();
       
     
 
@@ -123,7 +123,7 @@ class LibrariesController extends Controller
 
         $selectedCountryId = $library->lib_country;
 
-        $categories = LibrariesCatgory::where('lib_cat_status', 1)->get();
+        $categories = LibrariesCatgory::where('lib_cat_status', 1)->orderBy('lib_cat_name', 'asc')->get();
        
 
         return view('superadmin.library.edit', compact('library', 'categories'));

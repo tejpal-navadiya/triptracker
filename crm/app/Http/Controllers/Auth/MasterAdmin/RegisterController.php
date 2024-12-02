@@ -65,8 +65,8 @@ class RegisterController extends Controller
             'user_state' => ['nullable', 'string', 'max:255'],
             'user_city' => ['nullable', 'string', 'max:255'],
             'user_zip' => ['nullable', 'string', 'max:255'],
-            'user_email' => ['required', 'email', 'max:255', 'regex:/^.+@.+\.com$/' ,'unique:'.MasterUser::class],
-            'user_personal_email' => ['nullable', 'string', 'lowercase', 'email', 'regex:/^.+@.+\.com$/' ,'max:255', 'unique:'.MasterUser::class],
+            'user_email' => ['required', 'email', 'max:255', 'unique:'.MasterUser::class],
+            'user_personal_email' => ['nullable', 'string', 'lowercase', 'email' ,'max:255', 'unique:'.MasterUser::class],
             'user_business_phone' => ['required', 'string', 'max:255'],
             'user_personal_phone' => ['nullable', 'string', 'max:255'],
             'user_password' => [

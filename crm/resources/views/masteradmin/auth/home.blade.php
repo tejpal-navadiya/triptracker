@@ -82,11 +82,12 @@
 
     
     @if (session()->has('beforshowModal'))
-
     <div class="alert alert-info" id="subscriptionStatus">
         {{ session('beforshowModal') }}
+        {{ session()->forget('beforshowModal') }} {{-- Unsets the session value --}}
     </div>
     @endif
+    
 
     <section class="content">
         <div class="container-fluid">
@@ -118,6 +119,10 @@
                         setTimeout(function () {
                             $('#alertConfigured').hide();
                         }, 5000);
+
+                        setTimeout(function () {
+                            $('#subscriptionStatus').hide();
+                        }, 6000);
                     });
                 </script>
                 <!-- @endif -->

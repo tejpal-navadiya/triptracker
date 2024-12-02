@@ -112,7 +112,7 @@
                                 <div class="d-flex">
                                     <input type="text" class="form-control" id="trtm_first_name"
                                         name="trtm_first_name" placeholder="Enter First Name">
-                                    <div class="invalid-feedback" id="trtm_first_name_error" >error msg</div>
+                                    <div class="invalid-feedback" id="trtm_first_name_error" ></div>
 
                                 </div>
                             </div>
@@ -154,7 +154,7 @@
                                 <div class="d-flex">
                                     <input type="text" class="form-control" id="trtm_relationship"
                                         name="trtm_relationship" placeholder="Enter Relationship">
-                                    <div class="invalid-feedback" id="trtm_relationship_error" >error msg</div>
+                                    <div class="invalid-feedback" id="trtm_relationship_error" ></div>
 
                                 </div>
                             </div>
@@ -172,7 +172,7 @@
                                         <option value="Other">Other</option>
                                     </select>
                                     
-                                    <div class="invalid-feedback" id="trtm_gender_error" >error msg</div>
+                                    <div class="invalid-feedback" id="trtm_gender_error" ></div>
                                 </div>
                             </div>
                         </div>

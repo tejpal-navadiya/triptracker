@@ -242,7 +242,7 @@
                         @endif
                     </ul>
                 </li>
-
+                @if (isset($access['view_user']) && $access['view_user'])                            
                 <li class="nav-item {{ request()->is($busadminRoutes . '/agency*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/agency*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
@@ -252,7 +252,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <!-- View All Users -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['view_user']) && $access['view_user'])
                                             <li class="nav-item">
                                                 <a href="{{ route('agency.index') }}" class="nav-link {{ request()->is($busadminRoutes . '/agency') ||
                             request()->is($busadminRoutes . '/agency/view*')
@@ -264,7 +264,7 @@
                         @endif
 
                         <!-- Add User -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['add_user']) && $access['add_user'])
                             <li class="nav-item">
                                 <a href="{{ route('agency.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/agency/create') ? 'active' : '' }}">
@@ -275,9 +275,10 @@
                         @endif
                     </ul>
                 </li>
+                @endif
 
 
-
+                @if (isset($access['view_role']) && $access['view_role'])
                 <li class="nav-item {{ request()->is($busadminRoutes . '/user-role-details*') ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ request()->is($busadminRoutes . '/user-role-details*') ? 'active' : '' }}">
@@ -300,6 +301,7 @@
                         @endif
                     </ul>
                 </li>
+                @endif
 
 
                 <!-- <li class="nav-item {{ request()->is($busadminRoutes . '/h*') ? 'menu-open' : '' }}">

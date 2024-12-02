@@ -179,6 +179,16 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_note">Notes </label>
+                                <div class="d-flex">
+                                    <textarea type="text" class="form-control" id="trvt_note" placeholder="Enter Description or Notes" name="trvt_note"
+                                    autofocus autocomplete="trvt_note"> {{ old('trvt_note') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="col-md-6" id="statusField" style="display: none;"> <!-- Initially hidden -->
                             <div class="form-group">
@@ -564,7 +574,7 @@
                     $('#trvt_categoryReminder').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_datereminder').val(data.trvt_date);
                     $('#trvt_due_dateReminder').val(data.trvt_due_date);
-
+                    $('#trvt_noteReminder').val(data.trvt_note);
                     $('#trvt_date_hiddenReminder').val(data.trvt_date);
                     $('#trvt_due_date_hiddenReminder').val(data.trvt_due_date);
 
