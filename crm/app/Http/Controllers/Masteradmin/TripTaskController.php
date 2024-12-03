@@ -322,6 +322,23 @@ class TripTaskController extends Controller
         return response()->json(['success'=>'Record deleted successfully.']);
     }
 
+
+    public function destroyTask($trvt_id)
+    {
+        //
+    //  dd($trip);
+        $task = TripTask::where(['trvt_id' => $trvt_id])->first();
+        // dd( $task);
+        $task->where('trvt_id', $trvt_id)->delete();
+        
+        \MasterLogActivity::addToLog('Master Admin Trip Task is Deleted.');
+             
+        return response()->json(['success'=>'Record deleted successfully.']);
+    }
+
+
+    
+
      public function allDetails(Request $request)
     {
         $tripAgent = trim($request->input('trip_agent'));

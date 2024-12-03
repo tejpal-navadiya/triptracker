@@ -234,15 +234,17 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-     var DocumentDataTable;
+    
 
    
     $(document).ready(function() {
+        var DocumentDataTable;
         
-        function initializeDocumentDataTable() {
-        if ($.fn.dataTable.isDataTable('#documentDataTable')) {
-            DocumentDataTable.clear().draw();
-        }else{
+        // function initializeDocumentDataTable() {
+        // if ($.fn.dataTable.isDataTable('#documentDataTable')) {
+        //     DocumentDataTable.clear().draw();
+        // }else{
+            setTimeout(function(){
             DocumentDataTable = $('#documentDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -294,10 +296,11 @@
                 },
             ]
         });
-        }
+    },2000);  
+    //     }
 
         
-    }
+    // }
    
 
         //create task
@@ -348,7 +351,7 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    initializeDocumentDataTable();
+                    $('#documentDataTable').DataTable().ajax.reload();
                     $('#document-success-message').text(documentsuccessMessage);
                     
                     $('#document-success-modal').modal('show');
@@ -491,7 +494,7 @@
                     
                     $('#document-success-message').text('Data has been successfully Deleted!');
                     
-                    initializeDocumentDataTable();
+                    $('#documentDataTable').DataTable().ajax.reload();
                     $('#document-success-modal').modal('show');
 
 

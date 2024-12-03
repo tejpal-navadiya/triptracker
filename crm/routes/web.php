@@ -345,7 +345,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/task-details-store', [TripTaskController::class, 'storeTask'])->name('masteradmin.taskdetails.store');
         Route::patch('/task-details-update/{trvt_id}', [TripTaskController::class, 'updateTask'])->name('masteradmin.taskdetails.update');
         Route::get('task-edit/{id}', [TripTaskController::class, 'edit_task'])->name('masteradmin.taskdetails.editTask');
-        Route::delete('/task-details-delete/{trvt_id}', [TripTaskController::class, 'destroy'])->name('masteradmin.taskdetails.destroy');
+        Route::delete('/task-details-delete/{trvt_id}', [TripTaskController::class, 'destroyTask'])->name('masteradmin.taskdetails.destroy');
 
         
          //Travelers  

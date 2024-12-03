@@ -243,11 +243,12 @@
      $(document).ready(function() {
         var tableTraveler;
 
-        function initializeDataTable() {
-            if ($.fn.dataTable.isDataTable('#tableTraveler')) {
-                tableTraveler.clear().draw();
+        // function initializeDataTable() {
+        //     if ($.fn.dataTable.isDataTable('#tableTraveler')) {
+        //         tableTraveler.clear().draw();
 
-            } else {
+        //     } else {
+            setTimeout(function(){
                 tableTraveler = $('#tableTraveler').DataTable({
                     processing: true,
                     serverSide: true,
@@ -271,8 +272,9 @@
                         { data: 'action', name: 'action', orderable: false, searchable: false }
                     ]
                 });
-            }
-        }
+        },1000);  
+            // }
+        // }
    
         //create popup
         $('#createNew').click(function() {
@@ -363,7 +365,7 @@
                     $('#Form .form-control').removeClass('is-invalid');
                     $('#Form .invalid-feedback').remove();
 
-                    initializeDataTable();
+                    $('#tableTraveler').DataTable().ajax.reload();
                     $('#success-message').text(successMessage);
                     $('#success-modal').modal('show');
                     $('#ajaxModel').modal('hide');
@@ -450,7 +452,7 @@
                                        
                     $('#success-message').text('Data has been successfully Deleted!');
                     
-                    tableTraveler.ajax.reload();
+                    $('#tableTraveler').DataTable().ajax.reload();
                     $('#success-modal').modal('show');
 
                     $('.modal').modal('hide');

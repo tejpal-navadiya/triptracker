@@ -240,10 +240,11 @@
    
     $(document).ready(function() {
         
-        function initializeDocumentDataTable() {
-        if ($.fn.dataTable.isDataTable('#documentDataTable')) {
-            DocumentDataTable.clear().draw();
-        }else{
+        // function initializeDocumentDataTable() {
+        // if ($.fn.dataTable.isDataTable('#documentDataTable')) {
+        //     DocumentDataTable.clear().draw();
+        // }else{
+            setTimeout(function(){
             DocumentDataTable = $('#documentDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -297,10 +298,10 @@
                 },
             ]
         });
-        }
+    },3000);
 
         
-    }
+    // }
    
 
         //create task
@@ -351,7 +352,7 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    initializeDocumentDataTable();
+                    $('#documentDataTable').DataTable().ajax.reload();
                     $('#document-success-message').text(documentsuccessMessage);
                     
                     $('#document-success-modal').modal('show');
@@ -494,7 +495,7 @@
                     
                     $('#document-success-message').text('Data has been successfully Deleted!');
                     
-                    initializeDocumentDataTable();
+                    $('#documentDataTable').DataTable().ajax.reload();
                     $('#document-success-modal').modal('show');
 
 
