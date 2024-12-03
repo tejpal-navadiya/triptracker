@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{{url('public/dist/css/kanban-style.css')}}">
 </head>
 <body>
+<div id="filter_grid_data">
 
 	<div class="wrapper">
 		<div class="board">
@@ -91,6 +92,13 @@
 					<tr>
 						<td>Updated Date: {{ $value->updated_at ? $value->updated_at->format('m/d/Y') : '' }}</td>
 					</tr>
+				</table>
+			</div>
+			<div class="additional-info">
+				<table class="table">
+				<td>Low({{ $value->task_counts['Low']  }})</td>
+                <td>Medium({{ $value->task_counts['Medium'] }})</td>
+                <td>High({{ $value->task_counts['High'] }})</td>
 				</table>
 			</div>
 			<a href="{{ route('trip.edit', $value->tr_id) }}" class="edit-icon">
@@ -270,3 +278,4 @@
     });
 });
 </script>
+

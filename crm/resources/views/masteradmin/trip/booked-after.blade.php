@@ -22,7 +22,7 @@
                         <div class="row">
                             <div class="col-lg-2 col-1024 col-md-6 px-10">
                                 <select id="trip_agent" class="form-control select2" style="width: 100%;" name="trip_agent">
-                                    <option value="" default disabled>Choose Agent</option>
+                                    <option value="" default >Choose Agent</option>
                                     @foreach ($agency as $value)
                                         <option value="{{ $value->users_id }}">
                                             {{ $value->users_first_name }} {{ $value->users_last_name }}
@@ -34,7 +34,7 @@
                             <div class="col-lg-3 col-1024 col-md-6 px-10">
                                 <select id="trip_traveler" class="form-control select2" style="width: 100%;"
                                     name="trip_traveler">
-                                    <option value="" default disabled>Choose Traveler</option>
+                                    <option value="" default >Choose Traveler</option>
                                     @foreach ($trip as $value)
                                         <option value="{{ $value->tr_traveler_name }}">
                                             {{ $value->tr_traveler_name }}
@@ -295,14 +295,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+
+
 <script>
     $(document).ready(function() {
 
-       $('#bookafterDataTable').DataTable({
+        $('#bookafterDataTable').DataTable({
             "order": [],
             "ordering": false // Completely disable ordering
         });
-
 
         var defaultStartDate = "";
         var defaultEndDate = "";
@@ -311,7 +312,7 @@
         var trip_status = "";
 
 
-        $('#from-datepicker').val(defaultStartDate);
+     $('#from-datepicker').val(defaultStartDate);
 
         $('#to-datepicker').val(defaultEndDate);
 
@@ -364,13 +365,15 @@
             todatepicker.open();
         });
 
-        $('.filter-text').on('click', function() {
+        $('.filter-text').on('click', function(e) {
+            e.preventDefault();
             clearFilters();
         });
 
 
-
         function fetchFilteredData() {
+            // var sdate = $('#from-datepicker').val(defaultStartDate);
+            // alert(sdate);
             var formData = {
                 start_date: $('#from-datepicker').val(),
                 end_date: $('#to-datepicker').val(),
@@ -382,7 +385,7 @@
             // alert('hii');
 
             $.ajax({
-                url: '{{ route('masteradmin.trip.booked_after') }}',
+                url: '{{ route('trip.index') }}',
                 type: 'GET',
                 data: formData,
                 success: function(response) {
@@ -446,11 +449,9 @@
             fetchFilteredData();
         }
 
+       
 
-    });
-
-    $(document).ready(function () {
-    // Function to load list view
+            // Function to load list view
     $('#listViewBtn').click(function (e) {
         e.preventDefault();
 
@@ -458,9 +459,19 @@
         $('#listViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
         $('#gridViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
 
+        var formData = {
+        trip_agent: $('#trip_agent').val(),
+        trip_traveler: $('#trip_traveler').val(),
+        start_date: $('#from-datepicker').val(),
+        end_date: $('#to-datepicker').val(),
+        trip_status: $('#trip_status').val(), 
+        _token: '{{ csrf_token() }}'
+    };
+
         // Load list view via AJAX
         $.ajax({
-            url: "{{ route('masteradmin.trip.booked_after') }}",
+            url: "{{ route('trip.listView') }}",
+            data: formData,
             type: 'GET',
             success: function (response) {
                 $('#viewContainer').html(response);
@@ -471,28 +482,194 @@
                 console.error('Error loading list view:', xhr);
             }
         });
+
+
     });
 
-    // Function to load grid view
-    $('#gridViewBtn').click(function (e) {
-        e.preventDefault();
 
-        // Update button active states
-        $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
-        $('#listViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+  
+});
 
-        // Load grid view via AJAX
-        $.ajax({
-            url: "{{ route('bookingtrip.gridView') }}",
-            type: 'GET',
-            success: function (response) {
-                $('#viewContainer').html(response);
+</script>
+
+
+<script>
+    $(document).ready(function() {
+
+        var defaultStartDate = "";
+        var defaultEndDate = "";
+        var trip_agent = "";
+        var trip_traveler = "";
+        var trip_status = "";
+
+
+        $('#from-datepicker').val(defaultStartDate);
+
+        $('#to-datepicker').val(defaultEndDate);
+
+        $('#trip_agent').val(trip_agent);
+
+        $('#trip_traveler').val(trip_traveler);
+
+        $('#trip_status').val(trip_status);
+
+        var fromdatepicker = flatpickr("#from-datepicker", {
+            locale: 'en',
+            altInput: true,
+            dateFormat: "MM/DD/YYYY",
+            altFormat: "MM/DD/YYYY",
+            onChange: function(selectedDates, dateStr, instance) {
+
+                fetchFilteredData1();
+                //alert('edate');
             },
-            error: function (xhr) {
-                console.error('Error loading grid view:', xhr);
+            parseDate: (datestr, format) => {
+                return moment(datestr, format, true).toDate();
+            },
+            formatDate: (date, format, locale) => {
+                return moment(date).format(format);
             }
         });
+        document.getElementById('from-calendar-icon').addEventListener('click', function() {
+            fromdatepicker.open();
+        });
+
+        var todatepicker = flatpickr("#to-datepicker", {
+            locale: 'en',
+            altInput: true,
+            dateFormat: "MM/DD/YYYY",
+            altFormat: "MM/DD/YYYY",
+            onChange: function(selectedDates, dateStr, instance) {
+
+                fetchFilteredData1();
+
+                //alert('edate');
+            },
+            parseDate: (datestr, format) => {
+                return moment(datestr, format, true).toDate();
+            },
+            formatDate: (date, format, locale) => {
+                return moment(date).format(format);
+            }
+        });
+        document.getElementById('to-calendar-icon').addEventListener('click', function() {
+            todatepicker.open();
+        });
+
+        $('.filter-text').on('click', function(e) {
+            e.preventDefault();
+            clearFilters1();
+        });
+
+
+        function fetchFilteredData1() {
+            var formData = {
+                start_date: $('#from-datepicker').val(),
+                end_date: $('#to-datepicker').val(),
+                trip_agent: $('#trip_agent').val(),
+                trip_traveler: $('#trip_traveler').val(),
+                trip_status: $('#trip_status').val(),
+                _token: '{{ csrf_token() }}'
+            };
+            // alert('hii');
+
+            $.ajax({
+                url: "{{ route('bookingtrip.gridView') }}",
+                type: 'GET',
+                data: formData,
+                success: function(response) {
+                    $('#filter_grid_data').html(
+                        response); // Update the results container with HTML content
+
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    //alert('An error occurred while fetching data.');
+                }
+            });
+
+        }
+
+        // Attach change event handlers to filter inputs
+        $('#trip_agent, #trip_traveler, #trip_status').on('change keyup', function(e) {
+
+            e.preventDefault();
+            //   alert('hii');
+            fetchFilteredData1();
+        });
+
+
+        function clearFilters1() {
+            // Clear filters
+            $('#trip_agent').val('').trigger('change');
+            $('#trip_traveler').val('').trigger('change');
+            $('#trip_status').val('').trigger('change');
+
+            // Clear datepicker fields
+            const fromDatePicker = flatpickr("#from-datepicker", {
+                locale: 'en',
+                altInput: true,
+                dateFormat: "MM/DD/YYYY",
+                altFormat: "MM/DD/YYYY",
+                parseDate: (datestr, format) => {
+                    return moment(datestr, format, true).toDate();
+                },
+                formatDate: (date, format, locale) => {
+                    return moment(date).format(format);
+                }
+            });
+            fromDatePicker.clear(); // Clears the "from" datepicker
+
+            const todatepicker = flatpickr("#to-datepicker", {
+                locale: 'en',
+                altInput: true,
+                dateFormat: "MM/DD/YYYY",
+                altFormat: "MM/DD/YYYY",
+                parseDate: (datestr, format) => {
+                    return moment(datestr, format, true).toDate();
+                },
+                formatDate: (date, format, locale) => {
+                    return moment(date).format(format);
+                }
+            });
+
+            todatepicker.clear();
+
+            fetchFilteredData1();
+        }
+  // Function to load grid view
+  $('#gridViewBtn').click(function (e) {
+    e.preventDefault();
+
+    // Update button active states
+    $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
+    $('#listViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+
+    // Prepare the filter parameters
+    var formData = {
+        trip_agent: $('#trip_agent').val(),
+        trip_traveler: $('#trip_traveler').val(),
+        start_date: $('#from-datepicker').val(),
+        end_date: $('#to-datepicker').val(),
+        trip_status: $('#trip_status').val(),
+        _token: '{{ csrf_token() }}'
+    };
+
+    // Load grid view via AJAX
+    $.ajax({
+        url: "{{ route('bookingtrip.gridView') }}",
+        type: 'GET',
+        data: formData, // Include filters in the request
+        success: function (response) {
+            $('#viewContainer').html(response); // Update the container with grid view content
+        },
+        error: function (xhr) {
+            console.error('Error loading grid view:', xhr);
+        }
     });
 });
 
+    });
+
+   
 </script>

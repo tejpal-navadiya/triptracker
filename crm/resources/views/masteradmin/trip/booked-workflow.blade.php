@@ -11,6 +11,7 @@
 </head>
 
 <body>
+<div id="filter_grid_data">
 
 	<div class="wrapper">
 		<div class="board">
@@ -105,6 +106,13 @@
 								<tr>
 									<td>Updated Date: {{ $trip->updated_at ? $trip->updated_at->format('m/d/Y') : '' }}</td>
 								</tr>
+							</table>
+						</div>
+						<div class="additional-info">
+							<table class="table">
+							<td>Low({{ $trip->task_counts['Low']  }})</td>
+							<td>Medium({{ $trip->task_counts['Medium'] }})</td>
+							<td>High({{ $trip->task_counts['High'] }})</td>
 							</table>
 						</div>
 						<a href="{{ route('trip.edit', $trip->tr_id) }}" class="edit-icon">
