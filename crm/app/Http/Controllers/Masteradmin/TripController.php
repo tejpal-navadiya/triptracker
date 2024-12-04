@@ -34,6 +34,7 @@ class TripController extends Controller
     
     public function index(Request $request)
     {
+        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
         $startDate = $request->input('start_date'); 
@@ -141,7 +142,7 @@ class TripController extends Controller
         $user = Auth::guard('masteradmins')->user();
         //$dynamicId = $user->id;
 
-        $triptype = TripType::all();
+        $triptype = TripType::orderBy('ty_name', 'ASC')->get();
 
        $agency_users = new MasterUserDetails();
        $agency_users->setTableForUniqueId($user->user_id);
@@ -414,7 +415,7 @@ class TripController extends Controller
         $typeoftrip = TypeOfTrip::where('tr_id', $trip->tr_id)->orderBy('trip_type_name','asc')->get();
         // dd($typeoftrip);
 
-        $triptype = TripType::all();
+        $triptype = TripType::orderBy('ty_name', 'ASC')->get();
 
         $tripstatus = TripStatus::all();
 
@@ -1397,14 +1398,14 @@ class TripController extends Controller
                 
                     // Check if end date exists
                     if (!$endDate) {
-                        return '';
+                      
                     }
                 
                     // Parse the end date and ensure it's in the correct format
                     try {
                         $endDateParsed = Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
                     } catch (\Exception $e) {
-                        return ''; // Return empty if the date format is invalid
+                        
                     }
                 
                     // Calculate days since completion (positive if in the past, 0 if today, negative if future)
@@ -2042,12 +2043,12 @@ public function bookgridView(Request $request)
  
 
     // 2 Days Trip Bon Voyage Query
-    $twoDaysFromNow = $currentDate->copy()->addDays(2)->format('m/d/Y');
+    $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
     $twoDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-        ->where($tripTable . '.tr_start_date', '=', $twoDaysFromNow);
-
+        ->where($tripTable . '.tr_start_date', '>', $currentDate)
+        ->where($tripTable . '.tr_start_date', '<', $twoDaysFromNow);
     // Apply filters for 2 Days Trip Bon Voyage Query
     if ($startDate && !$endDate) {
         $twoDaysTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);

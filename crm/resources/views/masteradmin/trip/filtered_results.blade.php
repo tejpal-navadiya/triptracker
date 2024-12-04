@@ -1,3 +1,4 @@
+<div id="filters_data">
 <div class="card px-20">
     <div class="card-body1">
         <div class="col-md-12 table-responsive pad_table">
@@ -116,3 +117,4 @@ $(function () {
 });
 
 </script>
+</div>

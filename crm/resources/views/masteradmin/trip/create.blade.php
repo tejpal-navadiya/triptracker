@@ -142,7 +142,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_start_date" :value="__('Start Date')" />
+                                            <x-input-label for="tr_start_date" :value="__('Trip Start Date')" />
                                             <div class="input-group date" id="tr_start_date" data-target-input="nearest">
 
                                                 <x-flatpickr id="completed_date" name="tr_start_date"
@@ -159,7 +159,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_end_date" :value="__('End Date')" />
+                                            <x-input-label for="tr_end_date" :value="__('Trip End Date')" />
                                             <div class="input-group date" id="tr_end_date" data-target-input="nearest">
 
                                                 <x-flatpickr id="expiration_date" name="tr_end_date"

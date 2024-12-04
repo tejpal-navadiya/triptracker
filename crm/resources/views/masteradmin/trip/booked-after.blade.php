@@ -124,7 +124,7 @@
                         @endif
 
                         <!-- Main row -->
-                        <div id="filter_data">
+                        <div id="filters_data">
                             <div class="card px-20">
                                 <div class="card-body1">
                                     <div class="col-md-12 table-responsive pad_table">
@@ -239,48 +239,11 @@
         </div><!-- /.container-fluid -->
                 </section>
             </div>
+            
     <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
 
-    <div class="modal fade" id="ajaxModel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modelHeading"></h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="Form" name="Form" class="mt-6 space-y-6" enctype="multipart/form-data">
-
-                    <input type="hidden" name="role_id" id="role_id">
-                    <ul id="update_msgList"></ul>
-                    <div class="modal-body">
-                        <div class="row pxy-15 px-10">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="role_name">Role Name</label>
-                                    <input type="text" class="form-control @error('role_name') is-invalid @enderror"
-                                        id="role_name" name="role_name" placeholder="Enter Role Name"
-                                        value="{{ old('role_name') }}" />
-                                    @error('role_name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
-                            <button type="submit" id="saveBtn" value="create"
-                                class="add_btn">{{ __('Save Changes') }}</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
@@ -297,14 +260,16 @@
 <script src="https://cdn.jsdelivr.net/npm/moment"></script>
 
 
+
+
+
+
 <script>
     $(document).ready(function() {
-
         $('#bookafterDataTable').DataTable({
             "order": [],
             "ordering": false // Completely disable ordering
         });
-
         var defaultStartDate = "";
         var defaultEndDate = "";
         var trip_agent = "";
@@ -322,7 +287,7 @@
 
         $('#trip_status').val(trip_status);
 
-        var fromdatepicker = flatpickr("#from-datepicker", {
+        var fromdatepicker1 = flatpickr("#from-datepicker", {
             locale: 'en',
             altInput: true,
             dateFormat: "MM/DD/YYYY",
@@ -330,6 +295,7 @@
             onChange: function(selectedDates, dateStr, instance) {
 
                 fetchFilteredData();
+                fetchFilteredData1();
                 //alert('edate');
             },
             parseDate: (datestr, format) => {
@@ -340,10 +306,10 @@
             }
         });
         document.getElementById('from-calendar-icon').addEventListener('click', function() {
-            fromdatepicker.open();
+            fromdatepicker1.open();
         });
 
-        var todatepicker = flatpickr("#to-datepicker", {
+        var todatepicker1 = flatpickr("#to-datepicker", {
             locale: 'en',
             altInput: true,
             dateFormat: "MM/DD/YYYY",
@@ -352,6 +318,7 @@
 
                 fetchFilteredData();
 
+                fetchFilteredData1();
                 //alert('edate');
             },
             parseDate: (datestr, format) => {
@@ -362,7 +329,7 @@
             }
         });
         document.getElementById('to-calendar-icon').addEventListener('click', function() {
-            todatepicker.open();
+            todatepicker1.open();
         });
 
         $('.filter-text').on('click', function(e) {
@@ -385,11 +352,39 @@
             // alert('hii');
 
             $.ajax({
-                url: '{{ route('trip.index') }}',
+                url: '{{ route('masteradmin.trip.booked_after') }}',
                 type: 'GET',
                 data: formData,
                 success: function(response) {
-                    $('#filter_data').html(
+                    $('#filters_data').html(
+                        response); 
+
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    
+                }
+            });
+
+        }
+
+        function fetchFilteredData1() {
+            var formData = {
+                start_date: $('#from-datepicker').val(),
+                end_date: $('#to-datepicker').val(),
+                trip_agent: $('#trip_agent').val(),
+                trip_traveler: $('#trip_traveler').val(),
+                trip_status: $('#trip_status').val(),
+                _token: '{{ csrf_token() }}'
+            };
+            // alert('hii');
+
+            $.ajax({
+                url: "{{ route('bookingtrip.gridView') }}",
+                type: 'GET',
+                data: formData,
+                success: function(response) {
+                    $('#filter_grid_data').html(
                         response); // Update the results container with HTML content
 
                 },
@@ -407,6 +402,7 @@
             e.preventDefault();
             //   alert('hii');
             fetchFilteredData();
+            fetchFilteredData1();
         });
 
 
@@ -447,6 +443,7 @@
             todatepicker.clear();
 
             fetchFilteredData();
+            fetchFilteredData1();
         }
 
        
@@ -470,11 +467,12 @@
 
         // Load list view via AJAX
         $.ajax({
-            url: "{{ route('trip.listView') }}",
+            url: '{{ route('masteradmin.trip.booked_after') }}',
             data: formData,
             type: 'GET',
             success: function (response) {
                 $('#viewContainer').html(response);
+                
                 // Initialize DataTable
                 $('#listview4').DataTable();
             },
@@ -487,158 +485,7 @@
     });
 
 
-  
-});
-
-</script>
-
-
-<script>
-    $(document).ready(function() {
-
-        var defaultStartDate = "";
-        var defaultEndDate = "";
-        var trip_agent = "";
-        var trip_traveler = "";
-        var trip_status = "";
-
-
-        $('#from-datepicker').val(defaultStartDate);
-
-        $('#to-datepicker').val(defaultEndDate);
-
-        $('#trip_agent').val(trip_agent);
-
-        $('#trip_traveler').val(trip_traveler);
-
-        $('#trip_status').val(trip_status);
-
-        var fromdatepicker = flatpickr("#from-datepicker", {
-            locale: 'en',
-            altInput: true,
-            dateFormat: "MM/DD/YYYY",
-            altFormat: "MM/DD/YYYY",
-            onChange: function(selectedDates, dateStr, instance) {
-
-                fetchFilteredData1();
-                //alert('edate');
-            },
-            parseDate: (datestr, format) => {
-                return moment(datestr, format, true).toDate();
-            },
-            formatDate: (date, format, locale) => {
-                return moment(date).format(format);
-            }
-        });
-        document.getElementById('from-calendar-icon').addEventListener('click', function() {
-            fromdatepicker.open();
-        });
-
-        var todatepicker = flatpickr("#to-datepicker", {
-            locale: 'en',
-            altInput: true,
-            dateFormat: "MM/DD/YYYY",
-            altFormat: "MM/DD/YYYY",
-            onChange: function(selectedDates, dateStr, instance) {
-
-                fetchFilteredData1();
-
-                //alert('edate');
-            },
-            parseDate: (datestr, format) => {
-                return moment(datestr, format, true).toDate();
-            },
-            formatDate: (date, format, locale) => {
-                return moment(date).format(format);
-            }
-        });
-        document.getElementById('to-calendar-icon').addEventListener('click', function() {
-            todatepicker.open();
-        });
-
-        $('.filter-text').on('click', function(e) {
-            e.preventDefault();
-            clearFilters1();
-        });
-
-
-        function fetchFilteredData1() {
-            var formData = {
-                start_date: $('#from-datepicker').val(),
-                end_date: $('#to-datepicker').val(),
-                trip_agent: $('#trip_agent').val(),
-                trip_traveler: $('#trip_traveler').val(),
-                trip_status: $('#trip_status').val(),
-                _token: '{{ csrf_token() }}'
-            };
-            // alert('hii');
-
-            $.ajax({
-                url: "{{ route('bookingtrip.gridView') }}",
-                type: 'GET',
-                data: formData,
-                success: function(response) {
-                    $('#filter_grid_data').html(
-                        response); // Update the results container with HTML content
-
-                },
-                error: function(xhr) {
-                    console.error('Error:', xhr);
-                    //alert('An error occurred while fetching data.');
-                }
-            });
-
-        }
-
-        // Attach change event handlers to filter inputs
-        $('#trip_agent, #trip_traveler, #trip_status').on('change keyup', function(e) {
-
-            e.preventDefault();
-            //   alert('hii');
-            fetchFilteredData1();
-        });
-
-
-        function clearFilters1() {
-            // Clear filters
-            $('#trip_agent').val('').trigger('change');
-            $('#trip_traveler').val('').trigger('change');
-            $('#trip_status').val('').trigger('change');
-
-            // Clear datepicker fields
-            const fromDatePicker = flatpickr("#from-datepicker", {
-                locale: 'en',
-                altInput: true,
-                dateFormat: "MM/DD/YYYY",
-                altFormat: "MM/DD/YYYY",
-                parseDate: (datestr, format) => {
-                    return moment(datestr, format, true).toDate();
-                },
-                formatDate: (date, format, locale) => {
-                    return moment(date).format(format);
-                }
-            });
-            fromDatePicker.clear(); // Clears the "from" datepicker
-
-            const todatepicker = flatpickr("#to-datepicker", {
-                locale: 'en',
-                altInput: true,
-                dateFormat: "MM/DD/YYYY",
-                altFormat: "MM/DD/YYYY",
-                parseDate: (datestr, format) => {
-                    return moment(datestr, format, true).toDate();
-                },
-                formatDate: (date, format, locale) => {
-                    return moment(date).format(format);
-                }
-            });
-
-            todatepicker.clear();
-
-            fetchFilteredData1();
-        }
-  // Function to load grid view
-  $('#gridViewBtn').click(function (e) {
+    $('#gridViewBtn').click(function (e) {
     e.preventDefault();
 
     // Update button active states
@@ -669,7 +516,9 @@
     });
 });
 
-    });
 
-   
+
+  
+});
+
 </script>

@@ -159,51 +159,51 @@
 
                                 <!-- <div class="col-md-4">
 
-                                    <div class="form-group">
+                                                    <div class="form-group">
 
-                                        <x-input-label for="tr_dob" :value="__('Birthdate')" />
+                                                        <x-input-label for="tr_dob" :value="__('Birthdate')" />
 
-                                        <div class="input-group date" id="tr_dob" data-target-input="nearest">
+                                                        <div class="input-group date" id="tr_dob" data-target-input="nearest">
 
 
 
-                                            <x-flatpickr id="birthdate_date" name="tr_dob" placeholder="mm/dd/yyyy" />
+                                                            <x-flatpickr id="birthdate_date" name="tr_dob" placeholder="mm/dd/yyyy" />
 
-                                            <div class="input-group-append">
+                                                            <div class="input-group-append">
 
-                                                <div class="input-group-text" id="birthdate-hidden-icon">
+                                                                <div class="input-group-text" id="birthdate-hidden-icon">
 
-                                                    <i class="fa fa-calendar-alt"></i>
+                                                                    <i class="fa fa-calendar-alt"></i>
 
-                                                    <input type="hidden" id="birthdate_hidden"
-                                                        value="{{ $trip->tr_dob }}" />
+                                                                    <input type="hidden" id="birthdate_hidden"
+                                                                        value="{{ $trip->tr_dob }}" />
 
-                                                </div>
+                                                                </div>
 
-                                            </div>
+                                                            </div>
 
-                                        </div>
+                                                        </div>
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
+                                                        <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
 
-                                    </div>
+                                                    </div>
 
-                                </div> -->
+                                                </div> -->
 
                                 <!-- <div class="col-md-4">
 
-                                    <div class="form-group">
+                                                    <div class="form-group">
 
-                                        <x-input-label for="tr_age" :value="__('Age')" />
+                                                        <x-input-label for="tr_age" :value="__('Age')" />
 
-                                        <x-text-input type="text" class="form-control" id="tr_age" placeholder="Enter Age"
-                                            name="tr_age" autofocus autocomplete="tr_age" :value="old('tr_age', $trip->tr_age ?? '')" readonly />
+                                                        <x-text-input type="text" class="form-control" id="tr_age" placeholder="Enter Age"
+                                                            name="tr_age" autofocus autocomplete="tr_age" :value="old('tr_age', $trip->tr_age ?? '')" readonly />
 
-                                        <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
+                                                        <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
 
-                                    </div>
+                                                    </div>
 
-                                </div> -->
+                                                </div> -->
 
                                 <div class="col-md-4">
 
@@ -275,7 +275,7 @@
 
                                     <div class="form-group">
 
-                                        <x-input-label for="tr_start_date" :value="__('Start Date')" />
+                                        <x-input-label for="tr_start_date" :value="__('Trip Start Date')" />
 
                                         <div class="input-group date" id="tr_start_date" data-target-input="nearest">
 
@@ -311,7 +311,7 @@
 
                                     <div class="form-group">
 
-                                        <x-input-label for="tr_end_date" :value="__('End Date')" />
+                                        <x-input-label for="tr_end_date" :value="__('Trip End Date')" />
 
                                         <div class="input-group date" id="tr_end_date" data-target-input="nearest">
 
@@ -456,25 +456,25 @@
 
                                                 <!-- <div class="d-flex">
 
-                                                                @foreach ($triptype as $value)
+                                                                                @foreach ($triptype as $value)
 
-                                                                    <div class="custom-control custom-checkbox">
+                                                                                    <div class="custom-control custom-checkbox">
 
-                                                                        <input class="checkbox-inputbox custom-control-input"
+                                                                                        <input class="checkbox-inputbox custom-control-input"
 
-                                                                            type="checkbox" id="{{ $value->ty_id }}"
+                                                                                            type="checkbox" id="{{ $value->ty_id }}"
 
-                                                                            name="tr_type_trip[]" value="{{ $value->ty_name }}">
+                                                                                            name="tr_type_trip[]" value="{{ $value->ty_name }}">
 
-                                                                        <label for="{{ $value->ty_id }}"
+                                                                                        <label for="{{ $value->ty_id }}"
 
-                                                                            class="custom-control-label">{{ $value->ty_name }}</label>
+                                                                                            class="custom-control-label">{{ $value->ty_name }}</label>
 
-                                                                    </div>
+                                                                                    </div>
 
-                                                                @endforeach
+                                                                                @endforeach
 
-                                                            </div> -->
+                                                                            </div> -->
 
                                                 @php
 
@@ -487,711 +487,570 @@
                                                         $tripTypes = [];
 
                                                     }
-
-
-
                                                     //print_r($tripTypes);
-
                                                 @endphp
 
                                                 <div class="d-flex">
-
                                                     @foreach ($triptype as $value)
-
                                                         <div class="custom-control custom-checkbox">
-
                                                             <input class="checkbox-inputbox custom-control-input"
                                                                 type="checkbox" id="{{ $value->ty_id }}" name="tr_type_trip[]"
                                                                 value="{{ $value->ty_name }}" @if(in_array($value->ty_name, is_array($trip->tr_type_trip) ? $trip->tr_type_trip : (is_array($tripTypes) ? $tripTypes : []))) checked @endif>
 
-
-
                                                             <label for="{{ $value->ty_id }}"
                                                                 class="custom-control-label">{{ $value->ty_name }}</label>
-
                                                         </div>
-
                                                     @endforeach
-
                                                 </div>
-
-
-
-
-
                                                 <x-input-error class="mt-2" :messages="$errors->get('tr_type_trip')" />
-
                                             </div>
-
                                         </div>
 
-
-
                                         <div class="col type-of-trip-in">
-
                                             <h4>Type of Trip</h4>
-
-
 
                                             <!-- Nav tabs -->
 
                                             <!-- Tab Navigation -->
 
                                             <ul class="nav nav-tabs" id="tab-list">
-
                                                 <!-- Dynamic tab links will be added here -->
-
                                             </ul>
 
-
-
                                             <!-- Tab Content -->
-
                                             <div class="tab-content" id="tab-content">
-
                                                 @php
-
                                                     $tripTypes = json_decode($trip->tr_type_trip, true) ?? []; // Decode and ensure it's an array
-
                                                 @endphp
-
-
-
                                                 <div class="dynamic-fields" id="4-fields">
+                                                    @php
+                                                        $displayedTripTypes = []; // Array to track displayed trip types
+                                                    @endphp
+                                                    @foreach ($typeoftrip as $index => $trip)
 
-
-
-
+                                                    @if (in_array($trip->trip_type_name, $tripTypes) && !in_array($trip->trip_type_name, $displayedTripTypes))
+                                                                                            {{-- Check if current trip type is in $tripTypes --}}
                                                     @php
 
-                                                        $displayedTripTypes = []; // Array to track displayed trip types
+                                                        $rowtriptypeIndex = 0; // Initialize a counter for row trip type
 
                                                     @endphp
 
-                                                    @foreach ($typeoftrip as $index => $trip)
+                                                        <li class="nav-item">
 
+                                                            <a id="tab-{{ $index }}-tab"
+                                                                class="{{ $index === 0 ? 'active' : '' }}" data-toggle="tab"
+                                                                href="#tab-{{ $index }}">
+                                                                {{ $trip->trip_type_name }}
+                                                            </a>
+                                                        </li>
 
+                                                    @php
+                                                        $displayedTripTypes[] = $trip->trip_type_name; // Add the trip type to the displayed array
+                                                    @endphp
 
-                                                                                                @if (in_array($trip->trip_type_name, $tripTypes) && !in_array($trip->trip_type_name, $displayedTripTypes))
-                                                                                                                                        {{-- Check if current trip type is in $tripTypes --}}
+                                                    @endif
 
+                                                    <!-- Tab Content -->
 
-                                                                                                                                        @php
+                                                    <div id="tab-{{ $index }}"
+                                                        class="tab-pane {{ $index === 0 ? 'active' : '' }}">
 
-                                                                                                                                            $rowtriptypeIndex = 0; // Initialize a counter for row trip type
+                                                        @php
 
-                                                                                                                                        @endphp
+                                                            $tripFields = collect($tripTypes)->filter(fn($t) => $t === $trip->trip_type_name)->values();
 
-                                                                                                                                        <li class="nav-item">
+                                                        @endphp
 
-                                                                                                                                            <a id="tab-{{ $index }}-tab"
-                                                                                                                                                class="{{ $index === 0 ? 'active' : '' }}" data-toggle="tab"
-                                                                                                                                                href="#tab-{{ $index }}">
 
-                                                                                                                                                {{ $trip->trip_type_name }}
+                                                        @php
 
-                                                                                                                                            </a>
+                                                            $rowtriptype = 0; // Initialize a counter for row trip type
 
-                                                                                                                                        </li>
+                                                        @endphp
+                                                        @foreach ($tripFields as $fieldIndex => $tripField)
 
-                                                                                                                                        @php
+                                                            @php
+                                                                $fieldIndex = $fieldIndex + 1; // Initialize a counter for row trip type
+                                                            @endphp
 
-                                                                                                                                            $displayedTripTypes[] = $trip->trip_type_name; // Add the trip type to the displayed array
 
-                                                                                                                                        @endphp
+                                                            <div class="row align-items-center mb-3">
 
-                                                                                                @endif
+                                                                <input type="hidden"
+                                                                    name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_name]"
+                                                                    value="{{ $trip->trip_type_name }}">
 
-                                                                                                <!-- Tab Content -->
 
-                                                                                                <div id="tab-{{ $index }}"
-                                                                                                    class="tab-pane {{ $index === 0 ? 'active' : '' }}">
 
-                                                                                                    @php
+                                                                <div class="col-md-4">
 
-                                                                                                        $tripFields = collect($tripTypes)->filter(fn($t) => $t === $trip->trip_type_name)->values();
+                                                                    <input type="text"
+                                                                        name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_text]"
+                                                                        class="form-control" placeholder="Supplier"
+                                                                        value="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_text', $trip->trip_type_text) }}">
 
-                                                                                                    @endphp
+                                                                </div>
 
 
-                                                                                                    @php
 
-                                                                                                        $rowtriptype = 0; // Initialize a counter for row trip type
+                                                                <div class="col-md-4">
 
-                                                                                                    @endphp
-                                                                                                    @foreach ($tripFields as $fieldIndex => $tripField)
+                                                                    <input type="text"
+                                                                        name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_confirmation]"
+                                                                        class="form-control" placeholder="Confirmation #"
+                                                                        value="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_confirmation', $trip->trip_type_confirmation) }}">
 
-                                                                                                                                                @php
+                                                                </div>
 
-                                                                                                                                                    $fieldIndex = $fieldIndex + 1; // Initialize a counter for row trip type
 
-                                                                                                                                                @endphp
 
+                                                                @if ($rowtriptypeIndex === 0)
 
-                                                                                                                                                <div class="row align-items-center mb-3">
+                                                                    <div class="col-md-2">
 
-                                                                                                                                                    <input type="hidden"
-                                                                                                                                                        name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_name]"
-                                                                                                                                                        value="{{ $trip->trip_type_name }}">
+                                                                        <button type="button" class="add_btn w-100 add-btn1"
+                                                                            data-target="{{ $index }}">+ Add Another</button>
 
+                                                                    </div>
 
 
-                                                                                                                                                    <div class="col-md-4">
 
-                                                                                                                                                        <input type="text"
-                                                                                                                                                            name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_text]"
-                                                                                                                                                            class="form-control" placeholder="Supplier"
-                                                                                                                                                            value="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_text', $trip->trip_type_text) }}">
 
-                                                                                                                                                    </div>
 
+                                                                    <!-- Delete Button -->
 
+                                                                    <div class="col-md-2">
 
-                                                                                                                                                    <div class="col-md-4">
+                                                                        <button class="delete_btn delete-btn w-100">
 
-                                                                                                                                                        <input type="text"
-                                                                                                                                                            name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_confirmation]"
-                                                                                                                                                            class="form-control" placeholder="Confirmation #"
-                                                                                                                                                            value="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_confirmation', $trip->trip_type_confirmation) }}">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                                height="14" viewBox="0 0 14 14" fill="none">
 
-                                                                                                                                                    </div>
+                                                                                <path
+                                                                                    d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
+                                                                                    fill="#9A9DA4"></path>
 
+                                                                            </svg> Delete
 
+                                                                        </button>
 
-                                                                                                                                                    @if ($rowtriptypeIndex === 0)
+                                                                    </div>
 
-                                                                                                                                                        <div class="col-md-2">
+                                                                @else
 
-                                                                                                                                                            <button type="button" class="add_btn w-100 add-btn1"
-                                                                                                                                                                data-target="{{ $index }}">+ Add Another</button>
+                                                                    <div class="col-md-2">
 
-                                                                                                                                                        </div>
+                                                                        <button class="delete_btn delete-btn w-100">
 
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                                height="14" viewBox="0 0 14 14" fill="none">
 
+                                                                                <path
+                                                                                    d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
+                                                                                    fill="#9A9DA4"></path>
 
+                                                                            </svg> Delete
 
+                                                                        </button>
 
-                                                                                                                                                        <!-- Delete Button -->
+                                                                    </div>
 
-                                                                                                                                                        <div class="col-md-2">
+                                                                @endif
 
-                                                                                                                                                            <button class="delete_btn delete-btn w-100">
+                                                            </div>
 
-                                                                                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                                                                                                                    height="14" viewBox="0 0 14 14" fill="none">
+                                                            @php
 
-                                                                                                                                                                    <path
-                                                                                                                                                                        d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
-                                                                                                                                                                        fill="#9A9DA4"></path>
+                                                                $rowtriptype = $rowtriptype + 1; // Initialize a counter for row trip type
 
-                                                                                                                                                                </svg> Delete
+                                                            @endphp
 
-                                                                                                                                                            </button>
 
-                                                                                                                                                        </div>
+                                                            @endforeach
 
-                                                                                                                                                    @else
+                                                            </div>
+                                                            @php
 
-                                                                                                                                                        <div class="col-md-2">
+                                                            $rowtriptypeIndex = $rowtriptypeIndex + 1; // Initialize a counter for row trip type
 
-                                                                                                                                                            <button class="delete_btn delete-btn w-100">
+                                                            @endphp
+                                                                   
+                                                        @endforeach
 
-                                                                                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                                                                                                                    height="14" viewBox="0 0 14 14" fill="none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <div class="col-md-12" id="dynamic_field">
+                                            @php
+                                                $i = 1;
+                                            @endphp
+                                            @foreach ($tripmember as $index => $item)
+                                                @php
+                                                    $rowCount = $i + 1;
+                                                @endphp
 
-                                                                                                                                                                    <path
-                                                                                                                                                                        d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
-                                                                                                                                                                        fill="#9A9DA4"></path>
+                                                <div class="item-row row" id="row{{ $rowCount }}">
 
-                                                                                                                                                                </svg> Delete
+                                                    <input type="hidden" name="trtm_id_hidden" id="trtm_id_hidden"
+                                                        value="{{ $rowCount }}" />
 
-                                                                                                                                                            </button>
+                                                    <div class="col-md-3">
 
-                                                                                                                                                        </div>
+                                                        <div class="form-group">
 
-                                                                                                                                                    @endif
+                                                            <div class="d-flex">
 
-                                                                                                                                                </div>
 
-                                                                                                                                                @php
 
-                                                                                                                                                    $rowtriptype = $rowtriptype + 1; // Initialize a counter for row trip type
+                                                                <input type="hidden" name="trtm_type_hidden"
+                                                                    class="trtm_type_hidden" id="trtm_type_hidden"
+                                                                    value="{{ $item->trtm_type }}" />
 
-                                                                                                                                                @endphp
+                                                                <div class="custom-control custom-radio custom-control-inline">
 
+                                                                    <input type="radio" class="trtm_type custom-control-input"
+                                                                        id="trtm_type_family_{{ $rowCount }}"
+                                                                        name="items[{{ $rowCount }}][trtm_type]" value="1" {{ $item->trtm_type == 1 ? 'checked' : '' }}><label
+                                                                        for="trtm_type_family_{{ $rowCount }}"
+                                                                        class="custom-control-label">Family
 
-                                                                                                    @endforeach
+                                                                        Member</label>
 
-                                                                                                </div>
-                                                                                                @php
+                                                                </div>
 
-                                                                                                    $rowtriptypeIndex = $rowtriptypeIndex + 1; // Initialize a counter for row trip type
+                                                                <div class="custom-control custom-radio custom-control-inline">
 
-                                                                                                @endphp
-                                                    @endforeach
+                                                                    <input type="radio" class="trtm_type custom-control-input"
+                                                                        id="trtm_type_trip_{{ $rowCount }}"
+                                                                        name="items[{{ $rowCount }}][trtm_type]" value="2" {{ $item->trtm_type == 2 ? 'checked' : '' }}><label
+                                                                        for="trtm_type_trip_{{ $rowCount }}"
+                                                                        class="custom-control-label">Trip
+
+                                                                        Member</label>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_first_name">First Name<span
+                                                                    class="text-danger">*</span></label>
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" class="form-control"
+                                                                    id="trtm_first_name{{ $rowCount }}"
+                                                                    name="items[{{ $rowCount }}][trtm_first_name]"
+                                                                    placeholder="Enter First Name"
+                                                                    value="{{ $item->trtm_first_name }}">
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3 family-member-field">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_middle_name">Middle name</label>
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" class="form-control"
+                                                                    id="trtm_middle_name{{ $rowCount }}"
+                                                                    name="items[{{ $rowCount }}][trtm_middle_name]"
+                                                                    placeholder="Enter Middle name"
+                                                                    value="{{ $item->trtm_middle_name }}">
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_last_name">Last Name</label>
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" class="form-control"
+                                                                    id="trtm_last_name{{ $rowCount }}"
+                                                                    name="items[{{ $rowCount }}][trtm_last_name]"
+                                                                    placeholder="Enter Last Name"
+                                                                    value="{{ $item->trtm_last_name }}">
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3 family-member-field">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_nick_name">Nickname</label>
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" class="form-control"
+                                                                    id="trtm_nick_name{{ $rowCount }}"
+                                                                    name="items[{{ $rowCount }}][trtm_nick_name]"
+                                                                    placeholder="Enter Nickname" value="{{ $rowCount }}">
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3 family-member-field">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_relationship">Relationship<span
+                                                                    class="text-danger">*</span></label>
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" class="form-control"
+                                                                    id="trtm_relationship{{ $rowCount }}"
+                                                                    name="items[{{ $rowCount }}][trtm_relationship]"
+                                                                    placeholder="Enter Relationship"
+                                                                    value="{{ $item->trtm_relationship }}">
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_gender">Gender<span
+                                                                    class="text-danger">*</span></label>
+
+                                                            <div class="d-flex">
+
+                                                                <select class="form-control select2" style="width: 100%;"
+                                                                    id="trtm_gender{{ $rowCount }}"
+                                                                    name="items[{{ $rowCount }}][trtm_gender]">
+
+                                                                    <option default>Select Gender</option>
+
+                                                                    <option value="Male" {{ $item->trtm_gender == 'Male' ? 'selected' : '' }}>
+
+                                                                        Male</option>
+
+                                                                    <option value="Female" {{ $item->trtm_gender == 'Female' ? 'selected' : '' }}>
+
+                                                                        Female</option>
+
+                                                                    <option value="Other" {{ $item->trtm_gender == 'Other' ? 'selected' : '' }}>
+
+                                                                        Other</option>
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+
+
+                                                    <!-- Dynamic Row Example -->
+
+                                                    <div class="col-md-3">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_dob_{{ $index }}">Birthdate</label>
+
+                                                            <div class="d-flex">
+
+                                                                <div class="input-group date" id="trtm_dob_{{ $index }}"
+                                                                    data-target-input="nearest">
+
+                                                                    <x-flatpickr id="traveler_date_{{ $index }}"
+                                                                        name="items[{{ $rowCount }}][trtm_dob]"
+                                                                        placeholder="mm/dd/yyyy" />
+
+                                                                    <div class="input-group-append">
+
+                                                                        <div class="input-group-text"
+                                                                            id="traveler-date-icon_{{ $index }}">
+
+                                                                            <i class="fa fa-calendar-alt"></i>
+
+                                                                            <input type="hidden"
+                                                                                id="trtm_dob_hidden_{{ $index }}"
+                                                                                value="{{ $item->trtm_dob ?? '' }}" />
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3">
+
+                                                        <div class="form-group">
+
+                                                            <label for="trtm_age_{{ $index }}">Age</label>
+
+                                                            <!-- Ensure the ID is consistent -->
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" name="items[{{ $rowCount }}][trtm_age]"
+                                                                    class="form-control" aria-describedby="inputGroupPrepend"
+                                                                    placeholder="Enter Age" id="trtm_ages_{{ $index }}"
+                                                                    value="{{ $item->trtm_age ?? '' }}" readonly>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-md-3">
+
+
+
+                                                        <button class="delete_btn delete-item" id="{{ $rowCount }}">
+
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                                viewBox="0 0 14 14" fill="none">
+
+                                                                <path
+                                                                    d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
+                                                                    fill="white"></path>
+
+                                                            </svg>
+
+                                                            Remove
+
+                                                        </button>
+
+                                                    </div>
 
                                                 </div>
 
+                                                <hr />
 
+                                                @php
 
-                                            </div>
+                                                    $i++;
 
-
-
-
-
-
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-
-
-                                        <div class="col-md-12" id="dynamic_field">
-
-                                            @php
-
-                                                $i = 1;
-
-                                            @endphp
-
-                                            @foreach ($tripmember as $index => $item)
-
-                                                                                @php
-
-                                                                                    $rowCount = $i + 1;
-
-
-
-                                                                                @endphp
-
-                                                                                <div class="item-row row" id="row{{ $rowCount }}">
-
-                                                                                    <input type="hidden" name="trtm_id_hidden" id="trtm_id_hidden"
-                                                                                        value="{{ $rowCount }}" />
-
-                                                                                    <div class="col-md-3">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <div class="d-flex">
-
-
-
-                                                                                                <input type="hidden" name="trtm_type_hidden"
-                                                                                                    class="trtm_type_hidden" id="trtm_type_hidden"
-                                                                                                    value="{{ $item->trtm_type }}" />
-
-                                                                                                <div class="custom-control custom-radio custom-control-inline">
-
-                                                                                                    <input type="radio" class="trtm_type custom-control-input"
-                                                                                                        id="trtm_type_family_{{ $rowCount }}"
-                                                                                                        name="items[{{ $rowCount }}][trtm_type]" value="1" {{ $item->trtm_type == 1 ? 'checked' : '' }}><label
-                                                                                                        for="trtm_type_family_{{ $rowCount }}"
-                                                                                                        class="custom-control-label">Family
-
-                                                                                                        Member</label>
-
-                                                                                                </div>
-
-                                                                                                <div class="custom-control custom-radio custom-control-inline">
-
-                                                                                                    <input type="radio" class="trtm_type custom-control-input"
-                                                                                                        id="trtm_type_trip_{{ $rowCount }}"
-                                                                                                        name="items[{{ $rowCount }}][trtm_type]" value="2" {{ $item->trtm_type == 2 ? 'checked' : '' }}><label
-                                                                                                        for="trtm_type_trip_{{ $rowCount }}"
-                                                                                                        class="custom-control-label">Trip
-
-                                                                                                        Member</label>
-
-                                                                                                </div>
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_first_name">First Name<span
-                                                                                                    class="text-danger">*</span></label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <input type="text" class="form-control"
-                                                                                                    id="trtm_first_name{{ $rowCount }}"
-                                                                                                    name="items[{{ $rowCount }}][trtm_first_name]"
-                                                                                                    placeholder="Enter First Name"
-                                                                                                    value="{{ $item->trtm_first_name }}">
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3 family-member-field">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_middle_name">Middle name</label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <input type="text" class="form-control"
-                                                                                                    id="trtm_middle_name{{ $rowCount }}"
-                                                                                                    name="items[{{ $rowCount }}][trtm_middle_name]"
-                                                                                                    placeholder="Enter Middle name"
-                                                                                                    value="{{ $item->trtm_middle_name }}">
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_last_name">Last Name</label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <input type="text" class="form-control"
-                                                                                                    id="trtm_last_name{{ $rowCount }}"
-                                                                                                    name="items[{{ $rowCount }}][trtm_last_name]"
-                                                                                                    placeholder="Enter Last Name"
-                                                                                                    value="{{ $item->trtm_last_name }}">
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3 family-member-field">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_nick_name">Nickname</label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <input type="text" class="form-control"
-                                                                                                    id="trtm_nick_name{{ $rowCount }}"
-                                                                                                    name="items[{{ $rowCount }}][trtm_nick_name]"
-                                                                                                    placeholder="Enter Nickname" value="{{ $rowCount }}">
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3 family-member-field">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_relationship">Relationship<span
-                                                                                                    class="text-danger">*</span></label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <input type="text" class="form-control"
-                                                                                                    id="trtm_relationship{{ $rowCount }}"
-                                                                                                    name="items[{{ $rowCount }}][trtm_relationship]"
-                                                                                                    placeholder="Enter Relationship"
-                                                                                                    value="{{ $item->trtm_relationship }}">
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_gender">Gender<span
-                                                                                                    class="text-danger">*</span></label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <select class="form-control select2" style="width: 100%;"
-                                                                                                    id="trtm_gender{{ $rowCount }}"
-                                                                                                    name="items[{{ $rowCount }}][trtm_gender]">
-
-                                                                                                    <option default>Select Gender</option>
-
-                                                                                                    <option value="Male" {{ $item->trtm_gender == 'Male' ? 'selected' : '' }}>
-
-                                                                                                        Male</option>
-
-                                                                                                    <option value="Female" {{ $item->trtm_gender == 'Female' ? 'selected' : '' }}>
-
-                                                                                                        Female</option>
-
-                                                                                                    <option value="Other" {{ $item->trtm_gender == 'Other' ? 'selected' : '' }}>
-
-                                                                                                        Other</option>
-
-                                                                                                </select>
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-
-
-                                                                                    <!-- Dynamic Row Example -->
-
-                                                                                    <div class="col-md-3">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_dob_{{ $index }}">Birthdate</label>
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <div class="input-group date" id="trtm_dob_{{ $index }}"
-                                                                                                    data-target-input="nearest">
-
-                                                                                                    <x-flatpickr id="traveler_date_{{ $index }}"
-                                                                                                        name="items[{{ $rowCount }}][trtm_dob]"
-                                                                                                        placeholder="mm/dd/yyyy" />
-
-                                                                                                    <div class="input-group-append">
-
-                                                                                                        <div class="input-group-text"
-                                                                                                            id="traveler-date-icon_{{ $index }}">
-
-                                                                                                            <i class="fa fa-calendar-alt"></i>
-
-                                                                                                            <input type="hidden"
-                                                                                                                id="trtm_dob_hidden_{{ $index }}"
-                                                                                                                value="{{ $item->trtm_dob ?? '' }}" />
-
-                                                                                                        </div>
-
-                                                                                                    </div>
-
-                                                                                                </div>
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3">
-
-                                                                                        <div class="form-group">
-
-                                                                                            <label for="trtm_age_{{ $index }}">Age</label>
-
-                                                                                            <!-- Ensure the ID is consistent -->
-
-                                                                                            <div class="d-flex">
-
-                                                                                                <input type="text" name="items[{{ $rowCount }}][trtm_age]"
-                                                                                                    class="form-control" aria-describedby="inputGroupPrepend"
-                                                                                                    placeholder="Enter Age" id="trtm_ages_{{ $index }}"
-                                                                                                    value="{{ $item->trtm_age ?? '' }}" readonly>
-
-                                                                                            </div>
-
-                                                                                        </div>
-
-                                                                                    </div>
-
-
-
-                                                                                    <div class="col-md-3">
-
-
-
-                                                                                        <button class="delete_btn delete-item" id="{{ $rowCount }}">
-
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                                                                viewBox="0 0 14 14" fill="none">
-
-                                                                                                <path
-                                                                                                    d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
-                                                                                                    fill="white"></path>
-
-                                                                                            </svg>
-
-                                                                                            Remove
-
-                                                                                        </button>
-
-                                                                                    </div>
-
-                                                                                </div>
-
-                                                                                <hr />
-
-                                                                                @php
-
-                                                                                    $i++;
-
-                                                                                @endphp
+                                                @endphp
 
                                             @endforeach
 
-
-
                                         </div>
-
                                         <div class="col-md-12">
-
                                             <button type="button" id="add" class="add_tripmembertbtn add_btn"><i
                                                     class="fas fa-plus add_plus_icon"></i>Add Traveling Member</button>
-
                                         </div>
-
-
-
-
-
                                     </div>
-
                                 </div>
-
                                 @if($triptinerary && count($triptinerary) > 0)
-
-
-
                                     <div class="itinerary-link">
-
                                         <div class="dynamic-fields" id="Itinerary-fields">
-
                                             @foreach($triptinerary as $index => $itinerary)
-
                                                 <div class="row align-items-center mb-3">
-
                                                     <div class="col-md-4">
-
                                                         <input type="text" name="itinerary[{{ $index }}][trit_text]"
                                                             class="form-control" placeholder="Itinerary Link"
                                                             value="{{ $itinerary->trit_text ?? '' }}">
-
                                                     </div>
-
                                                     <div class="col-md-2">
-
                                                         @if($loop->last)
-
                                                             <button type="button" class="add_btn w-100 add-btn2"
                                                                 data-target="Itinerary">+ Add Another</button>
-
                                                         @else
-
                                                             <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
-
                                                         @endif
-
                                                     </div>
-
                                                 </div>
-
                                             @endforeach
-
                                         </div>
-
                                     </div>
-
                                 @else
 
-
-
                                     <div class="itinerary-link">
-
                                         <div class="dynamic-fields" id="Itinerary-fields">
-
                                             <div class="row align-items-center mb-3">
-
                                                 <div class="col-md-4">
-
                                                     <input type="text" name="itinerary[0][trit_text]" class="form-control"
                                                         placeholder="Itinerary Link">
-
                                                 </div>
-
                                                 <div class="col-md-2">
-
                                                     <button type="button" class="add_btn w-100 add-btn2"
-                                                        data-target="Itinerary">+ Add Another</button>
-
+                                                    data-target="Itinerary">+ Add Another</button>
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                 @endif
 
-
-
                                 <div class="row py-20 px-10">
-
                                     <div class="col-md-12 text-center">
-
                                         <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
-
                                         <button type="submit" class="add_btn px-10">Save</button>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                     </form>
-
                 </div>
-
                 <!-- /.card -->
-
             </div><!-- /.container-fluid -->
-
         </section>
-
         <!-- /.content -->
-
     </div>
-
     <!-- /.content-wrapper -->
-
-
 
     <!-- Control Sidebar -->
 
@@ -1462,371 +1321,253 @@
                 rowCount++;
 
                 $('#dynamic_field').append(`
+                                                <div class="item-row row" id="row${rowCount}">
+                                                <div class="col-md-3">
+                                                <div class="form-group">
+                                                <div class="d-flex">
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="trtm_type custom-control-input" id="trtm_type_family${rowCount}" name="items[${rowCount}][trtm_type]" value="1" >
+                                                <label for="trtm_type_family${rowCount}" class="custom-control-label">Family Member</label> 
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="trtm_type custom-control-input" id="trtm_type_trip${rowCount}" name="items[${rowCount}][trtm_type]" value="2">
+                                                <label for="trtm_type_trip${rowCount}" class="custom-control-label">Trip Member</label>
+                                                </div>       
+                                                </div>
+                                                </div>
+                                                </div>
 
-                                <div class="item-row row" id="row${rowCount}">
+                                            <div class="col-md-3">
+                                            <div class="form-group">
+                                            <label for="trtm_first_name">First Name<span
+                                            class="text-danger">*</span></label>
+                                            <div class="d-flex">
+                                            <input type="text" class="form-control" id="trtm_first_name${rowCount}" name="items[${rowCount}][trtm_first_name]" placeholder="Enter First Name">
+                                            </div>
+                                            </div>
+                                            </div>
 
-                                <div class="col-md-3">
+                                            <div class="col-md-3 family-member-field">
+                                            <div class="form-group">
+                                            <label for="trtm_middle_name">Middle name</label>
+                                            <div class="d-flex">
+                                            <input type="text" class="form-control" id="trtm_middle_name${rowCount}" name="items[${rowCount}][trtm_middle_name]" placeholder="Enter Middle name">
+                                            </div>
+                                            </div>
+                                            </div>
 
-                                <div class="form-group">
+                                            <div class="col-md-3">
+                                            <div class="form-group">
+                                            <label for="trtm_last_name">Last Name</label>
+                                            <div class="d-flex">
+                                            <input type="text" class="form-control" id="trtm_last_name${rowCount}" name="items[${rowCount}][trtm_last_name]" placeholder="Enter Last Name">
+                                            </div>
+                                            </div>
+                                            </div>
 
-                                <div class="d-flex">
+                                            <div class="col-md-3 family-member-field">
+                                            <div class="form-group">
+                                            <label for="trtm_nick_name">Nickname</label>
+                                            <div class="d-flex">
+                                            <input type="text" class="form-control" id="trtm_nick_name${rowCount}" name="items[${rowCount}][trtm_nick_name]" placeholder="Enter Nickname">
+                                            </div>
 
-                                <div class="custom-control custom-radio custom-control-inline">
+                                            </div>
 
-                                <input type="radio" class="trtm_type custom-control-input" id="trtm_type_family${rowCount}" name="items[${rowCount}][trtm_type]" value="1" >
+                                            </div>
 
-                                <label for="trtm_type_family${rowCount}" class="custom-control-label">Family Member</label> 
 
-                                </div>
 
-                                <div class="custom-control custom-radio custom-control-inline">
+                                            <div class="col-md-3 family-member-field">
 
-                                <input type="radio" class="trtm_type custom-control-input" id="trtm_type_trip${rowCount}" name="items[${rowCount}][trtm_type]" value="2">
+                                            <div class="form-group">
 
-                                <label for="trtm_type_trip${rowCount}" class="custom-control-label">Trip Member</label>
+                                            <label for="trtm_relationship">Relationship<span
 
-                                </div>       
+                                            class="text-danger">*</span></label>
 
-                                </div>
+                                            <div class="d-flex">
 
-                                </div>
+                                            <input type="text" class="form-control" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]" placeholder="Enter Relationship">
 
-                                </div>
+                                            </div>
 
+                                            </div>
 
+                                            </div>
 
-                            <div class="col-md-3">
 
-                            <div class="form-group">
 
-                            <label for="trtm_first_name">First Name<span
+                                            <div class="col-md-3">
 
-                            class="text-danger">*</span></label>
+                                            <div class="form-group">
 
-                            <div class="d-flex">
+                                            <label for="trtm_gender">Gender<span
 
-                            <input type="text" class="form-control" id="trtm_first_name${rowCount}" name="items[${rowCount}][trtm_first_name]" placeholder="Enter First Name">
+                                            class="text-danger">*</span></label>
 
-                            </div>
+                                            <div class="d-flex">
 
-                            </div>
+                                            <select class="form-control select2" style="width: 100%;" id="trtm_gender${rowCount}" name="items[${rowCount}][trtm_gender]" >
 
-                            </div>
+                                            <option default>Select Gender</option>
 
+                                            <option value="Male">Male</option>
 
+                                            <option value="Female">Female</option>
 
-                            <div class="col-md-3 family-member-field">
+                                            <option value="Other">Other</option>
 
-                            <div class="form-group">
+                                            </select>
 
-                            <label for="trtm_middle_name">Middle name</label>
+                                            </div>
 
-                            <div class="d-flex">
+                                            </div>
 
-                            <input type="text" class="form-control" id="trtm_middle_name${rowCount}" name="items[${rowCount}][trtm_middle_name]" placeholder="Enter Middle name">
+                                            </div>
 
-                            </div>
 
-                            </div>
 
-                            </div>
+                                            <div class="col-md-3">
 
+                                            <div class="form-group">
 
+                                            <label for="trtm_dob">Birthdate</label>
 
-                            <div class="col-md-3">
+                                            <div class="d-flex">
 
-                            <div class="form-group">
+                                            <div class="input-group date" id="trtm_dob" data-target-input="nearest">
 
-                            <label for="trtm_last_name">Last Name</label>
+                                            <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
 
-                            <div class="d-flex">
+                                            <div class="input-group-append">
 
-                            <input type="text" class="form-control" id="trtm_last_name${rowCount}" name="items[${rowCount}][trtm_last_name]" placeholder="Enter Last Name">
+                                            <div class="input-group-text" id="traveler-date-icons_${rowCount}">
 
-                            </div>
+                                            <i class="fa fa-calendar-alt"></i>
 
-                            </div>
+                                            <input type="hidden" id="trtm_dob_hidden" value="" />
 
-                            </div>
+                                            </div>
 
+                                            </div>
 
+                                            </div>
 
-                            <div class="col-md-3 family-member-field">
+                                            </div>
 
-                            <div class="form-group">
+                                            </div>
 
-                            <label for="trtm_nick_name">Nickname</label>
+                                            </div>
 
-                            <div class="d-flex">
 
-                            <input type="text" class="form-control" id="trtm_nick_name${rowCount}" name="items[${rowCount}][trtm_nick_name]" placeholder="Enter Nickname">
 
-                            </div>
+                                            <div class="col-md-3">
 
-                            </div>
+                                            <div class="form-group">
 
-                            </div>
+                                            <label for="trtm_age">Age</label>
 
+                                            <div class="d-flex">
 
+                                            <input type="text" name="items[${rowCount}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age_${rowCount}" readonly>
 
-                            <div class="col-md-3 family-member-field">
+                                            </div>
 
-                            <div class="form-group">
+                                            </div>
 
-                            <label for="trtm_relationship">Relationship<span
+                                            </div>
 
-                            class="text-danger">*</span></label>
+                                            <div class="col-md-3">
 
-                            <div class="d-flex">
+                                            <div class="form-group">
 
-                            <input type="text" class="form-control" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]" placeholder="Enter Relationship">
+                                            <label for="trtm_age">&nbsp;</label>
 
-                            </div>
+                                            <div class="d-flex">
 
-                            </div>
+                                            <button class="delete_btn delete-item" id="${rowCount}">
 
-                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
 
+                                            <path d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z" fill="white"></path>
 
+                                            </svg>
 
-                            <div class="col-md-3">
+                                            Remove
 
-                            <div class="form-group">
+                                            </button>
 
-                            <label for="trtm_gender">Gender<span
+                                            </div>
 
-                            class="text-danger">*</span></label>
+                                            </div>
 
-                            <div class="d-flex">
+                                            </div>
 
-                            <select class="form-control select2" style="width: 100%;" id="trtm_gender${rowCount}" name="items[${rowCount}][trtm_gender]" >
 
-                            <option default>Select Gender</option>
 
-                            <option value="Male">Male</option>
+                                            </div>
 
-                            <option value="Female">Female</option>
+                                            <hr />
 
-                            <option value="Other">Other</option>
-
-                            </select>
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-
-
-                            <div class="col-md-3">
-
-                            <div class="form-group">
-
-                            <label for="trtm_dob">Birthdate</label>
-
-                            <div class="d-flex">
-
-                            <div class="input-group date" id="trtm_dob" data-target-input="nearest">
-
-                            <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
-
-                            <div class="input-group-append">
-
-                            <div class="input-group-text" id="traveler-date-icons_${rowCount}">
-
-                            <i class="fa fa-calendar-alt"></i>
-
-                            <input type="hidden" id="trtm_dob_hidden" value="" />
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-
-
-                            <div class="col-md-3">
-
-                            <div class="form-group">
-
-                            <label for="trtm_age">Age</label>
-
-                            <div class="d-flex">
-
-                            <input type="text" name="items[${rowCount}][trtm_age]" class="form-control" aria-describedby="inputGroupPrepend" placeholder="Enter Age" id="trtm_age_${rowCount}" readonly>
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-                            <div class="col-md-3">
-
-                            <div class="form-group">
-
-                            <label for="trtm_age">&nbsp;</label>
-
-                            <div class="d-flex">
-
-                            <button class="delete_btn delete-item" id="${rowCount}">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-
-                            <path d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z" fill="white"></path>
-
-                            </svg>
-
-                            Remove
-
-                            </button>
-
-                            </div>
-
-                            </div>
-
-                            </div>
-
-
-
-                            </div>
-
-                            <hr />
-
-                            `);
-
+                                            `);
 
 
                 $(`#row${rowCount} .family-member-field`).hide();
-
                 $(`#row${rowCount} .trip-member-field`).hide();
 
-
-
                 var numofpeople = document.querySelector('#tr_num_people');
-
                 numofpeople.value = rowCount;
-
-
-
                 var travelerdates = flatpickr(`#traveler_date_${rowCount}`, {
-
                     locale: 'en',
-
                     altInput: true,
-
                     dateFormat: "m/d/Y",
-
                     altFormat: "m/d/Y",
-
                     allowInput: true,
-
                 });
-
-
 
                 document.getElementById(`traveler-date-icons_${rowCount}`).addEventListener('click',
-
                     function () {
-
                         // alert('jhk');
-
                         travelerdates.open();
-
                     });
 
-
-
-
-
                 var birthdateInput = document.querySelector(`#traveler_date_${rowCount}`);
-
                 var ageInput = document.querySelector(`#trtm_age_${rowCount}`);
-
-
-
                 birthdateInput.addEventListener('change', function () {
-
                     var birthdate = new Date(birthdateInput.value);
-
                     var today = new Date();
-
                     var age = today.getFullYear() - birthdate.getFullYear();
-
                     var m = today.getMonth() - birthdate.getMonth();
-
                     if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-
                         age--;
-
                     }
-
                     if (age < 0) {
-
                         ageInput.value = 0;
-
                         // alert("Invalid birthdate. Please enter a valid birthdate.");
-
                     } else {
-
                         ageInput.value = age;
-
                     }
-
                 });
 
-
-
             });
-
-
-
             $(document).on('change', '.trtm_type', function () {
-
                 var rowId = $(this).closest('.item-row').attr('id').replace('row', '');
-
                 if ($(this).val() == 1) {
-
                     $(`#row${rowId} .family-member-field`).show();
-
                     $(`#row${rowId} .trip-member-field`).hide();
-
                 } else if ($(this).val() == 2) {
-
                     $(`#row${rowId} .family-member-field`).hide();
-
                     $(`#row${rowId} .trip-member-field`).show();
-
                 }
-
             });
-
-
 
             $(document).on('click', '.delete-item', function () {
-
                 var rowId = $(this).attr("id");
-
                 $('#row' + rowId).remove();
-
-
-
                 rowCount--;
-
                 $('#tr_num_people').val(rowCount);
-
             });
-
-
-
             // var birthdateInput = document.querySelector('#birthdate_date');
 
             // var ageInput = document.querySelector('#tr_age');
@@ -1866,379 +1607,227 @@
 
 
         });
-
     </script>
 
-
-
     <script>
-
         $(document).ready(function () {
-
             // Function to add new fields
-
             var rowCountItinerary = 0;
-
             $('.add-btn2').click(function () {
-
                 rowCountItinerary++;
-
                 var target = $(this).data('target');
-
                 var newRow = `
-
-                  <div class="row align-items-center mb-3">
-
-                  <div class="col-md-4">
-
-                  <input type="text" class="form-control" name="itinerary[${rowCountItinerary}][trit_text]" placeholder="${target.charAt(0).toUpperCase() + target.slice(1)} Link">
-
-                  </div>
-
-
-
-                  <div class="col-md-2">
-
-                  <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
-
-                  </div>
-
-                  </div>
-
-                  `;
-
+                    <div class="row align-items-center mb-3">
+                    <div class="col-md-4">
+                    <input type="text" class="form-control" name="itinerary[${rowCountItinerary}][trit_text]" placeholder="${target.charAt(0).toUpperCase() + target.slice(1)} Link">
+                    </div>
+                    <div class="col-md-2">
+                    <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+                    </div>
+                    </div>
+                                  `;
                 $('#' + target + '-fields').append(newRow);
-
             });
-
-
-
             // Function to delete fields
-
             $(document).on('click', '.delete-btn', function () {
-
                 $(this).closest('.row').remove();
-
             });
-
         });
-
-
-
-
-
-
-
         $(document).ready(function () {
 
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
                 var activeTab = $(e.target).text(); // Get active tab text
-
                 $('#trip_type_text').val(activeTab); // Set it to hidden field
-
             });
-
         });
 
     </script>
-
-
-
     <script>
 
         $(document).ready(function () {
 
             // When a tab is clicked, update the hidden input field with the tab's text
-
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
                 var tripTypeName = $(e.target).text(); // Get the tab text (Cruise, Excursion, etc.)
-
                 $('#trip_type_name').val(tripTypeName); // Set the hidden field value
-
             });
-
         });
-
     </script>
 
     <script>
 
         document.addEventListener('DOMContentLoaded', function () {
-
             const checkboxes = document.querySelectorAll('input[name="tr_type_trip[]"]');
-
             const tabList = document.getElementById('tab-content');
-
             const tabContent = document.getElementById('tab-content');
 
-
-
             // A set to keep track of currently active trip types to avoid duplicates
-
             const activeTripTypes = new Set();
-
-
-
             checkboxes.forEach(checkbox => {
-
                 checkbox.addEventListener('change', function () {
-
                     handleTabCreationAndRemoval(checkbox);
-
                 });
-
             });
 
-
-
             // Function to create or remove tabs based on checkbox state
-
             function handleTabCreationAndRemoval(checkbox) {
-
                 const tripTypeName = checkbox.value;
-
                 const tripTypeId = checkbox.id;
 
-
-
                 // If the checkbox is checked and trip type is not active, add the tab and its fields
-
                 if (checkbox.checked && !activeTripTypes.has(tripTypeName)) {
-
                     activeTripTypes.add(tripTypeName); // Mark this trip type as active
-
                     createTabAndFields(tripTypeName, tripTypeId);
-
                 }
 
                 // If the checkbox is unchecked, remove the tab and its fields
-
                 else if (!checkbox.checked && activeTripTypes.has(tripTypeName)) {
-
                     activeTripTypes.delete(tripTypeName); // Remove this trip type from active set
-
                     removeTabAndFields(tripTypeId);
-
                 }
-
             }
 
-
-
             // Function to create the tab and fields for a checked checkbox
-
             function createTabAndFields(tripTypeName, tripTypeId) {
 
                 // Check if the tab already exists (should not happen due to the set check)
-
                 const existingTab = document.getElementById(`${tripTypeId}-tab`);
-
                 const existingTabPanel = document.getElementById(`tab-${tripTypeId}`);
 
-
-
                 // If tab and panel do not exist, create them
-
                 if (!existingTab) {
-
                     // Create tab link
-
                     const tabLink = document.createElement('li');
-
                     tabLink.className = 'nav-item';
-
                     tabLink.innerHTML = `
-
-                            <a id="${tripTypeId}-tab" href="#tab-${tripTypeId}" data-bs-toggle="tab">${tripTypeName}</a>
-
-                        `;
-
+                  <a id="${tripTypeId}-tab" href="#tab-${tripTypeId}" data-bs-toggle="tab">${tripTypeName}</a>
+                                        `;
                     tabList.appendChild(tabLink);
-
-
-
                     // Create tab panel
-
                     const tabPanel = document.createElement('div');
-
                     tabPanel.id = `tab-${tripTypeId}`; // Set unique ID for the tab panel
-
                     tabPanel.innerHTML = `
-
                             <div class="dynamic-fields" id="${tripTypeId}-fields">
-
                                 <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_name]" value="${tripTypeName}">
-
                                 <div class="row align-items-center mb-3">
-
                                     <div class="col-md-4">
-
                                         <input type="text" name="trip_types[${tripTypeId}][0][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
-
                                     </div>
-
                                     <div class="col-md-4">
-
                                         <input type="text" name="trip_types[${tripTypeId}][0][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
-
                                     </div>
-
                                     <div class="col-md-2">
-
                                         <button type="button" class="add_btn w-100 add-btn" data-target="${tripTypeId}">+ Add Another</button>
-
                                     </div>
-
                                     <div class="col-md-2">
-
                                         <button class="delete_btn delete-btn w-100">
-
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-
                                                 <path d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732Z" fill="#868686"/>
-
                                             </svg> Delete
-
                                         </button>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
-                        `;
-
+                         `;
                     tabContent.appendChild(tabPanel);
 
                     // Attach the Add Button Event Listener
-
                     const addButton = tabPanel.querySelector('.add-btn');
-
                     let entryIndex = 1;  // To increment index for each added row
-
                     addButton.addEventListener('click', function () {
-
                         addNewRow(tripTypeName, tripTypeId, entryIndex);
-
                         entryIndex++;
-
                     });
-
-
-
                     // Activate the first tab when it is created
-
                     if (tabList.children.length === 1) {
-
                         tabLink.querySelector('a').classList.add('active');
-
                         tabPanel.classList.add('show', 'active');
-
                     }
-
                 }
-
             }
-
-
 
             function addNewRow(tripTypeName, tripTypeId, entryIndex) {
-
                 const fieldsContainer = document.getElementById(`${tripTypeId}-fields`);
-
-
-
                 const newRow = document.createElement('div');
-
                 newRow.classList.add('row', 'align-items-center', 'mb-3');
-
                 newRow.innerHTML = `
-
-                        <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
-
-                        <div class="col-md-4">
-
-                            <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
-
-                        </div>
-
-                        <div class="col-md-2">
-
-                            <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
-
-                        </div>
-
-                    `;
+                <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
+                <div class="col-md-4">
+                    <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+                </div>
+            `;
 
                 fieldsContainer.appendChild(newRow);
-
-
-
                 // Add event listener to delete button in new row
-
                 const deleteButton = newRow.querySelector('.delete-btn');
-
                 deleteButton.addEventListener('click', function () {
-
                     newRow.remove();  // Remove only the specific row
-
                 });
-
             }
-
-
 
             // Function to remove the tab and fields for an unchecked checkbox
-
             function removeTabAndFields(tripTypeId) {
-
                 const tabLink = document.getElementById(`${tripTypeId}-tab`);
-
                 const tabPanel = document.getElementById(`tab-${tripTypeId}`);
-
-
-
                 // Remove the tab and the corresponding tab content panel
-
                 if (tabLink) tabLink.remove();
-
                 if (tabPanel) tabPanel.remove();
-
             }
-
-
 
             // Function to remove tab and fields for an unchecked checkbox
-
             function removeTabAndFields(tripTypeId) {
-
                 const tabLink = document.getElementById(`${tripTypeId}-tab`);
-
                 const tabPanel = document.getElementById(`tab-${tripTypeId}`);
-
-
-
                 // Remove the tab and the corresponding tab content panel
-
                 if (tabLink) tabLink.remove();
-
                 if (tabPanel) tabPanel.remove();
-
             }
-
         });
 
+        document.addEventListener('DOMContentLoaded', function () {
+    const addButtons = document.querySelectorAll('.add-btn');
 
+    addButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const targetIndex = button.getAttribute('data-target');
+            addNewRow(targetIndex);
+        });
+    });
 
+    function addNewRow(targetIndex) {
+        const fieldsContainer = document.getElementById(`dynamic-fields-${targetIndex}`);
+        const entryIndex = fieldsContainer.children.length; // Get the current number of entries
+
+        const newRow = document.createElement('div');
+        newRow.classList.add('row', 'align-items-center', 'mb-3');
+        newRow.innerHTML = `
+            <input type="hidden" name="trip_types[${targetIndex}][${entryIndex}][trip_type_name]" value="${targetIndex}">
+            <div class="col-md-4">
+                <input type="text" name="trip_types[${targetIndex}][${entryIndex}][trip_type_text]" class="form-control" placeholder="Supplier">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="trip_types[${targetIndex}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="Confirmation #">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+            </div>
+        `;
+
+        fieldsContainer.appendChild(newRow);
+
+        // Add event listener for the delete button
+        const deleteButton = newRow.querySelector('.delete-btn');
+        deleteButton.addEventListener('click', function () {
+            newRow.remove(); // Remove the specific row
+        });
+    }
+});
     </script>
 
 

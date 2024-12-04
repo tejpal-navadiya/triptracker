@@ -36,29 +36,34 @@
                                     <td>{{ $comvalue->tr_traveler_name ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($comvalue->tr_start_date ?? '')->format('M d, Y') }} - {{ \Carbon\Carbon::parse($comvalue->tr_end_date ?? '')->format('M d, Y') }}</td>
                                     <td>
-                                    <?php 
-                                     $currentDate = \Carbon\Carbon::now()->startOfDay(); 
-                                     $endDate = $comvalue->tr_end_date ?? '0';
-                                 
-                                     // Check if end date exists
-                                     if (!$endDate) {
-                                        //  echo '0';
-                                     }
-                                 
-                                     // Parse the end date and ensure it's in the correct format
-                                     try {
-                                         $endDateParsed = \Carbon\Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
-                                     } catch (\Exception $e) {
-                                        //  echo '0'; // Return empty if the date format is invalid
-                                     }
-                                 
-                                     // Calculate days since completion (positive if in the past, 0 if today, negative if future)
-                                     $daysSinceCompletion = $endDateParsed->lt($currentDate) 
-                                         ? $endDateParsed->diffInDays($currentDate) 
-                                         : 0;
-                                 
-                                     echo $daysSinceCompletion.' days';
-                                    ?>
+                                        <?php 
+
+                                        $currentDate = \Carbon\Carbon::now()->startOfDay();
+                                        $endDate = $comvalue->tr_end_date ?? '0';
+
+                                        // Initialize $endDateParsed with a default value
+                                        $endDateParsed = null;
+
+                                        // Check if end date exists
+                                        if ($endDate && $endDate !== '0') {
+                                            // Parse the end date and ensure it's in the correct format
+                                            try {
+                                                $endDateParsed = \Carbon\Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
+                                            } catch (\Exception $e) {
+                                                $endDateParsed = null; // Ensure $endDateParsed is always defined
+                                            }
+                                        }
+
+                                        // Calculate days since completion (positive if in the past, 0 if today, negative if future)
+                                        $daysSinceCompletion = 0;
+                                        if ($endDateParsed) {
+                                            $daysSinceCompletion = $endDateParsed->lt($currentDate) 
+                                                ? $endDateParsed->diffInDays($currentDate) 
+                                                : 0;
+                                        }
+
+                                        echo $daysSinceCompletion . ' days';
+                                        ?>
                                     </td>
                                     <td>
                                         <?php 
