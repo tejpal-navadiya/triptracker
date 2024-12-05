@@ -152,7 +152,7 @@ class RegisterController extends Controller
         $admin->updated_at = now();  // Or \Carbon\Carbon::now() for the current timestamp
 
         //create own image floder 
-        $userFolder = 'masteradmin/' .$buss_unique_id.'_'.$request->input('user_first_name');
+        $userFolder = 'masteradmin/' .strtolower($buss_unique_id).'_'.$request->input('user_first_name');
         Storage::makeDirectory($userFolder, 0755, true);
 
         $users_image = '';

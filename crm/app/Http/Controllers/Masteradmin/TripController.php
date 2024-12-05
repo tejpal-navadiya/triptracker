@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use App\Models\TravelerDocument;
 use App\Models\PredefineTaskCategory;
 use DataTables;
+use App\Models\TravelingRelationship;
 
 
 class TripController extends Controller
@@ -56,9 +57,10 @@ class TripController extends Controller
        // $agency = $masterUserTable->get();
         $trip_status = TripStatus::get();
 
-        
+        $trips_traveller =Trip::get();
         $trips = new Trip();
-        
+       
+
         $tripTable = $trips->getTable();
         $specificId = $user->users_id;
         if($user->users_id && $user->role_id ==0 ){
@@ -129,11 +131,11 @@ class TripController extends Controller
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
              // dd($allEstimates);
-             return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status'))->render();
+             return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status','trips_traveller'))->render();
          }
         // dd($trip);
 
-        return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status','tripsGrouped'));
+        return view('masteradmin.trip.index', compact('trip', 'agency', 'trip_status','tripsGrouped','trips_traveller'));
     }
 
     public function create(): View
@@ -169,7 +171,7 @@ class TripController extends Controller
         
         if ($request->travelers == "travelers") {
             $validatedData = $request->validate([
-                'tr_name' => 'required|string',
+                'tr_name' => 'nullable|string',
                 'tr_agent_id' => 'required|string',
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
@@ -178,7 +180,7 @@ class TripController extends Controller
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
-                'tr_start_date' => 'required',
+                'tr_start_date' => 'nullable',
                 'tr_end_date' => 'required|string',
                 'tr_value_trip' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
@@ -263,7 +265,7 @@ class TripController extends Controller
 
 
         $traveler->id = $user->users_id;
-        $traveler->tr_name = $validatedData['tr_name'];
+        $traveler->tr_name = $validatedData['tr_name'] ?? null;
         $traveler->tr_agent_id = $validatedData['tr_agent_id'];
         $traveler->tr_traveler_name = $validatedData['tr_traveler_name'];
         $traveler->tr_dob = $validatedData['tr_dob'] ?? null; // Use null if not set
@@ -272,10 +274,10 @@ class TripController extends Controller
         $traveler->tr_email = $validatedData['tr_email'] ?? null; // Use null if not set
         $traveler->tr_phone = $validatedData['tr_phone'] ?? null; // Use null if not set
         $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
-        $traveler->tr_start_date = $validatedData['tr_start_date'];
+        $traveler->tr_start_date = $validatedData['tr_start_date'] ?? null;
         $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
         $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
-        $traveler->tr_type_trip = json_encode($request->input('tr_type_trip'));
+        $traveler->tr_type_trip = json_encode($request->input('tr_type_trip')) ?? [];
         $traveler->tr_desc = $validatedData['tr_desc'] ?? null; // Use null if not set
 
         $traveler->tr_country = $validatedData['tr_country'] ?? null;
@@ -452,7 +454,7 @@ class TripController extends Controller
         $trip = Trip::where(['tr_id' => $id])->firstOrFail();
         if ($request->travelers == "travelers") {
             $validatedData = $request->validate([
-                'tr_name' => 'required|string',
+              'tr_name' => 'nullable|string',
                 'tr_agent_id' => 'required|string',
                 'tr_traveler_name' => 'required|string',
                 'tr_dob' => 'nullable|string',
@@ -461,7 +463,7 @@ class TripController extends Controller
                 'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
-                'tr_start_date' => 'required',
+                'tr_start_date' => 'nullable',
                 'tr_end_date' => 'required|string',
                 'tr_value_trip' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
@@ -766,19 +768,22 @@ class TripController extends Controller
                 ->get();
 
             $tripData = DB::table($uniq_id . '_tc_trip')
-                ->select('tr_id', 'tr_traveler_name')
+                ->select('tr_id', 'tr_traveler_name','tr_age')
                 ->where('tr_id', $id)
                 ->get();
 
         //last code
-        $member = TripTravelingMember::where(['tr_id' => $id])->get();
+        $member = TripTravelingMember::with(['travelingrelationship'])->where(['tr_id' => $id])->get();
+        // dd($member);
         $task = TripTask::where(['tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
         $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
         
+        $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
+
         // dd($task);            
         //dd($tripTraveling);
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document'));
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship'));
     }
 
     public function travelersDetails(): View
@@ -957,7 +962,8 @@ class TripController extends Controller
           //last code
           $member = TripTravelingMember::where(['tr_id' => $id])->get();
           $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
-          
+          $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
+
           $trip_id=$id;
 
             $masterUserDetails = new MasterUserDetails();
@@ -985,7 +991,7 @@ class TripController extends Controller
                 ->get();
 
         // dd($trip_history);
-        return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history'));
+        return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history','travelingrelationship'));
     }
 
     public function booked_after(Request $request)
@@ -1008,6 +1014,8 @@ class TripController extends Controller
         }
 
         $trip_status = TripStatus::get();
+
+        $trips_traveller = Trip::get();
 
         $trips = new Trip();
         $tripTable = $trips->getTable();
@@ -1073,12 +1081,12 @@ class TripController extends Controller
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
              // dd($allEstimates);
-             return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status'))->render();
+             return view('masteradmin.trip.filtered_results', compact('trip', 'agency', 'trip_status','trips_traveller'))->render();
          }
         // dd($trip);
     //end do not touch
 
-      return view('masteradmin.trip.booked-after',compact('trip', 'agency', 'trip_status','tripQuery'));
+      return view('masteradmin.trip.booked-after',compact('trip', 'agency', 'trip_status','tripQuery','trips_traveller'));
     }
 
     public function follow_up_details(Request $request)
@@ -1969,17 +1977,21 @@ public function bookgridView(Request $request)
     // Execute the query
     $bookedTripQuery = $bookedTripQuery->get();
 
+    
+
     // 60 Days Trip Review Query
     $sixtyDaysFromNow = $currentDate->copy()->addDays(60)->format('m/d/Y');
     $sixtyDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
         ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow)
         ->select([
             $tripTable . '.*',
             $masterUserTable . '.users_first_name',
             $masterUserTable . '.users_last_name'
         ]);
+      
 
     // Apply filters for 60 Days Trip Review query
     if ($startDate && !$endDate) {
@@ -2004,20 +2016,22 @@ public function bookgridView(Request $request)
     // Execute the query
     $sixtyDaysTripQuery = $sixtyDaysTripQuery->orderBy($tripTable . '.tr_start_date', 'ASC')->get();
 
-
      // 30 Days Trip Review Query
      $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
+    //  \DB::enableQueryLog();
+
      $thirtyDaysTripQuery = Trip::where('tr_status', 1)
          ->from($tripTable)
          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-         ->where($tripTable . '.tr_start_date', '>=', $currentDateFormatted)
+         ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
          ->where($tripTable . '.tr_start_date', '<=', $thirtyDaysFromNow)
          ->select([
              $tripTable . '.*',
              $masterUserTable . '.users_first_name',
              $masterUserTable . '.users_last_name'
          ]);
- 
+        //  dd(\DB::getQueryLog()); 
+
      // Apply filters for 30 Days Trip Review query
      if ($startDate && !$endDate) {
          $thirtyDaysTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
@@ -2044,11 +2058,12 @@ public function bookgridView(Request $request)
 
     // 2 Days Trip Bon Voyage Query
     $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
+
     $twoDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-        ->where($tripTable . '.tr_start_date', '>', $currentDate)
-        ->where($tripTable . '.tr_start_date', '<', $twoDaysFromNow);
+        ->where($tripTable . '.tr_start_date', '>=', $currentDate->format('m/d/Y'))
+        ->where($tripTable . '.tr_start_date', '<=', $twoDaysFromNow);
     // Apply filters for 2 Days Trip Bon Voyage Query
     if ($startDate && !$endDate) {
         $twoDaysTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);

@@ -26,6 +26,9 @@ class MasterUserDetails extends Authenticatable
         'users_first_name',
         'users_last_name',
         'users_email',
+        'users_personal_email',
+        'users_business_phone',
+        'users_personal_phone',
         'users_iata_clia_number',
         'users_clia_number',
         'users_iata_number',
@@ -49,12 +52,12 @@ class MasterUserDetails extends Authenticatable
         'user_emergency_phone_number',
         'user_emergency_email',
         'api_token',
-
         'stripe_id',
         'stripe_status',
         'plan_id',
         'start_date',
         'end_date',
+        'agency_logo',
     ];
 
     

@@ -33,13 +33,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <?php //dd($member); ?>
+                    <?php //dd($tripData); ?>
+                    
                     @if (count($member) > 0)
+                    @foreach ($tripData as $value1)
+                    <tr>
+                        <td> {{ $value1->tr_traveler_name ?? '' }}</td>
+                        <td></td>
+                        <td>{{ $value1->tr_age ?? ''}}</td>
+
+                        <td>
+                           -
+                        </td>
+                    </tr>
+                    @endforeach
+
                     @foreach ($member as $value)
                     <tr>
-                        <td>{{ $value->trtm_first_name }}</td>
-                        <td>{{ $value->trtm_relationship }}</td>
-                        <td>{{ $value->trtm_age }}</td>
+                        <td>{{ $value->trtm_first_name ?? '' }}</td>
+                        <td>{{ $value->travelingrelationship->rel_name ?? '' }}</td>
+                        <td>{{ $value->trtm_age ?? ''}}</td>
 
                         <td>
                             <a data-id="{{ $value->trtm_id}}" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>
@@ -148,7 +161,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
                                 <div class="d-flex">
@@ -158,7 +171,25 @@
 
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trtm_relationship"
+                                        name="trtm_relationship">
+                                        <option value="" default>Select Relationship</option>
+                                        @foreach ($travelingrelationship as $value)
+                                            <option value="{{ $value->rel_id }}">
+                                                {{ $value->rel_name }}
+                                            </option>
+                                        @endforeach
+                                        <div class="invalid-feedback" id="trtm_relationship_error" ></div>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>                        
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -260,13 +291,14 @@
                         }
                     },
                     columns: [
-                        {
-                            data: null,
-                            name: 'trtm_full_name',
-                            render: function(data, type, row) {
-                                return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
-                            }
-                        },
+                        { data: 'trtm_full_name', name: 'trtm_full_name' },
+                        // {
+                        //     data: null,
+                        //     name: 'trtm_full_name',
+                        //     render: function(data, type, row) {
+                        //         return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
+                        //     }
+                        // },
                         { data: 'trtm_relationship', name: 'trtm_relationship' },
                         { data: 'trtm_age', name: 'trtm_age' },
                         { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -401,7 +433,7 @@
                     $('#trtm_middle_name').val(data.trtm_middle_name);
                     $('#trtm_last_name').val(data.trtm_last_name);
                     $('#trtm_nick_name').val(data.trtm_nick_name);
-                    $('#trtm_relationship').val(data.trtm_relationship);
+                    $('#trtm_relationship').val(data.trtm_relationship).trigger('change.select2');
                     $('#trtm_gender').val(data.trtm_gender).trigger('change.select2');
                     $('#trtm_dob_hidden').val(data.trtm_dob);
                     $('#trtm_age').val(data.trtm_age);

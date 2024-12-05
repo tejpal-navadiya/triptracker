@@ -17,6 +17,7 @@ use App\Models\BusinessDetails;
 use App\Models\MasterUserDetails;
 use Illuminate\Support\Facades\Storage;
 use App\Models\UserCertification;
+use App\Models\Cities;
 
 class ProfilesController extends Controller
 {
@@ -37,13 +38,17 @@ class ProfilesController extends Controller
         $certification = UserCertification::where(['id' => $user->id])->get();
         
         //dd($cerifications);
-       
+        $agencyusers = MasterUser::where(['buss_unique_id' => $user->user_id])->first();
+        $country = Countries::all();
+        // dD($agencyuser);
         $states = States::get();
         // dd($user);
         return view('masteradmin.profile.edit', [
             'user' => $user,
             'states' => $states,
-            'certification' => $certification
+            'certification' => $certification,
+            'agencyuser' => $agencyusers,
+            'country' => $country
         ]);
     }
 
@@ -61,6 +66,25 @@ class ProfilesController extends Controller
         }
     }
 
+    public function agencyfetchUser()
+    {
+
+         $user = Auth::guard('masteradmins')->user();
+         //dd($user);
+         $agencyuser = MasterUser::where(['buss_unique_id' => $user->user_id])->first();
+        // dd($user);
+
+       // $userDetails = session('user_details');
+       //dd($user);
+       if ($agencyuser) {
+            return response()->json(['agencyuser' => $agencyuser]);  // Return the entire user object for debugging
+        } else {
+            return response()->json(['status' => 404, 'message' => 'User not found']);
+        }
+    }
+
+    
+
     public function edits($id)
     {
         $user = Auth::guard('masteradmins')->user();
@@ -70,6 +94,7 @@ class ProfilesController extends Controller
     
         $existingUser = $userDetails->where('users_id', $id)->first();
 
+        // dD($agencyuser);
         if($existingUser)
         {
             return response()->json([
@@ -84,6 +109,44 @@ class ProfilesController extends Controller
                 'message'=>'No users Found.'
             ]);
         }
+
+    }
+
+    public function agencyedits(Request $request)
+    {
+
+        // Retrieve the authenticated user
+        $user = Auth::guard('masteradmins')->user();
+        //dd($agencyusers);
+
+        $agencyusers = new MasterUserDetails();
+        $agencyusers->setTableForUniqueId($user->user_id);
+
+        $agencyusers = $agencyusers->where(['users_email' => $user->users_email, 'role_id' => 0])->firstOrFail();
+
+        //dd($cerifications);
+        // $agencyusers = MasterUser::where(['buss_unique_id' => $user->user_id])->first();
+        $country = Countries::all();
+        // dD($agencyuser);
+        $country = Countries::all();
+    
+        $selectedCountryId = $agencyusers->user_country;
+
+        $states = States::where('country_id', $selectedCountryId)->orderBy('name', 'ASC')->get();
+    
+        $selectedStateId = $agencyusers->user_state;
+    
+        $cities = Cities::where('state_id', $selectedStateId)->orderBy('name', 'ASC')->get();
+
+        // dd($agencyusers);
+        $states = States::get();
+        // dd($user);
+        return view('masteradmin.profile.agency-profile', [
+            'states' => $states,
+            'userdetails' => $agencyusers,
+            'country' => $country,
+            'cities' => $cities,
+        ]);
 
     }
 
@@ -307,4 +370,160 @@ class ProfilesController extends Controller
       
     }
 
+    public function upload(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        $user = Auth::guard('masteradmins')->user();
+        
+        $users_image = '';
+        if ($request->hasFile('image')) {
+            $userFolder = session('userFolder');
+            // Handle the image upload and check the result
+            $users_image =  $this->handleImageUpload($request, 'image', null, 'profile_image', $userFolder);
+
+            // Debug output
+            //dd($users_image); // This will output the image path and stop execution for debugging purposes
+        }
+
+        $user->users_image = $users_image;
+
+        // Save the updated values to the database
+        $user->save();
+         
+    
+        return redirect()->back()->with('success', 'Image uploaded successfully.');
+    }
+    
+    
+
+    public function updateagency(Request $request, $id)
+    {
+        // dd($request->all());
+        // dd($id);
+        $user = Auth::guard('masteradmins')->user();
+        $user = MasterUser::findOrFail($id);
+
+        $userDetails = new MasterUserDetails();
+        $userDetails->setTableForUniqueId($user->buss_unique_id);
+
+        $userdetails = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->firstOrFail();
+        // dd($userdetails);
+        $validatedData = $request->validate([
+            'users_agencies_name' => 'required|string',
+            'users_first_name' => 'required|string',
+            'users_last_name' => 'required', 'string', 'max:255',
+            'users_franchise_name' => 'nullable|string',
+            'users_consortia_name' => 'nullable|string',
+            'users_iata_clia_number' => 'required|string',
+            'users_iata_number' => 'nullable|string',
+            'users_clia_number' => 'nullable|string',
+            'users_address' => 'nullable|string',
+            'users_business_phone' => 'required|string',
+            'users_personal_phone' => 'nullable|string',
+            'users_personal_email' => 'nullable|string',
+               
+            'users_zip' => 'nullable', 'string', 'max:255',
+            'users_country' => 'nullable',
+            'users_state' => 'nullable',
+            'users_city' => 'nullable',
+
+            'agency_logo' => 'nullable',
+            'agency_logo.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
+
+        ], [
+            'users_agencies_name' => 'Agency name is required',
+            'users_first_name' => 'First Name is required',
+            'users_iata_clia_number' => 'IATA CLIA Number is required',
+            
+            'agency_logo.image' => 'Uploaded file must be an image.',
+            'agency_logo.mimes' => 'Image must be a file of type: jpeg, png, jpg, pdf.',
+            'agency_logo.max' => 'Image size must not exceed 2MB.',
+        ]);
+        // dd($validatedData);
+        
+
+        $user->updated_at = now(); 
+
+
+        $userFolder = session('userFolder');
+        Storage::makeDirectory($userFolder, 0755, true);
+
+        $user_image = '';
+
+            if ($request->hasFile('agency_logo')) {
+                $agency_logo =  $this->handleImageUpload($request, 'agency_logo', null, 'profile_image', $userFolder);
+                $validatedData['agency_logo'] = $agency_logo;
+            }else{
+                $validatedData['agency_logo'] = $userdetails->agency_logo ?? '';
+            }
+
+            $userdetails->where(['users_email' => $user->user_email, 'role_id' => 0])->update($validatedData);
+
+            return redirect()->route('masteradmin.profile.agencyedits')->with('success', 'Agency Profile is Updated successfully.');
+    }
+
+    public function updateAgency2(Request $request, $id)
+    {
+        $user = Auth::guard('masteradmins')->user();
+    // DD($user);
+        // Initialize a MasterUserDetails instance and set the dynamic table
+    //     $userDetails = new MasterUserDetails();
+    //     $userDetails->setTableForUniqueId($user->user_id);
+    // DD($userDetails);
+    //     // Find the specific user details or fail
+    //     $userdetails = $userDetails->where(['users_id' => $id, 'role_id' => 0])->firstOrFail();
+
+        // Validate request data
+        $validatedData = $request->validate([
+            'users_agencies_name' => 'required|string',
+            'users_first_name' => 'required|string',
+            'users_last_name' => 'required|string|max:255',
+            'users_franchise_name' => 'nullable|string',
+            'users_consortia_name' => 'nullable|string',
+            'users_iata_clia_number' => 'required|string',
+            'users_iata_number' => 'nullable|string',
+            'users_clia_number' => 'nullable|string',
+            'users_address' => 'nullable|string',
+            'users_business_phone' => 'required|string',
+            'users_personal_phone' => 'nullable|string',
+            'users_personal_email' => 'nullable|string',
+            'users_zip' => 'nullable|string|max:255',
+            'users_country' => 'nullable|string',
+            'users_state' => 'nullable|string',
+            'users_city' => 'nullable|string',
+            'users_image' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
+        ], [
+            'users_agencies_name.required' => 'Agency name is required',
+            'users_first_name.required' => 'First Name is required',
+            'users_iata_clia_number.required' => 'IATA CLIA Number is required',
+            'users_business_phone.required' => 'Business Phone is required',
+            'users_image.mimes' => 'Image must be a file of type: jpeg, png, jpg, pdf.',
+            'users_image.max' => 'Image size must not exceed 2MB.',
+        ]);
+
+        // Update timestamp
+        $user->updated_at = now();
+
+        // Check if a user image is uploaded and handle the file upload
+        $userFolder = session('userFolder');
+        if ($request->hasFile('users_image')) {
+            $users_image = $this->handleImageUpload($request, 'users_image', null, 'profile_image', $userFolder);
+            $validatedData['users_image'] = $users_image;
+        } else {
+            $validatedData['users_image'] = $userdetails->users_image ?? '';
+        }
+
+        // Update user details
+        $user->where(['users_id' => $id])->update($validatedData);
+        // DD($userDetails);
+        // Redirect with success message
+        return redirect()->route('masteradmin.profile.agencyedits')->with('success', 'Admin Agency Updated successfully.');
+    }
+
+
 }
+

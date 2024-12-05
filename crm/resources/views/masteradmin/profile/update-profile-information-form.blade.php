@@ -176,7 +176,7 @@
         $(document).on('click', '.editbtn', function (e) {
             e.preventDefault();
             var stud_id = $(this).val();
-            //alert(stud_id);
+            // alert(stud_id);
             var editModal = new bootstrap.Modal(document.getElementById('editModal'));
             editModal.show();
             var editStudentUrl = "{{ route('masteradmin.profile.edits', ['id' => ':id']) }}";

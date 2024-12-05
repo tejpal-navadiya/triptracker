@@ -21,4 +21,10 @@ class TripTravelingMember extends Model
         $uniq_id = $user->user_id;
         $this->setTable($uniq_id . '_tc_trip_traveling_member');
     }
+
+    public function travelingrelationship()
+    {
+        return $this->belongsTo(TravelingRelationship::class, 'trtm_relationship', 'rel_id');
+    }
+    
 }

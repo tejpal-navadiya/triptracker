@@ -54,7 +54,7 @@
                                             <th>Email Address</th>
                                             <th>Phone Number</th>
                                             <th>Address</th>
-                                            <th>Status</th>
+                                            <!-- <th>Status</th> -->
                                             <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
                                         </tr>
                                     </thead>
@@ -71,8 +71,8 @@
                                                     {{ $value->tr_zip ?? '' }}
                                                 </td>
 
-                                                <td>
-                                                    @php
+                                                <!-- <td> -->
+                                                    <!-- @php
                                                         $statusName = $value->trip_status->tr_status_name ?? '';
 
                                                         $buttonColor = match (strtolower($statusName)) {
@@ -86,13 +86,13 @@
                                                                 'trip pending' => '#F6A96D',
                                                                 'in process' => '#F6A96D',
                                                         };
-                                                    @endphp
+                                                    @endphp -->
 
-                                                    <button type="button" class="btn text-white"
+                                                    <!-- <button type="button" class="btn text-white"
                                                         style="background-color: {{ $buttonColor }};">
                                                         {{ $statusName }}
-                                                    </button>
-                                                </td>
+                                                    </button> -->
+                                                <!-- </td> -->
                                                 <td>
                                                     <a href="{{ route('masteradmin.travelers.view', $value->tr_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>

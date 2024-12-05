@@ -55,6 +55,7 @@ class MasterUser extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'user_password' => 'hashed',
+        'id' => 'string',
     ];
 
     public function userAccess()

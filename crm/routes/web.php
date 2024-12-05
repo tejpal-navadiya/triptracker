@@ -104,6 +104,21 @@ Route::group(['prefix' => $adminRoute], function () {
         Route::get('/editbusinessdetails/{id}', [BusinessDetailController::class, 'edit'])->name('businessdetails.edit');
         Route::post('/updatebusinessdetails/{id}', [BusinessDetailController::class, 'update'])->name('businessdetails.update');
         
+        //agency image security 
+        Route::get('/agency_images/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
+
+                $filePath = storage_path('app/'.$userFolder.'/profile_image/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
+
+
+        })->name('agency.access');
+
         //Admin agencies list dropdown 
         Route::get('admin_agency_state/{countryId}', [RegisterController::class, 'getStates'])->name('get_admin_States');
         Route::get('admin_agency_cities/{stateId}', [RegisterController::class, 'getCities'])->name('get_admin_Cities');
@@ -163,6 +178,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::post('/users/store-password/{user_id}', [UserController::class, 'storePassword'])
         ->name('masteradmin.userdetail.storePassword');
 
+      
+
+
         Route::get('checkout', [CheckoutController::class, 'stripe'])->name('stripe');
         Route::get('success', [CheckoutController::class, 'success'])->name('success');
         Route::get('cancel', [CheckoutController::class, 'cancel'])->name('cancel');
@@ -180,14 +198,25 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('agency-success', [CheckoutController::class, 'agencySuccess'])->name('agencysuccess');
         Route::get('agency-cancel', [CheckoutController::class, 'agencyCancel'])->name('agencycancel');
 
+        //user profile update
+        Route::post('users/profile/upload', [ProfilesController::class, 'upload'])->name('profile.upload');
+
         //profile
         Route::get('/dashboard', [HomeController::class, 'create'])->name('masteradmin.home');
         Route::get('/profile', [ProfilesController::class, 'edit'])->name('masteradmin.profile.edit');
+       
         Route::get('/profile/{id}', [ProfilesController::class, 'edits'])->name('masteradmin.profile.edits');
+        Route::get('/agency-profile', [ProfilesController::class, 'agencyedits'])->name('masteradmin.profile.agencyedits');
+        // Route::post('/agencyupdatebusinessdetails/{id}', [ProfilesController::class, 'updateagency'])->name('masteradmin.businessdetails.agencyupdate');
+        Route::post('/updatebusinessdetails/{id}', [ProfilesController::class, 'updateagency'])->name('businessdetails.update');
+
+
         Route::patch('/profile', [ProfilesController::class, 'update'])->name('masteradmin.profile.update');
         Route::delete('/profile', [ProfilesController::class, 'destroy'])->name('masteradmin.profile.destroy');
         Route::get('fetch-users', [ProfilesController::class, 'fetchUser'])->name('masteradmin.profile.fetchUser');
+        Route::get('fetch-agency-users', [ProfilesController::class, 'agencyfetchUser'])->name('masteradmin.profile.agencyfetchUser');
         Route::get('dashboard-task-incomplete-details/', [HomeController::class, 'incompleteDetailshome'])->name('masteradmin.dashboardtask.incomplete');
+
 
         Route::get('dashboard-task-edit/{id}/{trip_id}', [TripTaskController::class, 'edit'])->name('masteradmin.dashboardtask.edit');
         Route::patch('/dashboard-task-update/{trip_id}/{trvt_id}', [TripTaskController::class, 'update'])->name('masteradmin.dashboardtask.update');
@@ -406,10 +435,10 @@ Route::group(['prefix' => $busadminRoute], function () {
         })->name('library_images.access');
 
         //user certification image/document security 
-        Route::get('/library_images/{filename}', function ($filename) {
+        Route::get('/certification_images/{filename}', function ($filename) {
             $userFolder = session('userFolder');
 
-                $filePath = storage_path('app/'.$userFolder.'/library_image/' . $filename);
+                $filePath = storage_path('app/'.$userFolder.'/certification_image/' . $filename);
 
                 if (!file_exists($filePath)) {
                     abort(404);
@@ -418,7 +447,22 @@ Route::group(['prefix' => $busadminRoute], function () {
                 return response()->file($filePath); 
         
 
-        })->name('library.access');
+        })->name('certification.access');
+
+         //agency image security 
+         Route::get('/agencys_images/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
+
+                $filePath = storage_path('app/'.$userFolder.'/profile_image/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
+
+
+        })->name('agencys.access');
 
 
         //sent email template

@@ -290,8 +290,7 @@ class UserController extends Controller
         return Str::transliterate(Str::lower($this->string('user_email')).'|'.$this->ip()); // changed to 'user_email'
     }
 
-
-    
+   
     
     
 }

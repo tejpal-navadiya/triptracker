@@ -43,7 +43,7 @@
                             <input type="hidden" value="travelers" name="travelers">
                             <div class="card-body2">
                                 <div class="row pxy-15 px-10">
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_name">Name of Trip<span class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="tr_name"
@@ -52,7 +52,7 @@
 
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_name')" />
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-4">
                                         <div class="form-group">
 
@@ -81,10 +81,8 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
                                         </div>
                                     </div>
-                                    
-                                </div>
-                                <div class="row pxy-15 px-10">
-                                <div class="col-md-4">
+
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_dob" :value="__('Birthdate')" />
                                             <div class="input-group date" id="tr_dob" data-target-input="nearest">
@@ -100,6 +98,10 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_dob')" />
                                         </div>
                                     </div>
+                                    
+                                </div>
+                                <div class="row pxy-15 px-10">
+                                
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_age" :value="__('Age')" />
@@ -109,7 +111,7 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_age')" />
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Start Date<span class="text-danger">*</span></label>
                                             <div class="input-group date" id="tr_start_date" data-target-input="nearest">
@@ -124,7 +126,7 @@
                                             </div>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" />
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -142,7 +144,7 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" />
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_num_people" :value="__('Number of People')" />
                                             <x-text-input type="number" min="0" class="form-control"
@@ -152,7 +154,7 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')"
                                                  />
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-4">
                                         <div class="form-group">
 
@@ -176,13 +178,21 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_desc" :value="__('Description')" />
-                                            <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
+                                            <x-input-label for="tr_desc" :value="__('Notes')" />
+                                            <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Notes" name="tr_desc"
                                                 autofocus autocomplete="tr_desc"> {{ old('tr_email') }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_phone" :value="__('Address')" />
+                                            <x-text-input type="text" class="form-control" id="tr_phone"
+                                                placeholder="Enter Address" name="tr_address" autofocus
+                                                autocomplete="tr_phone" value="{{ old('tr_address') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_address')" />
+                                        </div>
+                                    </div>
 
 
                                     <div class="col-md-4">
@@ -230,15 +240,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <x-input-label for="tr_phone" :value="__('Address')" />
-                                            <x-text-input type="text" class="form-control" id="tr_phone"
-                                                placeholder="Enter Address" name="tr_address" autofocus
-                                                autocomplete="tr_phone" value="{{ old('tr_address') }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('tr_address')" />
-                                        </div>
-                                    </div>
+                                    
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_phone" :value="__('Zip')" />

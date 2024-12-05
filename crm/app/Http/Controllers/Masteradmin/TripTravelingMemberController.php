@@ -14,23 +14,46 @@ use App\Models\Trip;
 class TripTravelingMemberController extends Controller
 {
     //
-    public function index(Request $request,$id)
+    public function index1(Request $request,$id)
     {
         // dd($id);
       
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $member = TripTravelingMember::where([ 'tr_id' => $id])->latest()->get();
+        $member = TripTravelingMember::with(['travelingrelationship'])->where([ 'tr_id' => $id])->latest()->get();
         // dd($roles);
-    
+        $uniq_id = $user->user_id; 
+        $tripData = \DB::table($uniq_id . '_tc_trip')
+        ->select('tr_id', 'tr_traveler_name','tr_age')
+        ->where('tr_id', $id)
+        ->get();
+
+        // Combine member and tripData
+        $combinedData = $member->map(function($m) use ($tripData) {
+        $tripInfo = $tripData->firstWhere('tr_id', $m->tr_id); // Assuming tr_id is the key to match
+        return [
+            'trtm_id' => $m->trtm_id ?? '',
+            'trtm_relationship' => $m->travelingrelationship->rel_name ?? '',
+            'tr_traveler_name' => $tripInfo->tr_traveler_name ?? '',
+            'tr_age' => $tripInfo->tr_age ?? '',
+            // Add other member fields as needed
+        ];
+    })->toArray(); 
+
+    // dd($combinedData);
+
         if ($request->ajax()) {
-            $member = TripTravelingMember::where(['tr_id' => $id])->latest()->get();
+            // $member = TripTravelingMember::with(['travelingrelationship'])->where(['tr_id' => $id])->latest()->get();
             //  dd($access);
-            return Datatables::of($member)
+            return Datatables::of($combinedData)
                     ->addIndexColumn()
+                    // ->addColumn('trtm_relationship', function($status) {
+                    //     return $status->travelingrelationship->rel_name ?? '';
+                    // })
                     ->addColumn('action', function($members) use ($access){
                         $btn = '';
+                        
                         
                         if(isset($access['workflow']) && $access['workflow']) {
                             $btn .= '<a data-id="'.$members->trtm_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
@@ -62,9 +85,157 @@ class TripTravelingMemberController extends Controller
                   
         }
       
-        return view('masteradmin.trip.traveler-information', compact('member'));
+        return view('masteradmin.trip.traveler-information', compact('member','tripData'));
 
     }
+
+    public function index2(Request $request, $id)
+{
+    $access = view()->shared('access');
+    $user = Auth::guard('masteradmins')->user();
+    $member = TripTravelingMember::with(['travelingrelationship'])->where(['tr_id' => $id])->latest()->get();
+    $uniq_id = $user->user_id; 
+    $tripData = \DB::table($uniq_id . '_tc_trip')
+        ->select('tr_id', 'tr_traveler_name', 'tr_age')
+        ->where('tr_id', $id)
+        ->first();
+
+    // Combine member and tripData
+    $combinedData = $member->map(function($member) use ($tripData) {
+        // dD($tripData);
+        return [
+            'trtm_id' => $member->trtm_id ?? '',
+            'trtm_relationship' => '',
+            'trtm_full_name' => $tripData->tr_traveler_name ?? '',
+            'trtm_age' => $tripData->tr_age ?? '',
+            'action' => ''
+        ];
+    })->toArray();
+
+    // Debugging output
+    // Uncomment the line below to see the structure of combinedData
+    // dd($combinedData);
+
+    if ($request->ajax()) {
+        return Datatables::of($member)
+            ->addIndexColumn()
+            
+            ->addColumn('action', function($members) use ($access) {
+                $btn = '';
+                
+                if (isset($access['workflow']) && $access['workflow']) {
+                    $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                }
+                if (isset($access['workflow']) && $access['workflow']) {
+                    $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members['trtm_id'].'">
+                                <i class="fas fa-trash delete_icon_grid"></i>
+                                <div class="modal fade" id="delete-role-modal-'.$members['trtm_id'].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body pad-1 text-center">
+                                                <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                <p class="company_business_name px-10"><b>Delete Traveling Member </b></p>
+                                                <p class="company_details_text px-10">Are You Sure You Want to Delete This Traveling Member ?</p>
+                                                <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="delete_btn px-15 deleteMemberbtn" data-id="'.$members['trtm_id'].'">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    return view('masteradmin.trip.traveler-information', compact('member', 'tripData'));
+}
+
+public function index(Request $request, $id)
+{
+    $access = view()->shared('access');
+    $user = Auth::guard('masteradmins')->user();
+    
+    // Fetch members associated with the trip
+    $members = TripTravelingMember::with(['travelingrelationship'])->where(['tr_id' => $id])->latest()->get();
+    
+    // Fetch trip data
+    $uniq_id = $user->user_id; 
+    $tripData = \DB::table($uniq_id . '_tc_trip')
+        ->select('tr_id', 'tr_traveler_name', 'tr_age')
+        ->where('tr_id', $id)
+        ->first();
+
+    // Check if tripData is null
+    if (!$tripData) {
+        return response()->json(['error' => 'Trip data not found'], 404);
+    }
+
+    // Combine member and tripData
+    $combinedData = [];
+    
+    // Add trip data to combinedData
+    if ($tripData) {
+        $combinedData[] = [
+            'trtm_id' => null, // No member ID for trip data
+            'trtm_relationship' => '', // No relationship for trip data
+            'trtm_full_name' => $tripData->tr_traveler_name ?? '',
+            'trtm_age' => $tripData->tr_age ?? '',
+            'action' => '-' // Placeholder for action buttons
+        ];
+    }
+
+    // Add members to combinedData
+    foreach ($members as $member) {
+        $combinedData[] = [
+            'trtm_id' => $member->trtm_id ?? '',
+            'trtm_relationship' => $member->travelingrelationship->rel_name ?? '',
+            'trtm_full_name' => $member->trtm_first_name ?? '',
+            'trtm_age' => $member->trtm_age ?? '',
+            'action' => '' // Placeholder for action buttons
+        ];
+    }
+
+    if ($request->ajax()) {
+        return Datatables::of($combinedData)
+            ->addIndexColumn()
+            ->addColumn('action', function($members) use ($access) {
+                $btn = '';
+                if ($members['trtm_id'] === null) {
+                    return '-'; // Return placeholder for trip data
+                }
+                
+                if (isset($access['workflow']) && $access['workflow']) {
+                    $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                }
+                if (isset($access['workflow']) && $access['workflow']) {
+                    $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members['trtm_id'].'">
+                                <i class="fas fa-trash delete_icon_grid"></i>
+                                <div class="modal fade" id="delete-role-modal-'.$members['trtm_id'].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body pad-1 text-center">
+                                                <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                <p class="company_business_name px-10"><b>Delete Traveling Member </b></p>
+                                                <p class="company_details_text px-10">Are You Sure You Want to Delete This Traveling Member ?</p>
+                                                <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="delete_btn px-15 deleteMemberbtn" data-id="'.$members['trtm_id'].'">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    return view('masteradmin.trip.traveler-information', compact('combinedData'));
+}
 
     public function store(Request $request, $id)
     {
@@ -82,7 +253,7 @@ class TripTravelingMemberController extends Controller
                 'trtm_middle_name' => 'nullable|string',
                 'trtm_last_name' => 'nullable|string',
                 'trtm_nick_name' => 'nullable|string',
-                'trtm_relationship' => 'required:items.*.trtm_type,1',
+                'trtm_relationship' => 'required',
                 'trtm_gender' => 'required:items.*.trtm_type,2',
                 'trtm_dob' => 'nullable|string',
                 'trtm_age' => 'nullable|string',
@@ -144,7 +315,7 @@ class TripTravelingMemberController extends Controller
                 'trtm_middle_name' => 'nullable|string',
                 'trtm_last_name' => 'nullable|string',
                 'trtm_nick_name' => 'nullable|string',
-                'trtm_relationship' => 'nullable:items.*.trtm_type,1',
+                'trtm_relationship' => 'nullable',
                 'trtm_gender' => 'nullable:items.*.trtm_type,2',
                 'trtm_dob' => 'required|string',
                 'trtm_age' => 'nullable|string',

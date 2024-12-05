@@ -370,6 +370,14 @@
                             </li>
                         @endif
 
+                        <li class="nav-item">
+                            <a href="{{ route('masteradmin.profile.agencyedits') }}"
+                                class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Agency Profile</p>
+                            </a>
+                        </li>
+
 
                         <li class="nav-item">
                             <a href="{{ route('masteradmin.masterlog.index') }}"

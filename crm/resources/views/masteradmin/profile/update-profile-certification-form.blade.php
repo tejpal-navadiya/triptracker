@@ -180,7 +180,7 @@
                                    <div class="col-md-6">
                                         <strong>Document :</strong>
                                         ${user.users_cert_document ? 
-                                            `<a href="${baseUrl}{{$userFolder}}/certification_image/${user.users_cert_document}" target="_blank">
+                                            `<a href="${baseUrl}/certification_images/${user.users_cert_document}" target="_blank">
                                                 <div title="${user.users_cert_document}" class="ptm pbm">
                                                     ${user.users_cert_document}
                                                 </div>
@@ -302,7 +302,7 @@
                 var baseUrl = "{{ config('app.image_url') }}";
                 if (data.users_cert_document) {
                     $('#users_cert_document').append(
-                        '<a href="' + baseUrl + '{{ $userFolder }}/certification_image/' + data.users_cert_document + '" target="_blank">' +
+                        '<a href="' + baseUrl + '/certification_images/' + data.users_cert_document + '" target="_blank">' +
                         data.users_cert_document + 
                         '</a>'
                     );

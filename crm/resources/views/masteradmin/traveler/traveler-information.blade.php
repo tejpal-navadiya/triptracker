@@ -149,7 +149,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
                                 <div class="d-flex">
@@ -157,7 +157,25 @@
                                         name="trtm_relationship" placeholder="Enter Relationship">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trtm_relationship"
+                                        name="trtm_relationship">
+                                        <option value="" default>Select Relationship</option>
+                                        @foreach ($travelingrelationship as $value)
+                                            <option value="{{ $value->rel_id }}">
+                                                {{ $value->rel_name }}
+                                            </option>
+                                        @endforeach
+                                        <div class="invalid-feedback" id="trtm_relationship_error" ></div>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>               
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -258,13 +276,7 @@
                         }
                     },
                     columns: [
-                        {
-                            data: null,
-                            name: 'trtm_full_name',
-                            render: function(data, type, row) {
-                                return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
-                            }
-                        },
+                        { data: 'trtm_full_name', name: 'trtm_full_name' },
                         { data: 'trtm_relationship', name: 'trtm_relationship' },
                         { data: 'trtm_age', name: 'trtm_age' },
                         { data: 'action', name: 'action', orderable: false, searchable: false }
