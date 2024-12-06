@@ -206,9 +206,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/profile', [ProfilesController::class, 'edit'])->name('masteradmin.profile.edit');
        
         Route::get('/profile/{id}', [ProfilesController::class, 'edits'])->name('masteradmin.profile.edits');
-        Route::get('/agency-profile', [ProfilesController::class, 'agencyedits'])->name('masteradmin.profile.agencyedits');
+        Route::get('/agencies-profile', [ProfilesController::class, 'agencyedits'])->name('masteradmin.profile.agencyedits');
         // Route::post('/agencyupdatebusinessdetails/{id}', [ProfilesController::class, 'updateagency'])->name('masteradmin.businessdetails.agencyupdate');
-        Route::post('/updatebusinessdetails/{id}', [ProfilesController::class, 'updateagency'])->name('businessdetails.update');
+        Route::post('/agencyupdatebusinessdetails/{id}', [ProfilesController::class, 'updateagency'])->name('masteradmin.update');
 
 
         Route::patch('/profile', [ProfilesController::class, 'update'])->name('masteradmin.profile.update');

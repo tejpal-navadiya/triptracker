@@ -24,7 +24,7 @@ class MasterProfileUpdateRequest extends FormRequest
             'users_last_name' => ['required', 'string', 'max:255'],
            
             'users_phone' => ['nullable', 'string', 'max:255'],
-            'users_bio' => ['required', 'string', 'max:255']
+            'users_bio' => ['nullable', 'string', 'max:255']
         ];
     }
     

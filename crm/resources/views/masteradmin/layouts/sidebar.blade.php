@@ -350,9 +350,9 @@
                 </li>
  -->
                 <li
-                    class="nav-item {{ request()->is($busadminRoutes . '/settings*') || request()->is($busadminRoutes . '/profile*') || request()->is($busadminRoutes . '/logActivity*') ? 'menu-open' : '' }}">
+                    class="nav-item {{ request()->is($busadminRoutes . '/settings*') || request()->is($busadminRoutes . '/profile*') || request()->is($busadminRoutes . '/logActivity*') || request()->is($busadminRoutes . '/agencies-profile') ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ request()->is($busadminRoutes . '/settings*') || request()->is($busadminRoutes . '/profile*') || request()->is($busadminRoutes . '/logActivity*') ? 'active' : '' }}">
+                        class="nav-link {{ request()->is($busadminRoutes . '/settings*') || request()->is($busadminRoutes . '/profile*') || request()->is($busadminRoutes . '/logActivity*') || request()->is($busadminRoutes . '/agencies-profile') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i>
                         <p>
                             Settings
@@ -372,7 +372,7 @@
 
                         <li class="nav-item">
                             <a href="{{ route('masteradmin.profile.agencyedits') }}"
-                                class="nav-link {{ request()->is($busadminRoutes . '/profile*') ? 'active' : '' }}">
+                                class="nav-link {{ request()->is($busadminRoutes . '/agencies-profile') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Agency Profile</p>
                             </a>

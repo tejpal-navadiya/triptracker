@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Trip Tracker | New subscription Plans</title>
+    <title>Edit Agency Profile | Trip Tracker</title>
     @include('layouts.headerlink')
 </head>
 
@@ -20,10 +20,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Edit Agencies</h1>
+                            <h1 class="m-0">Edit Agency</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Edit Agencies</li>
+                                <li class="breadcrumb-item active">Edit Agency</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
@@ -42,7 +42,7 @@
                     <!-- card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Agencies</h3>
+                            <h3 class="card-title">Edit Agency</h3>
                         </div>
                         <!-- /.card-header -->
                         <form id="bdetails" method="POST" action="{{ route('businessdetails.update', $user->id) }}"  enctype="multipart/form-data">
@@ -55,7 +55,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="tr_agent_id">Agencies Name</label>
+                                            <label for="tr_agent_id">Agency Name</label>
                                             <x-text-input type="text" class="form-control" id="user_agencies_name"
                                                 placeholder="Enter agency Name" name="users_agencies_name" autofocus
                                                 autocomplete="user_agencies_name"
@@ -119,19 +119,49 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="tr_agent_id">Email Address<span
+                                            <label for="tr_agent_id">Business Email Address<span
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="user_email"
-                                                placeholder="Enter Email Address" name="users_email" autofocus
+                                                placeholder="Enter Business Email Address" name="users_email" autofocus
                                                 autocomplete="user_email" value="{{ $userdetails->users_email }}" readonly/>
                                             <x-input-error class="mt-2" :messages="$errors->get('user_email')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tr_agent_id">Personal Email Address</label>
+                                            <x-text-input type="email" class="form-control" id="user_personal_email"
+                                                placeholder="Enter Personal Email Address" name="users_personal_email" autofocus
+                                                autocomplete="user_personal_email" value="{{ $userdetails->users_personal_email }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('user_personal_email')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tr_agent_id">Business Phone<span class="text-danger">*</span></label>
+                                            <x-text-input type="number" class="form-control" id="user_personal_email"
+                                                placeholder="Enter Business Phone" name="users_business_phone" autofocus
+                                                autocomplete="user_business_phone" value="{{ $userdetails->users_business_phone }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('user_personal_email')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="user_personal_phone">Personal Phone</label>
+                                            <x-text-input type="number" class="form-control" id="user_personal_phone"
+                                                placeholder="Enter Business Phone" name="users_personal_phone" autofocus
+                                                autocomplete="user_personal_phone" value="{{ $userdetails->users_personal_phone }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('user_personal_phone')" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row pxy-15 px-10">
 
-                                <div class="col-md-6 col-xl-4">
+                                <div class="col-md-4">
                                     <label for="users_iata_clia_number" class="form-label">IATA or CLIA Number</label>
                                     <span class="text-danger">*</span>
                                     <div class="input-group mb-2">
@@ -149,7 +179,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-6 col-xl-4">
+                                <div class="col-md-4">
                                     <label for="users_clia_number" class="form-label">Personal CLIA Number</label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-append">
@@ -166,7 +196,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-6 col-xl-4">
+                                <div class="col-md-4">
                                     <label for="users_iata_number" class="form-label">Personal IATA Number</label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-append">
@@ -282,18 +312,18 @@
 
                                             <div class="mb-3">
                                                 <label for="formFile" class="form-label">Agency Logo </label>
-                                                <input class="form-control" name="users_image" type="file"
+                                                <input class="form-control" name="agency_logo" type="file"
                                                     id="formFile">
                                             </div>
                                             <label for="trvd_document">Only jpg, jpeg, png, and pdf files are
                                                 allowed</label>
-                                            @if ($userdetails->users_image ?? '')
+                                            @if ($userdetails->agency_logo ?? '')
                                                 @php //$userFolder = 'masteradmin/' .$user->buss_unique_id.'_'.$user->user_first_name;
                                                // $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$userdetails->users_image));
-                                                $imageurl = route('agency.access', ['filename' => $userdetails->users_image]);
+                                                $imageurl = route('agency.access', ['filename' => $userdetails->agency_logo]);
                                                 @endphp
                                                 <a href="{{ $imageurl }}" target="_blank">
-                                                    <div title="{{ $imageurl }}" class="ptm pbm">{{ $userdetails->users_image ?? '' }}</div>
+                                                    <div title="{{ $imageurl }}" class="ptm pbm">{{ $userdetails->agency_logo ?? '' }}</div>
                                                 </a>
                                             @endif
                                         </div>

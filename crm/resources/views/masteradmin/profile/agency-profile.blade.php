@@ -1,5 +1,5 @@
 @extends('masteradmin.layouts.app')
-<title>Edit Agencies Profile | Trip Tracker</title>
+<title>Edit Agency Profile | Trip Tracker</title>
 @section('content')
 
         <!-- Content Wrapper. Contains page content -->
@@ -9,10 +9,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Edit Agencies Profile</h1>
+                            <h1 class="m-0">Edit Agency Profile</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Edit Agencies Profile</li>
+                                <li class="breadcrumb-item active">Edit Agency Profile</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
@@ -43,10 +43,10 @@
                     <!-- card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Agencies Profile</h3>
+                            <h3 class="card-title">Edit Agency Profile</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form id="bdetails" method="POST" action="{{ route('businessdetails.update', $userdetails->id) }}"  enctype="multipart/form-data">
+                        <form id="bdetails" method="POST" action="{{ route('masteradmin.update', $userdetails->id) }}"  enctype="multipart/form-data">
                             @csrf
 
                             <div class="card-body2">
@@ -54,7 +54,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="tr_agent_id">Agencies Name</label>
+                                            <label for="tr_agent_id">Agency Name</label>
                                             <x-text-input type="text" class="form-control" id="user_agencies_name"
                                                 placeholder="Enter agency Name" name="users_agencies_name" autofocus
                                                 autocomplete="user_agencies_name"
@@ -310,8 +310,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div class="mb-3">
-                                                <label for="formFile" class="form-label">Company Logo / Profile Image
-                                                    example</label>
+                                                <label for="formFile" class="form-label">Agency Logo
+                                                    </label>
                                                 <input class="form-control" name="agency_logo" type="file"
                                                     id="formFile">
                                             </div>

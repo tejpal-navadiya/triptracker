@@ -128,7 +128,7 @@
                                         </div>
                                     </div> -->
 
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">End Date<span class="text-danger">*</span></label>
                                             <div class="input-group date" id="tr_end_date" data-target-input="nearest">
@@ -143,7 +143,7 @@
                                             </div>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" />
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <x-input-label for="tr_num_people" :value="__('Number of People')" />
@@ -180,7 +180,7 @@
                                         <div class="form-group">
                                             <x-input-label for="tr_desc" :value="__('Notes')" />
                                             <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Notes" name="tr_desc"
-                                                autofocus autocomplete="tr_desc"> {{ old('tr_email') }}</textarea>
+                                                autofocus autocomplete="tr_desc">{{ old('tr_email') }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
                                         </div>
                                     </div>

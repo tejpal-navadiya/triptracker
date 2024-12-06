@@ -156,11 +156,11 @@ class TripController extends Controller
         }
     
         $tripstatus = TripStatus::all();
-       
+        $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
        
     //    dd($aency_user);
 
-        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus'));
+        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus','travelingrelationship'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -432,13 +432,13 @@ class TripController extends Controller
             $agency_users = $agency_users->where('users_id', $user->users_id)->get();
         }
     
-
+        $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
         //dd($tripstatus);
 
         $selectedStatus = $trip->status;
         //$status = Trip::where('status', $selectedStatus)->get();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip'));
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 

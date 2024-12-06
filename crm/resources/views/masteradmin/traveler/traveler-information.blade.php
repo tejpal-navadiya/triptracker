@@ -161,7 +161,7 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="trtm_relationship">Relationship<span class="text-danger">*</span></label>
+                                <label for="trtm_relationship">Relationship</label>
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="trtm_relationship"
                                         name="trtm_relationship">

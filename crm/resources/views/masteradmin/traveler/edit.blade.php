@@ -136,7 +136,7 @@
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_start_date')" />
                                         </div>
                                     </div>  -->
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
 
                                             <label for="tr_agent_id">End Date<span class="text-danger">*</span></label>
@@ -154,7 +154,7 @@
                                             </div>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" />
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Email Address<span

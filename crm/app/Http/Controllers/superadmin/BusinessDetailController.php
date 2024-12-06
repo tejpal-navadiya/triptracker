@@ -177,19 +177,16 @@ public function update(Request $request, $id)
         'users_iata_number' => 'nullable|string',
         'users_clia_number' => 'nullable|string',
         'users_address' => 'nullable|string',
-        'users_email' => [
-            'required',
-            'email',
-            'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
-            'max:254'
-        ],        
+        'users_business_phone' => 'required|string',
+        'users_personal_phone' => 'nullable|string',
+        'users_personal_email' => 'nullable|string',  
         'users_zip' => 'nullable', 'string', 'max:255',
         'users_country' => 'nullable',
         'users_state' => 'nullable',
         'users_city' => 'nullable',
 
-        'users_image' => 'nullable',
-        'users_image.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
+        'agency_logo' => 'nullable',
+        'agency_logo.*' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
 
     ], [
         'users_agencies_name' => 'Agency name is required',
@@ -200,9 +197,9 @@ public function update(Request $request, $id)
         'users_email.regex' => 'Email contains invalid characters or format.',
         'users_email.max' => 'Email should not exceed 254 characters.',
 
-        'users_image.image' => 'Uploaded file must be an image.',
-        'users_image.mimes' => 'Image must be a file of type: jpeg, png, jpg, pdf.',
-        'users_image.max' => 'Image size must not exceed 2MB.',
+        'agency_logo.image' => 'Uploaded file must be an image.',
+        'agency_logo.mimes' => 'Image must be a file of type: jpeg, png, jpg, pdf.',
+        'agency_logo.max' => 'Image size must not exceed 2MB.',
     ]);
     // dd($validatedData);
     
@@ -213,13 +210,13 @@ public function update(Request $request, $id)
       $userFolder = 'masteradmin/' .$user->buss_unique_id.'_'.$user->user_first_name;
       Storage::makeDirectory($userFolder, 0755, true);
 
-      $users_image = '';
+      $agency_logo = '';
 
-        if ($request->hasFile('users_image')) {
-            $users_image =  $this->handleImageUpload($request, 'users_image', null, 'profile_image', $userFolder);
-            $validatedData['users_image'] = $users_image;
+        if ($request->hasFile('agency_logo')) {
+            $agency_logo =  $this->handleImageUpload($request, 'agency_logo', null, 'profile_image', $userFolder);
+            $validatedData['agency_logo'] = $agency_logo;
         }else{
-            $validatedData['users_image'] = $userdetails->users_image ?? '';
+            $validatedData['agency_logo'] = $userdetails->agency_logo ?? '';
         }
 
 

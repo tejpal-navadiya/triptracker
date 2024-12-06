@@ -17,11 +17,11 @@ class UserCertificationController extends Controller
         $user = Auth::guard('masteradmins')->user();
     
         $validatedData = $request->validate([
-            'users_cert_name' => 'required|string|max:255',
-            'users_cert_person_name' => 'required|string|max:255',
-            'users_cert_completed_date' => 'required|string|max:255',
-            'users_cert_expiration' => 'required|string|max:255',
-            'users_cert_desc' => 'required|string|max:255',
+            'users_cert_name' => 'nullable|string|max:255',
+            'users_cert_person_name' => 'nullable|string|max:255',
+            'users_cert_completed_date' => 'nullable|string|max:255',
+            'users_cert_expiration' => 'nullable|string|max:255',
+            'users_cert_desc' => 'nullable|string|max:255',
             'users_cert_document' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image is nullable for updates
         ], [
             'users_cert_name.required' => 'The Certification Name field is required.',

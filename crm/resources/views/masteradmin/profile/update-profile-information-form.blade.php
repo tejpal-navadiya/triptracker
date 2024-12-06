@@ -99,7 +99,7 @@
                                     <x-input-label for="users_email" :value="__('Email Address')" />
                                     <x-text-input type="email" class="form-control" id="userss_email"
                                         placeholder="Enter Email Address" name="users_email" required autofocus
-                                        autocomplete="users_email" :value="old('users_email', $user->users_email ?? '')" />
+                                        autocomplete="users_email" :value="old('users_email', $user->users_email ?? '')" readonly/>
                                     <x-input-error class="mt-2" :messages="$errors->get('users_email')" />
                                 </div>
                             </div>

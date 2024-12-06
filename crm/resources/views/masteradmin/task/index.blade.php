@@ -233,8 +233,8 @@
                             <div class="form-group">
                                 <label for="trvt_note">Notes </label>
                                 <div class="d-flex">
-                                    <textarea type="text" class="form-control" id="trvt_note" placeholder="Enter Description or Notes" name="trvt_note"
-                                    autofocus autocomplete="trvt_note"> {{ old('trvt_note') }}</textarea>
+                                    <textarea type="text" class="form-control" id="trvt_note" placeholder="Enter Notes" name="trvt_note"
+                                    autofocus autocomplete="trvt_note">{{ old('trvt_note') }}</textarea>
                                 </div>
                             </div>
                         </div>

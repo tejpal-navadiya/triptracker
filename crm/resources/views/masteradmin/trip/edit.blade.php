@@ -434,10 +434,7 @@
                                     <li class="nav-item" role="presentation">
 
                                         <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile"
-                                            type="button" role="tab" aria-controls="profile" aria-selected="false">Add
-                                            Traveling
-
-                                            Member</button>
+                                            type="button" role="tab" aria-controls="profile" aria-selected="false">Add Traveler</button>
 
                                     </li>
 
@@ -819,7 +816,7 @@
                                                                 <input type="text" class="form-control"
                                                                     id="trtm_nick_name{{ $rowCount }}"
                                                                     name="items[{{ $rowCount }}][trtm_nick_name]"
-                                                                    placeholder="Enter Nickname" value="{{ $rowCount }}">
+                                                                    placeholder="Enter Nickname" value="{{ $item->trtm_nick_name }}">
 
                                                             </div>
 
@@ -829,20 +826,24 @@
 
 
 
-                                                    <div class="col-md-3 family-member-field">
+                                                    <div class="col-md-3">
 
                                                         <div class="form-group">
 
-                                                            <label for="trtm_relationship">Relationship<span
-                                                                    class="text-danger">*</span></label>
+                                                            <label for="trtm_relationship">Relationship</label>
 
                                                             <div class="d-flex">
 
-                                                                <input type="text" class="form-control"
-                                                                    id="trtm_relationship{{ $rowCount }}"
-                                                                    name="items[{{ $rowCount }}][trtm_relationship]"
-                                                                    placeholder="Enter Relationship"
-                                                                    value="{{ $item->trtm_relationship }}">
+                                                                <select class="form-control select2" style="width: 100%;"  id="trtm_relationship{{ $rowCount }}"
+                                                                name="items[{{ $rowCount }}][trtm_relationship]">
+                                                                    <option value="" default>Select Relationship</option>
+                                                                    @foreach ($travelingrelationship as $value)
+                                                                    <option value="{{ $value->rel_id }}" {{ $value->rel_id == $item->trtm_relationship ? 'selected' : '' }}>
+                                                                        {{ $value->rel_name }}
+                                                                    </option>
+                                                                    @endforeach
+                                                                    <div class="invalid-feedback" id="trtm_relationship_error" ></div>
+                                                                </select>
 
                                                             </div>
 
@@ -992,7 +993,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <button type="button" id="add" class="add_tripmembertbtn add_btn"><i
-                                                    class="fas fa-plus add_plus_icon"></i>Add Traveling Member</button>
+                                                    class="fas fa-plus add_plus_icon"></i>Add Traveler</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1378,18 +1379,23 @@
 
 
 
-                                            <div class="col-md-3 family-member-field">
+                                            <div class="col-md-3">
 
                                             <div class="form-group">
 
-                                            <label for="trtm_relationship">Relationship<span
-
-                                            class="text-danger">*</span></label>
+                                            <label for="trtm_relationship">Relationship</label>
 
                                             <div class="d-flex">
 
-                                            <input type="text" class="form-control" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]" placeholder="Enter Relationship">
-
+                                                <select class="form-control select2" style="width: 100%;" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]">
+                                                    <option value="" default>Select Relationship</option>
+                                                    @foreach ($travelingrelationship as $value)
+                                                        <option value="{{ $value->rel_id }}">
+                                                            {{ $value->rel_name }}
+                                                        </option>
+                                                    @endforeach
+                                                    <div class="invalid-feedback" id="trtm_relationship_error" ></div>
+                                                </select>
                                             </div>
 
                                             </div>
