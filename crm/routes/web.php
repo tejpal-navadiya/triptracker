@@ -327,9 +327,6 @@ Route::group(['prefix' => $busadminRoute], function () {
        Route::post('/send-library/{id}', [LibraryController::class, 'sendEmail'])->name('masteradmin.library.send.email');
 
 
-
-
-
         //trip traveler document 
         Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
         Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
@@ -359,7 +356,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
        // Route::get('/agency/rolemodel/{id}', [AgencyController::class, 'rolemodel'])->name('rolemodel');
 
-       Route::post('/rolemodel/assign/{userId}', [AgencyController::class, 'assignUserRole'])->name('rolemodel.assign');
+        Route::post('/rolemodel/assign/{userId}', [AgencyController::class, 'assignUserRole'])->name('rolemodel.assign');
 
 
          
@@ -473,10 +470,11 @@ Route::group(['prefix' => $busadminRoute], function () {
        
         Route::get('/checkout/{plan}', [CheckoutController::class])->name('checkout');
 
+        //mail Configration
+        Route::get('/mail-settings', [ProfilesController::class, 'mailsetting'])->name('masteradmin.mailsetting');
+        Route::post('/update-mail-details', [ProfilesController::class, 'updatemail'])->name('masteradmin.updatemailsetting');
 
-
-       
-      
+ 
         
         // Route::get('/user/subscribe', function (Request $request) {
         //     $user = Auth::guard('masteradmins')->user();

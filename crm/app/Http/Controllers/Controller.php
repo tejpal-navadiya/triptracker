@@ -709,7 +709,7 @@ class Controller extends BaseController
         if (!Schema::hasTable($storeId.'_tc_trip_itinerary_detail')){   
             Schema::create($storeId.'_tc_trip_itinerary_detail', function (Blueprint $table) {
                 $table->string('trit_id')->unique()->primary();
-                $table->string('id')->nullable()->default(0);
+                $table->string(column: 'id')->nullable()->default(0);
                 $table->string('tr_id')->nullable();
                 $table->string('trit_text')->nullable();
                 $table->tinyInteger('trit_status')->default(0)->nullable();
@@ -717,9 +717,26 @@ class Controller extends BaseController
             });
         }
 
+        //mail configration
+        if (!Schema::hasTable($storeId.'_tc_mail_smtp_settings')){   
+            Schema::create($storeId.'_tc_mail_smtp_settings', function (Blueprint $table) {
+                $table->integer('mail_smtp_id')->unique()->primary();
+                $table->string('id')->nullable()->default(0);
+                $table->string('mail_username')->nullable()->default(0);
+                $table->string('mail_password')->nullable();
+                $table->string('mail_outgoing_port')->nullable();
+                $table->string('mail_incoming_port')->nullable();
+                $table->string('mail_outgoing_host')->nullable();
+                $table->string('mail_incoming_host')->nullable();
+                $table->tinyInteger('mail_smtp_status')->default(0)->nullable();
+                $table->timestamps();
+            });
         }
-        
+
+    
     }
+        
+}
     
     public function getLocalTime($date, $timezone) 
     {

@@ -18,6 +18,8 @@ use App\Models\MasterUserDetails;
 use Illuminate\Support\Facades\Storage;
 use App\Models\UserCertification;
 use App\Models\Cities;
+use App\Models\MailSettings;
+
 
 class ProfilesController extends Controller
 {
@@ -398,8 +400,6 @@ class ProfilesController extends Controller
         return redirect()->back()->with('success', 'Image uploaded successfully.');
     }
     
-    
-
     public function updateagency(Request $request, $id)
     {
         // dd($request->all());
@@ -466,63 +466,56 @@ class ProfilesController extends Controller
             return redirect()->route('masteradmin.profile.agencyedits')->with('success', 'Agency Profile is Updated successfully.');
     }
 
-    public function updateAgency2(Request $request, $id)
+    public function mailsetting(Request $request)
     {
+        // Retrieve the authenticated user
         $user = Auth::guard('masteradmins')->user();
-    // DD($user);
-        // Initialize a MasterUserDetails instance and set the dynamic table
-    //     $userDetails = new MasterUserDetails();
-    //     $userDetails->setTableForUniqueId($user->user_id);
-    // DD($userDetails);
-    //     // Find the specific user details or fail
-    //     $userdetails = $userDetails->where(['users_id' => $id, 'role_id' => 0])->firstOrFail();
-
-        // Validate request data
-        $validatedData = $request->validate([
-            'users_agencies_name' => 'required|string',
-            'users_first_name' => 'required|string',
-            'users_last_name' => 'required|string|max:255',
-            'users_franchise_name' => 'nullable|string',
-            'users_consortia_name' => 'nullable|string',
-            'users_iata_clia_number' => 'required|string',
-            'users_iata_number' => 'nullable|string',
-            'users_clia_number' => 'nullable|string',
-            'users_address' => 'nullable|string',
-            'users_business_phone' => 'required|string',
-            'users_personal_phone' => 'nullable|string',
-            'users_personal_email' => 'nullable|string',
-            'users_zip' => 'nullable|string|max:255',
-            'users_country' => 'nullable|string',
-            'users_state' => 'nullable|string',
-            'users_city' => 'nullable|string',
-            'users_image' => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
-        ], [
-            'users_agencies_name.required' => 'Agency name is required',
-            'users_first_name.required' => 'First Name is required',
-            'users_iata_clia_number.required' => 'IATA CLIA Number is required',
-            'users_business_phone.required' => 'Business Phone is required',
-            'users_image.mimes' => 'Image must be a file of type: jpeg, png, jpg, pdf.',
-            'users_image.max' => 'Image size must not exceed 2MB.',
+        //dd($agencyusers);
+        $maill = MailSettings::where('id',$user->users_id)->firstOrFail();
+        // dd($maill);
+        return view('masteradmin.profile.mail-settings', [
+            'mail' => $maill,
         ]);
 
-        // Update timestamp
-        $user->updated_at = now();
-
-        // Check if a user image is uploaded and handle the file upload
-        $userFolder = session('userFolder');
-        if ($request->hasFile('users_image')) {
-            $users_image = $this->handleImageUpload($request, 'users_image', null, 'profile_image', $userFolder);
-            $validatedData['users_image'] = $users_image;
-        } else {
-            $validatedData['users_image'] = $userdetails->users_image ?? '';
-        }
-
-        // Update user details
-        $user->where(['users_id' => $id])->update($validatedData);
-        // DD($userDetails);
-        // Redirect with success message
-        return redirect()->route('masteradmin.profile.agencyedits')->with('success', 'Admin Agency Updated successfully.');
     }
+
+    public function updatemail(Request $request)
+    {
+        $user = Auth::guard('masteradmins')->user();
+        $maill = MailSettings::where('id',$user->users_id)->firstOrFail();
+
+        $validatedData = $request->validate([
+            'mail_username' => 'required|string',
+            'mail_password' => 'required|string',
+            'mail_outgoing_host' => 'required|string',
+            'mail_incoming_host' => 'required','string', 'max:255',
+            'mail_outgoing_port' => 'nullable|string',
+            'mail_incoming_port' => 'nullable|string',
+
+        ], [
+            'mail_username' => 'Mail Username is required',
+            'mail_password' => 'Mail Password is required',
+            'mail_outgoing_host' => 'Mail Outgoing Host is required',
+            'mail_incoming_host' => 'Mail Incoming Host is required',
+            'mail_outgoing_port' => 'Mail Outgoing Port is required',
+            'mail_incoming_port' => 'Mail Incoming Port is required',
+        ]);
+        // dd($validatedData);
+
+        // Update the mail settings
+        $maill->mail_username = $validatedData['mail_username'];
+        $maill->mail_password = $validatedData['mail_password'];
+        $maill->mail_outgoing_host = $validatedData['mail_outgoing_host'];
+        $maill->mail_incoming_host = $validatedData['mail_incoming_host'];
+        $maill->mail_outgoing_port = $validatedData['mail_outgoing_port'];
+        $maill->mail_incoming_port = $validatedData['mail_incoming_port'];
+        $maill->updated_at = now();
+
+        $maill->save();
+
+        return redirect()->route('masteradmin.mailsetting')->with('success', 'Mail settings updated successfully.');
+    }
+    
 
 
 }

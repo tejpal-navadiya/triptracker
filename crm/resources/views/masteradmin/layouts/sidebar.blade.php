@@ -378,6 +378,14 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route('masteradmin.mailsetting') }}"
+                                class="nav-link {{ request()->is($busadminRoutes . '/mail-settings*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mail Configration</p>
+                            </a>
+                        </li>
+
 
                         <li class="nav-item">
                             <a href="{{ route('masteradmin.masterlog.index') }}"
