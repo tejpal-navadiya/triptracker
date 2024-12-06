@@ -720,7 +720,7 @@ class Controller extends BaseController
         //mail configration
         if (!Schema::hasTable($storeId.'_tc_mail_smtp_settings')){   
             Schema::create($storeId.'_tc_mail_smtp_settings', function (Blueprint $table) {
-                $table->integer('mail_smtp_id')->unique()->primary();
+                $table->integer('mail_smtp_id')->unique()->autoIncrement();
                 $table->string('id')->nullable()->default(0);
                 $table->string('mail_username')->nullable()->default(0);
                 $table->string('mail_password')->nullable();

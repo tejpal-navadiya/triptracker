@@ -470,8 +470,8 @@ class ProfilesController extends Controller
     {
         // Retrieve the authenticated user
         $user = Auth::guard('masteradmins')->user();
-        //dd($agencyusers);
-        $maill = MailSettings::where('id',$user->users_id)->firstOrFail();
+        // dd($user);
+        $maill = MailSettings::where('id',$user->users_id)->first();
         // dd($maill);
         return view('masteradmin.profile.mail-settings', [
             'mail' => $maill,
@@ -481,38 +481,56 @@ class ProfilesController extends Controller
 
     public function updatemail(Request $request)
     {
+        // Get the currently authenticated user
         $user = Auth::guard('masteradmins')->user();
-        $maill = MailSettings::where('id',$user->users_id)->firstOrFail();
-
+    
+        // Validate the incoming request data
         $validatedData = $request->validate([
             'mail_username' => 'required|string',
             'mail_password' => 'required|string',
             'mail_outgoing_host' => 'required|string',
-            'mail_incoming_host' => 'required','string', 'max:255',
+            'mail_incoming_host' => 'required|string|max:255',
             'mail_outgoing_port' => 'nullable|string',
             'mail_incoming_port' => 'nullable|string',
-
         ], [
-            'mail_username' => 'Mail Username is required',
-            'mail_password' => 'Mail Password is required',
-            'mail_outgoing_host' => 'Mail Outgoing Host is required',
-            'mail_incoming_host' => 'Mail Incoming Host is required',
-            'mail_outgoing_port' => 'Mail Outgoing Port is required',
-            'mail_incoming_port' => 'Mail Incoming Port is required',
+            'mail_username.required' => 'Mail Username is required',
+            'mail_password.required' => 'Mail Password is required',
+            'mail_outgoing_host.required' => 'Mail Outgoing Host is required',
+            'mail_incoming_host.required' => 'Mail Incoming Host is required',
+            'mail_outgoing_port.required' => 'Mail Outgoing Port is required',
+            'mail_incoming_port.required' => 'Mail Incoming Port is required',
         ]);
-        // dd($validatedData);
+    
+        // Check if the mail settings exist for this user, else create them
+        $maill = MailSettings::where('id', $user->users_id)->first();
 
-        // Update the mail settings
-        $maill->mail_username = $validatedData['mail_username'];
-        $maill->mail_password = $validatedData['mail_password'];
-        $maill->mail_outgoing_host = $validatedData['mail_outgoing_host'];
-        $maill->mail_incoming_host = $validatedData['mail_incoming_host'];
-        $maill->mail_outgoing_port = $validatedData['mail_outgoing_port'];
-        $maill->mail_incoming_port = $validatedData['mail_incoming_port'];
-        $maill->updated_at = now();
-
-        $maill->save();
-
+        // If the record exists, update it, otherwise create a new one
+        if ($maill) {
+            // Update the existing record
+            $maill->update([
+                'mail_username' => $validatedData['mail_username'],
+                'mail_password' => $validatedData['mail_password'],
+                'mail_outgoing_host' => $validatedData['mail_outgoing_host'],
+                'mail_incoming_host' => $validatedData['mail_incoming_host'],
+                'mail_outgoing_port' => $validatedData['mail_outgoing_port'],
+                'mail_incoming_port' => $validatedData['mail_incoming_port'],
+                'updated_at' => now(),
+            ]);
+        } else {
+            // Create a new record if none exists
+            MailSettings::create([
+                'id' => $user->users_id,  // Set user ID as the primary key
+                'mail_username' => $validatedData['mail_username'],
+                'mail_password' => $validatedData['mail_password'],
+                'mail_outgoing_host' => $validatedData['mail_outgoing_host'],
+                'mail_incoming_host' => $validatedData['mail_incoming_host'],
+                'mail_outgoing_port' => $validatedData['mail_outgoing_port'],
+                'mail_incoming_port' => $validatedData['mail_incoming_port'],
+                'updated_at' => now(),
+            ]);
+        }
+    
+        // Redirect with a success message
         return redirect()->route('masteradmin.mailsetting')->with('success', 'Mail settings updated successfully.');
     }
     

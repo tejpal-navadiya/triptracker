@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\MailController;
 
 
 
@@ -150,6 +151,7 @@ Route::group(['prefix' => $busadminRoute], function () {
 
 
 
+    Route::get('/', [LoginController::class, 'create'])->name('masteradmin.login');
 
        Route::get('auth_register_state/{countryId}', [RegisterController::class, 'getStates'])->name('authregisterStates');
        Route::get('auth_register_cities/{stateId}', [RegisterController::class, 'getCities'])->name('authregisterCities');
@@ -473,6 +475,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         //mail Configration
         Route::get('/mail-settings', [ProfilesController::class, 'mailsetting'])->name('masteradmin.mailsetting');
         Route::post('/update-mail-details', [ProfilesController::class, 'updatemail'])->name('masteradmin.updatemailsetting');
+        Route::get('/fetch-emails/{tripId}', [MailController::class, 'fetchEmails'])->name('masteradmin.trip.fetchEmails');
 
  
         

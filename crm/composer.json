@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.8",
         "stripe/stripe-php": "^13.18",
         "tinymce/tinymce": "^7.3",
+        "webklex/laravel-imap": "^5.3",
         "yajra/laravel-datatables": "^10.1"
     },
     "require-dev": {

@@ -240,10 +240,7 @@
    
     $(document).ready(function() {
         
-        // function initializeDocumentDataTable() {
-        // if ($.fn.dataTable.isDataTable('#documentDataTable')) {
-        //     DocumentDataTable.clear().draw();
-        // }else{
+       
             setTimeout(function(){
             DocumentDataTable = $('#documentDataTable').DataTable({
             processing: true,
@@ -255,48 +252,6 @@
                     d._token = "{{ csrf_token() }}";
                 }
             },
-            columns: [{
-                    data: 'traveler_name',
-                    name: 'traveler_name'
-                },
-                {
-                    data: 'document_type',
-                    name: 'document_type'
-                },
-                {
-                    data: 'trvd_document',
-                    name: 'trvd_document',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        // console.log(data);
-
-                        if (data && Array.isArray(data)) {
-
-                            
-                            var imageLinks = '';
-                            var userFolder = "{{ session('userFolder') }}";
-                            var baseUrl = "{{ config('app.image_url') }}";
-
-                            data.forEach(function(image) {
-                                var imageUrl = baseUrl + '/document/' + image;
-                                imageLinks += '<a href="' + imageUrl + '" target="_blank">' + image + '</a>, ';
-                            });
-
-                            return imageLinks.slice(0, -2);
-                        } else {
-                            console.error("Expected array but got:", data);
-                        }
-                        return '';
-                    }
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
         });
     },3000);
 

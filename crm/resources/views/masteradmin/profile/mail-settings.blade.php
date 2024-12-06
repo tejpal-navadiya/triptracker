@@ -99,7 +99,7 @@
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="text" class="form-control" id="mail_incoming_host"
                                                 placeholder="Enter Mail Incoming Host" name="mail_incoming_host" autofocus
-                                                autocomplete="mail_incoming_host" value="{{ $mail->mail_incoming_port ?? '' }}" />
+                                                autocomplete="mail_incoming_host" value="{{ $mail->mail_incoming_host ?? '' }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('mail_incoming_host')" />
                                         </div>
