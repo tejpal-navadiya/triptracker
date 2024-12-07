@@ -90,3 +90,82 @@
 
 @endsection
 @endif
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
+        // Initialize DataTables
+        let pendingDataTable, completedDatatable;
+
+        function reloadPending() {
+            if ($.fn.DataTable.isDataTable('#pendingDataTable')) pendingDataTable.destroy();
+            pendingDataTable = $('#pendingDataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('masteradmin.trip.follow_up_trip') }}",
+                    type: 'GET',
+                    data: function (d) {
+                        d.trip_agent = $('#trip_agent').val();
+                        d.trip_traveler = $('#trip_traveler').val();
+                    }
+                },
+                columns: [
+                    { data: 'tr_name', name: 'tr_name' },
+                    { data: 'agent_name', name: 'agent_name' },
+                    { data: 'tr_traveler_name', name: 'tr_traveler_name' },
+                    { data: 'tr_start_date', name: 'tr_start_date' },
+                    { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false }
+                ]
+            });
+        }
+
+        function reloadCompleted() {
+            if ($.fn.DataTable.isDataTable('#completedDatatable')) completedDatatable.destroy();
+            completedDatatable = $('#completedDatatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('masteradmin.trip.follow_up_complete_trip') }}",
+                    type: 'GET',
+                    data: function (d) {
+                        d.trip_agent = $('#trip_agent').val();
+                        d.trip_traveler = $('#trip_traveler').val();
+                    }
+                },
+                columns: [
+                    { data: 'tr_name', name: 'tr_name' },
+                    { data: 'agent_name', name: 'agent_name' },
+                    { data: 'tr_traveler_name', name: 'tr_traveler_name' },
+                    { data: 'trip_date', name: 'trip_date' },
+                    { data: 'complete_days', name: 'complete_days' },
+                    { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false }
+                ]
+            });
+        }
+
+        // Initialize tables with delay
+        setTimeout(() => {
+            reloadPending();
+            reloadCompleted();
+        }, 1000);
+
+        // Reload tables on filter change
+        $('#trip_agent, #trip_traveler').on('change', function () {
+            reloadPending();
+            reloadCompleted();
+        });
+
+        // Clear filters and reload tables
+        $('.filter-text').on('click', function () {
+            $('#trip_agent, #trip_traveler').val('').trigger('change');
+            reloadPending();
+            reloadCompleted();
+        });
+    });
+</script>

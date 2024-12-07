@@ -1401,28 +1401,31 @@ class TripController extends Controller
                     return $startDate && $endDate ? "$startDate - $endDate" : ($startDate ?: $endDate);
                 })
                 ->addColumn('complete_days', function ($document) {
-                    $currentDate = Carbon::now()->startOfDay(); 
-                    $endDate = $document->tr_end_date;
+                    $currentDate = Carbon::now()->startOfDay();
+                    $endDate = $document->tr_end_date ?? '0';
+                
+                    // Initialize $endDateParsed with a default value
+                    $endDateParsed = null;
                 
                     // Check if end date exists
-                    if (!$endDate) {
-                      
+                    if ($endDate && $endDate !== '0') {
+                        // Parse the end date and ensure it's in the correct format
+                        try {
+                            $endDateParsed = Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
+                        } catch (\Exception $e) {
+                            $endDateParsed = null; // Ensure $endDateParsed is always defined
+                        }
                     }
                 
-                    // Parse the end date and ensure it's in the correct format
-                    try {
-                        $endDateParsed = Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
-                    } catch (\Exception $e) {
-                        
+                    // Check if $endDateParsed is not null before proceeding
+                    if ($endDateParsed && $endDateParsed->lt($currentDate)) {
+                        $daysSinceCompletion = $endDateParsed->diffInDays($currentDate);
+                    } else {
+                        $daysSinceCompletion = 0; // Default to 0 days if no valid end date
                     }
                 
-                    // Calculate days since completion (positive if in the past, 0 if today, negative if future)
-                    $daysSinceCompletion = $endDateParsed->lt($currentDate) 
-                        ? $endDateParsed->diffInDays($currentDate) 
-                        : 0;
-                
-                    return $daysSinceCompletion.' days';
-                })
+                    return $daysSinceCompletion . ' days';
+                })                
                 ->rawColumns(['task_status_name'])
                 ->toJson();
         }
