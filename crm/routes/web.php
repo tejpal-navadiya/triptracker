@@ -475,7 +475,7 @@ Route::group(['prefix' => $busadminRoute], function () {
         //mail Configration
         Route::get('/mail-settings', [ProfilesController::class, 'mailsetting'])->name('masteradmin.mailsetting');
         Route::post('/update-mail-details', [ProfilesController::class, 'updatemail'])->name('masteradmin.updatemailsetting');
-        Route::get('/fetch-emails/{tripId}', [MailController::class, 'fetchEmails'])->name('masteradmin.trip.fetchEmails');
+        Route::get('/fetch-emails/{tripId}/{user_id}/{unique_id}', [MailController::class, 'fetchEmails'])->name('masteradmin.trip.fetchEmails');
 
  
         

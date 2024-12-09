@@ -8,6 +8,8 @@
         "php": "^8.1",
         "asdh/laravel-flatpickr": "^2.2",
         "barryvdh/laravel-dompdf": "^3.0",
+        "beyondcode/laravel-websockets": "^1.14",
+        "cboden/ratchet": "^0.4.4",
         "dompdf/dompdf": "^3.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^15.4",

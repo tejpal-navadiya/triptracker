@@ -64,7 +64,7 @@
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}
             </x-primary-button>
-            <p class="text-center font_18 mb-0">Don't have an account? <a href="{{ route('masteradmin.register') }}" class="back_text">Register</a></p>
+            <!-- <p class="text-center font_18 mb-0">Don't have an account? <a href="{{ route('masteradmin.register') }}" class="back_text">Register</a></p> -->
         </div>
     </form>
 </x-guest-layout>

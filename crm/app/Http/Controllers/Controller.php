@@ -733,6 +733,22 @@ class Controller extends BaseController
             });
         }
 
+        //mail inbox store
+        if (!Schema::hasTable($storeId.'_tc_mail_inbox')){   
+            Schema::create($storeId.'_tc_mail_inbox', function (Blueprint $table) {
+                $table->integer('inbox_id')->unique()->autoIncrement();
+                $table->string('id')->nullable()->default(0);
+                $table->string('tr_id')->nullable()->default(0);
+                $table->text('inbox_subject')->nullable()->default(0);
+                $table->text('inbox_from')->nullable();
+                $table->text('inbox_date')->nullable();
+                $table->text('inbox_body')->nullable();
+                $table->string('uniq_id');
+                $table->integer('last_email_id')->nullable();
+                $table->tinyInteger('inbox_status')->default(0)->nullable();
+                $table->timestamps();
+            });
+        }
     
     }
         

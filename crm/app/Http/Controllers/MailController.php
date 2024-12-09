@@ -7,21 +7,25 @@ use Webklex\PHPIMAP\ClientManager;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MailSettings;
 use App\Models\Trip;
-
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class MailController extends Controller
 {
     //
-    public function fetchEmails($tripId)
+    public function fetchEmails($tripId, $userId, $uniqId)
     {
-      //  dd($tripId);
         set_time_limit(300); // Increase execution time limit
 
         $clientManager = new ClientManager();
 
         try {
-            $user = Auth::guard('masteradmins')->user();
-            $mailSettings = MailSettings::where('id', $user->users_id)->first();
+            $tableName = $uniqId . '_tc_mail_smtp_settings'; // Correct table name construction
+        
+            // Fetch the mail settings from the dynamically generated table
+            $mailSettings = DB::table($tableName)
+                ->where('id', $userId)
+                ->first(); 
 
             if (!$mailSettings) {
                 return response()->json(['error' => 'Mail settings not found.'], 404);
@@ -42,76 +46,117 @@ class MailController extends Controller
                 // return response()->json(['error' => 'Failed to connect to the mail server.'], 500);
             }
 
-            $trip = Trip::where('tr_id',$tripId)->firstOrFail();
+            $tableName1 = $uniqId . '_tc_trip'; 
+            $trip = DB::table($tableName1)
+                ->where('tr_id', $tripId)
+                ->first(); 
+
             if (!$trip) {
                 // return response()->json(['error' => 'Trip not found.'], 404);
             }
 
             $folder = $client->getFolder('INBOX');
-
-            // Fetch emails from specific sender
-            $messages = $folder
-                ->messages()
-                ->from($trip->tr_email)
-                ->get();
-
-            if ($messages->count() === 0) {
-                // return response()->json(['error' => 'No emails found from the specified sender.'], 404);
-            }
-
-            // Limit to the first 5 messages
-            $limitedMessages = $messages->slice(0, 50);
-            // dd($limitedMessages);
-            $emails = [];
-            foreach ($limitedMessages as $message) {
-
-                $class_methods = get_class_methods($message);
-
-
-                $subject = $message->getSubject() ?? 'No Subject';
-                $subject = str_replace('[','',$subject);
-                $subject = str_replace(']','',$subject);
-                // Access the sender's email
-                $from = $message->getFrom()[0]->mail ?? 'Unknown Sender';
-                $dateValue1 = $message->getDate() ?? 'no date';
-                $dateValue1 = trim($dateValue1);
-                $date = date('m/d/Y',strtotime($dateValue1));
-                // Access the date and convert it to a string using Carbon
-                // $dateValue = $message->getDate()->values[0] ?? null; // Access the values array
-                // $date = $dateValue ? \Carbon\Carbon::createFromTimestamp($dateValue)->toDateTimeString() : 'No Date';
-   
-                // \Log::error('mrthods' .  $class_methods );
             
-            //    \Log::error('Email date Name: ' . $dateValue1);
-            //    \Log::error('Email subject Name: ' . $subject.'-'.$date );
-            
-                $emails[] = [
-                    'subject' =>  $subject ?? '',
-                    'from'    => $from,
-                    'date'    => $date ?? '',
-                    'body'    => $message->getTextBody() ?? 'No Body Content',
-                    // 'class_methods' => $class_methods ?? ''
-                ];
-            }
+            // Fetch the last fetched email ID from the database
+            $tableNameinbox = $uniqId . '_tc_mail_inbox'; 
+            $lastFetched = DB::table($tableNameinbox)
+                ->where('uniq_id', $uniqId)
+                ->first();
 
-            
-            
-            // dd( $emails);
+                $messages = $folder->messages()->from($trip->tr_email)->get();
 
-            // \Log::error('Email subject Name: ' . $getClassMethod = get_class_methods('GeeksforGeeks'));
+                // Check if $messages is empty
+                if ($messages->isEmpty()) {
+                    // return response()->json(['error' => 'No emails found in the inbox.'], 404);
+                }
+                
+                // Filter messages based on last fetched email ID
+                if ($lastFetched && $lastFetched->last_email_id) {
+                    $messages = $messages->filter(function ($message) use ($lastFetched) {
+                        // Ensure $message is not null before accessing getUid
+                        if ($message && $message->getUid()) {
+                            return $message->getUid() > $lastFetched->last_email_id;
+                        }
+                        // return '0';
+                    });
+                }
+                
+                // If no valid messages remain after filtering
+                if ($messages->isEmpty()) {
+                    // return response()->json(['error' => 'No new emails found from the specified sender.'], 404);
+                }
+                
+                $emails = [];
+                foreach ($messages as $message) {
+                    // Check if the message is null to avoid errors
+                    
+                    $subject = $message->getSubject() ?? 'No Subject';
+                    $subject = str_replace('[', '', $subject);
+                    $subject = str_replace(']', '', $subject);
+                
+                    $from = $message->getFrom()[0]->mail ?? 'Unknown Sender';
+                    $dateValue1 = $message->getDate() ?? 'no date';
+                    $dateValue1 = trim($dateValue1);
+                    $date = date('m/d/Y', strtotime($dateValue1));
+                
+                    $emails[] = [
+                        'subject' => $subject,
+                        'from'    => $from,
+                        'date'    => $date,
+                        'body'    => $message->getTextBody() ?? 'No Body Content',
+                    ];
+                
+                    DB::table($tableNameinbox)->insert([
+                        'inbox_subject' => $subject,
+                        'id' => $userId,
+                        'inbox_from'    => $from,
+                        'inbox_date'    => $date,
+                        'inbox_body'    => $message->getTextBody() ?? 'No Body Content',
+                        'uniq_id'       => $uniqId,
+                        'tr_id'         => $tripId,
+                        'last_email_id' => $message->getUid(),
+                        'created_at'    => now(),
+                        'inbox_status'  => '1',
+                    ]);
+                }
+                
+                // Save the last email UID safely
+                $lastFetchedEmailId = $messages->last() ? $messages->last()->getUid() : null;
+                if ($lastFetchedEmailId) {
+                    DB::table($tableNameinbox)
+                        ->updateOrInsert(
+                            ['uniq_id' => $uniqId],
+                            ['last_email_id' => $lastFetchedEmailId]
+                        );
+                }
+            //    dd($emails);
+
+            $email_fetch = DB::table($tableNameinbox)
+            ->where('tr_id', $tripId)
+            ->orderBy('created_at', 'desc') // Sort emails by the latest
+            ->get();
+            
+                
             return response()->json([
                 'draw' => intval(request()->get('draw')),
-                'recordsTotal' => count($emails),  // Use count() on the array
-                'recordsFiltered' => count($emails),  // Use count() on the array
-                'data' => $emails
+                'recordsTotal' => $email_fetch->count(), // Use the count of the collection
+                'recordsFiltered' => $email_fetch->count(),
+                'data' => $email_fetch->map(function ($email) {
+                    return [
+                        'from'    => $email->inbox_from,    // Correctly access properties of the object
+                        'subject' => $email->inbox_subject,
+                        'date'    => $email->inbox_date,   // Use the correct property name
+                    ];
+                })->toArray(), // Convert the collection to an array
             ]);
 
-                } catch (\Exception $e) {
+        } catch (\Exception $e) {
             \Log::error('Email fetch error: ' . $e->getMessage());
             return response()->json(['error' => "Error: " . $e->getMessage()], 500);
         }
     }
 
     
+        
 
 }

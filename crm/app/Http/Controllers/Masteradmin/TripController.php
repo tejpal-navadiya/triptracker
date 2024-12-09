@@ -668,6 +668,7 @@ class TripController extends Controller
     {
     //    dd($id);
         $user = Auth::guard('masteradmins')->user();
+        $user_id = $user->users_id;
         $trip1 = Trip::where('tr_id', $id)->firstOrFail();
         $triptableName = $trip1->getTable();
 
@@ -783,7 +784,7 @@ class TripController extends Controller
         // dd($task);            
         //dd($tripTraveling);
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship'));
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship','user_id','uniq_id'));
     }
 
     public function travelersDetails(): View

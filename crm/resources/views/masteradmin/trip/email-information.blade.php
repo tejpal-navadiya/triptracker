@@ -24,26 +24,53 @@
 <?php //dd($trip_id); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+// Initialize WebSocket connection
+const socket = new WebSocket('ws://localhost:6001');
 
-    $(document).ready(function() {
-    setTimeout(function() {
-        $('#EmailDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('masteradmin.trip.fetchEmails', $trip_id) }}", 
-                type: 'GET',
-                data: function(d) {
-                    d._token = "{{ csrf_token() }}"; 
+// Event listeners
+socket.onopen = function() {
+    console.log('WebSocket connection established');
+};
+
+socket.onmessage = function(event) {
+    console.log('Message from server:', event.data);
+};
+
+socket.onerror = function(error) {
+    console.log('WebSocket Error:', error);
+};
+
+socket.onclose = function(event) {
+    console.log('WebSocket closed:', event);
+};
+
+$(document).ready(function() {
+    var table = $('#EmailDataTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "{{ route('masteradmin.trip.fetchEmails', ['tripId' => $trip_id, 'user_id' => $user_id, 'unique_id' => $uniq_id]) }}",
+            type: 'GET',
+            dataSrc: function (json) {
+                if (json.error) {
+                    $('#error-message').text(json.error).show();
+                    return []; // Return an empty array to DataTable
                 }
+                $('#error-message').hide();
+                return json.data; // Return the data to DataTable
             },
-           
-            columns: [
-                { data: 'from', name: 'from' }, 
-                { data: 'subject', name: 'subject' }, 
-                { data: 'date', name: 'date' } 
-            ]
-        });
-    }, 3000);
+            error: function (xhr) {
+                // Handle server errors gracefully
+                $('#error-message').text(xhr.responseJSON.error).show();
+            }
+        },
+        columns: [
+            { data: 'from', name: 'from' },
+            { data: 'subject', name: 'subject' },
+            { data: 'date', name: 'date' }
+        ]
+    });
+
+   
 });
- </script>
+</script>
