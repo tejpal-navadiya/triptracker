@@ -295,7 +295,7 @@
                                     <div class="form-group">
                                         <x-input-label for="tr_agent_id" :value="__('Emergency Contact Person')"> </x-input-label>
                                         <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                            placeholder="Contact Person Name" name="user_emergency_contact_person"
+                                            placeholder="Enter Emergency Contact Person" name="user_emergency_contact_person"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_contact_person ?? '')" />
 
                                     </div>
@@ -305,7 +305,7 @@
                                     <div class="form-group">
                                         <x-input-label for="tr_agent_id" :value="__('Emergency Phone Number')"></x-input-label>
                                         <x-text-input type="text" class="form-control" id="tr_agent_id"
-                                            placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
+                                            placeholder="Enter Emergency Phone Number" name="user_emergency_phone_number"
                                             autofocus autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_emergency_phone_number ?? '')" />
 
                                     </div>

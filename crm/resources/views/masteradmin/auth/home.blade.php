@@ -81,13 +81,13 @@
     <!-- Main content -->
 
     
-    @if (session()->has('beforshowModal'))
+    @if (session('beforshowModal'))
     <div class="alert alert-info" id="subscriptionStatus">
-        {{ session('beforshowModal') }}
-        {{ session()->forget('beforshowModal') }} {{-- Unsets the session value --}}
+       {{ session('beforshowModal') }}
     </div>
+    {{ session()->forget('beforshowModal') }}
     @endif
-    
+
 
     <section class="content">
         <div class="container-fluid">

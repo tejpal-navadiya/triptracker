@@ -71,6 +71,10 @@
                                                         <td><strong>Email :</strong></td>
                                                         <td>{{ $userdetailss->users_email ?? ''}}</td>
                                                     </tr>
+                                                    <tr>
+                                                        <td><strong>Business Phone :</strong></td>
+                                                        <td>{{ $userdetailss->users_business_phone ?? ''}}</td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -103,7 +107,12 @@
                                                             {{ $userdetailss->state_name ?? '' }}{{ $userdetailss->state_name && ($userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
                                                             {{ $userdetailss->country_name ?? '' }}{{ $userdetailss->country_name && $userdetailss->users_zip ? ' ' : '' }}
                                                             {{ $userdetailss->users_zip ?? '' }}
-                                                        </td>                                                    </tr>
+                                                        </td> 
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Business Email Address :</strong></td>
+                                                        <td>{{ $userdetailss->users_email ?? ''}}</td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>

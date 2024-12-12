@@ -197,10 +197,11 @@
                                     <div class="form-group">
                                         <x-input-label for="user_emergency_contact_person" :value="__('Emergency Contact Person')"> </x-input-label>
                                         <x-text-input type="text" class="form-control" id="user_emergency_contact_person"
-                                            placeholder="Enter Emergency Contact" name="user_emergency_contact_person"
+                                            placeholder="Enter Emergency Contact Person" name="user_emergency_contact_person"
                                             autofocus autocomplete="user_emergency_contact_person"
                                             value="{{ old('user_emergency_contact_person') }}" />
 
+                                        
                                     </div>
                                 </div>
 
@@ -208,7 +209,7 @@
                                     <div class="form-group">
                                         <x-input-label for="user_emergency_phone_number" :value="__('Emergency Phone Number')"> </x-input-label>
                                         <x-text-input type="text" class="form-control" id="user_emergency_phone_number"
-                                            placeholder="Enter Emergency Phone" name="user_emergency_phone_number"
+                                            placeholder="Enter Emergency Phone Number" name="user_emergency_phone_number"
                                             autofocus autocomplete="user_emergency_phone_number"
                                             value="{{ old('user_emergency_phone_number') }}" />
 
@@ -223,7 +224,7 @@
                                             placeholder="Enter Emergency Email Address" name="user_emergency_email"
                                             autofocus autocomplete="user_emergency_email"
                                             value="{{ old('user_emergency_email') }}" />
-
+                                            <x-input-error class="mt-2" :messages="$errors->get('user_emergency_email')" />
                                       
 
 

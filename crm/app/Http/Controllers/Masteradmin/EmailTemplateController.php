@@ -40,7 +40,7 @@ class EmailTemplateController extends Controller
     // Get the authenticated user (master admin in this case)
     $user = Auth::guard('masteradmins')->user();
     // dd($user);
-    $dynamicId = $user->user_id; // Use the user ID to dynamically set the table name
+    $dynamicId = $user->users_id; // Use the user ID to dynamically set the table name
 
     // Validate the request data
     $validatedData = $request->validate([
@@ -51,7 +51,7 @@ class EmailTemplateController extends Controller
         'category.required' => 'Category is required',
         'email_text.required' => 'Email content is required',
     ]);
-
+    // dd($validatedData);
     $emailTemplate = new EmailTemplate();
     $tableName = $emailTemplate->getTable();
     $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "email_tid", $chars = 6);

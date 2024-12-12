@@ -394,7 +394,7 @@
          </div>
          </div>
 
-         <div class="col-md-3 family-member-field">
+         <div class="col-md-3">
          <div class="form-group">
          <label for="trtm_middle_name">Middle name</label>
          <div class="d-flex">

@@ -47,7 +47,10 @@ class TripController extends Controller
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
         $masterUserTable = $masterUserDetails->getTable();
+        $trips = new Trip();
+       
 
+        $tripTable = $trips->getTable();
         if ($user->users_id && $user->role_id == 0) {
             $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
         
@@ -56,13 +59,34 @@ class TripController extends Controller
         }
        // $agency = $masterUserTable->get();
         $trip_status = TripStatus::get();
-
-        $trips_traveller =Trip::get();
-        $trips = new Trip();
-       
-
-        $tripTable = $trips->getTable();
         $specificId = $user->users_id;
+
+        if($user->users_id && $user->role_id ==0 ){
+            $trips_traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+            // $trips_traveller =Trip::get();
+        }else{
+            $trips_traveller =Trip::where('id', $user->users_id)->get();  
+            
+            $trips_traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }
+     
+       
         if($user->users_id && $user->role_id ==0 ){
             $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
@@ -181,7 +205,7 @@ class TripController extends Controller
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
                 'tr_start_date' => 'nullable',
-                'tr_end_date' => 'required|string',
+                'tr_end_date' => 'nullable|string',
                 'tr_value_trip' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
                 'tr_country' => 'nullable|string',
@@ -464,7 +488,7 @@ class TripController extends Controller
                 'tr_num_people' => 'nullable|string',
                 'tr_number' => 'nullable|string',
                 'tr_start_date' => 'nullable',
-                'tr_end_date' => 'required|string',
+                'tr_end_date' => 'nullable|string',
                 'tr_value_trip' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
                 'tr_country' => 'nullable|string',
@@ -1016,7 +1040,34 @@ class TripController extends Controller
 
         $trip_status = TripStatus::get();
 
-        $trips_traveller = Trip::get();
+        $trips = new Trip();
+       
+        $specificId = $user->users_id;
+        $tripTable = $trips->getTable();
+        if($user->users_id && $user->role_id ==0 ){
+            $trips_traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+            // $trips_traveller =Trip::get();
+        }else{
+            $trips_traveller =Trip::where('id', $user->users_id)->get();  
+            
+            $trips_traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }
 
         $trips = new Trip();
         $tripTable = $trips->getTable();
@@ -1113,8 +1164,31 @@ class TripController extends Controller
     
         $trips = new Trip();
         $tripTable = $trips->getTable();
-
+        $specificId = $user->users_id;
         $traveller = Trip::where('id',$user->users_id)->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }else{
+            
+            $traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }
+
         if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
@@ -1197,7 +1271,7 @@ class TripController extends Controller
         return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller','tripCompleted'));
     }
 
-    public function follow_up_after(Request $request)
+    public function follow_up_after(Request $request): mixed
     {
         $access = view()->shared('access');
     
@@ -1220,8 +1294,34 @@ class TripController extends Controller
     
         $trips = new Trip();
         $tripTable = $trips->getTable();
+        $specificId = $user->users_id;
 
-        $traveller = Trip::where('id',$user->users_id)->get();
+        if($user->users_id && $user->role_id ==0 ){
+            $traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+            // $trips_traveller =Trip::get();
+        }else{
+            
+            $traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }
+
+
+        // $traveller = Trip::where('id',$user->users_id)->get();
         if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
@@ -1305,8 +1405,9 @@ class TripController extends Controller
     }
     
 
-    public function follow_up_after_complete(Request $request)
+    public function follow_up_after_complete(Request $request): mixed
     {
+        // dd($request->all());
         $access = view()->shared('access');
     
         $user = Auth::guard('masteradmins')->user();
@@ -1329,7 +1430,33 @@ class TripController extends Controller
         $trips = new Trip();
         $tripTable = $trips->getTable();
 
-        $traveller = Trip::where('id',$user->users_id)->get();
+        $specificId = $user->users_id;
+
+        if($user->users_id && $user->role_id ==0 ){
+            $traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+            // $trips_traveller =Trip::get();
+        }else{
+            
+            $traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }
+
+        // $traveller = Trip::where('id',$user->users_id)->get();
         if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)

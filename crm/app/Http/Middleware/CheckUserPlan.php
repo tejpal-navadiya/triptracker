@@ -30,14 +30,22 @@ class CheckUserPlan
             if ($masterUser->sp_expiry_date < $currentDate && $user->end_date < $currentDate) {
                 // dd('exp');
                 // Plan has expired (both sp_expiry_date and user end_date are in the past)
+              
                 session()->flash('showModal', 'Your subscription plan has expired. Please renew your plan to continue accessing your account.');
+                session()->reflash();
             } elseif ($masterUser->sp_expiry_date > $currentDate && $masterUser->sp_expiry_date < $sevenDaysBeforeExpiry) {
                 // The plan is within 7 days before expiry
                 // dd('show');
                 session()->flash('beforshowModal', 'Your plan is expiring soon. Please renew your plan.');
             } else {
                 // Plan is active (expired date is in the future)
-                session()->flash('beforshowModal', 'Your subscription is active. Thank you for renewing your plan.');
+                // if (!session()->has('plan_befor_configured')) {
+
+                //     session()->flash('beforshowModal', "Your subscription is active. Thank you for renewing your plan.");
+                //     session(['plan_befor_configured' => true]);
+                // }
+                // session()->flash('beforshowModal', 'Your subscription is active. Thank you for renewing your plan.');
+                //session()->reflash();
             }
         }
         
@@ -49,7 +57,8 @@ class CheckUserPlan
                 session()->flash('showModal', "The main administrator's subscription plan has expired. Please contact the administrator to renew the plan and restore access.");
             }elseif ($user->end_date > $currentDate && $user->end_date < $sevenDaysBeforeExpiry) {
                 // The plan is within 7 days before expiry
-                session()->flash('beforshowModal', 'Your plan is expiring soon. Please renew your plan.');
+               // session()->flash('beforshowModal', 'Your plan is expiring soon. Please renew your plan.');
+               // session()->reflash();
             } 
         }   
         return $next($request);

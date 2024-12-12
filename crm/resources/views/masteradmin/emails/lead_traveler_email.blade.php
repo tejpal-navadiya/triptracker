@@ -14,7 +14,7 @@
         <strong>Basic Information:</strong>{{ strip_tags($data['basicinformation']) }}<br>
         <strong>Attachment</strong><br>
         
-        <h3>Attachments:</h3>
+        <!-- <h3>Attachments:</h3> -->
 
         
     </p>

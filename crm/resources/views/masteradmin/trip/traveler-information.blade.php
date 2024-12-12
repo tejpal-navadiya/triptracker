@@ -15,7 +15,7 @@
     <div class="card-header">
         <div class="row justify-content-between align-items-center">
             <div class="col-auto">
-                <h3 class="card-title">Traveling Member Information</h3>
+                <h3 class="card-title">Traveler Information</h3>
             </div>
             <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveling Member</button></div>
         </div>
@@ -131,7 +131,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 family-member-field">
+                        <div class="col-md-6 ">
                             <div class="form-group">
                                 <label for="trtm_middle_name">Middle name</label>
                                 <div class="d-flex">
@@ -313,7 +313,7 @@
             $('#saveBtn').val("create-product");
             $('#trtm_id').val('');
             $('#Form')[0].reset();
-            $('#modelHeading').html("Add Traveling Member");
+            $('#modelHeading').html("Add Traveler");
             $('body').addClass('modal-open');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
@@ -424,7 +424,7 @@
                 .replace('id', id).replace('{{ $trip_id ?? '0' }}', '{{ $trip_id ?? '0' }}'),
                 function(data) {
                     // console.log(data);
-                    $('#modelHeading').html("Edit Traveling Member");
+                    $('#modelHeading').html("Edit Traveler");
                     $('#saveBtn').val("edit-user");
                     var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
                     editModal.show();

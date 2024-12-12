@@ -101,9 +101,9 @@
                                                                     <div class="modal-body  pad-1 text-center">
                                                                         <i class="fas fa-solid fa-trash delete_icon"></i>
                                                                         <p class="company_business_name px-10"> <b>Delete
-                                                                                email</b></p>
+                                                                                Email Category</b></p>
                                                                         <p class="company_details_text">Are You Sure You
-                                                                            Want to Delete This email?</p>
+                                                                            Want to Delete This Email Category?</p>
                                                                         <button type="button" class="add_btn px-15"
                                                                             data-dismiss="modal">Cancel</button>
                                                                         <button type="submit"

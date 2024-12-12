@@ -16,6 +16,7 @@ class VerifyCsrfToken extends BaseVerifier
         'data/*',
         'login',
         'logout',
+        'agency/follow_up_trips_details',
     ];
 
     // public function handle($request, \Closure $next)

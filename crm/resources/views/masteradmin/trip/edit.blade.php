@@ -264,7 +264,7 @@
                                             autocomplete="tr_num_people" :value="old('tr_num_people', $trip->tr_num_people ?? '')" readonly />
 
                                         <x-input-error class="mt-2" :messages="$errors->get('tr_num_people')" />
-
+                                        <input type="hidden" id="tr_num_people_value" value="{{$trip->tr_num_people ?? '0'}}">
                                     </div>
 
                                 </div>
@@ -761,7 +761,7 @@
 
 
 
-                                                    <div class="col-md-3 family-member-field">
+                                                    <div class="col-md-3">
 
                                                         <div class="form-group">
 
@@ -1348,7 +1348,7 @@
                                             </div>
                                             </div>
 
-                                            <div class="col-md-3 family-member-field">
+                                            <div class="col-md-3">
                                             <div class="form-group">
                                             <label for="trtm_middle_name">Middle name</label>
                                             <div class="d-flex">
@@ -1444,7 +1444,7 @@
 
                                             <div class="input-group date" id="trtm_dob" data-target-input="nearest">
 
-                                            <x-flatpickr id="traveler_date_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
+                                            <x-flatpickr id="traveler_dates_${rowCount}" name="items[${rowCount}][trtm_dob]" placeholder="mm/dd/yyyy" />
 
                                             <div class="input-group-append">
 
@@ -1523,8 +1523,27 @@
                 $(`#row${rowCount} .trip-member-field`).hide();
 
                 var numofpeople = document.querySelector('#tr_num_people');
-                numofpeople.value = rowCount;
-                var travelerdates = flatpickr(`#traveler_date_${rowCount}`, {
+                var dbNumPeople = document.querySelector('#tr_num_people_value');
+
+                // Get the current value from the database field
+                var dbValue = parseInt(dbNumPeople.value) || 0;
+
+                // Update numofpeople dynamically
+                numofpeople.value = dbValue + rowCount;
+
+                // var numofpeople = document.querySelector('#tr_num_people');
+               // var currentValue = parseInt(numofpeople.value) || 0; // Default to 0 if the value is not set or invalid
+               // numofpeople.value = currentValue + rowCount;
+
+                // if (empty(numofpeople.value)) { // Replace 'true' with your actual condition
+                //     // Convert numofpeople.value to a number before adding
+                //     numofpeople.value = rowCount + Number(numofpeople.value);
+                // } else {
+                //     numofpeople.value = rowCount;
+                // }
+                // numofpeople.value = rowCount;
+                // alert(numofpeople.value);
+                var travelerdates = flatpickr(`#traveler_dates_${rowCount}`, {
                     locale: 'en',
                     altInput: true,
                     dateFormat: "m/d/Y",
@@ -1538,7 +1557,8 @@
                         travelerdates.open();
                     });
 
-                var birthdateInput = document.querySelector(`#traveler_date_${rowCount}`);
+                var birthdateInput = document.querySelector(`#traveler_dates_${rowCount}`);
+                // alert(birthdateInput);
                 var ageInput = document.querySelector(`#trtm_age_${rowCount}`);
                 birthdateInput.addEventListener('change', function () {
                     var birthdate = new Date(birthdateInput.value);
