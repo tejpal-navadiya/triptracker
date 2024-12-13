@@ -285,7 +285,10 @@ class TripController extends Controller
 
         $existingtrip = $traveler->where('tr_email', $validatedData['tr_email'])->first();
 
-      
+
+        if (!empty($validatedData['tr_traveler_name'])) {
+            $traveler->tr_num_people = ($validatedData['tr_num_people'] ?? 0) + 1;
+        }
 
 
         $traveler->id = $user->users_id;
@@ -297,7 +300,7 @@ class TripController extends Controller
         $traveler->tr_number = $validatedData['tr_number'] ?? null; // Use null if not set
         $traveler->tr_email = $validatedData['tr_email'] ?? null; // Use null if not set
         $traveler->tr_phone = $validatedData['tr_phone'] ?? null; // Use null if not set
-        $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
+        // $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
         $traveler->tr_start_date = $validatedData['tr_start_date'] ?? null;
         $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
         $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
@@ -1390,7 +1393,37 @@ class TripController extends Controller
                 ->addColumn('due_date', function ($document) {
                     return optional($document->tr_start_date) ? Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
                 })
-                ->rawColumns(['task_status_name'])
+                ->addColumn('action', function ($document) {
+                    $viewUrl = route('trip.view', $document->tr_id);
+                    $editUrl = route('trip.edit', $document->tr_id);
+                    $deleteModalId = "delete-product-modal-{$document->tr_id}";
+                    $deleteActionUrl = route('trip.destroy', $document->tr_id);
+            
+                    return '
+                        <a href="' . $viewUrl . '"><i class="fas fa-eye edit_icon_grid"></i></a>
+                        <a href="' . $editUrl . '"><i class="fas fa-pen edit_icon_grid"></i></a>
+                        <a data-toggle="modal" data-target="#' . $deleteModalId . '"><i class="fas fa-trash delete_icon_grid"></i></a>
+            
+                        <div class="modal fade" id="' . $deleteModalId . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <form id="delete-plan-form" action="' . $deleteActionUrl . '" method="POST">
+                                        ' . csrf_field() . '
+                                        ' . method_field('DELETE') . '
+                                        <div class="modal-body pad-1 text-center">
+                                            <i class="fas fa-solid fa-trash delete_icon"></i>
+                                            <p class="company_business_name px-10"><b>Delete Trip</b></p>
+                                            <p>Are you sure you want to delete this trip?</p>
+                                            <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="delete_btn px-15">Delete</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    ';
+                })
+                ->rawColumns(['task_status_name','action'])
                 ->toJson();
         }
     
@@ -1553,8 +1586,38 @@ class TripController extends Controller
                     }
                 
                     return $daysSinceCompletion . ' days';
-                })                
-                ->rawColumns(['task_status_name'])
+                })    
+                ->addColumn('action', function ($document) {
+                    $viewUrl = route('trip.view', $document->tr_id);
+                    $editUrl = route('trip.edit', $document->tr_id);
+                    $deleteModalId = "delete-product-modal-{$document->tr_id}";
+                    $deleteActionUrl = route('trip.destroy', $document->tr_id);
+            
+                    return '
+                        <a href="' . $viewUrl . '"><i class="fas fa-eye edit_icon_grid"></i></a>
+                        <a href="' . $editUrl . '"><i class="fas fa-pen edit_icon_grid"></i></a>
+                        <a data-toggle="modal" data-target="#' . $deleteModalId . '"><i class="fas fa-trash delete_icon_grid"></i></a>
+            
+                        <div class="modal fade" id="' . $deleteModalId . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <form id="delete-plan-form" action="' . $deleteActionUrl . '" method="POST">
+                                        ' . csrf_field() . '
+                                        ' . method_field('DELETE') . '
+                                        <div class="modal-body pad-1 text-center">
+                                            <i class="fas fa-solid fa-trash delete_icon"></i>
+                                            <p class="company_business_name px-10"><b>Delete Trip</b></p>
+                                            <p>Are you sure you want to delete this trip?</p>
+                                            <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="delete_btn px-15">Delete</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    ';
+                })            
+                ->rawColumns(['task_status_name','action'])
                 ->toJson();
         }
     
@@ -2073,8 +2136,9 @@ public function bookgridView(Request $request)
     $trips = new Trip();
     $tripTable = $trips->getTable();
     $specificId = $user->users_id;
-
-      // Base Query for Trip Booked
+    
+    if($user->users_id && $user->role_id ==0 ){
+    // Base Query for Trip Booked
       $bookedTripQuery = Trip::where('tr_status', 1)
       ->from($tripTable)
       ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
@@ -2084,6 +2148,25 @@ public function bookgridView(Request $request)
           $masterUserTable . '.users_first_name',
           $masterUserTable . '.users_last_name'
       ]);
+
+        }else{
+            $specificId = $user->users_id;
+            $bookedTripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->where($tripTable . '.status', '=', 4)  // Trip Booked
+            ->select([
+                $tripTable . '.*', 
+                $masterUserTable . '.users_first_name', 
+                $masterUserTable . '.users_last_name' 
+            ]);
+        }
+
+      
 
     // Apply filters for Trip Booked query
     if ($startDate && !$endDate) {
@@ -2107,14 +2190,31 @@ public function bookgridView(Request $request)
 
     // Execute the query
     $bookedTripQuery = $bookedTripQuery->get();
-
     
-
     // 60 Days Trip Review Query
     $sixtyDaysFromNow = $currentDate->copy()->addDays(60)->format('m/d/Y');
-    $sixtyDaysTripQuery = Trip::where('tr_status', 1)
+    if($user->users_id && $user->role_id ==0 ){
+
+        $sixtyDaysTripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
+            ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow)
+            ->select([
+                $tripTable . '.*',
+                $masterUserTable . '.users_first_name',
+                $masterUserTable . '.users_last_name'
+            ]);
+
+    }else{
+
+        $sixtyDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+        })
         ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
         ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow)
         ->select([
@@ -2122,7 +2222,8 @@ public function bookgridView(Request $request)
             $masterUserTable . '.users_first_name',
             $masterUserTable . '.users_last_name'
         ]);
-      
+
+    }
 
     // Apply filters for 60 Days Trip Review query
     if ($startDate && !$endDate) {
@@ -2147,10 +2248,11 @@ public function bookgridView(Request $request)
     // Execute the query
     $sixtyDaysTripQuery = $sixtyDaysTripQuery->orderBy($tripTable . '.tr_start_date', 'ASC')->get();
 
+
      // 30 Days Trip Review Query
      $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
     //  \DB::enableQueryLog();
-
+    if($user->users_id && $user->role_id ==0 ){
      $thirtyDaysTripQuery = Trip::where('tr_status', 1)
          ->from($tripTable)
          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
@@ -2162,7 +2264,22 @@ public function bookgridView(Request $request)
              $masterUserTable . '.users_last_name'
          ]);
         //  dd(\DB::getQueryLog()); 
-
+        }else{
+            $thirtyDaysTripQuery = Trip::where('tr_status', 1)
+         ->from($tripTable)
+         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+         ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+         ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
+         ->where($tripTable . '.tr_start_date', '<=', $thirtyDaysFromNow)
+         ->select([
+             $tripTable . '.*',
+             $masterUserTable . '.users_first_name',
+             $masterUserTable . '.users_last_name'
+         ]);
+        }
      // Apply filters for 30 Days Trip Review query
      if ($startDate && !$endDate) {
          $thirtyDaysTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
@@ -2189,13 +2306,24 @@ public function bookgridView(Request $request)
 
     // 2 Days Trip Bon Voyage Query
     $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
-
+    if($user->users_id && $user->role_id ==0 ){
     $twoDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
         ->where($tripTable . '.tr_start_date', '>=', $currentDate->format('m/d/Y'))
         ->where($tripTable . '.tr_start_date', '<=', $twoDaysFromNow);
-    // Apply filters for 2 Days Trip Bon Voyage Query
+    }else{
+        $twoDaysTripQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+        ->where($tripTable . '.tr_start_date', '>=', $currentDate->format('m/d/Y'))
+        ->where($tripTable . '.tr_start_date', '<=', $twoDaysFromNow);
+    }
+        // Apply filters for 2 Days Trip Bon Voyage Query
     if ($startDate && !$endDate) {
         $twoDaysTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
     } elseif ($startDate && $endDate) {
@@ -2223,13 +2351,22 @@ public function bookgridView(Request $request)
         ->orderBy($tripTable . '.tr_start_date', 'ASC')
         ->get();
 
-
-   // Completed Trip Query
-    $completedTripQuery = Trip::where('tr_status', 1)
-    ->from($tripTable)
-    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-    ->where($tripTable . '.status', '=', 7); // Trip Completed
-
+    if($user->users_id && $user->role_id == 0 ){
+        // Completed Trip Query
+        $completedTripQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->where($tripTable . '.status', '=', 7); // Trip Completed
+    }else{
+        $completedTripQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+        ->where($tripTable . '.status', '=', 7); // Trip Completed
+    }
     // Apply filters for Completed Trip Query
     if ($startDate && !$endDate) {
     $completedTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);

@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 <div class="card">
-    <div class="col-lg-4 card-body3">
+    <div class="col-lg-6 card-body3">
         <div class="card-body">
             <p class="company_business_name">Name :{{ $trip->tr_traveler_name ?? '' }}</p>
             <p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p>
@@ -17,7 +17,7 @@
             <div class="col-auto">
                 <h3 class="card-title">Traveler Information</h3>
             </div>
-            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveling Member</button></div>
+            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveler</button></div>
         </div>
         <!-- /.card-header -->
         <div class="card-body1">

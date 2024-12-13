@@ -47,18 +47,44 @@ class HomeController extends Controller
    
     
         // Fetch the total trip count
+        // $tripModel = new Trip();
+        // $tripModel->setTableForUniqueId($user->user_id);
+        
+        // $totalTrips = $tripModel->count(); 
+
         $tripModel = new Trip();
-        $tripModel->setTableForUniqueId($user->user_id);
-        $totalTrips = $tripModel->count(); 
-   // Fetch dynamic data for Trip Request vs. Booked
-   $totalRequests = $tripModel->where('status', 1)->count(); // Assuming 1 = Trip Requested
-   $totalBooked = $tripModel->where('status', 4)->count();   // Assuming 2 = Trip Booked
+        $tripTable = $tripModel->getTable();
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
+        $specificId = $user->users_id;
 
-   $totalStatusTrips = $totalRequests + $totalBooked;
+        if($user->users_id && $user->role_id ==0 ){
+        //$totalTrips = $tripModel->count(); 
+        $totalTrips = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')->count();
 
-   // Calculate percentages
-   $requestPercentage = $totalStatusTrips ? round(($totalRequests / $totalStatusTrips) * 100, 2) : 0;
-   $bookedPercentage = $totalStatusTrips ? round(($totalBooked / $totalStatusTrips) * 100, 2) : 0;
+        }else{
+            $totalTrips = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })->count();
+
+        }
+
+        // Fetch dynamic data for Trip Request vs. Booked
+        $totalRequests = $tripModel->where('status', 1)->count(); // Assuming 1 = Trip Requested
+        $totalBooked = $tripModel->where('status', 4)->count();   // Assuming 2 = Trip Booked
+
+        $totalStatusTrips = $totalRequests + $totalBooked;
+
+        // Calculate percentages
+        $requestPercentage = $totalStatusTrips ? round(($totalRequests / $totalStatusTrips) * 100, 2) : 0;
+        $bookedPercentage = $totalStatusTrips ? round(($totalBooked / $totalStatusTrips) * 100, 2) : 0;
 
         
         $inProgressTrips = $tripModel->where(['status'=> 9,'id'=> $user->users_id])->count(); 
@@ -69,19 +95,19 @@ class HomeController extends Controller
       
 
          // Fetch monthly completed trips count
-    $completedTrips = $tripModel
-    ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
-    ->where('status', 7)
-    ->groupBy('month')
-    ->orderBy('month')
-    ->pluck('count', 'month')
-    ->toArray();
+        $completedTrips = $tripModel
+        ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+        ->where('status', 7)
+        ->groupBy('month')
+        ->orderBy('month')
+        ->pluck('count', 'month')
+        ->toArray();
 
-// Prepare data for all 12 months
-$monthlyData = [];
-for ($i = 1; $i <= 12; $i++) {
-    $monthlyData[] = $completedTrips[$i] ?? 0;
-}
+        // Prepare data for all 12 months
+        $monthlyData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthlyData[] = $completedTrips[$i] ?? 0;
+        }
 
       // Fetch the total user count
         $userModel = new MasterUserDetails();

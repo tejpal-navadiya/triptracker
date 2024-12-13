@@ -501,6 +501,7 @@
 
                     var numofpeople = document.querySelector('#tr_num_people');
                     numofpeople.value = rowCount;
+                    
 
                     var travelerdates = flatpickr(`#traveler_date_${rowCount}`, {
                         locale: 'en',

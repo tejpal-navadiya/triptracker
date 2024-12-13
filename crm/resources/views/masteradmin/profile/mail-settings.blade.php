@@ -70,7 +70,7 @@
                                         <div class="form-group">
                                             <label for="mail_password"> Mail Password <span
                                                     class="text-danger">*</span></label>
-                                            <x-text-input type="text" class="form-control" id="mail_password"
+                                            <x-text-input type="password" class="form-control" id="mail_password"
                                                 placeholder="Enter Mail Password" name="mail_password" autofocus
                                                 autocomplete="mail_password"
                                                 value="{{ $mail->mail_password ?? ''}}" />
