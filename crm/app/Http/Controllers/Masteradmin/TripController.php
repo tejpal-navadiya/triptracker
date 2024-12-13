@@ -174,7 +174,7 @@ class TripController extends Controller
        $agency_users->setTableForUniqueId($user->user_id);
        $tableName = $agency_users->getTable();
        if ($user->users_id && $user->role_id == 0) {
-            $agency_user = $agency_users->where('users_id', '!=', $user->users_id)->get();
+            $agency_user = $agency_users->get();
         } else {
             $agency_user = $agency_users->where('users_id', $user->users_id)->get();
         }
@@ -184,7 +184,7 @@ class TripController extends Controller
        
     //    dd($aency_user);
 
-        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus','travelingrelationship'));
+        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus','travelingrelationship','user'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -892,12 +892,12 @@ class TripController extends Controller
         // $agency_user = $agency_users->get(); 
 
         if ($user->users_id && $user->role_id == 0) {
-            $agency_user = $agency_users->where('users_id', '!=', $user->users_id)->get();
+            $agency_user = $agency_users->get();
         } else {
             $agency_user = $agency_users->where('users_id', $user->users_id)->get();
         }
 
-        return view('masteradmin.traveler.create', compact('triptype', 'country','agency_user'));
+        return view('masteradmin.traveler.create', compact('triptype', 'country','agency_user','user'));
     }
 
     public function editDetails($id)
@@ -1003,10 +1003,26 @@ class TripController extends Controller
 
              $trip_status = TripStatus::get();
 
+             $all_trip = Trip::where('tr_id', $id)
+            ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
+            ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
+            ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state')
+            ->select([
+                $tripTable . '.*',  
+                'ta_countries.name as country_name', 
+                'ta_cities.name as city_name', 
+                'ta_states.name as state_name',
+                $tripTable . '.tr_traveler_name'  // Add traveler name to the select statement
+            ])
+            ->get();
+
+            $travelerNames = $all_trip->pluck('tr_traveler_name')->unique(); // Extract traveler names
+
+
            $trip_history = Trip::where($tripTable . '.tr_status', 1) 
                 ->from($tripTable)  
                 ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                ->where($tripTable . '.tr_id', $id)
+                ->whereIn($tripTable . '.tr_traveler_name', $travelerNames) 
                 ->select([
                     $tripTable . '.*',  
                     $masterUserTable . '.users_first_name', 

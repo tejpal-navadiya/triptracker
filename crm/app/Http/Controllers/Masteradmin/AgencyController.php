@@ -569,7 +569,19 @@ public function store4(Request $request)
     $user = Auth::guard('masteradmins')->user();
     $dynamicId = $user->id;
     $period = $user->plan_type ?? '';
-    $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
+    $plan = Plan::where('sp_id', $user->plan_id)->firstOrFail();
+
+    // $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
+    if($period == 'monthly'){
+        $months = 1;
+        $stripePriceId = $plan->stripe_id ?? '';
+    }else if($period == 'yearly'){
+        $months = 12;
+        $stripePriceId = $plan->stripe_id_yr ?? '';
+    }else{
+        $months = '';
+        $stripePriceId = '';
+    }
     $quantity = 1;
 
     $validatedData = $request->validate([
@@ -713,9 +725,21 @@ public function store(Request $request)
     $user = Auth::guard('masteradmins')->user();
     $dynamicId = $user->id;
     $period = $user->plan_type ?? '';
-    $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
-    $quantity = 1;
+    $plan = Plan::where('sp_id', $user->plan_id)->firstOrFail();
 
+    // $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
+    if($period == 'monthly'){
+        $months = 1;
+        $stripePriceId = $plan->stripe_id ?? '';
+    }else if($period == 'yearly'){
+        $months = 12;
+        $stripePriceId = $plan->stripe_id_yr ?? '';
+    }else{
+        $months = '';
+        $stripePriceId = '';
+    }
+    $quantity = 1;
+    
     $validatedData = $request->validate([
         'users_first_name' => 'required|string|max:255',
         'users_last_name' => 'required|string|max:255',

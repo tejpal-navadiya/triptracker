@@ -94,15 +94,18 @@ class RegisterController extends Controller
 
        
         $plan = Plan::where('sp_id', $plan_id)->firstOrFail();
-        $price_stripe_id = $plan->stripe_id ?? '';
+        
 
         $startDate = Carbon::now();
         if($period == 'monthly'){
             $months = 1;
+            $price_stripe_id = $plan->stripe_id ?? '';
         }else if($period == 'yearly'){
             $months = 12;
+            $price_stripe_id = $plan->stripe_id_yr ?? '';
         }else{
-            $months = 6;
+            $months = '0';
+            $price_stripe_id = '';
         }
         $expirationDate = $startDate->addMonths($months);
         $expiryDate = $expirationDate->toDateString();

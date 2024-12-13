@@ -61,7 +61,7 @@
                                             <select id="tr_agent_id" name="tr_agent_id" class="form-control select2">
                                                 <option disabled selected>Select Agent</option>
                                                 @foreach ($agency_user as $value)
-                                                    <option value="{{ $value->users_id }}">
+                                                    <option value="{{ $value->users_id }}" {{ old('tr_agent_id', $user->users_id ?? '') == $value->users_id ? 'selected' : '' }}>
                                                         {{ $value->users_first_name }} {{ $value->users_last_name }}
                                                     </option>
                                                 @endforeach

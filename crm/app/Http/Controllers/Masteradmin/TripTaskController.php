@@ -355,7 +355,7 @@ class TripTaskController extends Controller
         $masterUserDetails->setTableForUniqueId($user->user_id);
         $tableName = $masterUserDetails->getTable();
         if($user->users_id && $user->role_id == 0 ){
-            $agency_user = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
+            $agency_user = $masterUserDetails->get(); 
         }else{
             $agency_user = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
         }
@@ -479,7 +479,7 @@ class TripTaskController extends Controller
         $taskstatus = TaskStatus::all();
       
         
-        return view('masteradmin.task.index', compact('task', 'taskCategory','trip','agency_user','taskstatus'));
+        return view('masteradmin.task.index', compact('task', 'taskCategory','trip','agency_user','taskstatus','user'));
     }
     
     public function incompleteDetails(Request $request)

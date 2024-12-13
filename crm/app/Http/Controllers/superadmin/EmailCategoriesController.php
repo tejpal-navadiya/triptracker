@@ -31,9 +31,15 @@ class EmailCategoriesController extends Controller
              'email_cat_name.required' => 'Name is required',
          
          ]);
+         
+         $existingCategory = EmailCategories::where('email_cat_name', $validatedData['email_cat_name'])->first();
+
+         if ($existingCategory) {
+             // If a category with the same name exists, return an error
+             return back()->withErrors(['email_cat_name' => 'Category name is already exists.']);
+         } else {
     
          $email = new EmailCategories();
-            
          $email->email_cat_status = $validatedData['email_cat_status'];
          $email->email_cat_name = $validatedData['email_cat_name'];
         
@@ -43,7 +49,7 @@ class EmailCategoriesController extends Controller
     
     
          return redirect()->route('email-categories.index')->with('success', 'Email Category created successfully.');
-    
+         }
         }
 
         public function edit($id)
@@ -66,12 +72,22 @@ class EmailCategoriesController extends Controller
                 'email_cat_status.required' => 'Status is required',
             ]);
         
+            $existingCategory = EmailCategories::where('email_cat_name', $validatedData['email_cat_name'])
+            ->where('email_cat_id', '!=', $id)
+            ->first();
+
+        
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['email_cat_name' => 'Category name is already exists.']);
+        } else {
             // Update the email record
             $email->where('email_cat_id', $id)->update($validatedData);
         
             \LogActivity::addToLog('Admin email Category Updated.');
         
             return redirect()->route('email-categories.index')->with('success', 'Email Category Updated successfully.');
+            }
         }
 
         public function destroy($id)

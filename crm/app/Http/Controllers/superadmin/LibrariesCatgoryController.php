@@ -35,17 +35,25 @@ class LibrariesCatgoryController extends Controller
         
         ]);
 
-        $library = new LibrariesCatgory();
-        $library->lib_cat_status = $validatedData['lib_cat_status'];
-        $library->lib_cat_name = $validatedData['lib_cat_name'];
-        
-        $library->save();
-
-        \LogActivity::addToLog('Super Admin Library Category Created Created.');
+        $existingCategory = LibrariesCatgory::where('lib_cat_name', $validatedData['lib_cat_name'])->first();
 
 
-     return redirect()->route('libraries-category.index')->with('success', 'Library Category created successfully.');
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['lib_cat_name' => 'Category name is already exists.']);
+        } else {
 
+            $library = new LibrariesCatgory();
+            $library->lib_cat_status = $validatedData['lib_cat_status'];
+            $library->lib_cat_name = $validatedData['lib_cat_name'];
+            
+            $library->save();
+
+            \LogActivity::addToLog('Super Admin Library Category Created Created.');
+
+            return redirect()->route('libraries-category.index')->with('success', 'Library Category created successfully.');
+        }
+            
     }
 
     public function edit($id)
@@ -70,12 +78,22 @@ class LibrariesCatgoryController extends Controller
             'lib_cat_status.required' => 'Status is required',
         ]);
     
+        $existingCategory = LibrariesCatgory::where('lib_cat_name', $validatedData['lib_cat_name'])
+        ->where('lib_cat_id', '!=', $id)
+        ->first();
+
+        
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['lib_cat_name' => 'Category name is already exists.']);
+        } else {
         // Update the library record
         $library->where('lib_cat_id', $id)->update($validatedData);
     
         \LogActivity::addToLog('Super Admin Library Category Updated.');
     
         return redirect()->route('libraries-category.index')->with('success', 'Library Category Updated successfully.');
+        }
     }
     
 

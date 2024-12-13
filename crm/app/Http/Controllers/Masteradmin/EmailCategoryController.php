@@ -50,22 +50,29 @@ class EmailCategoryController extends Controller
 
      $email = new EmailCategory();
      $tableName = $email->getTable();
-     $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "email_cat_id", $chars = 6);
+     $existingCategory = EmailCategory::where('email_cat_name', $validatedData['email_cat_name'])->first();
+
+     if ($existingCategory) {
+         // If a category with the same name exists, return an error
+         return back()->withErrors(['email_cat_name' => 'Category name is already exists.']);
+     } else {
+
+        $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "email_cat_id", $chars = 6);
+        
+        $email->email_cat_id = $uniqueId1;
+
+        $email->id = $user->users_id;
+
+        $email->email_cat_status = $validatedData['email_cat_status'];
+        $email->email_cat_name = $validatedData['email_cat_name'];
+        
+        $email->save();
+
+        \MasterLogActivity::addToLog('Master Admin email Category Created Created.');
+
     
-     $email->email_cat_id = $uniqueId1;
-
-     $email->id = $user->users_id;
-
-     $email->email_cat_status = $validatedData['email_cat_status'];
-     $email->email_cat_name = $validatedData['email_cat_name'];
-    
-     $email->save();
-
-     \MasterLogActivity::addToLog('Master Admin email Category Created Created.');
-
-
-     return redirect()->route('email_category.index')->with('success', 'Email Category created successfully.');
-
+        return redirect()->route('email_category.index')->with('success', 'Email Category created successfully.');
+        }
     }
 
     public function edit($id)
@@ -90,13 +97,24 @@ class EmailCategoryController extends Controller
             'email_cat_name.required' => 'Name is required',
             'email_cat_status.required' => 'Status is required',
         ]);
+
+        $existingCategory = EmailCategory::where('email_cat_name', $validatedData['email_cat_name'])
+        ->where('email_cat_id', '!=', $id)
+        ->first();
+
+        
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['email_cat_name' => 'Category name is already exists.']);
+        } else {
     
-        // Update the email record
-        $email->where('email_cat_id', $id)->update($validatedData);
-    
-        \MasterLogActivity::addToLog('Master Admin email Category Updated.');
-    
-        return redirect()->route('email_category.index')->with('success', 'Email Category Updated successfully.');
+            // Update the email record
+            $email->where('email_cat_id', $id)->update($validatedData);
+        
+            \MasterLogActivity::addToLog('Master Admin email Category Updated.');
+        
+            return redirect()->route('email_category.index')->with('success', 'Email Category Updated successfully.');
+        }
     }
     
 

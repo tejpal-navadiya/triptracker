@@ -52,22 +52,30 @@ class libraryCatgoryController extends Controller
 
      $library = new LibraryCategory();
      $tableName = $library->getTable();
-     $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "lib_cat_id", $chars = 6);
-    
-     $library->lib_cat_id = $uniqueId1;
 
-     $library->id = $user->users_id;
+     $existingCategory = LibraryCategory::where('lib_cat_name', $validatedData['lib_cat_name'])->first();
 
-     $library->lib_cat_status = $validatedData['lib_cat_status'];
-     $library->lib_cat_name = $validatedData['lib_cat_name'];
-    
-     $library->save();
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['lib_cat_name' => 'Category name is already exists.']);
+        } else {
 
-     \MasterLogActivity::addToLog('Master Admin Library Category Created Created.');
+            $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "lib_cat_id", $chars = 6);
+            
+            $library->lib_cat_id = $uniqueId1;
+
+            $library->id = $user->users_id;
+
+            $library->lib_cat_status = $validatedData['lib_cat_status'];
+            $library->lib_cat_name = $validatedData['lib_cat_name'];
+            
+            $library->save();
+
+            \MasterLogActivity::addToLog('Master Admin Library Category Created Created.');
 
 
-     return redirect()->route('library_category.index')->with('success', 'Library Category created successfully.');
-
+            return redirect()->route('library_category.index')->with('success', 'Library Category created successfully.');
+        }
     }
 
     public function edit($id)
@@ -93,12 +101,22 @@ class libraryCatgoryController extends Controller
             'lib_cat_status.required' => 'Status is required',
         ]);
     
-        // Update the library record
-        $library->where('lib_cat_id', $id)->update($validatedData);
-    
-        \MasterLogActivity::addToLog('Master Admin Library Category Updated.');
-    
-        return redirect()->route('library_category.index')->with('success', 'Library Category Updated successfully.');
+        $existingCategory = LibraryCategory::where('lib_cat_name', $validatedData['lib_cat_name'])
+        ->where('lib_cat_id', '!=', $id)
+        ->first();
+
+        
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['lib_cat_name' => 'Category name is already exists.']);
+        } else {
+            // Update the library record
+            $library->where('lib_cat_id', $id)->update($validatedData);
+        
+            \MasterLogActivity::addToLog('Master Admin Library Category Updated.');
+        
+            return redirect()->route('library_category.index')->with('success', 'Library Category Updated successfully.');
+        }
     }
     
 

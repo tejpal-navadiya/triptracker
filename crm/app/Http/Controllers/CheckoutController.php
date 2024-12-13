@@ -109,7 +109,7 @@ class CheckoutController extends Controller
     
             // Retrieve the plan
             $plan = Plan::where('sp_id', $plan_id)->firstOrFail();
-            $price_stripe_id = $plan->stripe_id ?? '';
+           
     
             // Calculate expiration date
             $startDate = Carbon::now();
@@ -117,10 +117,13 @@ class CheckoutController extends Controller
     
             if($period == 'monthly'){
                 $months = 1;
+                $price_stripe_id = $plan->stripe_id ?? '';
             }else if($period == 'yearly'){
                 $months = 12;
+                $price_stripe_id = $plan->stripe_id_yr ?? '';
             }else{
-                $months = 6;
+                $months = '';
+                $price_stripe_id = '';
             }
     
             $expirationDate = $startDate->addMonths($months);
@@ -663,7 +666,7 @@ class CheckoutController extends Controller
         // Calculate subscription expiration
         $plan = Plan::where('sp_id', $plan_id)->firstOrFail();
         $startDate = Carbon::now();
-        $months = ($period == 'monthly') ? 1 : (($period == 'yearly') ? 12 : 6);
+        $months = ($period == 'monthly') ? 1 : (($period == 'yearly') ? 12 : 0);
         $expiryDate = $startDate->addMonths($months)->toDateString();
 
         // Update user details for subscription

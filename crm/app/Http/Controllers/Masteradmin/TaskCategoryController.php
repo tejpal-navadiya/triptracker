@@ -43,21 +43,27 @@ class TaskCategoryController extends Controller
     
          $task_category = new TaskCategory();
          $tableName = $task_category->getTable();
-         $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "task_cat_id", $chars = 6);
+         $existingCategory = TaskCategory::where('task_cat_name', $validatedData['task_cat_name'])->first();
+
+        if ($existingCategory) {
+            // If a category with the same name exists, return an error
+            return back()->withErrors(['task_cat_name' => 'Category name is already exists.']);
+        } else {
+            $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "task_cat_id", $chars = 6);
+            
+            $task_category->task_cat_id = $uniqueId1;
         
-         $task_category->task_cat_id = $uniqueId1;
-    
-         $task_category->id = $user->users_id;
-    
-         $task_category->task_cat_status = $validatedData['task_cat_status'];
-         $task_category->task_cat_name = $validatedData['task_cat_name'];
+            $task_category->id = $user->users_id;
         
-         $task_category->save();
-    
-         \MasterLogActivity::addToLog('Master Admin Task Category Created Created.');
-    
-         return redirect()->route('task-category.index')->with('success', 'Task Category created successfully.');
-    
+            $task_category->task_cat_status = $validatedData['task_cat_status'];
+            $task_category->task_cat_name = $validatedData['task_cat_name'];
+            
+            $task_category->save();
+        
+            \MasterLogActivity::addToLog('Master Admin Task Category Created Created.');
+        
+            return redirect()->route('task-category.index')->with('success', 'Task Category created successfully.');
+            }
         }
 
         public function edit($id)
@@ -82,13 +88,24 @@ class TaskCategoryController extends Controller
                 'task_cat_name.required' => 'Name is required',
             
             ]);
+
+            $existingCategory = TaskCategory::where('task_cat_name', $validatedData['task_cat_name'])
+            ->where('task_cat_id', '!=', $id)
+            ->first();
+
+            
+            if ($existingCategory) {
+                // If a category with the same name exists, return an error
+                return back()->withErrors(['task_cat_name' => 'Category name is already exists.']);
+            } else {
         
-            // Update the library record
-            $task_category->where('task_cat_id', $id)->update($validatedData);
-        
-            \MasterLogActivity::addToLog('Master Admin Task Category Updated.');
-        
-            return redirect()->route('task-category.index')->with('success', 'Task Category Updated successfully.');
+                // Update the library record
+                $task_category->where('task_cat_id', $id)->update($validatedData);
+            
+                \MasterLogActivity::addToLog('Master Admin Task Category Updated.');
+            
+                return redirect()->route('task-category.index')->with('success', 'Task Category Updated successfully.');
+            }
         }
 
         public function destroy($id)
