@@ -218,8 +218,8 @@ public function index(Request $request, $id)
                                         <div class="modal-content">
                                             <div class="modal-body pad-1 text-center">
                                                 <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                <p class="company_business_name px-10"><b>Delete Traveler</b></p>
-                                                <p class="company_details_text px-10">Are You Sure You Want to Delete This Traveler?</p>
+                                                <p class="company_business_name px-10"><b>Delete Household</b></p>
+                                                <p class="company_details_text px-10">Are You Sure You Want to Delete This Household?</p>
                                                 <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
                                                 <button type="submit" class="delete_btn px-15 deleteMemberbtn" data-id="'.$members['trtm_id'].'">Delete</button>
                                             </div>

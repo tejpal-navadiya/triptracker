@@ -42,7 +42,7 @@
                     <div class="card-header d-flex p-0 justify-content-center tab_panal">
                         <ul class="nav nav-pills p-2 tab_box">
                             <li class="nav-item"><a class="nav-link active" href="#Traveleroverview"
-                                    data-toggle="tab">Traveler Information</a></li>
+                                    data-toggle="tab">Household Information</a></li>
                             <li class="nav-item"><a class="nav-link" href="#Agentinfo" data-toggle="tab">Agent
                                     Information</a></li>
                             <li class="nav-item"><a class="nav-link" href="#Tasksinfo" data-toggle="tab">Tasks</a></li>

@@ -437,11 +437,11 @@ class TripTaskController extends Controller
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
-                    if(isset($access['workflow']) && $access['workflow']) {
+                    if(isset($access['task_details']) && $access['task_details']) {
                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
-                    if (isset($access['workflow']) && $access['workflow']) {
+                    if (isset($access['task_details']) && $access['task_details']) {
                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
                                     <div class="modal fade" id="delete-role-modal-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

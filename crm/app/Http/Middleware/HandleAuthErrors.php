@@ -30,14 +30,14 @@ class HandleAuthErrors
              return response()->json([
                  'success' => false,
                  'message' => 'No token provided.'
-             ], 401);
+             ], 500);
          }
 
          if (!$uniqueId) {
             return response()->json([
                 'success' =>  false,
                 'message' => 'No uniqueId provided.'
-            ], 401);
+            ], 500);
         }
 
         $user = MasterUser::where('buss_unique_id', $uniqueId)->first();
@@ -46,7 +46,7 @@ class HandleAuthErrors
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid X-UniqueId header value. No matching user found.',
-            ], 404);  // 404 Not Found status
+            ], 500);  // 404 Not Found status
         }
        
         $userModel = new MasterUserDetails();
@@ -58,7 +58,7 @@ class HandleAuthErrors
              return response()->json([
                  'success' =>  false,
                  'message' => 'Your token is either invalid or expired.'
-             ], 401);
+             ], 500);
          }
 
          $request->attributes->set('authenticated_user', $userDetailRecord);

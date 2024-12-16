@@ -1,5 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>View Trip | Trip Tracker</title>
+@if (isset($access['task_details']) && $access['task_details'])
   @section('content')
 
     <!-- Content Wrapper. Contains page content -->
@@ -859,3 +860,4 @@
 </script>
 
   @endsection
+@endif

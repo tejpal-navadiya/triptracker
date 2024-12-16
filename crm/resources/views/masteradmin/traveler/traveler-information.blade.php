@@ -17,9 +17,9 @@
     <div class="card-header">
         <div class="row justify-content-between align-items-center">
             <div class="col-auto">
-                <h3 class="card-title">Traveler Information</h3>
+                <h3 class="card-title">Household Information</h3>
             </div>
-            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Traveler</button></div>
+            <div class="col-auto"><button href="javascript:void(0)" id="createNew" class="reminder_btn">Add Household</button></div>
         </div>
         <!-- /.card-header -->
         <div class="card-body1">
@@ -54,8 +54,8 @@
                                                 <div class="modal-content">
                                                     <div class="modal-body pad-1 text-center">
                                                         <i class="fas fa-solid fa-trash delete_icon"></i>
-                                                         <p class="company_business_name px-10"><b>Delete Traveling Member </b></p>
-                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This Traveling Member ?</p>
+                                                         <p class="company_business_name px-10"><b>Delete Household Member </b></p>
+                                                        <p class="company_details_text px-10">Are You Sure You Want to Delete This Household Member ?</p>
                                                         <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
                                                         <button type="submit" class="delete_btn px-15 deleteMemberbtn" data-id="{{$value->trtm_id}}">Delete</button>
                                                    </div>
@@ -290,7 +290,7 @@
             $('#saveBtn').val("create-product");
             $('#trtm_id').val('');
             $('#Form')[0].reset();
-            $('#modelHeading').html("Add Traveler");
+            $('#modelHeading').html("Add Household");
             $('body').addClass('modal-open');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
@@ -361,7 +361,7 @@
                 .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
                 function(data) {
                     // console.log(data);
-                    $('#modelHeading').html("Edit Traveler");
+                    $('#modelHeading').html("Edit Household");
                     $('#saveBtn').val("edit-user");
                     var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
                     editModal.show();

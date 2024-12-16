@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Email Category Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['email_category']) && $access['email_category'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -17,7 +17,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
+                                @if (isset($access['email_category']) && $access['email_category'])
                                     <a href="{{ route('email_category.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Email
                                             Category</button></a>

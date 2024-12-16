@@ -72,7 +72,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => __('messages.api.user.invalid'),
                 'errors' => $validator->errors()
-            ], 422);
+            ], 500);
         }
 
         $plan = Plan::where('sp_id', $request->sp_id)->firstOrFail();
@@ -203,7 +203,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => __('messages.api.user.invalid'),
                 'errors' => $validator->errors()
-            ], 422);
+            ], 500);
         }
     
         
@@ -538,7 +538,7 @@ class AuthController extends Controller
                         'success' => false,
                         'message' => __('messages.api.user.invalid'),
                         'errors' => $validator->errors()
-                    ], 422);
+                    ], 500);
                 }
             
                 $userDetails = new MasterUserDetails();
@@ -636,7 +636,7 @@ class AuthController extends Controller
                             'success' => false,
                             'message' => __('messages.api.user.invalid'),
                             'errors' => $validator->errors()
-                        ], 422);
+                        ], 500);
                     }
                 
                     // dd($auth_user);

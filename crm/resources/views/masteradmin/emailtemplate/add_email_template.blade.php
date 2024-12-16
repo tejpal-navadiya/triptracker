@@ -3,7 +3,7 @@
 @extends('masteradmin.layouts.app')
 <title>Email Templates | Trip Tracker</title>
 @section('content')
-    @if (isset($access['edit_profile']) && $access['edit_profile'])
+    @if (isset($access['add_email_template']) && $access['add_email_template'])
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->

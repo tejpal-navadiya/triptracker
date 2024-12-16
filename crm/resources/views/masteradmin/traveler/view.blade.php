@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>View Trip | Trip Tracker</title>
-@if(isset($access['book_trip']) && $access['book_trip'])
+@if(isset($access['traveler_details']) && $access['traveler_details'])
   @section('content')
 
     <!-- Content Wrapper. Contains page content -->
@@ -26,7 +26,7 @@
       
         <div class="card-header d-flex p-0 justify-content-center tab_panal">
           <ul class="nav nav-pills p-2 tab_box">
-            <li class="nav-item"><a class="nav-link active" href="#Traveleroverview" data-toggle="tab">Traveler Information</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#Traveleroverview" data-toggle="tab">Household Information</a></li>
             <li class="nav-item"><a class="nav-link" href="#Documentsinfo" data-toggle="tab">Documents</a></li>
             <li class="nav-item"><a class="nav-link" href="#Emailsinfo" data-toggle="tab">Trip History</a></li>
           </ul>

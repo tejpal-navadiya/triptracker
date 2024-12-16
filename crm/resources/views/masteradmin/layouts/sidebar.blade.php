@@ -1,3 +1,4 @@
+<?php //dd($access); ?>
 <!-- Main Sidebar Container -->
 @php($busadminRoutes = config('global.businessAdminURL'))
 
@@ -26,12 +27,14 @@
     request()->is($busadminRoutes . '/view-trip*')
 
     ? 'menu-open' : '' }}">
+    
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>Trips
                             <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
+                    @if (isset($access['workflow']) && $access['workflow'])
                     <ul class="nav nav-treeview">
                         <!-- Workflow -->
                         <li class="nav-item">
@@ -41,7 +44,8 @@
                                 <p>Pre Booked Trips</p>
                             </a>
                         </li>
-
+                    @endif
+                    @if (isset($access['book_after_trip']) && $access['book_after_trip'])
                         <!-- Booked Trips -->
                         <li class="nav-item">
                             <a href="{{ route('masteradmin.trip.booked_after') }}"
@@ -50,6 +54,8 @@
                                 <p>Booked Trips (After Booked)</p>
                             </a>
                         </li>
+                        @endif
+                        @if (isset($access['follow_up']) && $access['follow_up'])
                         <!-- Trip Follow Up -->
                         <li class="nav-item">
                             <a href="{{ route('masteradmin.trip.follow_up_trip_details') }}"
@@ -58,6 +64,8 @@
                                 <p>Trip Follow Up (After Travel)</p>
                             </a>
                         </li>
+                        @endif
+                        @if (isset($access['task_details']) && $access['task_details'])
                         <!-- Tasks -->
                         <li class="nav-item">
                             <a href="{{ route('masteradmin.task.all') }}"
@@ -66,6 +74,8 @@
                                 <p>Tasks</p>
                             </a>
                         </li>
+                        @endif
+                        @if (isset($access['task_category']) && $access['task_category'])
                         <!-- Tasks Category -->
                         <li class="nav-item">
                             <a href="{{ route('task-category.index') }}"
@@ -74,6 +84,7 @@
                                 <p>Tasks Category</p>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </li>
 
@@ -101,7 +112,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <!-- View All Travelers -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['traveler_details']) && $access['traveler_details'])
                                             <li class="nav-item">
                                                 <a href="{{ route('masteradmin.travelers.travelersDetails') }}" class="nav-link {{ request()->is($busadminRoutes . '/travelers*') &&
                             !request()->is($busadminRoutes . '/travelers-create*') || request()->is($busadminRoutes . '/view-travelers*')
@@ -113,7 +124,7 @@
                         @endif
 
                         <!-- Add Traveler -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['traveler_details']) && $access['traveler_details'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.travelers.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/travelers-create*') ? 'active' : '' }}">
@@ -181,7 +192,7 @@
                         @endif
 
                         <!-- Add Category -->
-                        @if (isset($access['view_role']) && $access['view_role'])
+                        @if (isset($access['email_category']) && $access['email_category'])
                             <li class="nav-item">
                                 <a href="{{ route('email_category.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/email_category*') ? 'active' : '' }}">
@@ -208,7 +219,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <!-- Library -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['library_item']) && $access['library_item'])
                                             <li class="nav-item">
                                                 <a href="{{ route('library.index') }}" class="nav-link {{ request()->is($busadminRoutes . '/library') ||
                             request()->is($busadminRoutes . '/library/view*')
@@ -220,7 +231,7 @@
                         @endif
 
                         <!-- Add Library Item -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['library_item']) && $access['library_item'])
                             <li class="nav-item">
                                 <a href="{{ route('library.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/library/create') ? 'active' : '' }}">
@@ -231,7 +242,7 @@
                         @endif
 
                         <!-- Add Category -->
-                        @if (isset($access['book_trip']) && $access['book_trip'])
+                        @if (isset($access['library_category']) && $access['library_category'])
                             <li class="nav-item">
                                 <a href="{{ route('library_category.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/library_category*') ? 'active' : '' }}">

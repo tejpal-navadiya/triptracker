@@ -2,7 +2,7 @@
 
 
 <title>Library Category Details | Trip Tracker</title>
-@if (isset($access['book_trip']) && $access['book_trip'])
+@if (isset($access['task_category']) && $access['task_category'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -19,7 +19,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
+                                @if (isset($access['task_category']) && $access['task_category'])
                                     <a href="{{ route('task-category.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Task
                                             Category</button></a>
