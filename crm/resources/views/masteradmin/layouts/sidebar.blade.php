@@ -38,7 +38,8 @@
                     <ul class="nav nav-treeview">
                         <!-- Workflow -->
                         <li class="nav-item">
-                            <a href="{{ route('trip.index') }}"
+                            <a  
+                                href="{{ route('trip.index') }}"
                                 class="nav-link {{ request()->is($busadminRoutes . '/trip*') || request()->is($busadminRoutes . '/view-trip*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Pre Booked Trips</p>

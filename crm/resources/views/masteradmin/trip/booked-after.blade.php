@@ -448,48 +448,14 @@
 
        
 
-            // Function to load list view
-    $('#listViewBtn').click(function (e) {
-        e.preventDefault();
 
-        // Update button active states
-        $('#listViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
-        $('#gridViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+// Set default active view to Grid View
+loadGridView();
 
-        var formData = {
-        trip_agent: $('#trip_agent').val(),
-        trip_traveler: $('#trip_traveler').val(),
-        start_date: $('#from-datepicker').val(),
-        end_date: $('#to-datepicker').val(),
-        trip_status: $('#trip_status').val(), 
-        _token: '{{ csrf_token() }}'
-    };
-
-        // Load list view via AJAX
-        $.ajax({
-            url: '{{ route('masteradmin.trip.booked_after') }}',
-            data: formData,
-            type: 'GET',
-            success: function (response) {
-                $('#viewContainer').html(response);
-                
-                // Initialize DataTable
-                $('#listview4').DataTable();
-            },
-            error: function (xhr) {
-                console.error('Error loading list view:', xhr);
-            }
-        });
-
-
-    });
-
-
-    $('#gridViewBtn').click(function (e) {
-    e.preventDefault();
-
+// Function to load Grid View
+function loadGridView() {
     // Update button active states
-    $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary');
+    $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary active');
     $('#listViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
 
     // Prepare the filter parameters
@@ -502,20 +468,66 @@
         _token: '{{ csrf_token() }}'
     };
 
-    // Load grid view via AJAX
+    // Load Grid View via AJAX
     $.ajax({
         url: "{{ route('bookingtrip.gridView') }}",
         type: 'GET',
-        data: formData, // Include filters in the request
+        data: formData,
         success: function (response) {
-            $('#viewContainer').html(response); // Update the container with grid view content
+            $('#viewContainer').html(response); // Update container with grid view content
         },
         error: function (xhr) {
             console.error('Error loading grid view:', xhr);
         }
     });
+}
+
+// Event Listener: Load List View when listViewBtn is clicked
+$('#listViewBtn').click(function (e) {
+    e.preventDefault();
+
+    // Update button active states
+    $('#listViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary active');
+    $('#gridViewBtn').removeClass('btn-primary active').addClass('btn-outline-secondary');
+
+    // Prepare the filter parameters
+    var formData = {
+        trip_agent: $('#trip_agent').val(),
+        trip_traveler: $('#trip_traveler').val(),
+        start_date: $('#from-datepicker').val(),
+        end_date: $('#to-datepicker').val(),
+        trip_status: $('#trip_status').val(),
+        _token: '{{ csrf_token() }}'
+    };
+
+    // Load List View via AJAX
+    $.ajax({
+        url: '{{ route('masteradmin.trip.booked_after') }}',
+        data: formData,
+        type: 'GET',
+        success: function (response) {
+            $('#viewContainer').html(response);
+
+            // Initialize DataTable
+            $('#listview4').DataTable();
+        },
+        error: function (xhr) {
+            console.error('Error loading list view:', xhr);
+        }
+    });
 });
 
+// Event Listener: Load Grid View when gridViewBtn is clicked
+$('#gridViewBtn').click(function (e) {
+    e.preventDefault();
+
+    // Update button active states
+    $(this).removeClass('btn-outline-secondary').addClass('btn-primary active');
+    $('#listViewBtn').removeClass('btn-primary active').addClass('btn-outline-secondary');
+
+    // Call the Grid View loader
+    loadGridView();
+});
 
 
   
