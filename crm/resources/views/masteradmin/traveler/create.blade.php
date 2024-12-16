@@ -79,6 +79,7 @@
                                                 autocomplete="tr_traveler_name" value="{{ old('tr_traveler_name') }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_traveler_name')" />
+                                            
                                         </div>
                                     </div>
 

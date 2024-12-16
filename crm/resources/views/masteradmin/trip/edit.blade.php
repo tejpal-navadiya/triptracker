@@ -308,55 +308,63 @@
                                 </div>
 
                                 <div class="col-md-4">
-
                                     <div class="form-group">
-
                                         <x-input-label for="tr_end_date" :value="__('Trip End Date')" />
-
                                         <div class="input-group date" id="tr_end_date" data-target-input="nearest">
-
-
-
                                             <x-flatpickr id="expiration_date" name="tr_end_date" placeholder="mm/dd/yyyy" />
-
                                             <div class="input-group-append">
-
                                                 <div class="input-group-text" id="expiration-date-icon">
-
                                                     <i class="fa fa-calendar-alt"></i>
-
                                                     <input type="hidden" id="tr_end_date_hidden"
                                                         value="{{ $trip->tr_end_date }}" />
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                         <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" />
-
                                     </div>
-
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_final_payment_date" :value="__('Final Payment Date')" />
+                                        <div class="input-group date" id="tr_final_payment_date" data-target-input="nearest">
+
+                                            <x-flatpickr id="payment_date" name="tr_final_payment_date"
+                                                placeholder="mm/dd/yyyy" />
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" id="payment-date-icon">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                    <input type="hidden" id="tr_final_payment_date_hidden" value="{{ $trip->tr_final_payment_date }}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" /> --}}
+                                    </div>
+                                </div>
+
 
 
 
                                 <div class="col-md-4">
-
                                     <div class="form-group">
-
-                                        <x-input-label for="tr_value_trip" :value="__('Value of trip')" />
-
-                                        <x-text-input type="text" class="form-control" id="tr_value_trip"
-                                            placeholder="Enter Value of trip" name="tr_value_trip" autofocus
+                                        <x-input-label for="tr_value_trip" :value="__('Budget')" />
+                                        <x-text-input type="number" class="form-control" id="tr_value_trip"
+                                            placeholder="Enter Budget" name="tr_value_trip" autofocus
                                             autocomplete="tr_value_trip" :value="old('tr_value_trip', $trip->tr_value_trip ?? '')" />
-
                                         <x-input-error class="mt-2" :messages="$errors->get('tr_value_trip')" />
-
                                     </div>
-
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <x-input-label for="tr_final_amount" :value="__('Final Price')" />
+                                        <x-text-input type="number" class="form-control" id="tr_final_amount"
+                                            placeholder="Enter Final Price" name="tr_final_amount" autofocus
+                                            autocomplete="tr_final_amount" :value="old('tr_final_amount', $trip->tr_final_amount ?? '')" />
+                                        <x-input-error class="mt-2" :messages="$errors->get('tr_final_amount')" />
+                                    </div>
+                                </div>
+
 
 
 
@@ -1113,6 +1121,8 @@
 
             var todatepicker = document.getElementById('tr_end_date_hidden');
 
+            var paymentdatepicker = document.getElementById('tr_final_payment_date_hidden');
+
 
 
             fromdatepicker = flatpickr("#completed_date", {
@@ -1149,6 +1159,23 @@
 
             });
 
+            paymentdatepicker = flatpickr("#payment_date", {
+
+                locale: 'en',
+
+                altInput: true,
+
+                dateFormat: "m/d/Y",
+
+                altFormat: "m/d/Y",
+
+                allowInput: true,
+
+                defaultDate: paymentdatepicker.value || null,
+
+            });
+
+
 
 
             document.getElementById('completed-date-icon').addEventListener('click', function () {
@@ -1164,7 +1191,12 @@
                 todatepicker.open();
 
             });
+            
+            document.getElementById('payment-date-icon').addEventListener('click', function () {
 
+                paymentdatepicker.open();
+
+            });
 
 
             // var birthdatedate = document.getElementById('birthdate_hidden');

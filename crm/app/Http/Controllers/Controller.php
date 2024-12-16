@@ -412,7 +412,9 @@ class Controller extends BaseController
                     $table->string('tr_num_people')->nullable();
                     $table->string('tr_start_date')->nullable();
                     $table->string('tr_end_date')->nullable();
+                    $table->string('tr_final_payment_date')->nullable();
                     $table->string('tr_value_trip')->nullable();
+                    $table->string('tr_final_amount')->nullable();
                     $table->text('tr_type_trip')->nullable();
                     $table->text('tr_desc')->nullable();
                     $table->string('status')->nullable();
@@ -455,6 +457,20 @@ class Controller extends BaseController
                         $table->string('status')->nullable();
                     }
                 });
+
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_final_amount')) {
+                        $table->string('tr_final_amount')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_final_payment_date')) {
+                        $table->string('tr_final_payment_date')->nullable();
+                    }
+                });
+
+                
                 
             }
 

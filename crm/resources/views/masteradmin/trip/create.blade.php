@@ -178,9 +178,27 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <x-input-label for="tr_value_trip" :value="__('Value of trip')" />
+                                            <x-input-label for="tr_final_payment_date" :value="__('Final Payment Date')" />
+                                            <div class="input-group date" id="tr_final_payment_date" data-target-input="nearest">
+
+                                                <x-flatpickr id="payment_date" name="tr_final_payment_date"
+                                                    placeholder="mm/dd/yyyy" />
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text" id="payment-date-icon">
+                                                        <i class="fa fa-calendar-alt"></i>
+                                                        <input type="hidden" id="tr_final_payment_date" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- <x-input-error class="mt-2" :messages="$errors->get('tr_end_date')" /> --}}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <x-input-label for="tr_value_trip" :value="__('Budget')" />
                                             <x-text-input type="number" class="form-control" id="tr_value_trip"
-                                                placeholder="Enter Value of trip" name="tr_value_trip" autofocus
+                                                placeholder="Enter Budget" name="tr_value_trip" autofocus
                                                 autocomplete="tr_value_trip" value="{{ old('tr_value_trip') }}" />
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_value_trip')" />
                                         </div>
@@ -188,9 +206,19 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
+                                            <x-input-label for="tr_final_amount" :value="__('Final Price')" />
+                                            <x-text-input type="number" class="form-control" id="tr_final_amount"
+                                                placeholder="Enter Final Price" name="tr_final_amount" autofocus
+                                                autocomplete="tr_final_amount" value="{{ old('tr_final_amount') }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('tr_final_amount')" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
                                             <x-input-label for="tr_desc" :value="__('Description')" />
                                             <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
-                                                autofocus autocomplete="tr_desc"> {{ old('tr_desc') }}</textarea>
+                                                autofocus autocomplete="tr_desc">{{ old('tr_desc') }}</textarea>
                                             <x-input-error class="mt-2" :messages="$errors->get('tr_desc')" />
                                         </div>
                                     </div>
@@ -336,6 +364,15 @@
                     altFormat: "m/d/Y",
                     allowInput: true,
                 });
+                
+                var paymentdate = flatpickr("#payment_date", {
+                    locale: 'en',
+                    altInput: true,
+                    dateFormat: "m/d/Y",
+                    altFormat: "m/d/Y",
+                    allowInput: true,
+                });
+
 
                 document.getElementById('completed-date-icon').addEventListener('click', function() {
                     fromdatepicker.open();
@@ -343,6 +380,10 @@
 
                 document.getElementById('expiration-date-icon').addEventListener('click', function() {
                     todatepicker.open();
+                });
+
+                document.getElementById('payment-date-icon').addEventListener('click', function() {
+                    paymentdate.open();
                 });
 
 

@@ -206,7 +206,9 @@ class TripController extends Controller
                 'tr_number' => 'nullable|string',
                 'tr_start_date' => 'nullable',
                 'tr_end_date' => 'nullable|string',
+                'tr_final_payment_date' => 'nullable|string',
                 'tr_value_trip' => 'nullable|string',
+                'tr_final_amount' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
                 'tr_country' => 'nullable|string',
                 'tr_state' => 'nullable|string',
@@ -246,7 +248,9 @@ class TripController extends Controller
                 'tr_number' => 'nullable|string',
                 'tr_start_date' => 'nullable',
                 'tr_end_date' => 'nullable|string',
+                'tr_final_payment_date' => 'nullable|string',
                 'tr_value_trip' => 'nullable|string',
+                'tr_final_amount' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
                 'tr_country' => 'nullable|string',
                 'tr_state' => 'nullable|string',
@@ -281,7 +285,20 @@ class TripController extends Controller
         $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "tr_id", $chars = 6);
         $traveler->tr_id = $uniqueId;
 
+        if ($request->travelers == "travelers") {
+        // Check for duplicates based on traveler name, phone, and email
+            $duplicateTrip = Trip::where('tr_traveler_name', $validatedData['tr_traveler_name'])
+                ->where('tr_phone', $validatedData['tr_phone'])
+                ->where('tr_email', $validatedData['tr_email'])
+                ->first();
 
+            if ($duplicateTrip) {
+                // Handle the duplicate scenario
+                return back()->withErrors([
+                    'tr_traveler_name' => 'Traveler name is already exists.',
+                ]);
+            }
+        }
 
         $existingtrip = $traveler->where('tr_email', $validatedData['tr_email'])->first();
 
@@ -303,7 +320,9 @@ class TripController extends Controller
         // $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
         $traveler->tr_start_date = $validatedData['tr_start_date'] ?? null;
         $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
+        $traveler->tr_final_payment_date = $validatedData['tr_final_payment_date'] ?? null; 
         $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
+        $traveler->tr_final_amount = $validatedData['tr_final_amount'] ?? null; 
         $traveler->tr_type_trip = json_encode($request->input('tr_type_trip')) ?? [];
         $traveler->tr_desc = $validatedData['tr_desc'] ?? null; // Use null if not set
 
@@ -492,7 +511,9 @@ class TripController extends Controller
                 'tr_number' => 'nullable|string',
                 'tr_start_date' => 'nullable',
                 'tr_end_date' => 'nullable|string',
+                'tr_final_payment_date' => 'nullable|string',
                 'tr_value_trip' => 'nullable|string',
+                'tr_final_amount' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
                 'tr_country' => 'nullable|string',
                 'tr_state' => 'nullable|string',
@@ -532,7 +553,9 @@ class TripController extends Controller
                 'tr_number' => 'nullable|string',
                 'tr_start_date' => 'nullable',
                 'tr_end_date' => 'nullable|string',
+                'tr_final_payment_date' => 'nullable|string',
                 'tr_value_trip' => 'nullable|string',
+                'tr_final_amount' => 'nullable|string',
                 'tr_desc' => 'nullable|string',
                 'tr_country' => 'nullable|string',
                 'tr_state' => 'nullable|string',
@@ -552,6 +575,23 @@ class TripController extends Controller
     
         }
        
+        
+        if ($request->travelers == "travelers") {
+            // Check for duplicates based on traveler name, phone, and email
+                $duplicateTrip = Trip::where('tr_traveler_name', $validatedData['tr_traveler_name'])
+                    ->where('tr_phone', $validatedData['tr_phone'])
+                    ->where('tr_email', $validatedData['tr_email'])
+                    ->where('tr_id', '!=', $id)
+                    ->first();
+    
+                if ($duplicateTrip) {
+                    // Handle the duplicate scenario
+                    return back()->withErrors([
+                        'tr_traveler_name' => 'Traveler name is already exists.',
+                    ]);
+                }
+            }
+
         // Update Trip record
 
         $validatedData['tr_type_trip'] = json_encode($request->input('tr_type_trip'));
@@ -2367,12 +2407,20 @@ public function bookgridView(Request $request)
         ->orderBy($tripTable . '.tr_start_date', 'ASC')
         ->get();
 
+      
     if($user->users_id && $user->role_id == 0 ){
         // Completed Trip Query
+        // \DB::enableQueryLog();
+
         $completedTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-        ->where($tripTable . '.status', '=', 7); // Trip Completed
+        // ->where($tripTable . '.tr_end_date', '>', $currentDate->format('m/d/Y'))
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]);
+
+        // ->where($tripTable . '.status', '=', 7); // Trip Completed
+     
+
     }else{
         $completedTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
@@ -2381,8 +2429,16 @@ public function bookgridView(Request $request)
             $query->where($tripTable . '.tr_agent_id', $user->users_id)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
-        ->where($tripTable . '.status', '=', 7); // Trip Completed
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]);
+
+        // ->where($tripTable . '.status', '=', 7); // Trip Completed
     }
+
+      Trip::where('tr_status', 1)
+        ->where('status', '!=', 7) // Avoid updating trips already marked as completed
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+        ->update(['status' => 7]);
+
     // Apply filters for Completed Trip Query
     if ($startDate && !$endDate) {
     $completedTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
@@ -2410,7 +2466,7 @@ public function bookgridView(Request $request)
     ])
     ->orderBy($tripTable . '.tr_start_date', 'ASC')
     ->get();
-
+    // dd(\DB::getQueryLog()); 
     // Travelling Trip Query
     $travellingTripQuery = Trip::where('tr_status', 1)
     ->from($tripTable)
