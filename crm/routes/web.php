@@ -38,6 +38,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MailController;
+use App\Models\MasterUser;
 
 
 
@@ -98,6 +99,7 @@ Route::group(['prefix' => $adminRoute], function () {
         Route::get('/plans/planrole/{plan}', [PlanController::class, 'planrole'])->name('plans.planrole');
         Route::POST('/plans/updaterole/{plan}', [PlanController::class, 'updaterole'])->name('plans.updaterole');
 
+      
 
         //agencies list
         Route::get('/businessdetails', [BusinessDetailController::class, 'index'])->name('businessdetails.index');
@@ -105,20 +107,22 @@ Route::group(['prefix' => $adminRoute], function () {
         Route::get('/editbusinessdetails/{id}', [BusinessDetailController::class, 'edit'])->name('businessdetails.edit');
         Route::post('/updatebusinessdetails/{id}', [BusinessDetailController::class, 'update'])->name('businessdetails.update');
         
+        
         //agency image security 
-        Route::get('/agency_images/{filename}', function ($filename) {
-            $userFolder = session('userFolder');
-
-                $filePath = storage_path('app/'.$userFolder.'/profile_image/' . $filename);
-
-                if (!file_exists($filePath)) {
-                    abort(404);
-                }
-
-                return response()->file($filePath); 
-
-
-        })->name('agency.access');
+      Route::get('/agency_images/{filename}/{id}', function ($filename, $id) {
+        $user = MasterUser::findOrFail($id);
+    
+        $userFolder = 'masteradmin/' . $user->buss_unique_id . '_' . $user->user_first_name;
+    
+        $filePath = storage_path('app/' . $userFolder . '/profile_image/' . $filename);
+    
+        if (!file_exists($filePath)) {
+            abort(404);
+        }
+    
+        // Return the file response
+        return response()->file($filePath);
+    })->name('agency.access');
 
         //Admin agencies list dropdown 
         Route::get('admin_agency_state/{countryId}', [RegisterController::class, 'getStates'])->name('get_admin_States');
@@ -142,8 +146,24 @@ Route::group(['prefix' => $adminRoute], function () {
        Route::resource('email-categories',EmailCategoriesController::class);
         //email template
        Route::resource('emails-templates',EmailsTemplatesController::class);
+       
+    //   Route::resource('emails-templates',EmailsTemplatesController::class);
 
+        //store agency user
+        Route::get('agency-users-create/{id}/', [BusinessDetailController::class, 'agencyCreate'])->name('businessdetails.agencycreate');
+        Route::post('agency-users-store/{userId}/', [BusinessDetailController::class, 'agencyStore'])->name('businessdetails.agencystore');
         
+          Route::get('/users/change-password', [UserController::class, 'changePassword'])
+        ->name('masteradmin.userdetail.changePassword');
+        
+        //store agency
+        Route::get('agency-create/', [BusinessDetailController::class, 'agencyAdd'])->name('businessdetails.agencyadd');
+        Route::post('agency-store', [BusinessDetailController::class, 'agencyInsert'])->name('businessdetails.agencyinsert');
+        
+        //agency delete
+          Route::delete('/businessdetails/{id}/{user_id}', [BusinessDetailController::class, 'destroy'])->name('businessdetails.destroy');
+
+
     });
 });
 
@@ -380,6 +400,7 @@ Route::group(['prefix' => $busadminRoute], function () {
          Route::get('/travelers-details', [TripController::class, 'travelersDetails'])->name('masteradmin.travelers.travelersDetails');
          Route::get('/travelers-create', [TripController::class, 'createTravelers'])->name('masteradmin.travelers.create');
          Route::post('/travelers-store', [TripController::class, 'store'])->name('masteradmin.travelers.store');
+         Route::post('/trips/travelerss-store', [TripController::class, 'travelerStore'])->name('masteradmin.travelers.trip.store');
          Route::get('travelers-edit/{id}', [TripController::class, 'editDetails'])->name('masteradmin.travelers.edit');
          Route::put('/travelers-update/{id}', [TripController::class, 'update'])->name('masteradmin.travelers.update');
          Route::get('/view-travelers/{id}', [TripController::class, 'viewDetails'])->name('masteradmin.travelers.view');
@@ -497,6 +518,10 @@ Route::group(['prefix' => $busadminRoute], function () {
 
             
         // });
+        
+        //trip traveler serach bar 
+        Route::get('trip/api/travelers', [TripController::class, 'getTravelerNames'])->name('travelers.autocomplete');
+
          
     });
      

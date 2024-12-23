@@ -442,7 +442,7 @@
                                     <li class="nav-item" role="presentation">
 
                                         <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile"
-                                            type="button" role="tab" aria-controls="profile" aria-selected="false">Add Traveler</button>
+                                            type="button" role="tab" aria-controls="profile" aria-selected="false">Add Household</button>
 
                                     </li>
 
@@ -1001,7 +1001,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <button type="button" id="add" class="add_tripmembertbtn add_btn"><i
-                                                    class="fas fa-plus add_plus_icon"></i>Add Traveler</button>
+                                                    class="fas fa-plus add_plus_icon"></i>Add Household</button>
                                         </div>
                                     </div>
                                 </div>

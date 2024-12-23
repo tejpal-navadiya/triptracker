@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use PhpParser\Node\Stmt\Else_;
- 
+
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -809,7 +810,7 @@ class Controller extends BaseController
 
         $id = $user->id;
         if (!$id) {
-            return response()->json(['message' => 'ID is required'], 400);
+            return response()->json(['message' => 'ID is required'], 500);
         }
         try {
             $this->CreateTable($id);
@@ -889,31 +890,31 @@ class Controller extends BaseController
                 $tr_dob = $this->getDate($trip->tr_dob, 'Asia/Kolkata');
 
                 $tripData = [
-                    'tr_id'            => $trip->tr_id,
-                    'id'               => $trip->id,
-                    'tr_name'          => $trip->tr_name,
-                    'tr_agent_id'      => $trip->tr_agent_id,
-                    'agent_name'      => '',
-                    'tr_traveler_name' => $trip->tr_traveler_name,
-                    'tr_dob'           => $tr_dob,
-                    'tr_age'           => $trip->tr_age,
-                    'tr_number'        => $trip->tr_number,
-                    'tr_email'         => $trip->tr_email,
-                    'tr_phone'         => $trip->tr_phone,
-                    'tr_num_people'    => $trip->tr_num_people,
-                    'tr_start_date'    => $tr_start_date,
-                    'tr_end_date'      => $tr_end_date,
-                    'tr_value_trip'    => $trip->tr_value_trip,
-                    'tr_type_trip'     => $trip->tr_type_trip,
-                    'tr_desc'          => $trip->tr_desc,
-                    'tr_status'        => $trip->tr_status,
+                    'tr_id'            => $trip->tr_id ?? '',
+                    'id'               => $trip->id ?? '',
+                    'tr_name'          => $trip->tr_name ?? '',
+                    'tr_agent_id'      => $trip->tr_agent_id ?? '',
+                    'agent_name' => ($trip->users_first_name ?? '') . ' ' . ($trip->users_last_name ?? ''),
+                    'tr_traveler_name' => $trip->tr_traveler_name ?? '',
+                    'tr_dob'           => $tr_dob ?? '',
+                    'tr_age'           => $trip->tr_age ?? '',
+                    'tr_number'        => $trip->tr_number ?? '',
+                    'tr_email'         => $trip->tr_email ?? '',
+                    'tr_phone'         => $trip->tr_phone ?? '',
+                    'tr_num_people'    => $trip->tr_num_people ?? '',
+                    'tr_start_date'    => $tr_start_date ?? '',
+                    'tr_end_date'      => $tr_end_date ?? '',
+                    'tr_value_trip'    => $trip->tr_value_trip ?? '',
+                    'tr_type_trip'     => $trip->tr_type_trip ?? '',
+                    'tr_desc'          => $trip->tr_desc ?? '',
+                    'tr_status'        => $trip->tr_status ?? '',
                     'created_at'       => $created_at,    
                     'updated_at'       => $updated_at,   
-                    'member_count'    => $trip->member_count,
+                    'member_count'    => $trip->member_count ?? '',
                     'workflow_days' => '',
-                    'task_low' => $trip->low_count,
-                    'task_medium' => $trip->medium_count,
-                    'task_high' => $trip->high_count,
+                    'task_low' => $trip->low_count ?? '',
+                    'task_medium' => $trip->medium_count ?? '',
+                    'task_high' => $trip->high_count ?? '',
                 ];
 
                 array_push($data, $tripData);

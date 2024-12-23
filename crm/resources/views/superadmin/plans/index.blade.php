@@ -102,16 +102,19 @@
                                                     <td>${{ $value->sp_month_amount }}</td>
                                                     <td>${{ $value->sp_year_amount }}</td>
                                                     <!-- <td>{{ $value->sp_month }}</td> -->
-                                                    <td>{{ $value->sp_user }}</td>
+                                                    <td>{{ $value->sp_month }}</td>
 
                                                     <td class="text-right">
                                                         <a href="{{ route('plans.planrole', $value->sp_id) }}"><i
                                                                 class="fas ffa-solid fa-key view_icon_grid"></i></a>
                                                         <a href="{{ route('plans.edit', $value->sp_id) }}"><i
                                                                 class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                                        @if( $value->sp_month_amount != 0 && $value->sp_year_amount != 0 )
+                                                        
                                                         <a data-toggle="modal"
                                                             data-target="#deletesubscription-plans_{{ $value->sp_id }}"><i
                                                                 class="fas fa-solid fa-trash delete_icon_grid"></i></a>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 <div class="modal fade"

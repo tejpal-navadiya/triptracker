@@ -35,6 +35,7 @@
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
+            
             <!-- /.content-header -->
             <!-- Main content -->
             <section class="content px-10">
@@ -44,10 +45,21 @@
                         <div class="card-header">
                             <h3 class="card-title">Edit Agency</h3>
                         </div>
+                        @if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
                         <!-- /.card-header -->
                         <form id="bdetails" method="POST" action="{{ route('businessdetails.update', $user->id) }}"  enctype="multipart/form-data">
                             @csrf
-                            {{-- @method('PUT') --}}
+                           
 
                             <input type="hidden" value="travelers" name="travelers">
                             <div class="card-body2">
@@ -143,8 +155,8 @@
                                             <label for="tr_agent_id">Business Phone<span class="text-danger">*</span></label>
                                             <x-text-input type="number" class="form-control" id="user_personal_email"
                                                 placeholder="Enter Business Phone" name="users_business_phone" autofocus
-                                                autocomplete="user_business_phone" value="{{ $userdetails->users_business_phone }}" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('user_personal_email')" />
+                                                autocomplete="users_business_phone" value="{{ $userdetails->users_business_phone }}" />
+                                            <x-input-error class="mt-2" :messages="$errors->get('users_business_phone')" />
                                         </div>
                                     </div>
 
@@ -318,9 +330,9 @@
                                             <label for="trvd_document">Only jpg, jpeg, png, and pdf files are
                                                 allowed</label>
                                             @if ($userdetails->agency_logo ?? '')
-                                                @php //$userFolder = 'masteradmin/' .$user->buss_unique_id.'_'.$user->user_first_name;
-                                               // $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$userdetails->users_image));
-                                                $imageurl = route('agency.access', ['filename' => $userdetails->agency_logo]);
+                                                @php 
+                                                        $imageurl = route('agency.access', ['filename' => $userdetails->agency_logo, 'id' => $userdetails->id]);
+
                                                 @endphp
                                                 <a href="{{ $imageurl }}" target="_blank">
                                                     <div title="{{ $imageurl }}" class="ptm pbm">{{ $userdetails->agency_logo ?? '' }}</div>

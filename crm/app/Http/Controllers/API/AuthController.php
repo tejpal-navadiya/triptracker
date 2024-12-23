@@ -39,32 +39,64 @@ class AuthController extends Controller
             'user_consortia_name' => ['nullable', 'string', 'max:255'],
             'user_first_name' => ['required', 'string', 'max:255'],
             'user_last_name' => ['nullable', 'string', 'max:255'],
-            'user_iata_clia_number' => ['nullable', 'string', 'max:255'],
-            'user_clia_number' => ['required', 'string', 'max:255'],
+            'user_iata_clia_number' => ['required', 'string', 'max:255'],
+            'user_clia_number' => ['nullable', 'string', 'max:255'],
             'user_iata_number' => ['nullable', 'string', 'max:255'],
-            'user_image' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'string', 'max:255'],
             'user_address' => ['nullable', 'string', 'max:255'],
             'user_country' => ['nullable', 'string', 'max:255'],
             'user_state' => ['nullable', 'string', 'max:255'],
             'user_city' => ['nullable', 'string', 'max:255'],
             'user_zip' => ['nullable', 'string', 'max:255'],
-            'sp_id' => ['required', 'string', 'max:255'],
+            'user_email' => ['required', 'email', 'max:255', 'unique:'.MasterUser::class],
+            'user_personal_email' => ['nullable', 'string', 'lowercase', 'email' ,'max:255', 'unique:'.MasterUser::class],
+            'user_business_phone' => ['required', 'string', 'max:255'],
+            'user_personal_phone' => ['nullable', 'string', 'max:255'],
             'user_email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . MasterUser::class],
-            'user_password' => ['required', 'string', '', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
+            // 'user_password' => ['required', 'string', '', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
+             'user_password' => [
+                    function ($attribute, $value, $fail) {
+                        $errors = [];
+
+                        // Include all validation checks in the same message, even if empty
+                        if (empty($value)) {
+                            $errors[] = 'be provided';
+                        }
+                        if (strlen($value) < 8) {
+                            $errors[] = 'have at least 8 characters';
+                        }
+                        if (!preg_match('/[a-z]/', $value)) {
+                            $errors[] = 'contain at least one lowercase letter';
+                        }
+                        if (!preg_match('/[A-Z]/', $value)) {
+                            $errors[] = 'contain at least one uppercase letter';
+                        }
+                        if (!preg_match('/[0-9]/', $value)) {
+                            $errors[] = 'contain at least one number';
+                        }
+                        if (!preg_match('/[@$!%*?&]/', $value)) {
+                            $errors[] = 'contain at least one special character';
+                        }
+
+                        // Combine all errors into a single message
+                        if (!empty($errors)) {
+                            $fail('Password must ' . implode(', ', $errors) . '.');
+                        }
+                    },
+                ],
         ], [
             // Custom error messages
-            'user_agencies_name.required' => 'The agency name is required.',
-            'user_first_name.required' => 'First name is required.',
-            'user_email.required' => 'Email address is required.',
-            'user_email.email' => 'The email format is invalid.',
-            'user_email.unique' => 'The email has already been taken.',
-            'user_password.required' => 'A password is required.',
-            'user_password.min' => 'The password must be at least :min characters.',
-            'user_password.mixedCase' => 'The password must contain both uppercase and lowercase letters.',
-            'user_password.letters' => 'The password must contain at least one letter.',
-            'user_password.numbers' => 'The password must contain at least one number.',
-            'user_password.symbols' => 'The password must contain at least one symbol.',
-            'sp_id.required' => 'The Plan is required.',
+             'user_first_name.required' => 'The First Name field is required.',
+            'user_agencies_name.required' => 'The Agencies Name field is required.',
+            'user_iata_clia_number.required' => 'The IATA or CLIA Number field is required.',
+            'user_email.required' => 'The Business Email field is required.',
+            'user_email.email' => 'The Business Email must be a valid email address.',
+            'user_email.unique' => 'The Business Email has already been taken.',
+            // 'user_password.required' => 'The Password field is required.',
+            // 'password_confirmation.same' => 'The password confirmation does not match.',
+            'user_business_phone.required' => 'The Business Phone field is required.',
+            'user_image.regex' => 'Please enter a valid email address.',
+            'user_personal_email.regex' => 'Please enter a valid email address.',
         ]);
     
         if ($validator->fails()) {
@@ -91,6 +123,9 @@ class AuthController extends Controller
             'user_last_name' => $request->user_last_name,
             'user_iata_clia_number' => $request->user_iata_clia_number,
             'user_email' => $request->user_email,
+            'user_personal_email' => $request->user_personal_email,
+            'user_business_phone' => $request->user_business_phone,
+            'user_personal_phone' => $request->user_personal_phone,
             'user_clia_number' => $request->user_clia_number,
             'user_iata_number' => $request->user_iata_number,
             'user_address' => $request->user_address,
@@ -98,12 +133,12 @@ class AuthController extends Controller
             'user_state' => $request->user_state,
             'user_image' => '',
             'buss_unique_id' => '',
-            'sp_id' => $request->sp_id,
+            'sp_id' => '',
             'user_password' => Hash::make($request->user_password),
-            'sp_expiry_date' => $expiryDate,
+            'sp_expiry_date' => '',
             'user_city' => $request->user_city,
             'user_zip' => $request->user_zip,
-            'isActive' => 1
+            'isActive' => '0'
         ]);
         $buss_unique_id = $this->generateUniqueId(trim($request->user_franchise_name), $admin->id );
         $admin->buss_unique_id = strtolower($buss_unique_id);
@@ -111,6 +146,17 @@ class AuthController extends Controller
         //create own image floder 
         $userFolder = 'masteradmin/' .$buss_unique_id.'_'.$request->input('user_first_name');
         Storage::makeDirectory($userFolder, 0755, true);
+        
+        $users_image = '';
+        if ($request->hasFile('image')) {
+            // Handle the image upload and check the result
+            $users_image =  $this->handleImageUpload($request, 'image', null, 'profile_image', $userFolder);
+
+            // Debug output
+            //dd($users_image); // This will output the image path and stop execution for debugging purposes
+        }
+
+        $admin->user_image = $users_image;
 
         $admin->save();
 
@@ -125,13 +171,16 @@ class AuthController extends Controller
         $users_id = $this->GenerateUniqueRandomString($table= $tableName, $column="users_id", $chars=6);
 
         $userDetails->create([
-            'users_agencies_name' => $request->user_agencies_name,
+           'users_agencies_name' => $request->user_agencies_name,
             'users_franchise_name' => $request->user_franchise_name,
             'users_consortia_name' => $request->user_consortia_name,
             'users_first_name' => $request->user_first_name,
             'users_last_name' => $request->user_last_name,
             'users_iata_clia_number' => $request->user_iata_clia_number,
             'users_email' => $request->user_email,
+            'users_personal_email' => $request->user_personal_email,
+            'users_business_phone' => $request->user_business_phone,
+            'users_personal_phone' => $request->user_personal_phone,
             'users_clia_number' => $request->user_clia_number,
             'users_iata_number' => $request->user_iata_number,
             'users_address' => $request->user_address,
@@ -139,12 +188,12 @@ class AuthController extends Controller
             'users_country' => $request->user_country,
             'users_city' => $request->user_city,
             'users_zip' => $request->user_zip,
-            'users_image' => '',
+            'users_image' => $users_image,
             'id' => $admin->id,
             'role_id' => 0,
             'users_password' => Hash::make($request->user_password),
             'user_id' => strtolower($buss_unique_id),
-            'users_status' => '1',
+            'users_status' => 1,
             'users_id' => $users_id
         ]);
 
@@ -173,7 +222,7 @@ class AuthController extends Controller
     
         // Combine the prefix and the current ID
         // Use only the first 2 characters of the current ID
-        $uniqueId = $prefix . substr($current_id, 0, length: 4);
+        $uniqueId = $prefix . substr($current_id, 0, 4);
     
         return $uniqueId;
     }
@@ -216,6 +265,7 @@ class AuthController extends Controller
             ], 404);
         }
 
+
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($masterUser->buss_unique_id);
 
@@ -242,6 +292,10 @@ class AuthController extends Controller
             $userDetails->setTableForUniqueId($masterUser->buss_unique_id);
     
             $userDetailRecord = $userDetails->where(['user_id'=> $request->user_id, 'users_email' => $request->user_email])->first();
+            
+            $this->createTable($userDetailRecord->user_id);
+
+            // $userDetailRecord->Authorization = $token;
 
             // $userDetailRecord->Authorization = $token;
 
@@ -249,6 +303,8 @@ class AuthController extends Controller
                 //     'message' => 'Login successfully',
                 //     'data' => $userDetailRecord,
                 // ], 200);
+                
+                
             return $this->sendResponse($userDetailRecord, __('messages.api.user.login_success'));
 
             }
@@ -256,6 +312,7 @@ class AuthController extends Controller
         return response()->json(['error' => 'Unauthorized: Invalid credentials'], 401);
     }
     
+   
     public function GetUserProfile(Request $request)
     {
 

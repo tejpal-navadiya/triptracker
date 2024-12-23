@@ -30,7 +30,8 @@ Route::post('state_list',            [AuthController::class,'getState']);
 Route::post('city_list',            [AuthController::class,'getCity']);
 Route::get('subscription_plans_list',            [AuthController::class,'getPlan']);
 Route::post('forgot_password',            [AuthController::class,'forgotPassword']);
-
+Route::get('trip_status',     [TripController::class,'TripStatus']);
+Route::get('task_status',     [TripController::class,'TaskStatus']);
 
 Route::middleware(['handleAuthErrors'])->group( function () {
     //user profile
@@ -43,6 +44,10 @@ Route::middleware(['handleAuthErrors'])->group( function () {
     Route::post('task_list',     [TripController::class,'GetTaskList']);
     Route::post('reminder_task_list',     [TripController::class,'GetTaskReminderList']);
     Route::post('add_trip',     [TripController::class,'AddTrip']);
+    Route::post('filter_trip',     [TripController::class,'filterTrip']);
+    Route::post('filter_task',     [TripController::class,'filterTask']);
+    Route::get('agent_all_list',     [TripController::class,'allAgentList']);
+    
     
     Route::get('Logout',            [AuthController::class,'Logout']);
 });

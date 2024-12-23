@@ -725,22 +725,12 @@ public function store(Request $request)
     $user = Auth::guard('masteradmins')->user();
     $dynamicId = $user->id;
     $period = $user->plan_type ?? '';
-    $plan = Plan::where('sp_id', $user->plan_id)->firstOrFail();
-
-    // $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
-    if($period == 'monthly'){
-        $months = 1;
-        $stripePriceId = $plan->stripe_id ?? '';
-    }else if($period == 'yearly'){
-        $months = 12;
-        $stripePriceId = $plan->stripe_id_yr ?? '';
-    }else{
-        $months = '';
-        $stripePriceId = '';
-    }
-    $quantity = 1;
+   //  dd($period);
+    $plan = Plan::where('sp_id', $user->plan_id)->first();
     
-    $validatedData = $request->validate([
+    if($plan->sp_id == "cVoHw4" && $plan->sp_month_amount == 0 && $plan->sp_year_amount == 0){
+        
+            $validatedData = $request->validate([
         'users_first_name' => 'required|string|max:255',
         'users_last_name' => 'required|string|max:255',
         'users_email' => 'required|email|max:255',
@@ -755,8 +745,8 @@ public function store(Request $request)
         'users_country' => 'nullable|string|max:255',
         'users_state' => 'nullable|string|max:255',
         'users_city' => 'nullable|string|max:255',
-        'role_id' => 'required|string|max:255',
-        'users_password' => 'required|string|min:6',
+        'role_id' => 'nullable|string|max:255',
+        'users_password' => 'required|string|min:6', // Assuming min length for password
     ], [
         'users_first_name.required' => 'First name is required',
         'users_last_name.required' => 'Last name is required',
@@ -764,114 +754,244 @@ public function store(Request $request)
         'user_agency_numbers.required' => 'ID Number is required',
         'users_password.required' => 'Password is required',
         'users_password.min' => 'Password must be at least 6 characters long',
-        'role_id.required' => 'Role is required',
-        'user_work_email.regex' => 'Please enter a valid email address.',
-        'users_email.regex' => 'Please enter a valid email address.',
-        'user_emergency_email.regex' => 'Please enter a valid email address.',
     ]);
 
-    $errors = [];
-    $rawItems = $request->input('items', []);
 
-    // Validate unique emails
     $agency = new MasterUserDetails();
     $agency->setTableForUniqueId($user->user_id);
     $tableName = $agency->getTable();
+    
     $users_id = $this->GenerateUniqueRandomString($table= $tableName, $column="users_id", $chars=6);
 
+    //dd($agency);
+
+        $agency->users_id = $users_id;
+        $agency->id = $dynamicId;
+
+
     $existingAgency = $agency->where('users_email', $validatedData['users_email'])->first();
+
     if ($existingAgency) {
-        $errors['users_email'] = 'The email address is already in use.';
+        return redirect()->back()->withErrors(['users_email' => 'The email address is already in use.'])->withInput();
     }
 
-    $existingAgency = $agency->where('user_work_email', $validatedData['user_work_email'])->first();
-    if ($existingAgency) {
-        $errors['user_work_email'] = 'The work email address is already in use.';
+    $existingWorkemail = $agency->where('user_work_email', $validatedData['user_work_email'])->first();
+
+    if ($existingWorkemail) {
+        return redirect()->back()->withErrors(['user_work_email' => 'The email address is already in use.'])->withInput();
     }
 
-    // $existingAgency = $agency->where('user_emergency_email', $validatedData['user_emergency_email'])->first();
-    // if ($existingAgency) {
-    //     $errors['user_emergency_email'] = 'The Emergency email address is already in use.';
-    // }
 
-    if (!empty($errors)) {
-        return redirect()->back()->withErrors($errors)->withInput();
-    }
+        $agency->user_id = $user->user_id;   
 
-    // Stripe payment processing (customer creation and subscription)
-    Stripe::setApiKey(env('STRIPE_SECRET'));
-
-    try {
-
-        $stripeCustomer = \Stripe\Customer::create([
-            'email' => $request->users_email,
-            'name' => $request->users_first_name . ' ' . $request->users_last_name,
-        ]);
-
-              // Save customer details in the database
-              $customer = Customer::create([
-                'stripe_id' => $stripeCustomer->id,
-                'email' => $validatedData['users_email'],
-                'name' => $validatedData['users_first_name'] . ' ' . $validatedData['users_last_name'],
-            ]);
+      $agency->user_agency_numbers = $validatedData['user_agency_numbers'];
+      $agency->user_work_email = $validatedData['user_work_email'];
+      $agency->user_dob = $validatedData['user_dob'];
+      $agency->user_emergency_contact_person = $validatedData['user_emergency_contact_person'];
+      $agency->user_emergency_phone_number = $validatedData['user_emergency_phone_number'];
+      $agency->user_emergency_email = $validatedData['user_emergency_email'];
+      $agency->users_country = $validatedData['users_country'];
+      $agency->users_state = $validatedData['users_state'];
+      $agency->users_city = $validatedData['users_city'];
+      $agency->role_id = $validatedData['role_id'];
+      $agency->users_first_name = $validatedData['users_first_name'];
+      $agency->users_last_name = $validatedData['users_last_name'];
+      $agency->users_email  = $validatedData['users_email'];
+      $agency->users_address = $validatedData['users_address'];
+      $agency->users_zip = $validatedData['users_zip'];
+      $agency->users_bio = '';  
+      $agency->users_status = 1;  
+      $agency->users_password = Hash::make($validatedData['users_password']);
     
-            // Create Stripe subscription
-            $Stripesubscription = \Stripe\Subscription::create([
-                'customer' => $stripeCustomer->id,
-                'items' => [['price' => $stripePriceId]],
-                'trial_period_days' => ($period == 'monthly') ? 14 : null,
+      $agency->save();
+
+      
+    $rawItems = $request->input('items', []);   
+
+      foreach ($rawItems as $item) {
+        if (empty($item) || !is_array($item)) {
+          continue;
+      }
+          $travelerItem = new AgencyPhones();
+          $tableName = $travelerItem->getTable();
+          $ageid = $this->GenerateUniqueRandomString($table = $tableName, $column = "age_user_phone_id", $chars = 6);
+      
+            // Assign the generated unique ID
+            $travelerItem->age_id = $agency->users_id;
+            $travelerItem->id = $dynamicId;
+            $travelerItem->age_user_phone_id = $ageid;
+
+          $travelerItem->fill($item);
+
+          $travelerItem->save();
+      }
+
+      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->user_id]);
+        try {
+            Mail::to($request->users_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->users_email));
+            session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
+        } catch (\Exception $e) {
+            session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
+        }
+
+      return redirect()->route('agency.index')->with('success', 'Agecy User entry created successfully.');
+
+      \MasterLogActivity::addToLog('Master Admin Users Certification Created.');
+        
+    }else{
+        
+         if($period == 'monthly'){
+            $months = 1;
+            $stripePriceId = $plan->stripe_id ?? '';
+            }else if($period == 'yearly'){
+                $months = 12;
+                $stripePriceId = $plan->stripe_id_yr ?? '';
+            }else{
+                $months = '';
+                $stripePriceId = '';
+            }
+            
+              //dd($plan);
+            // $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
+           
+           
+            $quantity = 1;
+            
+            $validatedData = $request->validate([
+                'users_first_name' => 'required|string|max:255',
+                'users_last_name' => 'required|string|max:255',
+                'users_email' => 'required|email|max:255',
+                'users_address' => 'nullable|string|max:255',
+                'users_zip' => 'nullable|numeric|digits_between:1,6',
+                'user_agency_numbers' => 'required|string|max:255',
+                'user_work_email' => 'required|email|max:255',
+                'user_dob' => 'nullable|date',
+                'user_emergency_contact_person' => 'nullable|string|max:255',
+                'user_emergency_phone_number' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                'user_emergency_email' => 'nullable|email|max:255',
+                'users_country' => 'nullable|string|max:255',
+                'users_state' => 'nullable|string|max:255',
+                'users_city' => 'nullable|string|max:255',
+                'role_id' => 'required|string|max:255',
+                'users_password' => 'required|string|min:6',
+            ], [
+                'users_first_name.required' => 'First name is required',
+                'users_last_name.required' => 'Last name is required',
+                'users_email.required' => 'Email is required',
+                'user_agency_numbers.required' => 'ID Number is required',
+                'users_password.required' => 'Password is required',
+                'users_password.min' => 'Password must be at least 6 characters long',
+                'role_id.required' => 'Role is required',
+                'user_work_email.regex' => 'Please enter a valid email address.',
+                'users_email.regex' => 'Please enter a valid email address.',
+                'user_emergency_email.regex' => 'Please enter a valid email address.',
             ]);
-    
-            // // Save subscription details in the database
-            // $subscription = Subscription::create([
-            //     'user_id' => $stripeCustomer->id,
-            //     'master_user_details_id' => $dynamicId,
-            //     'type' => $period,
-            //     'stripe_id' => $Stripesubscription->id,
-            //     'stripe_status' => $Stripesubscription->status,
-            //     'stripe_price' => $Stripesubscription->items->data[0]->price->id,
-            //     'quantity' => $Stripesubscription->items->data[0]->quantity,
-            //     'trial_ends_at' => $Stripesubscription->trial_end ? Carbon::createFromTimestamp($Stripesubscription->trial_end) : null,
-            //     'ends_at' => $Stripesubscription->ended_at ? Carbon::createFromTimestamp($Stripesubscription->ended_at) : null,
-            //     'created_at' => now(),
-            //     'updated_at' => now(),
-            // ]);
-            $latestInvoiceId = $Stripesubscription->latest_invoice;
+        
+            $errors = [];
+            $rawItems = $request->input('items', []);
+        
+            // Validate unique emails
+            $agency = new MasterUserDetails();
+            $agency->setTableForUniqueId($user->user_id);
+            $tableName = $agency->getTable();
+            $users_id = $this->GenerateUniqueRandomString($table= $tableName, $column="users_id", $chars=6);
+        
+            $existingAgency = $agency->where('users_email', $validatedData['users_email'])->first();
+            if ($existingAgency) {
+                $errors['users_email'] = 'The email address is already in use.';
+            }
+        
+            $existingAgency = $agency->where('user_work_email', $validatedData['user_work_email'])->first();
+            if ($existingAgency) {
+                $errors['user_work_email'] = 'The work email address is already in use.';
+            } 
+            
+            // $existingAgency = $agency->where('user_emergency_email', $validatedData['user_emergency_email'])->first();
+            // if ($existingAgency) {
+            //     $errors['user_emergency_email'] = 'The Emergency email address is already in use.';
+            // }
+        
+            if (!empty($errors)) {
+                return redirect()->route('agency.create')->withErrors($errors)->withInput();
+            }
 
-            $baseSuccessUrl = route('agencysuccess', [
-                'user_id' => $user->user_id,
-                'email' => $validatedData['users_email'],
-                'stripe_id' => $Stripesubscription->id,
-                'plan_id' => $user->plan_id,
-                'period' => $period,
-                'latestInvoiceId' => $latestInvoiceId,
-                'users_id' => $users_id,
-                'validated' => $validatedData,
-                'items' => $rawItems,
-            ]);
-
-            $successUrl = $baseSuccessUrl . '&session_id={CHECKOUT_SESSION_ID}';
-
-       
-        // Create Stripe Checkout session
-        $session = \Stripe\Checkout\Session::create([
-            'payment_method_types' => ['card'],
-            'mode' => 'subscription',
-            'line_items' => [[
-                'price' => $stripePriceId,
-                'quantity' => $quantity,
-            ]],
-            'customer_email' => $validatedData['users_email'],
-            'success_url' => $successUrl,
-            'cancel_url' => route('agencycancel'),
-        ]);
-
-        // Redirect to Stripe's hosted Checkout page
-        return redirect($session->url);
-
-    } catch (\Exception $e) {
-        return back()->withErrors(['error' => 'Failed to process payment: ' . $e->getMessage()]);
+           // Stripe payment processing (customer creation and subscription)
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+        
+            try {
+        
+                $stripeCustomer = \Stripe\Customer::create([
+                    'email' => $request->users_email,
+                    'name' => $request->users_first_name . ' ' . $request->users_last_name,
+                ]);
+        
+                      // Save customer details in the database
+                      $customer = Customer::create([
+                        'stripe_id' => $stripeCustomer->id,
+                        'email' => $validatedData['users_email'],
+                        'name' => $validatedData['users_first_name'] . ' ' . $validatedData['users_last_name'],
+                    ]);
+            
+                    // Create Stripe subscription
+                    $Stripesubscription = \Stripe\Subscription::create([
+                        'customer' => $stripeCustomer->id,
+                        'items' => [['price' => $stripePriceId]],
+                        'trial_period_days' => ($period == 'monthly') ? 14 : null,
+                    ]);
+            
+                    // // Save subscription details in the database
+                    // $subscription = Subscription::create([
+                    //     'user_id' => $stripeCustomer->id,
+                    //     'master_user_details_id' => $dynamicId,
+                    //     'type' => $period,
+                    //     'stripe_id' => $Stripesubscription->id,
+                    //     'stripe_status' => $Stripesubscription->status,
+                    //     'stripe_price' => $Stripesubscription->items->data[0]->price->id,
+                    //     'quantity' => $Stripesubscription->items->data[0]->quantity,
+                    //     'trial_ends_at' => $Stripesubscription->trial_end ? Carbon::createFromTimestamp($Stripesubscription->trial_end) : null,
+                    //     'ends_at' => $Stripesubscription->ended_at ? Carbon::createFromTimestamp($Stripesubscription->ended_at) : null,
+                    //     'created_at' => now(),
+                    //     'updated_at' => now(),
+                    // ]);
+                    $latestInvoiceId = $Stripesubscription->latest_invoice;
+        
+                    $baseSuccessUrl = route('agencysuccess', [
+                        'user_id' => $user->user_id,
+                        'email' => $validatedData['users_email'],
+                        'stripe_id' => $Stripesubscription->id,
+                        'plan_id' => $user->plan_id,
+                        'period' => $period,
+                        'latestInvoiceId' => $latestInvoiceId,
+                        'users_id' => $users_id,
+                        'validated' => $validatedData,
+                        'items' => $rawItems,
+                    ]);
+        
+                    $successUrl = $baseSuccessUrl . '&session_id={CHECKOUT_SESSION_ID}';
+        
+               
+                // Create Stripe Checkout session
+                $session = \Stripe\Checkout\Session::create([
+                    'payment_method_types' => ['card'],
+                    'mode' => 'subscription',
+                    'line_items' => [[
+                        'price' => $stripePriceId,
+                        'quantity' => $quantity,
+                    ]],
+                    'customer_email' => $validatedData['users_email'],
+                    'success_url' => $successUrl,
+                    'cancel_url' => route('agencycancel'),
+                ]);
+        
+                // Redirect to Stripe's hosted Checkout page
+                return redirect($session->url);
+        
+            } catch (\Exception $e) {
+                return back()->withErrors(['error' => 'Failed to process payment: ' . $e->getMessage()]);
+            }
+            
     }
+ 
 }
 
 

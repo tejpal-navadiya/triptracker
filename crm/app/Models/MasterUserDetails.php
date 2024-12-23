@@ -58,6 +58,8 @@ class MasterUserDetails extends Authenticatable
         'start_date',
         'end_date',
         'agency_logo',
+        'plan_type',
+        'users_status'
     ];
 
     

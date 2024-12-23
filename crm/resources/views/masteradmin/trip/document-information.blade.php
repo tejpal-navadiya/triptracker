@@ -13,7 +13,7 @@
                 <table id="documentDataTable" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
-                            <th>Traveler Name</th>
+                            <th>Household Name</th>
                             <th>Type</th>
                             <th>Document</th>
                             <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
@@ -164,11 +164,11 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="trvm_id">Traveler <span class="text-danger">*</span></label>
+                                <label for="trvm_id">Household <span class="text-danger">*</span></label>
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="trvm_id"
                                         name="trvm_id">
-                                        <option value="" disabled selected>Select Traveler</option>
+                                        <option value="" disabled selected>Select Household</option>
 
                                         <!-- Loop through traveling members -->
                                         @foreach ($tripTravelingMembers as $member)

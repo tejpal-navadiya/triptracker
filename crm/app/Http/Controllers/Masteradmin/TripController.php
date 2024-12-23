@@ -71,7 +71,7 @@ class TripController extends Controller
             ])->get();
             // $trips_traveller =Trip::get();
         }else{
-            $trips_traveller =Trip::where('id', $user->users_id)->get();  
+            // $trips_traveller =Trip::where('id', $user->users_id)->get();  
             
             $trips_traveller = Trip::where('tr_status', 1)
             ->from($tripTable)
@@ -178,13 +178,49 @@ class TripController extends Controller
         } else {
             $agency_user = $agency_users->where('users_id', $user->users_id)->get();
         }
+        
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id); 
+        $masterUserTable = $masterUserDetails->getTable();
     
         $tripstatus = TripStatus::all();
         $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
+         $trips = new Trip();
+      
+        $tripTable = $trips->getTable();
+            $specificId = $user->users_id;
+            
+          if($user->users_id && $user->role_id ==0 ){
+            $trips_traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+            // $trips_traveller =Trip::get();
+        }else{
+            // $trips_traveller =Trip::where('id', $user->users_id)->get();  
+            
+            $trips_traveller = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $tripTable . '.*', 
+                $tripTable . '.tr_traveler_name' 
+            ])->get();
+        }
+    //  dd($trips_traveller);
        
     //    dd($aency_user);
+    
+     $country = Countries::all();
 
-        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus','travelingrelationship','user'));
+        return view('masteradmin.trip.create', compact('triptype','agency_user','tripstatus','travelingrelationship','user','trips_traveller','country'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -2249,13 +2285,15 @@ public function bookgridView(Request $request)
     
     // 60 Days Trip Review Query
     $sixtyDaysFromNow = $currentDate->copy()->addDays(60)->format('m/d/Y');
+    $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
+    $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
     if($user->users_id && $user->role_id ==0 ){
 
         $sixtyDaysTripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
-            ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow)
+            ->where($tripTable . '.tr_start_date', '>', $thirtyDaysFromNow) 
+            ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow) 
             ->select([
                 $tripTable . '.*',
                 $masterUserTable . '.users_first_name',
@@ -2271,8 +2309,8 @@ public function bookgridView(Request $request)
             $query->where($tripTable . '.tr_agent_id', $user->users_id)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
         })
-        ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
-        ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow)
+        ->where($tripTable . '.tr_start_date', '>', $thirtyDaysFromNow) 
+        ->where($tripTable . '.tr_start_date', '<=', $sixtyDaysFromNow) 
         ->select([
             $tripTable . '.*',
             $masterUserTable . '.users_first_name',
@@ -2306,14 +2344,14 @@ public function bookgridView(Request $request)
 
 
      // 30 Days Trip Review Query
-     $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
+
     //  \DB::enableQueryLog();
     if($user->users_id && $user->role_id ==0 ){
      $thirtyDaysTripQuery = Trip::where('tr_status', 1)
          ->from($tripTable)
          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-         ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
-         ->where($tripTable . '.tr_start_date', '<=', $thirtyDaysFromNow)
+          ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') > STR_TO_DATE(?, '%m/%d/%Y')", [$twoDaysFromNow]) 
+          ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$thirtyDaysFromNow]) 
          ->select([
              $tripTable . '.*',
              $masterUserTable . '.users_first_name',
@@ -2328,8 +2366,8 @@ public function bookgridView(Request $request)
             $query->where($tripTable . '.tr_agent_id', $user->users_id)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
-         ->where($tripTable . '.tr_start_date', '<=', $currentDateFormatted)
-         ->where($tripTable . '.tr_start_date', '<=', $thirtyDaysFromNow)
+          ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') > STR_TO_DATE(?, '%m/%d/%Y')", [$twoDaysFromNow]) 
+          ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$thirtyDaysFromNow]) 
          ->select([
              $tripTable . '.*',
              $masterUserTable . '.users_first_name',
@@ -2361,8 +2399,9 @@ public function bookgridView(Request $request)
  
 
     // 2 Days Trip Bon Voyage Query
-    $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
+  
     if($user->users_id && $user->role_id ==0 ){
+        
     $twoDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
@@ -2567,6 +2606,161 @@ public function bookgridView(Request $request)
 }
 
 
+public function getTravelerNames(Request $request)
+{
+    $user = Auth::guard('masteradmins')->user(); // Authenticated user
+    $specificId = $user->users_id;
+
+    $agency_users = new MasterUserDetails();
+    $agency_users->setTableForUniqueId($user->user_id);
+    $masterUserTable = $agency_users->getTable();
+
+    $trips = new Trip();
+    $tripTable = $trips->getTable();
+
+    $search = $request->get('query', ''); // Get the input query
+
+    $query = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->select($tripTable . '.tr_traveler_name');
+
+    if ($user->role_id != 0) {
+        $query->where(function ($q) use ($tripTable, $user, $specificId) {
+            $q->where($tripTable . '.tr_agent_id', $user->users_id)
+              ->orWhere($tripTable . '.id', $specificId);
+        });
+    }
+
+    // Apply search filter if query is not empty
+    if (!empty($search)) {
+        $query->where($tripTable . '.tr_traveler_name', 'like', '%' . $search . '%');
+    }
+
+    $travelerNames = $query->pluck('tr_traveler_name'); // Get only traveler names
+
+    return response()->json($travelerNames); // Return as JSON
+}
+
+    public function travelerStore(Request $request)
+    {
+            // dd($request->all());
+            $user = Auth::guard('masteradmins')->user();
+            $dynamicId = $user->users_id;
+            
+                $validatedData = $request->validate([
+                    'tr_name' => 'nullable|string',
+                    'trs_agent_id' => 'required|string',
+                    'trs_traveler_name' => 'required|string',
+                    'tr_dob' => 'nullable|string',
+                    'tr_age' => 'nullable|string',
+                    'trs_email' => 'required|email',
+                    'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                    'tr_country' => 'nullable|string',
+                    'tr_state' => 'nullable|string',
+                    'tr_city' => 'nullable|string',
+                    'tr_address' => 'nullable|string',
+                    'tr_zip' => 'nullable|numeric|digits_between:1,6',
+                ], [
+        
+                    'trs_traveler_name.required' => 'Traveler name is required',
+                    'trs_agent_id.required' => 'Agent ID is required',
+                    'trs_email.required' => 'Email is required',
+                    'trs_email.regex' => 'Please enter a valid email address.',
+
+                ]);
+           
+            // dd($validatedData);
+    
+            // Store data
+            $traveler = new Trip();
+            $tableName = $traveler->getTable();
+            $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "tr_id", $chars = 6);
+            $traveler->tr_id = $uniqueId;
+    
+            if ($request->travelers == "travelers") {
+            // Check for duplicates based on traveler name, phone, and email
+                $duplicateTrip = Trip::where('tr_traveler_name', $validatedData['trs_traveler_name'])
+                    ->where('tr_phone', $validatedData['tr_phone'])
+                    ->where('tr_email', $validatedData['trs_email'])
+                    ->first();
+    
+                if ($duplicateTrip) {
+                    // Handle the duplicate scenario
+                    return back()->withErrors([
+                        'tr_traveler_name' => 'Traveler name is already exists.',
+                    ]);
+                }
+            }
+    
+            $existingtrip = $traveler->where('tr_email', $validatedData['trs_email'])->first();
+    
+    
+            if (!empty($validatedData['tr_traveler_name'])) {
+                $traveler->tr_num_people = ($validatedData['tr_num_people'] ?? 0) + 1;
+            }
+    
+    
+            $traveler->id = $user->users_id;
+            $traveler->tr_name = $validatedData['tr_name'] ?? null;
+            $traveler->tr_agent_id = $validatedData['trs_agent_id'];
+            $traveler->tr_traveler_name = $validatedData['trs_traveler_name'];
+            $traveler->tr_dob = $validatedData['tr_dob'] ?? null; // Use null if not set
+            $traveler->tr_age = $validatedData['tr_age'] ?? null; // Use null if not set
+            $traveler->tr_number = $validatedData['tr_number'] ?? null; // Use null if not set
+            $traveler->tr_email = $validatedData['trs_email'] ?? null; // Use null if not set
+            $traveler->tr_phone = $validatedData['tr_phone'] ?? null; // Use null if not set
+            // $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
+            $traveler->tr_start_date = $validatedData['tr_start_date'] ?? null;
+            $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
+            $traveler->tr_final_payment_date = $validatedData['tr_final_payment_date'] ?? null; 
+            $traveler->tr_value_trip = $validatedData['tr_value_trip'] ?? null; // Use null if not set
+            $traveler->tr_final_amount = $validatedData['tr_final_amount'] ?? null; 
+            $traveler->tr_type_trip = json_encode($request->input('tr_type_trip')) ?? [];
+            $traveler->tr_desc = $validatedData['tr_desc'] ?? null; // Use null if not set
+    
+            $traveler->tr_country = $validatedData['tr_country'] ?? null;
+            $traveler->tr_state = $validatedData['tr_state'] ?? null;
+            $traveler->tr_city = $validatedData['tr_city'] ?? null;
+            $traveler->tr_address = $validatedData['tr_address'] ?? null;
+            $traveler->tr_zip = $validatedData['tr_zip'] ?? null;
+    
+            $traveler->status = '1';
+            $traveler->tr_status = 1;
+            $traveler->save();
+    
+    //  dd($traveler);
+          if (isset($validatedData['status'])) {
+    
+            $predefinedTasks = PredefineTask::select('pre_task_name')
+                ->where('pre_task_type', $validatedData['status'])
+                ->get();
+        
+                foreach ($predefinedTasks as $task) {
+                    $tripTask = new TripTask();
+                    $tableName = $tripTask->getTable();
+                    $uniqueId1 = $this->GenerateUniqueRandomString($table = $tableName, $column = "trvt_id", $chars = 6);
+              
+                      TripTask::create([
+                          'id'=>$user->users_id,
+                          'trvt_id' =>$uniqueId1,
+                          'trvt_agent_id' =>$traveler->tr_agent_id,
+                          'tr_id' => $traveler->tr_id, 
+                          'trvt_name' => $task->pre_task_name, 
+                          'trvt_status' => 1
+                      ]);
+                  }
+             }
+         
+          
+            \MasterLogActivity::addToLog('Master Admin Travelers Created.');
+
+           return response()->json([
+                'success' => true,
+                'traveler_name' => $traveler->tr_traveler_name, // Returning the name of the traveler
+            ]);
+           
+        }
 
 
    

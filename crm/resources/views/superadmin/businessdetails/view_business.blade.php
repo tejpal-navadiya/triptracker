@@ -41,7 +41,24 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
+                @if(Session::has('link-success'))
+                <p class="text-success" > {{ Session::get('link-success') }}</p>
+                @endif
+                @if(Session::has('link-error'))
+                <p class="text-danger" > {{ Session::get('link-error') }}</p>
+                @endif
 
+                    @if (Session::has('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ Session::get('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        @php
+                            Session::forget('success');
+                        @endphp
+                    @endif
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title">Agency Information</h3>
@@ -127,6 +144,12 @@
                             <div class="row justify-content-between align-items-center">
                                 <div class="col-auto">
                                     <h3 class="card-title">Agency User</h3>
+                                </div>
+                                <div class="col-auto">
+                                    <ol class="float-sm-right">
+                                        <a href="{{ route('businessdetails.agencycreate', $user_id ) }}" id="createNew"><button class="add_btn"><i
+                                        class="fas fa-plus add_plus_icon"></i>Agency User</button></a>
+                                    </ol>
                                 </div>
                             </div>
                         </div>

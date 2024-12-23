@@ -25,7 +25,7 @@
                     <a href="{{ route('businessdetails.index') }}"
                         class="nav-link {{ request()->is($adminRoute . '/businessdetails*') || request()->is($adminRoute . '/editbusinessdetails*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-regular fa-building"></i>
-                        <p>Agencies List</p>
+                        <p>Agency List</p>
                     </a>
                 </li>
                 <li class="nav-item ">

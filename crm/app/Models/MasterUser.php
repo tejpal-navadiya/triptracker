@@ -45,6 +45,10 @@ class MasterUser extends Authenticatable
         'isActive',
         'sp_expiry_date',
         'user_status',
+        'plan_type',
+        'start_date',
+        'stripe_id',
+        'subscription_status',
     ];
 
     protected $hidden = [

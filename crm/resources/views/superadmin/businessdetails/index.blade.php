@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Trip Tracker | View All Business</title>
+    <title>Trip Tracker | Add Agency</title>
     @include('layouts.headerlink')
 </head>
 
@@ -22,14 +22,20 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Agencies List</h1>
+                            <h1 class="m-0">Agency List</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Agencies</li>
-                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Agencies List</a>
+                                <li class="breadcrumb-item active">Agency</li>
+                                <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Agency List</a>
                                 </li>
                             </ol>
                         </div><!-- /.col -->
+                        <div class="col-auto">
+                            <ol class="float-sm-right">
+                                    <a href="{{ route('businessdetails.agencyadd') }}" id="createNew"><button class="add_btn"><i
+                                                class="fas fa-plus add_plus_icon"></i>Add Agency</button></a>
+                            </ol>
+                        </div>
 
                     </div><!-- /.row -->
 
@@ -61,12 +67,21 @@
                             Session::forget('businessdetails-delete');
                         @endphp
                     @endif
+                    
+                        @if(Session::has('link-success'))
+                <p class="text-success" > {{ Session::get('link-success') }}</p>
+                @endif
+                @if(Session::has('link-error'))
+                <p class="text-danger" > {{ Session::get('link-error') }}</p>
+                @endif
+
+                   
 
                     <!-- Main row -->
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap">
+                                <table id="agencyList" class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
                                             <th>Agency Name</th>
@@ -75,7 +90,8 @@
                                             <th>Subscription Plan</th>
                                             <!-- <th>Membership Plan</th> -->
                                             <!-- <th>IATA or CLIA Number</th> -->
-                                            <th>IATA or CLIA Number</th>
+                                            <!--<th>IATA or CLIA Number</th>-->
+                                            <th>User id</th>
                                             <th>Total Users</th>
                                             <th>Created Date</th>
                                             <th>Action</th>
@@ -93,7 +109,8 @@
                                                     <td>{{ $value->users_email }}</td>
                                                     <td>{{ $value->plan ? $value->plan->sp_name : 'No Plan' }}</td>
                                                     <!-- <td>{{ $value->user_iata_clia_number ?? '' }}</td> -->
-                                                    <td>{{ $value->users_iata_number ?? '' }}</td>
+                                                    <!--<td>{{ $value->users_iata_number ?? '' }}</td>-->
+                                                    <td>{{ $value->buss_unique_id ?? '' }}
                                                     <td>{{ $value->totalUserCount ?? 0 }}</td>
 
                                                     {{-- <td>
@@ -132,6 +149,10 @@
                                                                         class="dropdown-item">
                                                                         <i class="fas fa-regular fa-edit mr-2"></i> Edit
                                                                     </a>
+                                                                    
+                                                                    <a href="#" class="dropdown-item" data-toggle="modal" data-target="#deletebusiness-{{ $value->id }}">
+                                                                    <i class="fas fa-solid fa-trash mr-2"></i> Delete
+                                                                    </a>
 
 
                                                                 </div>
@@ -140,6 +161,36 @@
 
                                                             </li>
                                                         </ul>
+                                                        <div class="modal fade"
+                                                            id="deletebusiness-{{ $value->id }}" tabindex="-1"
+                                                            role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm modal-dialog-centered"
+                                                                role="document">
+                                                                <div class="modal-content">
+
+                                                                    <form id="delete-plan-form"
+                                                                        action="{{ route('businessdetails.destroy', ['id' => $value->id , "user_id" => $value->buss_unique_id]) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE') <!-- Spoofing DELETE method -->
+
+                                                                        <div class="modal-body  pad-1 text-center">
+                                                                            <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                                            <p class="company_business_name px-10"> <b>Delete
+                                                                            Agency</b></p>
+                                                                            <p class="company_details_text">Are You Sure You
+                                                                                Want to Delete This Agency?</p>
+                                                                            <button type="button" class="add_btn px-15"
+                                                                                data-dismiss="modal">Cancel</button>
+                                                                            <button type="submit"
+                                                                                class="delete_btn px-15">Delete</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -167,6 +218,14 @@
     <!-- ./wrapper -->
 
     @include('layouts.footerlink')
+
+<script>
+$(document).ready(function() {
+    $('#agencyList').DataTable({
+        order: [[6, 'desc']],  // Sort by 'Created Date' column (7th column, index 6)
+    });
+});
+</script>
 
 </body>
 

@@ -702,7 +702,7 @@ class CheckoutController extends Controller
       
     } catch (\Exception $e) {
         \Log::error('Error processing payment success:', ['error' => $e->getMessage()]);
-        return back()->withErrors(['error' => 'Something went wrong. Please try again later.']);
+        return redirect()->route('agency.index')->withErrors(['error' => 'Something went wrong. Please try again later.']);
     }
 }
 

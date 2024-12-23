@@ -12,13 +12,29 @@
         <input type="hidden" name="plan_id" id="plan_id" value="{{ request()->query('plan_id') ?? '' }}">      
         <input type="hidden" name="period" id="period" value="{{ request()->query('period') ?? '' }}">       
 
-        <div class="row">
+            <div class="row">
+                
+                <!--<div class="form-group">-->
+                <!--<label for="user_agencies_name">Agency Name</label>-->
+                <!--<input -->
+                <!--    type="text" -->
+                <!--    name="user_agencies_name" -->
+                <!--    id="user_agencies_name" -->
+                <!--    class="form-control @error('user_agencies_name') is-invalid @enderror"-->
+                <!--    value="{{ old('user_agencies_name') }}" -->
+                <!--    placeholder="Enter Agency Name"-->
+                <!-->
+                <!--@error('user_agencies_name')-->
+                <!--    <div class="invalid-feedback">{{ $message }}</div>-->
+                <!--@enderror-->
+                <!--</div>-->
+                
             <div class="col-md-6 col-xl-4">
                 <label for="user_agencies_name" class="form-label">Agency Name</label>
                 <span class="text-danger">*</span>
-                <div class="input-group mb-2">
+                <div class="input-group mb-2 ">
                     <div class="input-group-append">
-                        <div class="input-group-text">
+                        <div class="input-group-text ">
                             <span class="fas fa-regular fa-user"></span>
                         </div>
                     </div>

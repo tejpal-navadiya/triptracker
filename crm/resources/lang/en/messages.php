@@ -132,9 +132,14 @@ return [
         ],
         'trip' => [
             'list_success' => 'Trip data get successfully.',
+            'status_list_success' => 'Trip Status data get successfully.',
         ],
         'task' => [
             'list_success' => 'Task data get successfully.',
+            'status_list_success' => 'Task Status data get successfully.',
+        ],
+        'agent' => [
+            'list_success' => 'Agency data get successfully.',
         ]
     ]
     

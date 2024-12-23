@@ -401,8 +401,12 @@
 
             e.preventDefault();
             //   alert('hii');
+             setTimeout(function() {
             fetchFilteredData();
-            fetchFilteredData1();
+            }, 1000);
+            setTimeout(function() {
+                fetchFilteredData1();
+            }, 500);
         });
 
 
@@ -442,15 +446,22 @@
 
             todatepicker.clear();
 
+            setTimeout(function() {
             fetchFilteredData();
-            fetchFilteredData1();
+            }, 1000);
+            setTimeout(function() {
+                fetchFilteredData1();
+            }, 500);
         }
 
        
 
 
 // Set default active view to Grid View
-loadGridView();
+setTimeout(function () {
+        loadGridView(); // Call the Grid View load function after the delay
+    }, 1000);
+
 
 // Function to load Grid View
 function loadGridView() {
@@ -526,7 +537,9 @@ $('#gridViewBtn').click(function (e) {
     $('#listViewBtn').removeClass('btn-primary active').addClass('btn-outline-secondary');
 
     // Call the Grid View loader
-    loadGridView();
+    setTimeout(function () {
+            loadGridView(); // Call the Grid View load function after the delay
+        }, 1000);
 });
 
 
