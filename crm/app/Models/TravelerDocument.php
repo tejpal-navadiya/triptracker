@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class TravelerDocument extends Model
 {
     use HasFactory;
-    protected $fillable = ['trvd_id','id','trv_id','tr_id', 'trvm_id','trvd_name','trvd_document','trvd_status'];
+    protected $fillable = ['trvd_id','id','trv_id','tr_id', 'trvm_id','trvd_name','trvd_document','trvd_status','lead_id'];
 
     public function __construct(array $attributes = [])
     {

@@ -894,7 +894,6 @@ class TripController extends Controller
     {
         $user = Auth::guard('masteradmins')->user();
         
-        // $trip = Trip::where(['tr_status' => 1, 'id' => $user->users_id])->get();
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
         $masterUserTable = $masterUserDetails->getTable();
@@ -905,55 +904,55 @@ class TripController extends Controller
             $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
         }
 
-        $trips = new Trip();
-        
+        $trips = new TripTravelingMember();
         $tripTable = $trips->getTable();
         $specificId = $user->users_id;
 
-        if($user->users_id && $user->role_id ==0 ){
-
-            $tripQuery = Trip::where('tr_status', 1)
-            ->from($tripTable)
-            ->leftjoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
-            ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
-            ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state') 
-            ->select([
-                $tripTable . '.*',
-                $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name',
-                'ta_countries.name as country_name', 
-                'ta_cities.name as city_name', 
-                'ta_states.name as state_name' 
-            ]);
-        
-            
-        }else{
-            $tripQuery = Trip::where('tr_status', 1)
-            ->from($tripTable)
-            ->leftjoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-            ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
-            ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
-            ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state') 
-            ->where(function($query) use ($tripTable, $user, $specificId) {
-                $query->where($tripTable . '.tr_agent_id', $user->users_id)
-                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
-            })
-            ->select([
-                $tripTable . '.*', 
-                $masterUserTable . '.users_first_name', 
-                $masterUserTable . '.users_last_name',
-                'ta_countries.name as country_name', 
-                'ta_cities.name as city_name', 
-                'ta_states.name as state_name'  
-            ]);
+        if ($user->users_id && $user->role_id == 0) {
+            $tripQuery = TripTravelingMember::where('trtm_status', 1)
+                ->where('lead_status', 1) 
+                ->from($tripTable)
+                ->leftjoin($masterUserTable, $tripTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.trtm_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.trtm_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.trtm_state') 
+                ->select([
+                    $tripTable . '.*',
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name',
+                    'ta_countries.name as country_name', 
+                    'ta_cities.name as city_name', 
+                    'ta_states.name as state_name' 
+                ]);
+        } else {
+            // Non-admin query to fetch trips where the user is either the agent or the traveler
+            $tripQuery = TripTravelingMember::where('tr_status', 1)
+                ->where('lead_status', 1)  // Condition for lead_status = 1
+                ->from($tripTable)
+                ->leftjoin($masterUserTable, $tripTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
+                ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.trtm_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.trtm_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.trtm_state') 
+                ->where(function($query) use ($tripTable, $user, $specificId) {
+                    $query->where($tripTable . '.trtm_agent_id', $user->users_id)
+                        ->orWhere($tripTable . '.id', $specificId);  // User is the agent or traveler
+                })
+                ->select([
+                    $tripTable . '.*', 
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name',
+                    'ta_countries.name as country_name', 
+                    'ta_cities.name as city_name', 
+                    'ta_states.name as state_name'  
+                ]);
         }
 
+        // Fetch the results
         $trip = $tripQuery->get();
 
-        
         return view('masteradmin.traveler.index', compact('trip'));
     }
+
 
     public function createTravelers(): View
     {
@@ -979,7 +978,7 @@ class TripController extends Controller
     public function editDetails($id)
     {
         // dd($id);
-        $trip = Trip::where('tr_id', $id)->firstOrFail();
+        $trip = TripTravelingMember::where('trtm_id', $id)->firstOrFail();
         $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
         // dd($tripmember);
         $triptype = TripType::all();
@@ -1002,7 +1001,7 @@ class TripController extends Controller
         $tableName = $agency_users->getTable();
         // $agency_users = $agency_users->get();
         if ($user->users_id && $user->role_id == 0) {
-            $agency_users = $agency_users->where('users_id', '!=', $user->users_id)->get();
+            $agency_users = $agency_users->get();
         } else {
             $agency_users = $agency_users->where('users_id', $user->users_id)->get();
         }
@@ -1016,13 +1015,13 @@ class TripController extends Controller
     {
         // dd()
         $user = Auth::guard('masteradmins')->user();
-        $trips = new Trip();
+        $trips = new TripTravelingMember();
         $tripTable = $trips->getTable();  
 
-        $trip = Trip::where('tr_id', $id)
-          ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.tr_country') 
-                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.tr_city') 
-                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.tr_state')
+        $trip = TripTravelingMember::where($tripTable.'.trtm_id', $id)
+          ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.trtm_country') 
+                ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.trtm_city') 
+                ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.trtm_state')
                 ->select([
                     $tripTable . '.*',  
                     'ta_countries.name as country_name', 
@@ -1030,7 +1029,7 @@ class TripController extends Controller
                     'ta_states.name as state_name'     
                 ])
                 ->firstOrFail();
-         // dd($trip);      
+        //  dd($trip);      
         $triptableName = $trip->getTable();
 
         $tripTraveling = new TripTravelingMember();
@@ -1042,16 +1041,10 @@ class TripController extends Controller
 
         $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
                 ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
-                ->where('trtm_status', 1) 
-                ->where($tableName . '.id', $user->users_id)
-                ->where($tableName . '.tr_id', $id)
+                ->where('lead_id', $id)->where('lead_status','!=',1)
                 ->get();
-
-            $tripData = DB::table($uniq_id . '_tc_trip')
-                ->select('tr_id', 'tr_traveler_name')
-                ->where('tr_id', $id)
-                ->get();
-
+            
+             
                 
             if($user->users_id && $user->role_id ==0 ){
                 $taskCategory = TaskCategory::where(['task_cat_status' => 1])->get();
@@ -1060,12 +1053,20 @@ class TripController extends Controller
             }
 
        
-        //  $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
-        $documentType = DocumentType::get();
+            //  $tripTraveling = TripTravelingMember::where(['trtm_status' => 1, 'id' => $user->id, 'tr_id' => $id])->get();
+            $documentType = DocumentType::get();
 
           //last code
-          $member = TripTravelingMember::where(['tr_id' => $id])->get();
-          $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+          $member = TripTravelingMember::with(['travelingrelationship'])->where('lead_id', $id)->where('lead_status','!=',1)->latest()->get();
+            // dd($member);
+          $tripData = \DB::table($uniq_id . '_tc_trip_traveling_member')
+          ->select( 'trtm_first_name', 'trtm_age','trtm_id')
+          ->where('trtm_id', $id)
+          ->where('lead_status', 1)//main lead
+          ->get();
+        //   dd($tripData);
+          
+          $document = TravelerDocument::where(['trvm_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
           $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
 
           $trip_id=$id;
@@ -1088,17 +1089,17 @@ class TripController extends Controller
                 'ta_countries.name as country_name', 
                 'ta_cities.name as city_name', 
                 'ta_states.name as state_name',
-                $tripTable . '.tr_traveler_name'  // Add traveler name to the select statement
+                $tripTable . '.tr_traveler_id'  // Add traveler name to the select statement
             ])
             ->get();
 
-            $travelerNames = $all_trip->pluck('tr_traveler_name')->unique(); // Extract traveler names
+            $travelerNames = $all_trip->pluck('tr_traveler_id')->unique(); // Extract traveler names
 
 
            $trip_history = Trip::where($tripTable . '.tr_status', 1) 
                 ->from($tripTable)  
                 ->leftJoin($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')  
-                ->whereIn($tripTable . '.tr_traveler_name', $travelerNames) 
+                ->whereIn($tripTable . '.tr_traveler_id', $travelerNames) 
                 ->select([
                     $tripTable . '.*',  
                     $masterUserTable . '.users_first_name', 
@@ -1113,6 +1114,88 @@ class TripController extends Controller
         // dd($trip_history);
         return view('masteradmin.traveler.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripTravelingMembers', 'tripData','member','document','trip_id','trip_history','travelingrelationship'));
     }
+
+    public function viewDetails1($id): View
+{
+    $user = Auth::guard('masteradmins')->user();
+    $trips = new TripTravelingMember();
+    $tripTable = $trips->getTable();  
+
+    $trip = TripTravelingMember::where('trtm_id', $id)
+        ->leftJoin('ta_countries', 'ta_countries.id', '=', $tripTable . '.trtm_country')
+        ->leftJoin('ta_cities', 'ta_cities.id', '=', $tripTable . '.trtm_city')
+        ->leftJoin('ta_states', 'ta_states.id', '=', $tripTable . '.trtm_state')
+        ->select(columns: [
+             $tripTable . '.*',  
+            'ta_countries.name as country_name',
+            'ta_cities.name as city_name',
+            'ta_states.name as state_name',
+            $tripTable.'.lead_status' // Ensure lead_status is included in the selection
+        ])
+        ->firstOrFail();
+
+    $taskCategory = TaskCategory::where('task_cat_status', 1)
+        ->when($user->role_id != 0, function ($query) use ($user) {
+            return $query->where('id', $user->users_id);
+        })
+        ->get();
+
+    $documentType = DocumentType::all();
+
+    $member = TripTravelingMember::where('trtm_status', 1)
+
+        ->get();
+
+    $document = TravelerDocument::where('tr_id', $id)
+        ->with(['traveler', 'documenttype', 'trip'])
+        ->latest()
+        ->get();
+
+    $travelingRelationship = TravelingRelationship::where('rel_status', 1)->get();
+        // dD($travelingRelationship);
+    $tripStatus = TripStatus::all();
+
+    // $allTrips = Trip::where('tr_id', $id)
+    //     ->leftJoin('ta_countries', 'ta_countries.id', '=', 'trips.tr_country')
+    //     ->leftJoin('ta_cities', 'ta_cities.id', '=', 'trips.tr_city')
+    //     ->leftJoin('ta_states', 'ta_states.id', '=', 'trips.tr_state')
+    //     ->select([
+    //         'trips.*',
+    //         'ta_countries.name as country_name',
+    //         'ta_cities.name as city_name',
+    //         'ta_states.name as state_name',
+    //         'trips.tr_traveler_id'
+    //     ])
+    //     ->get();
+
+    // $travelerNames = $allTrips->pluck('tr_traveler_id')->unique();
+
+    // $tripHistory = Trip::where('tr_status', 1)
+    //     ->leftJoin('master_user_details', 'master_user_details.users_id', '=', 'trips.tr_agent_id')
+    //     ->whereIn('tr_traveler_id', $travelerNames)
+    //     ->select([
+    //         'trips.*',
+    //         'master_user_details.users_first_name',
+    //         'master_user_details.users_last_name',
+    //         'master_user_details.users_email',
+    //         'master_user_details.users_zip',
+    //         'master_user_details.user_emergency_phone_number'
+    //     ])
+    //     ->with(['trip_status'])
+    //     ->get();
+        $tripHistory = [];
+    return view('masteradmin.traveler.view', compact(
+        'trip',
+        'taskCategory',
+        'documentType',
+        'member',
+        'document',
+        'travelingRelationship',
+        'tripStatus',
+        'tripHistory'
+    ));
+}
+
 
     public function booked_after(Request $request)
     {
@@ -2760,7 +2843,195 @@ public function getTravelerNames(Request $request)
                 'traveler_name' => $traveler->tr_traveler_name, // Returning the name of the traveler
             ]);
            
+    }
+
+
+    public function travelerstoreData(Request $request): RedirectResponse
+    {
+        // dd($request->all());
+        $user = Auth::guard('masteradmins')->user();
+        $dynamicId = $user->users_id;
+    
+            $validatedData = $request->validate([
+               'trtm_agent_id' => 'required|string',
+                'trtm_first_name' => 'required|string',
+                'trtm_dob' => 'nullable|string',
+                'trtm_age' => 'nullable|string',
+                'trtm_email' => 'required|email',
+                'trtm_number' => 'nullable|string',
+                'trtm_notes' => 'nullable|string',
+                'trtm_country' => 'nullable|string',
+                'trtm_state' => 'nullable|string',
+                'trtm_city' => 'nullable|string',
+                'trtm_address' => 'nullable|string',
+                'trtm_zip' => 'nullable|numeric|digits_between:1,6',
+                    
+            ], [
+    
+                'trtm_first_name.required' => 'Traveler name is required',
+                'trtm_agent_id.required' => 'Agent ID is required',
+                'trtm_email.required' => 'Email is required',
+                'trtm_email.regex' => 'Please enter a valid email address.',
+            ]);
+       
+        // dd('data');
+
+
+       // Check for duplicate entries in TripTravelingMember
+        $duplicateTraveler = TripTravelingMember::where('trtm_first_name', $validatedData['trtm_first_name'])
+        ->where('trtm_number', $validatedData['trtm_number'])
+        ->where('trtm_email', $validatedData['trtm_email'])
+        ->first();
+
+    if ($duplicateTraveler) {
+        // Handle the duplicate scenario
+        return back()->withErrors([
+            'trtm_first_name' => 'Traveler with the same name, email, and phone number already exists.',
+        ])->withInput();
+    }
+
+    // Get the logged-in user
+    $user = Auth::guard('masteradmins')->user();
+
+    // Create a new TripTravelingMember record
+    $travelerMember = new TripTravelingMember();
+
+    // Generate a unique ID for the traveler
+    $tableName = $travelerMember->getTable();
+    $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "trtm_id", $chars = 6);
+    $travelerMember->trtm_id = $uniqueId;
+
+    // Assign validated data to the TripTravelingMember model
+    $travelerMember->id = $user->users_id;
+    $travelerMember->tr_id = 0;
+    $travelerMember->trtm_agent_id = $validatedData['trtm_agent_id'];
+    $travelerMember->trtm_first_name = $validatedData['trtm_first_name'];
+    $travelerMember->trtm_dob = $validatedData['trtm_dob'] ?? null;
+    $travelerMember->trtm_age = $validatedData['trtm_age'] ?? null;
+    $travelerMember->trtm_email = $validatedData['trtm_email'];
+    $travelerMember->trtm_number = $validatedData['trtm_number'] ?? null;
+    $travelerMember->trtm_notes = $validatedData['trtm_notes'] ?? null;
+    $travelerMember->trtm_country = $validatedData['trtm_country'] ?? null;
+    $travelerMember->trtm_state = $validatedData['trtm_state'] ?? null;
+    $travelerMember->trtm_city = $validatedData['trtm_city'] ?? null;
+    $travelerMember->trtm_address = $validatedData['trtm_address'] ?? null;
+    $travelerMember->trtm_zip = $validatedData['trtm_zip'] ?? null;
+    $travelerMember->lead_status = 1;
+    $travelerMember->trtm_status = 1;
+
+    // Save the new record
+    $travelerMember->save();
+
+    // Log activity
+    \MasterLogActivity::addToLog('Master Admin Traveler created.');
+
+    // Redirect with success message
+    return redirect()->route('masteradmin.travelers.travelersDetails')
+        ->with('success', 'Traveler created successfully.');
+            
+    }
+
+    public function travelerUpdate(Request $request, $id): RedirectResponse
+    {
+        // dD($id);
+        // Get the logged-in user
+        $user = Auth::guard('masteradmins')->user();
+        
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'trtm_agent_id' => 'required|string',
+            'trtm_first_name' => 'required|string',
+            'trtm_dob' => 'nullable|string',
+            'trtm_age' => 'nullable|string',
+            'trtm_email' => 'required|email',
+            'trtm_number' => 'nullable|string',
+            'trtm_notes' => 'nullable|string',
+            'trtm_country' => 'nullable|string',
+            'trtm_state' => 'nullable|string',
+            'trtm_city' => 'nullable|string',
+            'trtm_address' => 'nullable|string',
+            'trtm_zip' => 'nullable|numeric|digits_between:1,6',
+        ], [
+            'trtm_first_name.required' => 'Traveler name is required',
+            'trtm_agent_id.required' => 'Agent ID is required',
+            'trtm_email.required' => 'Email is required',
+            'trtm_email.regex' => 'Please enter a valid email address.',
+        ]);
+
+        // Check for duplicate entries in TripTravelingMember, excluding the current record
+        $duplicateTraveler = TripTravelingMember::where('trtm_first_name', $validatedData['trtm_first_name'])
+            ->where('trtm_number', $validatedData['trtm_number'])
+            ->where('trtm_email', $validatedData['trtm_email'])
+            ->where('trtm_id', '!=', $id) // Ignore the current record
+            ->first();
+
+        if ($duplicateTraveler) {
+            // Handle the duplicate scenario
+            return back()->withErrors([
+                'trtm_first_name' => 'Traveler with the same name, email, and phone number already exists.',
+            ])->withInput();
         }
+
+        // Find the existing traveler record using the provided traveler ID
+        $travelerMember = TripTravelingMember::where('trtm_id',$id); // Assuming 'trtm_id' is passed in the request
+
+        // Check if traveler exists
+        if (!$travelerMember) {
+            return back()->withErrors([
+                'error' => 'Traveler not found.'
+            ]);
+        }
+
+        // Update the traveler record with the validated data
+        $travelerMember->trtm_agent_id = $validatedData['trtm_agent_id'];
+        $travelerMember->trtm_first_name = $validatedData['trtm_first_name'];
+        $travelerMember->trtm_dob = $validatedData['trtm_dob'] ?? null;
+        $travelerMember->trtm_age = $validatedData['trtm_age'] ?? null;
+        $travelerMember->trtm_email = $validatedData['trtm_email'];
+        $travelerMember->trtm_number = $validatedData['trtm_number'] ?? null;
+        $travelerMember->trtm_notes = $validatedData['trtm_notes'] ?? null;
+        $travelerMember->trtm_country = $validatedData['trtm_country'] ?? null;
+        $travelerMember->trtm_state = $validatedData['trtm_state'] ?? null;
+        $travelerMember->trtm_city = $validatedData['trtm_city'] ?? null;
+        $travelerMember->trtm_address = $validatedData['trtm_address'] ?? null;
+        $travelerMember->trtm_zip = $validatedData['trtm_zip'] ?? null;
+        $travelerMember->lead_status = 1;
+        $travelerMember->trtm_status = 1;
+
+        // Save the updated record
+        $travelerMember->where(['trtm_id' => $id])->update($validatedData);
+        
+
+        // Log activity
+        \MasterLogActivity::addToLog('Master Admin Traveler updated.');
+
+        // Redirect with success message
+        return redirect()->route('masteradmin.travelers.travelersDetails')
+            ->with('success', 'Traveler updated successfully.');
+    }
+
+    public function destroyTraveler($id): RedirectResponse
+    {
+        // Find the traveler by ID
+        $traveler = TripTravelingMember::where('trtm_id',$id);
+
+        // Check if the traveler exists
+        if (!$traveler) {
+            return back()->withErrors([
+                'error' => 'Traveler not found.'
+            ]);
+        }
+
+        // Delete the traveler
+        $traveler->where('trtm_id',$id)->delete();
+
+        // Log the deletion activity
+        \MasterLogActivity::addToLog('Master Admin Traveler deleted.');
+
+        // Redirect with success message
+        return redirect()->route('masteradmin.travelers.travelersDetails')
+            ->with('success', 'Traveler deleted successfully.');
+    }
 
 
    

@@ -300,8 +300,8 @@ Route::group(['prefix' => $busadminRoute], function () {
        //trip family member 
        Route::get('family-member/{id}', [TripTravelingMemberController::class, 'index'])->name('masteradmin.family-member.index');
        Route::post('/family-member-store/{id}', [TripTravelingMemberController::class, 'store'])->name('masteradmin.family-member.store');
-       Route::get('/family-member-edit/{id}/{trip_id}', [TripTravelingMemberController::class, 'edit'])->name('masteradmin.family-member.edit');
-       Route::patch('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'update'])->name('masteradmin.family-member.update');
+       Route::get('/family-member-edit/{id}', [TripTravelingMemberController::class, 'edit'])->name('masteradmin.family-member.edit');
+       Route::patch('/family-member-update/{trtm_id}', [TripTravelingMemberController::class, 'update'])->name('masteradmin.family-member.update');
        Route::delete('/family-member-update/{trip_id}/{trtm_id}', [TripTravelingMemberController::class, 'destroy'])->name('masteradmin.family-member.destroy');
 
        //Task
@@ -352,9 +352,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         //trip traveler document 
         Route::get('traveler-document/{id}', [TravelerDocumentController::class, 'index'])->name('masteradmin.document.index');
         Route::post('/traveler-document-store/{id}', [TravelerDocumentController::class, 'store'])->name('masteradmin.document.store');
-        Route::get('traveler-document-edit/{id}/{trip_id}', [TravelerDocumentController::class, 'edit'])->name('masteradmin.document.edit');
+        Route::get('traveler-document-edit/{id}', [TravelerDocumentController::class, 'edit'])->name('masteradmin.document.edit');
         Route::delete('/traveler-document/{id}/image/{image}', [TravelerDocumentController::class, 'deleteImage'])->name('document.image.delete');
-        Route::patch('/traveler-document-update/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'update'])->name('masteradmin.document.update');
+        Route::patch('/traveler-document-update/{trvd_id}', [TravelerDocumentController::class, 'update'])->name('masteradmin.document.update');
         Route::delete('/traveler-document-delete/{trip_id}/{trvd_id}', [TravelerDocumentController::class, 'destroy'])->name('masteradmin.document.destroy');
 
 
@@ -399,12 +399,13 @@ Route::group(['prefix' => $busadminRoute], function () {
          //Travelers  
          Route::get('/travelers-details', [TripController::class, 'travelersDetails'])->name('masteradmin.travelers.travelersDetails');
          Route::get('/travelers-create', [TripController::class, 'createTravelers'])->name('masteradmin.travelers.create');
-         Route::post('/travelers-store', [TripController::class, 'store'])->name('masteradmin.travelers.store');
+         Route::post('/travelers-store', [TripController::class, 'travelerstoreData'])->name('masteradmin.travelers.store');
          Route::post('/trips/travelerss-store', [TripController::class, 'travelerStore'])->name('masteradmin.travelers.trip.store');
          Route::get('travelers-edit/{id}', [TripController::class, 'editDetails'])->name('masteradmin.travelers.edit');
-         Route::put('/travelers-update/{id}', [TripController::class, 'update'])->name('masteradmin.travelers.update');
+         Route::put('/travelers-update/{id}', [TripController::class, 'travelerUpdate'])->name('masteradmin.travelers.update');
          Route::get('/view-travelers/{id}', [TripController::class, 'viewDetails'])->name('masteradmin.travelers.view');
-         
+         Route::delete('/travelers-delete/{id}', [TripController::class, 'destroyTraveler'])->name('masteradmin.travelers.destroy');
+
 
         //task category
         Route::resource('task-category', TaskCategoryController::class);

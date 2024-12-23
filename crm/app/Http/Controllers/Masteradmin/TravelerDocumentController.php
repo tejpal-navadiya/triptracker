@@ -23,13 +23,13 @@ class TravelerDocumentController extends Controller
         $access = view()->shared('access');
         // dd($access);
         $user = Auth::guard('masteradmins')->user();
-        $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+        $document = TravelerDocument::where(['lead_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
         
 
        // dd($document);
     
         if ($request->ajax()) {
-            $document = TravelerDocument::where(['tr_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
+            $document = TravelerDocument::where(['lead_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
             //  dd($access);
             return Datatables::of($document)
                     ->addIndexColumn()
@@ -157,7 +157,8 @@ class TravelerDocumentController extends Controller
                 
                 $tripDocument->fill($validatedData);
 
-                $tripDocument->tr_id = $id;
+                $tripDocument->tr_id = '0';
+                $tripDocument->lead_id = $id;
                 $tripDocument->id = $user->users_id;
                 $tripDocument->trvd_document = $documentimg; 
                 $tripDocument->trvd_status = 1;
@@ -171,10 +172,10 @@ class TravelerDocumentController extends Controller
         return response()->json(['success'=>'Record saved successfully.']);
     }
     
-    public function edit($id, $trip_id)
+    public function edit($id)
     {   
 
-        $document = TravelerDocument::where(['trvd_id' => $id, 'tr_id' => $trip_id])->firstOrFail();
+        $document = TravelerDocument::where(['trvd_id' => $id])->firstOrFail();
 
         return response()->json($document);
     }
@@ -208,12 +209,12 @@ class TravelerDocumentController extends Controller
     }
 
 
-    public function update(Request $request, $tr_id, $trvd_id)
+    public function update(Request $request, $trvd_id)
     {
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
-        $document = TravelerDocument::where([ 'tr_id' => $tr_id, 'trvd_id' => $trvd_id])->firstOrFail();
+        $document = TravelerDocument::where([ 'trvd_id' => $trvd_id])->firstOrFail();
 
         // dd($task);
         if($document)

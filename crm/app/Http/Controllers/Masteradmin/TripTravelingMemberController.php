@@ -159,13 +159,14 @@ public function index(Request $request, $id)
     $user = Auth::guard('masteradmins')->user();
     
     // Fetch members associated with the trip
-    $members = TripTravelingMember::with(['travelingrelationship'])->where(['tr_id' => $id])->latest()->get();
+    $members = TripTravelingMember::with(['travelingrelationship'])->where('lead_id', $id)->where('lead_status','!=',1)->latest()->get();
     
     // Fetch trip data
     $uniq_id = $user->user_id; 
-    $tripData = \DB::table($uniq_id . '_tc_trip')
-        ->select('tr_id', 'tr_traveler_name', 'tr_age')
-        ->where('tr_id', $id)
+    $tripData = \DB::table($uniq_id . '_tc_trip_traveling_member')
+        ->select( 'trtm_first_name', 'trtm_age','trtm_id')
+        ->where('trtm_id', $id)
+        ->where('lead_status', 1)//main lead
         ->first();
 
     // Check if tripData is null
@@ -179,10 +180,10 @@ public function index(Request $request, $id)
     // Add trip data to combinedData
     if ($tripData) {
         $combinedData[] = [
-            'trtm_id' => null, // No member ID for trip data
-            'trtm_relationship' => '', // No relationship for trip data
-            'trtm_full_name' => $tripData->tr_traveler_name ?? '',
-            'trtm_age' => $tripData->tr_age ?? '',
+            'trtm_id' => $tripData->trtm_id ?? '', // No member ID for trip data
+            'trtm_relationship' => 'Main Lead',  // No relationship for trip data
+            'trtm_full_name' => $tripData->trtm_first_name ?? '',
+            'trtm_age' => $tripData->trtm_age ?? '',
             'action' => '-' // Placeholder for action buttons
         ];
     }
@@ -198,15 +199,22 @@ public function index(Request $request, $id)
         ];
     }
 
+    // Dd($combinedData);
     if ($request->ajax()) {
         return Datatables::of($combinedData)
             ->addIndexColumn()
             ->addColumn('action', function($members) use ($access) {
                 $btn = '';
-                if ($members['trtm_id'] === null) {
-                    return '-'; // Return placeholder for trip data
+                if ($members['trtm_relationship'] == 'Main Lead') {
+                // Add edit button if workflow access is enabled
+                if (isset($access['workflow']) && $access['workflow']) {
+                    $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Member" class="editMember">
+                                <i class="fas fa-pen-to-square edit_icon_grid"></i>
+                                </a>';
+
                 }
-                
+                return $btn;
+                }
                 if (isset($access['workflow']) && $access['workflow']) {
                     $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                 }
@@ -237,16 +245,14 @@ public function index(Request $request, $id)
     return view('masteradmin.trip.traveler-information', compact('combinedData'));
 }
 
-    public function store(Request $request, $id)
+    public function store(Request $request,$id)
     {
+        // dd($id);
        // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id; 
 
-        $trip = Trip::where(['tr_id' => $id])->firstOrFail();
-        
-        if($trip)
-        {
+    
             $validatedData = $request->validate([
                 'trtm_type' => 'nullable|string',
                 'trtm_first_name' => 'required|string',
@@ -274,13 +280,15 @@ public function index(Request $request, $id)
                 
                 $travelerItem->fill($validatedData);
 
-                $travelerItem->tr_id = $id;
+                $travelerItem->tr_id = '';
+                $travelerItem->lead_id = $id;
                 $travelerItem->id = $dynamicId;
                 $travelerItem->trtm_status = 1;
                 $travelerItem->trtm_id = $uniqueId1;
-
+                $travelerItem->lead_status = 2;
+                
                 $travelerItem->save();
-            }
+        
 
             \MasterLogActivity::addToLog('Master Admin Trip Member is Created.');
     
@@ -289,21 +297,21 @@ public function index(Request $request, $id)
         return response()->json(['success'=>'Record saved successfully.']);
     }
 
-    public function edit($trtm_id,$trip_id)
+    public function edit($trtm_id)
     {   
         
-        $member = TripTravelingMember::where(['trtm_id' => $trtm_id , 'tr_id' => $trip_id])->firstOrFail();
+        $member = TripTravelingMember::where(['trtm_id' => $trtm_id ])->firstOrFail();
 
         // dd($member);
         return response()->json($member);
     }
 
-    public function update(Request $request, $id, $trtm_id)
+    public function update(Request $request,$trtm_id)
     {
         // dd($trtm_id);
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
-        $member = TripTravelingMember::where(['tr_id' => $id, 'trtm_id' => $trtm_id])->firstOrFail();
+        $member = TripTravelingMember::where(['trtm_id' => $trtm_id])->firstOrFail();
 
         // dd($member);
         if($member)
@@ -328,7 +336,7 @@ public function index(Request $request, $id)
                 'trtm_age.required' => 'Age is required',
             ]);
 
-                $member->where(['tr_id' => $id, 'trtm_id' => $trtm_id])->update($validatedData);
+                $member->where(['trtm_id' => $trtm_id])->update($validatedData);
 
                 // $member->save();
 

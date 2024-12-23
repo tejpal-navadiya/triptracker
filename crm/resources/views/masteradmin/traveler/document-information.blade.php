@@ -143,24 +143,6 @@
                             </div>
                         </div>
 
-
-                        {{-- <div class="col-md-6">
-                            <div class="form-group">
-                            <label for="trvm_id">Traveler<span class="text-danger">*</span></label>
-                                <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="trvm_id" name="trvm_id" >
-                                        <option default>Select Traveler</option>
-                                        @foreach ($tripTraveling as $member)
-                                        <option value="{{ $member->trtm_id }}">{{  $member->trtm_first_name }} {{  $member->trtm_middle_name }} {{  $member->trtm_last_name }}</option>
-                                        @endforeach
-                                        <x-input-error class="mt-2" :messages="$errors->get('trvm_id')" />
-                                    </select>
-                                </div>
-                            </div>
-                        </div> --}}
-
-
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="trvm_id">Household <span class="text-danger">*</span></label>
@@ -170,6 +152,14 @@
                                         <option value="" disabled selected>Select Household</option>
 
                                         <!-- Loop through traveling members -->
+                                      
+                                        <!-- Loop through trips -->
+                                        @foreach ($tripData as $trip)
+                                            <option value="{{ $trip->trtm_id ?? '' }}">
+                                                {{ $trip->trtm_first_name ?? '' }}
+                                            </option>
+                                        @endforeach
+
                                         @foreach ($tripTravelingMembers as $member)
                                             <option value="{{ $member->trtm_id ?? '' }}">
                                                 {{ $member->trtm_first_name ?? '' }}
@@ -178,12 +168,6 @@
                                             </option>
                                         @endforeach
 
-                                        <!-- Loop through trips -->
-                                        @foreach ($tripData as $trip)
-                                            <option value="{{ $trip->tr_id ?? '' }}">
-                                                {{ $trip->tr_traveler_name ?? '' }}
-                                            </option>
-                                        @endforeach
 
                                         <x-input-error class="mt-2" :messages="$errors->get('trvm_id')" />
                                     </select>
@@ -336,9 +320,11 @@
                 documentsuccessMessage = 'Data has been successfully inserted!'; 
             } else {
                 // Update existing
-                var trvd_id = $('#trvd_id').val();
-                url = "{{ route('masteradmin.document.update', [$trip_id, ':trvd_id']) }}";
-                url = url.replace(':trvd_id', trvd_id);
+
+                var trtm_id = $('#trvd_id').val();
+                url = "{{ route('masteradmin.document.update', ':trvd_id') }}";
+                url = url.replace(':trvd_id', trtm_id);
+              
                 formData.append('_method', 'PATCH');
                 documentsuccessMessage = 'Data has been successfully updated!';
             }
@@ -378,8 +364,8 @@
 
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
-                .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
+            $.get("{{ route('masteradmin.document.edit', ['id' => 'id']) }}"
+                .replace('id', id),
                 function(data) {
 
                     // console.log(data);
@@ -488,6 +474,9 @@
             $.ajax({
                 type: "DELETE",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+                },
                 success: function(data) {
                     // alert(data.success);
 

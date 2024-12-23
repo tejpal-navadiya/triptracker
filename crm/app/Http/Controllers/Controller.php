@@ -404,7 +404,7 @@ class Controller extends BaseController
                     $table->string('id')->nullable()->default(0);
                     $table->string('tr_name')->nullable();
                     $table->string('tr_agent_id')->nullable();
-                    $table->string('tr_traveler_name')->nullable();
+                    $table->string('tr_traveler_id')->nullable();
                     $table->string('tr_dob')->nullable();
                     $table->string('tr_age')->nullable();
                     $table->string('tr_number')->nullable();
@@ -419,6 +419,11 @@ class Controller extends BaseController
                     $table->text('tr_type_trip')->nullable();
                     $table->text('tr_desc')->nullable();
                     $table->string('status')->nullable();
+                    $table->string('tr_address')->nullable();
+                    $table->string('tr_country')->nullable();
+                    $table->string('tr_state')->nullable();
+                    $table->string('tr_zip')->nullable();
+                    $table->string('tr_city')->nullable();
                     $table->tinyInteger('tr_status')->default(0)->nullable();
                     $table->timestamps();
                 });
@@ -481,6 +486,8 @@ class Controller extends BaseController
                     $table->string('trtm_id')->unique()->primary();
                     $table->string('id')->nullable()->default(0);
                     $table->string('tr_id')->constrained($storeId.'_tc_trip', 'tr_id')->onDelete('cascade');
+                    $table->string('lead_id')->nullable();
+                    $table->integer('lead_status')->nullable()->comment('1-lead,2-family member');
                     $table->string('trtm_type')->nullable();
                     $table->string('trtm_first_name')->nullable();
                     $table->string(column: 'trtm_middle_name')->nullable();
@@ -492,6 +499,80 @@ class Controller extends BaseController
                     $table->string('trtm_relationship')->nullable();
                     $table->tinyInteger('trtm_status')->default(0)->nullable();
                     $table->timestamps();
+                    $table->string('trtm_agent_id')->nullable();
+                    $table->string('trtm_email')->nullable();
+                    $table->string('trtm_number')->nullable();
+                    $table->text('trtm_notes')->nullable();
+                    $table->string('trtm_address')->nullable();
+                    $table->string('trtm_country')->nullable();
+                    $table->string('trtm_state')->nullable();
+                    $table->string('trtm_city')->nullable();
+                    $table->string('trtm_zip')->nullable();
+                    
+                });
+            }else{
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'lead_id')) {
+                        $table->string('lead_id')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'lead_status')) {
+                        $table->integer('lead_status')->nullable()->comment('1-lead,2-family member');
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_agent_id')) {
+                        $table->string('trtm_agent_id')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_email')) {
+                        $table->string('trtm_email')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_number')) {
+                        $table->string('trtm_number')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_notes')) {
+                        $table->text('trtm_notes')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_address')) {
+                        $table->string('trtm_address')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_country')) {
+                        $table->string('trtm_country')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_state')) {
+                        $table->string('trtm_state')->nullable();
+                    }
+                });
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_city')) {
+                        $table->string('trtm_city')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip_traveling_member', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip_traveling_member', 'trtm_zip')) {
+                        $table->string('trtm_zip')->nullable();
+                    }
                 });
             }
 
@@ -633,8 +714,15 @@ class Controller extends BaseController
                     $table->string('trvd_document')->nullable();                    
                     $table->tinyInteger('trvd_status')->default(0)->nullable();
                     $table->timestamps();
+                    $table->string('lead_id')->nullable();
                 });
 
+            }else{
+                Schema::table($storeId.'_tc_traveling_document', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_traveling_document', 'lead_id')) {
+                        $table->string('lead_id')->nullable();
+                    }
+                });
             }
 
             // email template....

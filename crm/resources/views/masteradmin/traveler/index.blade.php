@@ -43,6 +43,14 @@
                         @endphp
                     @endif
 
+                    @if (Session::has('error'))
+                        <p class="text-danger"> {{ Session::get('error') }}</p>
+                        @php
+                            Session::forget('error');
+                        @endphp
+                    @endif
+                    
+
                     <!-- Main row -->
                     <div class="card px-20">
                         <div class="card-body1">
@@ -61,58 +69,37 @@
                                     <tbody>
                                         @foreach ($trip as $value)
                                             <tr>
-                                                <td>{{ $value->tr_traveler_name }}</td>
-                                                <td>{{ $value->tr_email }}</td>
-                                                <td>{{ $value->tr_phone }}</td>
+                                                <td>{{ $value->trtm_first_name }}</td>
+                                                <td>{{ $value->trtm_email }}</td>
+                                                <td>{{ $value->trtm_number }}</td>
                                                 <td>
-                                                    {{ $value->city_name ?? '' }}{{ $value->city_name && ($value->state_name || $value->country_name || $value->tr_zip) ? ', ' : '' }}
-                                                    {{ $value->state_name ?? '' }}{{ $value->state_name && ($value->country_name || $value->tr_zip) ? ', ' : '' }}
-                                                    {{ $value->country_name ?? '' }}{{ $value->country_name && $value->tr_zip ? ' ' : '' }}
-                                                    {{ $value->tr_zip ?? '' }}
+                                                    {{ $value->city_name ?? '' }}{{ $value->city_name && ($value->state_name || $value->country_name || $value->trtm_zip) ? ', ' : '' }}
+                                                    {{ $value->state_name ?? '' }}{{ $value->state_name && ($value->country_name || $value->trtm_zip) ? ', ' : '' }}
+                                                    {{ $value->country_name ?? '' }}{{ $value->country_name && $value->trtm_zip ? ' ' : '' }}
+                                                    {{ $value->trtm_zip ?? '' }}
                                                 </td>
 
-                                                <!-- <td> -->
-                                                    <!-- @php
-                                                        $statusName = $value->trip_status->tr_status_name ?? '';
-
-                                                        $buttonColor = match (strtolower($statusName)) {
-                                                           'trip request' => '#DB9ACA',
-                                                                'trip proposal' => '#F6A96D',
-                                                                'trip modification' => '#FBC11E',
-                                                                'trip accepted' => '#28C76F',
-                                                                'trip sold' => '#C5A070',
-                                                                'trip lost' => '#F56B62',
-                                                                'trip completed' => '#F56B62',
-                                                                'trip pending' => '#F6A96D',
-                                                                'in process' => '#F6A96D',
-                                                        };
-                                                    @endphp -->
-
-                                                    <!-- <button type="button" class="btn text-white"
-                                                        style="background-color: {{ $buttonColor }};">
-                                                        {{ $statusName }}
-                                                    </button> -->
-                                                <!-- </td> -->
+                                               
                                                 <td>
-                                                    <a href="{{ route('masteradmin.travelers.view', $value->tr_id) }}"><i
+                                                    <a href="{{ route('masteradmin.travelers.view', $value->trtm_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
 
-                                                    <a href="{{ route('masteradmin.travelers.edit', $value->tr_id) }}"><i
+                                                    <a href="{{ route('masteradmin.travelers.edit', $value->trtm_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
                                                     <a data-toggle="modal"
-                                                        data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i
+                                                        data-target="#delete-product-modal-{{ $value->trtm_id }}"><i
                                                             class="fas fa-solid fa-trash delete_icon_grid"></i></a>
 
                                                     <div class="modal fade"
-                                                        id="delete-product-modal-{{ $value->sale_product_id }}"
+                                                        id="delete-product-modal-{{ $value->trtm_id }}"
                                                         tabindex="-1" role="dialog"
                                                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                         <div class="modal-dialog modal-sm modal-dialog-centered"
                                                             role="document">
                                                             <div class="modal-content">
                                                                 <form id="delete-plan-form"
-                                                                    action="{{ route('trip.destroy', $value->tr_id) }}"
+                                                                    action="{{ route('masteradmin.travelers.destroy', $value->trtm_id) }}"
                                                                     method="POST">
                                                                     @csrf
                                                                     @method('DELETE')

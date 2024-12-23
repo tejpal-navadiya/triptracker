@@ -2,14 +2,14 @@
 <div class="card">
     <div class="col-lg-4 card-body3">
         <div class="card-body">
-            <p class="company_business_name">Name :{{ $trip->tr_traveler_name ?? '' }}</p>
-            <p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p>
+            <p class="company_business_name">Name :{{ $trip->trtm_first_name ?? '' }}</p>
+            <p class="company_business_name">Email Address : {{ $trip->trtm_email ?? '' }}</p>
             <!-- <p class="company_business_name">Total Person : {{ $trip->tr_num_people ?? '' }}</p> -->
-            <p class="company_business_name">Phone Number : {{ $trip->tr_phone ?? '' }}</p>
-            <p class="company_business_name">Address : {{ $trip->city_name ?? '' }}{{ $trip->city_name && ($trip->state_name || $trip->country_name || $trip->tr_zip) ? ', ' : '' }}
-                                                    {{ $trip->state_name ?? '' }}{{ $trip->state_name && ($trip->country_name || $trip->tr_zip) ? ', ' : '' }}
-                                                    {{ $trip->country_name ?? '' }}{{ $trip->country_name && $trip->tr_zip ? ' ' : '' }}
-                                                    {{ $trip->tr_zip ?? '' }}</p>
+            <p class="company_business_name">Phone Number : {{ $trip->trtm_number ?? '' }}</p>
+            <p class="company_business_name">Address : {{ $trip->city_name ?? '' }}{{ $trip->city_name && ($trip->state_name || $trip->country_name || $trip->trtm_zip) ? ', ' : '' }}
+                                                    {{ $trip->state_name ?? '' }}{{ $trip->state_name && ($trip->country_name || $trip->trtm_zip) ? ', ' : '' }}
+                                                    {{ $trip->country_name ?? '' }}{{ $trip->country_name && $trip->trtm_zip ? ' ' : '' }}
+                                                    {{ $trip->trtm_zip ?? '' }}</p>
         </div>
     </div>
 </div>
@@ -292,6 +292,8 @@
             $('#Form')[0].reset();
             $('#modelHeading').html("Add Household");
             $('body').addClass('modal-open');
+            $('#trtm_relationship').trigger('change.select2');
+            $('#trtm_gender').trigger('change.select2');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
         });
@@ -308,15 +310,13 @@
             
             if ($('#trtm_id').val() === '') {
                 // Add new data
-                url = "{{ route('masteradmin.family-member.store', $trip_id) }}";
+                url = "{{ route('masteradmin.family-member.store',$trip_id) }}";
                 method = "POST";
                 successMessage = 'Data has been successfully inserted!'; 
 
             } else {
                 var trtm_id = $('#trtm_id').val();
-                var trip_id = '{{ $trip_id }}'; 
-                var url =
-                    "{{ route('masteradmin.family-member.update', [$trip_id, ':trtm_id']) }}";
+                url = "{{ route('masteradmin.family-member.update', ':trtm_id') }}";
                 url = url.replace(':trtm_id', trtm_id);
 
                 method = "PATCH";
@@ -357,8 +357,8 @@
         $('body').on('click', '.editMember', function() {
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
-                .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
+            $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id']) }}"
+                .replace('id', id),
                 function(data) {
                     // console.log(data);
                     $('#modelHeading').html("Edit Household");
@@ -370,7 +370,7 @@
                     $('#trtm_middle_name').val(data.trtm_middle_name);
                     $('#trtm_last_name').val(data.trtm_last_name);
                     $('#trtm_nick_name').val(data.trtm_nick_name);
-                    $('#trtm_relationship').val(data.trtm_relationship);
+                    $('#trtm_relationship').val(data.trtm_relationship).trigger('change.select2');
                     $('#trtm_gender').val(data.trtm_gender).trigger('change.select2');
                     $('#trtm_dob_hidden').val(data.trtm_dob);
                     $('#trtm_age').val(data.trtm_age);

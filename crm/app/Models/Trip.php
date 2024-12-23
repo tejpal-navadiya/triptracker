@@ -16,7 +16,7 @@ class Trip extends Model
             'id',
             'tr_name',
             'tr_agent_id', 
-            'tr_traveler_name', 
+            'tr_traveler_id', 
             'tr_dob', 'tr_age', 
             'tr_number', 
             'tr_email',
