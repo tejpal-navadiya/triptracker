@@ -36,8 +36,8 @@
                                     name="trip_traveler">
                                     <option value="" default >Choose Traveler</option>
                                     @foreach ($trips_traveller as $value)
-                                        <option value="{{ $value->tr_traveler_name }}">
-                                            {{ $value->tr_traveler_name }}
+                                        <option value="{{ $value->trtm_id }}">
+                                            {{ $value->trtm_first_name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -146,7 +146,7 @@
                                                         <td>{{ $value->tr_name ?? '' }}</td>
                                                         <td>{{ $value->users_first_name ?? '' }}
                                                             {{ $value->users_last_name ?? '' }}</td>
-                                                        <td>{{ $value->tr_traveler_name ?? '' }}</td>
+                                                        <td>{{ $value->trtm_first_name ?? '' }}</td>
                                                         <td>{{ $value->tr_value_trip ?? '' }}</td>
                                                         <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
                                                             -
@@ -285,6 +285,8 @@
 
         $('#trip_traveler').val(trip_traveler);
 
+        // alert()
+
         $('#trip_status').val(trip_status);
 
         var fromdatepicker1 = flatpickr("#from-datepicker", {
@@ -349,7 +351,8 @@
                 trip_status: $('#trip_status').val(),
                 _token: '{{ csrf_token() }}'
             };
-            // alert('hii');
+            //alert('hii');
+            console.log(formData);
 
             $.ajax({
                 url: '{{ route('masteradmin.trip.booked_after') }}',

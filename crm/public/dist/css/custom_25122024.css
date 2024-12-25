@@ -1696,6 +1696,9 @@ label {
     list-style: none;
 }
 
+.invalid-feedback{
+    display: block !important;
+}
 form {
     margin-bottom: 0;
 }
@@ -2875,31 +2878,4 @@ button.btn.btn-info {
 }
 #filter_data .pagination{
     justify-content: center;
-}
-.form-control[readonly] {
-    opacity: .5;
-    cursor: not-allowed;
-}
-
-.preferences-box{
-    position: relative;
-    width: 100%;
-    border: 1px solid #CECECE;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-.preferences-title{
-    position: relative;
-    width: 100%;
-    padding: 10px 20px;
-    font-size: 18px;
-    line-height: normal;
-    color: #2c2c2c;
-    background: #DCEBFF;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-.pr-content-box{
-    position: relative;
-    padding: 20px;
 }

@@ -50,6 +50,8 @@
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#Emailsinfo" data-toggle="tab">Related Emails</a>
                             </li>
+                            <li class="nav-item"><a class="nav-link" href="#preferenceinfo" data-toggle="tab">Preference</a>
+                            </li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="tab-content px-20">
@@ -70,6 +72,9 @@
                         </div>
                         <div class="tab-pane" id="Emailsinfo">
                             @include('masteradmin.trip.email-information')
+                        </div>
+                        <div class="tab-pane" id="preferenceinfo">
+                            @include('masteradmin.trip.preference-information')
                         </div>
                         <!-- /.tab-pane -->
                     </div>

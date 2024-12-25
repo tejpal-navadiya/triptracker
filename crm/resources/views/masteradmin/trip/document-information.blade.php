@@ -181,8 +181,8 @@
 
                                         <!-- Loop through trips -->
                                         @foreach ($tripData as $trip)
-                                            <option value="{{ $trip->tr_id }}">
-                                                {{ $trip->tr_traveler_name }}
+                                            <option value="{{ $trip->trtm_id }}">
+                                                {{ $trip->trtm_first_name ?? '' }}
                                             </option>
                                         @endforeach
 
@@ -246,7 +246,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('masteradmin.document.index', $trip_id) }}",
+                url: "{{ route('masteradmin.document.index', $traveler_id) }}",
                 type: 'GET',
                 data: function(d) {
                     d._token = "{{ csrf_token() }}";
@@ -329,13 +329,13 @@
 
             if ($('#trvd_id').val() === '') {
                 // Create new
-                url = "{{ route('masteradmin.document.store', $trip_id) }}";
+                url = "{{ route('masteradmin.document.store', $traveler_id) }}";
                 formData.append('_method', 'POST');
                 documentsuccessMessage = 'Data has been successfully inserted!'; 
             } else {
                 // Update existing
                 var trvd_id = $('#trvd_id').val();
-                url = "{{ route('masteradmin.document.update', [$trip_id, ':trvd_id']) }}";
+                url = "{{ route('masteradmin.document.update', [$traveler_id, ':trvd_id']) }}";
                 url = url.replace(':trvd_id', trvd_id);
                 formData.append('_method', 'PATCH');
                 documentsuccessMessage = 'Data has been successfully updated!';
@@ -376,8 +376,8 @@
 
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $trip_id]) }}"
-                .replace('id', id).replace('{{ $trip_id }}', '{{ $trip_id }}'),
+            $.get("{{ route('masteradmin.document.edit', ['id' => 'id', 'trip_id' => $traveler_id]) }}"
+                .replace('id', id).replace('{{ $traveler_id }}', '{{ $traveler_id }}'),
                 function(data) {
 
                     // console.log(data);
@@ -480,7 +480,7 @@
             e.preventDefault();
             var trvd_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.document.destroy', [$trip_id, ':trvd_id']) }}";
+            var url = "{{ route('masteradmin.document.destroy', [$traveler_id, ':trvd_id']) }}";
             url = url.replace(':trvd_id', trvd_id);
             // alert(url);
             $.ajax({

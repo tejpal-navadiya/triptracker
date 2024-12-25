@@ -19,7 +19,7 @@
                                             <td>{{ $value->users_first_name ?? '' }}
                                                 {{ $value->users_last_name ?? '' }}
                                             </td>
-                                            <td>{{ $value->tr_traveler_name ?? '' }}</td>
+                                            <td>{{ $value->trtm_first_name ?? '' }}</td>
                                             <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}
                                             </td>
                                             <td>-</td>

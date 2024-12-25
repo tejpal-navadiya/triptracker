@@ -2,7 +2,7 @@
 <div class="card">
     <div class="col-lg-6 card-body3">
         <div class="card-body">
-            <p class="company_business_name">Name :{{ $trip->tr_traveler_name ?? '' }}</p>
+            <p class="company_business_name">Name :{{ $trip->trtm_first_name ?? '' }}</p>
             <p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p>
             <p class="company_business_name">Total Person : {{ $trip->tr_num_people ?? '' }}</p>
             <p class="company_business_name">Phone Number : {{ $trip->tr_phone ?? '' }}</p>
@@ -11,6 +11,7 @@
     </div>
 </div>
 <?php //dd($trip_id); ?>
+
 <div class="card">
     <div class="card-header">
         <div class="row justify-content-between align-items-center">
@@ -33,26 +34,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <?php //dd($tripData); ?>
-                    
+                   
                     @if (count($member) > 0)
-                    @foreach ($tripData as $value1)
-                    <tr>
-                        <td> {{ $value1->tr_traveler_name ?? '' }}</td>
-                        <td></td>
-                        <td>{{ $value1->tr_age ?? ''}}</td>
-
-                        <td>
-                           -
-                        </td>
-                    </tr>
-                    @endforeach
-
                     @foreach ($member as $value)
                     <tr>
-                        <td>{{ $value->trtm_first_name ?? '' }}</td>
-                        <td>{{ $value->travelingrelationship->rel_name ?? '' }}</td>
-                        <td>{{ $value->trtm_age ?? ''}}</td>
+                        <td>{{ $value->trtm_first_name }}</td>
+                        <td>{{ $value->trtm_relationship }}</td>
+                        <td>{{ $value->trtm_age }}</td>
 
                         <td>
                             <a data-id="{{ $value->trtm_id}}" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>
@@ -82,6 +70,7 @@
                     @else
                     <tr class="text-center"><td >No data found!</td></tr>
                     @endif
+                        
                     </tbody>
                 </table>
             </div>
@@ -125,8 +114,6 @@
                                 <div class="d-flex">
                                     <input type="text" class="form-control" id="trtm_first_name"
                                         name="trtm_first_name" placeholder="Enter First Name">
-                                    <div class="invalid-feedback" id="trtm_first_name_error" ></div>
-
                                 </div>
                             </div>
                         </div>
@@ -167,8 +154,6 @@
                                 <div class="d-flex">
                                     <input type="text" class="form-control" id="trtm_relationship"
                                         name="trtm_relationship" placeholder="Enter Relationship">
-                                    <div class="invalid-feedback" id="trtm_relationship_error" ></div>
-
                                 </div>
                             </div>
                         </div> -->
@@ -189,7 +174,7 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>               
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -202,8 +187,6 @@
                                         <option value="Female">Female</option>
                                         <option value="Other">Other</option>
                                     </select>
-                                    
-                                    <div class="invalid-feedback" id="trtm_gender_error" ></div>
                                 </div>
                             </div>
                         </div>
@@ -279,12 +262,13 @@
         //         tableTraveler.clear().draw();
 
         //     } else {
-            setTimeout(function(){
+
+        setTimeout(function(){
                 tableTraveler = $('#tableTraveler').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ route('masteradmin.family-member.index', $trip_id ?? '') }}",
+                        url: "{{ route('masteradmin.family-member.index', $traveler_id) }}",
                         type: 'GET',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -292,21 +276,13 @@
                     },
                     columns: [
                         { data: 'trtm_full_name', name: 'trtm_full_name' },
-                        // {
-                        //     data: null,
-                        //     name: 'trtm_full_name',
-                        //     render: function(data, type, row) {
-                        //         return row.trtm_first_name + ' ' + (row.trtm_middle_name ? row.trtm_middle_name : '') + ' ' + row.trtm_last_name;
-                        //     }
-                        // },
                         { data: 'trtm_relationship', name: 'trtm_relationship' },
                         { data: 'trtm_age', name: 'trtm_age' },
                         { data: 'action', name: 'action', orderable: false, searchable: false }
                     ]
                 });
-        },1000);  
-            // }
-        // }
+            },1000);  
+            
    
         //create popup
         $('#createNew').click(function() {
@@ -315,89 +291,50 @@
             $('#Form')[0].reset();
             $('#modelHeading').html("Add Household");
             $('body').addClass('modal-open');
+            $('#trtm_relationship').trigger('change.select2');
+            $('#trtm_gender').trigger('change.select2');
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModel'));
             editModal.show();
-
-            // Clear error messages and invalid classes
-            $('#Form .form-control').removeClass('is-invalid');
-            $('#Form .invalid-feedback').hide();
         });
 
-        // Insert/Update data with validation
+        //insert/update data
         $('#saveBtn').click(function(e) {
 
-        e.preventDefault();
-        
-         // Clear any previous error messages and invalid styles
-        $('#Form .form-control').removeClass('is-invalid');
-        $('#Form .invalid-feedback').hide();
+            e.preventDefault();
+            $(this).html('Sending..');
 
-        // Validation: Check required fields
-        var isValid = true;
+            var url = '';
+            var method = '';
+            var successMessage = '';
+            
+            if ($('#trtm_id').val() === '') {
+                // Add new data
+                url = "{{ route('masteradmin.family-member.store',$traveler_id) }}";
+                method = "POST";
+                successMessage = 'Data has been successfully inserted!'; 
 
-        // Clear validation messages and invalid classes before checking new validation
-        $('#Form .form-control').removeClass('is-invalid');
-        $('#Form .invalid-feedback').hide();
+            } else {
+                var trtm_id = $('#trtm_id').val();
+                url = "{{ route('masteradmin.family-member.update', ':trtm_id') }}";
+                url = url.replace(':trtm_id', trtm_id);
 
-        // Custom validation logic
-        if ($('#trtm_first_name').val().trim() === '') {
-            $('#trtm_first_name').addClass('is-invalid');
-            $('#trtm_first_name_error').text('First Name is required').show();
-            isValid = false;
-        }
+                method = "PATCH";
+                successMessage = 'Data has been successfully updated!';
+            }
 
-        if ($('#trtm_relationship').val().trim() === '') {
-            $('#trtm_relationship').addClass('is-invalid');
-            $('#trtm_relationship_error').text('Relationship is required').show();
-            isValid = false;
-        }
-
-        if ($('#trtm_gender').val() === '') {
-            $('#trtm_gender').addClass('is-invalid');
-            $('#trtm_gender_error').text('Gender is required').show();
-            isValid = false;
-        }
-
-        if (!isValid) {
-            return; // Don't proceed with the AJAX request if validation fails
-        }
-
-        // Proceed with the AJAX request if validation passes
-        $(this).html('Sending..');
-        var url = '';
-        var method = '';
-        var successMessage = '';
-
-        if ($('#trtm_id').val() === '') {
-            // Add new data
-            url = "{{ route('masteradmin.family-member.store', $trip_id ?? '') }}";
-            method = "POST";
-            successMessage = 'Data has been successfully inserted!';
-        } else {
-            var trtm_id = $('#trtm_id').val();
-            var trip_id = '{{ $trip_id ?? '' }}'; 
-            var url = "{{ route('masteradmin.family-member.update', [$trip_id ?? '', ':trtm_id']) }}";
-            url = url.replace(':trtm_id', trtm_id);
-
-            method = "PATCH";
-            successMessage = 'Data has been successfully updated!';
-        }
-
-        $.ajax({
-            data: $('#Form').serialize(),
-            url: url,
-            type: method,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data && data.success) {
-                    // resetForm();
-                    $('#Form .form-control').removeClass('is-invalid');
-                    $('#Form .invalid-feedback').remove();
-
+            $.ajax({
+                data: $('#Form').serialize(),
+                url: url,
+                type: method,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data && data.success) {
                     $('#tableTraveler').DataTable().ajax.reload();
+                    
+                    // tableTraveler.ajax.reload();
                     $('#success-message').text(successMessage);
                     $('#success-modal').modal('show');
                     $('#ajaxModel').modal('hide');
@@ -406,22 +343,21 @@
                     $('#ajaxModel').css('display', 'none');
                     $('#saveBtn').html('Save');
                     $('#Form')[0].reset();
+                    }
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                    $('#saveBtn').html('Save Changes');
                 }
-            },
-            error: function(data) {
-                console.log('Error:', data);
-                $('#saveBtn').html('Save Changes');
-            }
-        });
+            });
         });
 
-        
         //edit popup
         $('body').on('click', '.editMember', function() {
             var id = $(this).data('id');
             // alert(id);
-            $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id', 'trip_id' => $trip_id ?? '0']) }}"
-                .replace('id', id).replace('{{ $trip_id ?? '0' }}', '{{ $trip_id ?? '0' }}'),
+            $.get("{{ route('masteradmin.family-member.edit', ['id' => 'id']) }}"
+                .replace('id', id),
                 function(data) {
                     // console.log(data);
                     $('#modelHeading').html("Edit Household");
@@ -471,7 +407,7 @@
             e.preventDefault();
             var trtm_id = $(this).data("id");
             //  alert(trtm_id);
-            var url = "{{ route('masteradmin.family-member.destroy', [$trip_id ?? '', ':trtm_id']) }}";
+            var url = "{{ route('masteradmin.family-member.destroy', [$traveler_id, ':trtm_id']) }}";
             url = url.replace(':trtm_id', trtm_id);
             // alert(url);
             $.ajax({
@@ -522,7 +458,7 @@
         locale: 'en',
         altInput: true,
         dateFormat: "m/d/Y",
-        altFormat: "d/m/Y",
+        altFormat: "m/d/Y",
         allowInput: true,
     });
 

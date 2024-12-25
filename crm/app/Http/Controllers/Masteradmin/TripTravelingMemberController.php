@@ -155,6 +155,7 @@ class TripTravelingMemberController extends Controller
 
 public function index(Request $request, $id)
 {
+    //dd($id);
     $access = view()->shared('access');
     $user = Auth::guard('masteradmins')->user();
     

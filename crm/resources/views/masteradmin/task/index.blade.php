@@ -50,9 +50,9 @@
               <div class="col-lg-3 col-1024 col-md-6 px-10">
                   <select id="trip_traveler" class="form-control select2" style="width: 100%;" name="trip_traveler">
                       <option value="" default >Choose Traveler</option>
-                      @foreach($trip as $value)
-                      <option value="{{ $value->tr_traveler_name }}">
-                          {{ $value->tr_traveler_name }}
+                      @foreach($trips_traveller as $value)
+                      <option value="{{ $value->trtm_id }}">
+                          {{ $value->trtm_first_name }}
                       </option>
                       @endforeach
                   </select>

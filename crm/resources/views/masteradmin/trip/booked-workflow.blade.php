@@ -92,7 +92,7 @@
 										stroke="#384150" stroke-width="1.5" stroke-linecap="round"
 										stroke-linejoin="round" />
 								</svg>
-								Traveler: {{ $trip->tr_traveler_name ?? '' }}
+								Traveler: {{ $trip->trtm_first_name ?? '' }}
 							</div>
 							<div class="attachment">
 								Trip Price: &#36;{{ $trip->tr_value_trip ?? '0' }}

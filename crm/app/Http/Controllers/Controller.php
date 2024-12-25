@@ -476,6 +476,12 @@ class Controller extends BaseController
                     }
                 });
 
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_traveler_id')) {
+                        $table->string('tr_traveler_id')->nullable();
+                    }
+                });
+
                 
                 
             }

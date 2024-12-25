@@ -51,8 +51,8 @@
                             name="trip_traveler">
                             <option value="" default>Choose Traveler</option>
                             @foreach ($traveller as $value)
-                                <option value="{{ $value->tr_traveler_name }}">
-                                    {{ $value->tr_traveler_name }}
+                                <option value="{{ $value->trtm_id }}">
+                                    {{ $value->trtm_first_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -103,32 +103,19 @@
         pendingDataTable = $('#pendingDataTable').DataTable({
             processing: true,
             serverSide: true,
-            timeout: 10000,
             ajax: {
                 url: "{{ route('masteradmin.trip.follow_up_trip') }}",
                 type: 'GET',
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-        trip_agent: $('#trip_agent').val(),
-        trip_traveler: $('#trip_traveler').val()
-    },
-                xhrFields: {
-        withCredentials: true
-    },
-                error: function(xhr, status, error) {
-                    // Handle unauthorized error (status 401)
-                    if (xhr.status === 401) {
-                        // Show a message to the user
-                        alert('Session expired or unauthorized access. Please log in again.');
-                    } else {
-                        console.error('Error:', error);
-                    }
+                data: function (d) {
+                    d.trip_agent = $('#trip_agent').val(); // Fetch current filter values
+                    d.trip_traveler = $('#trip_traveler').val();
                 }
+               
             },
             columns: [
                 { data: 'tr_name', name: 'tr_name' },
                 { data: 'agent_name', name: 'agent_name' },
-                { data: 'tr_traveler_name', name: 'tr_traveler_name' },
+                { data: 'trtm_first_name', name: 'trtm_first_name' },
                 { data: 'tr_start_date', name: 'tr_start_date' },
                 { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -140,44 +127,30 @@
         completedDatatable = $('#completedDatatable').DataTable({
             processing: true,
             serverSide: true,
-            timeout: 20000,
             ajax: {
                 url: "{{ route('masteradmin.trip.follow_up_complete_trip') }}",
                 type: 'GET',
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-        trip_agent: $('#trip_agent').val(),
-        trip_traveler: $('#trip_traveler').val()
-    },
-                xhrFields: {
-                    withCredentials: true
-                },
-                error: function(xhr, status, error) {
-                    // Handle unauthorized error (status 401)
-                    if (xhr.status === 401) {
-                        // Show a message to the user
-                        alert('Session expired or unauthorized access. Please log in again.');
-                    } else {
-                        console.error('Error:', error);
-                    }
+                data: function (d) {
+                    d.trip_agent = $('#trip_agent').val(); // Fetch current filter values
+                    d.trip_traveler = $('#trip_traveler').val();
                 }
             },
             columns: [
                 { data: 'tr_name', name: 'tr_name' },
                 { data: 'agent_name', name: 'agent_name' },
-                { data: 'tr_traveler_name', name: 'tr_traveler_name' },
+                { data: 'trtm_first_name', name: 'trtm_first_name' },
                 { data: 'trip_date', name: 'trip_date' },
                 { data: 'complete_days', name: 'complete_days' },
                 { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
-        });
+                ]
+            });
     }, 2000);
 
     // Handle filter changes and reload tables
-    $('#trip_agent, #trip_traveler').on('change', function() {
-        // $('#pendingDataTable').DataTable().ajax.reload();
-        $('#completedDatatable').DataTable().ajax.reload();
+    $('#trip_agent, #trip_traveler').on('change', function () {
+            completedDatatable.ajax.reload(); // Reload the DataTable when filters are changed
+            pendingDataTable.ajax.reload();
     });
 
     // Clear filters and reload tables

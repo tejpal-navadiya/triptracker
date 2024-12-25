@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 
 
 
-class AgencyController - Copy extends Controller
+class AgencyController extends Controller
 {
     public function index(): View
     {

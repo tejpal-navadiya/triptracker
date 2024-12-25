@@ -36,8 +36,8 @@
                                     name="trip_traveler">
                                     <option value="" default >Choose Traveler</option>
                                     @foreach ($trips_traveller as $value)
-                                        <option value="{{ $value->tr_traveler_name }}">
-                                            {{ $value->tr_traveler_name }}
+                                        <option value="{{ $value->trtm_id  ?? ''}}">
+                                            {{ $value->trtm_first_name ?? '' }}
                                         </option>
                                     @endforeach
                                 </select>

@@ -52,8 +52,8 @@
                 <option>Select</option>
                   @foreach($travellers as $travel) <!-- Ensure the variable name is correct -->
                   
-                      <option value="{{ $travel->tr_id }}" {{ isset($emailTemplate) && $emailTemplate->traveller_id == $travel->traveller_id ? 'selected' : '' }}>
-                          {{ $travel->tr_traveler_name }} <!-- Display the traveller name or other attribute -->
+                      <option value="{{ $travel->trtm_id }}" {{ isset($emailTemplate) && $emailTemplate->traveller_id == $travel->traveller_id ? 'selected' : '' }}>
+                          {{ $travel->trtm_first_name }} <!-- Display the traveller name or other attribute -->
                       </option>
                   @endforeach
               </select>

@@ -13,7 +13,7 @@ use App\Models\Trip;
 use App\Models\TaskStatus;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
-
+use App\Models\TripTravelingMember;
 
 
 
@@ -359,10 +359,38 @@ class TripTaskController extends Controller
         }else{
             $agency_user = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
         }
-       
+        $traveler = new TripTravelingMember();
+        $travelerTable = $traveler->getTable();
+        $specificId = $user->users_id;
     
         $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
 
+        if($user->users_id && $user->role_id ==0 ){
+            $trips_traveller = TripTravelingMember::where('trtm_status', 1)
+            ->from($travelerTable)
+            // ->join($masterUserTable, $travelerTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
+            ->where('lead_status',1)
+            ->select([
+                $travelerTable . '.*', 
+                $travelerTable . '.trtm_first_name' 
+            ])->get();
+           // dd($trips_traveller);
+        }else{
+            // $trips_traveller =Trip::where('id', $user->users_id)->get();  
+            
+            $trips_traveller = TripTravelingMember::where('trtm_status', 1)
+            ->from($travelerTable)
+            // ->join($masterUserTable, $travelerTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
+            ->where('lead_status',1)
+            ->where(function($query) use ($travelerTable, $user, $specificId) {
+                $query->where($travelerTable . '.trtm_agent_id', $user->users_id)
+                    ->orWhere($travelerTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $travelerTable . '.*', 
+                $travelerTable . '.trtm_first_name' 
+            ])->get();
+        }
 
         $trip = $tripQuery->get();
       //  dd($trip);
@@ -379,13 +407,27 @@ class TripTaskController extends Controller
            if($user->users_id && $user->role_id ==0 ){
                 $taskQuery = TripTask::
                 leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
-                ->with(['trip', 'tripCategory', 'taskstatus']);
+                ->with([
+                    'trip.lead_traveler_name' => function ($query) {
+                        $query->select('trtm_id', 'trtm_first_name'); // Fetch only the necessary fields
+                    },
+                    'trip',
+                    'tripCategory',
+                    'taskstatus'
+                ]);
                 
             }else{
                 $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where('trvt_agent_id', $user->users_id)
-                ->with(['trip', 'tripCategory', 'taskstatus']);
+                ->with([
+                    'trip.lead_traveler_name' => function ($query) {
+                        $query->select('trtm_id', 'trtm_first_name'); // Fetch only the necessary fields
+                    },
+                    'trip',
+                    'tripCategory',
+                    'taskstatus'
+                ]);
            }
            
 
@@ -400,13 +442,13 @@ class TripTaskController extends Controller
     
             if ($tripTraveler) {
                 $taskQuery->whereHas('trip', function ($q) use ($tripTraveler) {
-                    $q->where('tr_traveler_name', 'LIKE', "%{$tripTraveler}%");
+                    $q->where('tr_traveler_id', 'LIKE', "%{$tripTraveler}%");
                 });
             }
     
             $tasks = $taskQuery->get();
            
-
+            // dd($tasks);
             return Datatables::of($tasks)
                 
                 ->addIndexColumn()
@@ -423,7 +465,9 @@ class TripTaskController extends Controller
                     return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));
                 })
                 ->addColumn('traveler_name', function ($document) {
-                    return optional($document->trip)->tr_traveler_name ?? '';
+                    //dd($document->trip, $document->trip->lead_traveler_name ?? null);
+
+                    return optional($document->trip->lead_traveler_name ?? '')->trtm_first_name ?? '';
                 })
                 ->addColumn('task_status_name', function ($document) {
                     return optional($document->taskstatus)->ts_status_name ?? '';
@@ -479,7 +523,7 @@ class TripTaskController extends Controller
         $taskstatus = TaskStatus::all();
       
         
-        return view('masteradmin.task.index', compact('task', 'taskCategory','trip','agency_user','taskstatus','user'));
+        return view('masteradmin.task.index', compact('task', 'taskCategory','trip','agency_user','taskstatus','user','trips_traveller'));
     }
     
     public function incompleteDetails(Request $request)
@@ -505,6 +549,38 @@ class TripTaskController extends Controller
        
     
         $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
+        $traveler = new TripTravelingMember();
+        $travelerTable = $traveler->getTable();
+        $specificId = $user->users_id;
+    
+        $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
+
+        if($user->users_id && $user->role_id ==0 ){
+            $trips_traveller = TripTravelingMember::where('trtm_status', 1)
+            ->from($travelerTable)
+            // ->join($masterUserTable, $travelerTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
+            ->where('lead_status',1)
+            ->select([
+                $travelerTable . '.*', 
+                $travelerTable . '.trtm_first_name' 
+            ])->get();
+           // dd($trips_traveller);
+        }else{
+            // $trips_traveller =Trip::where('id', $user->users_id)->get();  
+            
+            $trips_traveller = TripTravelingMember::where('trtm_status', 1)
+            ->from($travelerTable)
+            // ->join($masterUserTable, $travelerTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
+            ->where('lead_status',1)
+            ->where(function($query) use ($travelerTable, $user, $specificId) {
+                $query->where($travelerTable . '.trtm_agent_id', $user->users_id)
+                    ->orWhere($travelerTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->select([
+                $travelerTable . '.*', 
+                $travelerTable . '.trtm_first_name' 
+            ])->get();
+        }
 
 
         $trip = $tripQuery->get();
@@ -529,7 +605,14 @@ class TripTaskController extends Controller
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where($tripTaskTable.'.trvt_date', '=', $today) 
                 ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
-                ->with(['trip', 'tripCategory', 'taskstatus']);
+                ->with([
+                    'trip.lead_traveler_name' => function ($query) {
+                        $query->select('trtm_id', 'trtm_first_name'); // Fetch only the necessary fields
+                    },
+                    'trip',
+                    'tripCategory',
+                    'taskstatus'
+                ]);
                 
             }else{
                 $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
@@ -538,7 +621,14 @@ class TripTaskController extends Controller
                 ->where($tripTaskTable.'.status', 1)
                 ->where($tripTaskTable.'.trvt_date', '=', $today) 
                 ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
-                ->with(['trip', 'tripCategory', 'taskstatus']);
+                ->with([
+                    'trip.lead_traveler_name' => function ($query) {
+                        $query->select('trtm_id', 'trtm_first_name'); // Fetch only the necessary fields
+                    },
+                    'trip',
+                    'tripCategory',
+                    'taskstatus'
+                ]);
             }
            
 
@@ -556,7 +646,7 @@ class TripTaskController extends Controller
     
             if ($tripTraveler) {
                 $taskQuery->whereHas('trip', function ($q) use ($tripTraveler) {
-                    $q->where('tr_traveler_name', 'LIKE', "%{$tripTraveler}%");
+                    $q->where('tr_traveler_id', 'LIKE', "%{$tripTraveler}%");
                 });
             }
             // \DB::enableQueryLog();
@@ -580,7 +670,8 @@ class TripTaskController extends Controller
                     return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));
                 })
                 ->addColumn('traveler_name', function ($document) {
-                    return optional($document->trip)->tr_traveler_name ?? '';
+                    return optional($document->trip->lead_traveler_name ?? '')->trtm_first_name ?? '';
+
                 })
                 ->addColumn('task_status_name', function ($document) {
                     return optional($document->taskstatus)->ts_status_name ?? '';
@@ -634,7 +725,7 @@ class TripTaskController extends Controller
         $taskstatus = TaskStatus::all();
       
         
-    return view('masteradmin.task.index',compact('task','taskCategory', 'agency_user','trip'));
+    return view('masteradmin.task.index',compact('task','taskCategory', 'agency_user','trip','trips_traveller'));
     }
 
     public function incompleteDetails1(Request $request)

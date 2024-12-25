@@ -34,7 +34,7 @@
                                 <tr>
                                     <td>{{ $comvalue->tr_name ?? '' }}</td>
                                     <td>{{ $comvalue->users_first_name ?? ''}} {{$comvalue->users_last_name ?? '' }}</td>
-                                    <td>{{ $comvalue->tr_traveler_name ?? ''}}</td>
+                                    <td>{{ $comvalue->trtm_first_name ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($comvalue->tr_start_date ?? '')->format('M d, Y') }} - {{ \Carbon\Carbon::parse($comvalue->tr_end_date ?? '')->format('M d, Y') }}</td>
                                     <td>
                                     <?php 

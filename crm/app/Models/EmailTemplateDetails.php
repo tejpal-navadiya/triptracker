@@ -27,7 +27,7 @@ class EmailTemplateDetails extends Model
 
     public function lead_traveler()
     {
-        return $this->belongsTo(Trip::class, 'traveller_id', 'tr_id');
+        return $this->belongsTo(TripTravelingMember::class, 'traveller_id', 'trtm_id');
     }
 
 }

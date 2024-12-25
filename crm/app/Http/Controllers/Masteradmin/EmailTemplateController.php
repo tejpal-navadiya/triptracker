@@ -10,6 +10,7 @@ use App\Models\EmailTemplate;
 use App\Models\EmailTemplateDetails;
 use App\Models\Trip;
 use App\Models\EmailCategory;
+use App\Models\TripTravelingMember;
 
 use Illuminate\View\View;
 class EmailTemplateController extends Controller
@@ -131,9 +132,10 @@ public function add_emailtemplate(): View
     $EmailTemplate = EmailTemplateDetails::where(['id' => $user->users_id])->get();
     $user = Auth::guard('masteradmins')->user();
     $categories = EmailCategory::get();
-    $travellers = Trip::select('tr_traveler_name','tr_id')->distinct()->get();
+    $travellers = TripTravelingMember::select('trtm_id','trtm_first_name')->where('trtm_status', 1)
+    ->where('lead_status',1)->distinct()->get();
     
-    // dd($traveller);
+    // dd($travellers);
     return view('masteradmin.emailtemplate.add_email', compact('categories' ,'travellers'));
 }
 
@@ -173,11 +175,15 @@ public function fetchEmailText(Request $request)
 // }
 public function fetchTravellerDetails(Request $request)
 {
+    // dD($request->all());
     // $traveller_id = $request->input('tr_id');
     // dd($traveller_id);
 
     // Fetch traveller by id
-    $traveller = Trip::where('tr_id',$request->traveller_id)->firstOrFail();
+    $traveller = TripTravelingMember::select('trtm_id','trtm_first_name')->where('trtm_status', 1)
+    ->where('lead_status',1)->where('trtm_id',$request->traveller_id)->firstOrFail();
+    
+    // $traveller = Trip::where('tr_id',$request->traveller_id)->firstOrFail();
   // dd($traveller);
     if (!$traveller) {
         // If traveller is not found, return an error response or handle it accordingly
@@ -186,8 +192,8 @@ public function fetchTravellerDetails(Request $request)
 
     // Now safely access traveller properties
     return response()->json([
-        'tr_traveler_name' => $traveller->tr_traveler_name,
-        'tr_number' => $traveller->tr_number,
+        'tr_traveler_name' => $traveller->trtm_first_name,
+        'tr_number' => $traveller->trtm_number,
         // 'other_details' => $traveller->other_details, // Replace with actual fields
     ]);
 }

@@ -76,5 +76,10 @@ class Trip extends Model
     {
         return $this->belongsTo(Cities::class, 'tr_city', 'id');
     }
+
+    public function lead_traveler_name()
+    {
+        return $this->belongsTo(TripTravelingMember::class, 'tr_traveler_id', 'trtm_id');
+    }
     
 }

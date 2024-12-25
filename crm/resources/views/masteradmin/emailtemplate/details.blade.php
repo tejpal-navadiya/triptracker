@@ -72,7 +72,7 @@
                                         <?php //dd($template->category->email_cat_id ?? ''); ?>
                                             <tr>
                                                 <td>{{ $template->email_category->email_cat_name ?? '' }}</td>
-                                                <td>{{ $template->lead_traveler->tr_traveler_name ?? '' }}</td>
+                                                <td>{{ $template->lead_traveler->trtm_first_name ?? '' }}</td>
                                                 <td>{{ $template->email_subject ?? '' }}</td>
                                                 <td class="text-right">
                                                     <!-- Action buttons (Edit, Delete) -->
