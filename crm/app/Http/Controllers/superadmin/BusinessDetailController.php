@@ -609,7 +609,7 @@ public function update(Request $request, $id)
             'plan_type' => $period,
         ]);
         
-      
+        
 
         // login URL
         $loginUrl = route('masteradmin.login');

@@ -163,7 +163,7 @@ Route::group(['prefix' => $adminRoute], function () {
         //agency delete
           Route::delete('/businessdetails/{id}/{user_id}', [BusinessDetailController::class, 'destroy'])->name('businessdetails.destroy');
 
-
+       
     });
 });
 
@@ -522,6 +522,10 @@ Route::group(['prefix' => $busadminRoute], function () {
         
         //trip traveler serach bar 
         Route::get('trip/api/travelers', [TripController::class, 'getTravelerNames'])->name('travelers.autocomplete');
+       
+        //preferences
+        Route::post('/trip-preferences/{id}', [TripController::class, 'preferencesStore'])->name('trip-preferences.store');
+
 
          
     });

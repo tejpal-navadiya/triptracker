@@ -860,6 +860,72 @@ class Controller extends BaseController
                 $table->timestamps();
             });
         }
+
+        //preference
+        if (!Schema::hasTable($storeId.'_tc_trip_preference')){   
+            Schema::create($storeId.'_tc_trip_preference', function (Blueprint $table) use ($storeId) {
+                $table->integer('preference_id')->unique()->autoIncrement();
+                $table->string('id')->nullable()->default(0);
+                $table->string('tr_id')->nullable();
+                $table->string('perferred_airport')->nullable();
+                $table->string('secondary_airport')->nullable();
+                $table->string('perferred_airline')->nullable();
+                $table->string('secondary_airline')->nullable();
+                $table->string('perferred_class')->nullable();
+                $table->string('perferred_seat')->nullable();
+                $table->text('air_notes')->nullable();
+                $table->string('preferred_embarkation_port')->nullable();
+                $table->string('secondary_embarkation_port')->nullable();
+                $table->string('favoriate_curuise_line')->nullable();
+                $table->string('twond_favoriate_curuise_line')->nullable();
+                $table->string('cabine_preference')->nullable();
+                $table->string('preferred_deck_location')->nullable();
+                $table->string('curuise_note')->nullable();
+                $table->string('favorite_hotel_brand')->nullable();
+                $table->string('preferred_hotel_type')->nullable();
+                $table->string('bed_preference')->nullable();
+                $table->string('hotel_notes')->nullable();
+                $table->string('favorite_resort')->nullable();
+                $table->string('secoundary_resort')->nullable();
+                $table->string('preferred_room_type')->nullable();
+                $table->string('secoundary_room_type')->nullable();
+                $table->string('preferred_meal_plan')->nullable();
+                $table->string('preferred_atmosphere')->nullable();
+                $table->string('preferred_resort_type')->nullable();
+                $table->string('resort_notes')->nullable();
+                $table->string('favorite_toure_company')->nullable();
+                $table->string('secoundary_favorite_toure_company')->nullable();
+                $table->string('guided_tours_preferred_room_type')->nullable();
+                $table->string('guided_tours_notes')->nullable();
+                $table->string('favorite_car_rental_company')->nullable();
+                $table->string('secoundary_favrioute_car_reantal_company')->nullable();
+                $table->string('preferred_car_type')->nullable();
+                $table->string('car_rental_notes')->nullable();
+                $table->string('favorite_theme_park')->nullable();
+                $table->string('secoundary_favorite_theme_park')->nullable();
+                $table->string('oneside_offside_hotel')->nullable();
+                $table->string('theme_park_notes')->nullable();
+                $table->tinyInteger('preference_status')->default(0)->nullable();
+                $table->timestamps();
+            });
+        }else{
+            Schema::table($storeId.'_tc_trip_preference', function (Blueprint $table) use ($storeId) {
+                if (!Schema::hasColumn($storeId.'_tc_trip_preference', 'guided_tours_preferred_room_type')) {
+                    $table->string('guided_tours_preferred_room_type')->nullable();
+                }
+            });
+            Schema::table($storeId.'_tc_trip_preference', function (Blueprint $table) use ($storeId) {
+                if (!Schema::hasColumn($storeId.'_tc_trip_preference', 'guided_tours_notes')) {
+                    $table->string('guided_tours_notes')->nullable();
+                }
+            });
+
+            Schema::table($storeId.'_tc_trip_preference', function (Blueprint $table) use ($storeId) {
+                if (!Schema::hasColumn($storeId.'_tc_trip_preference', 'tr_id')) {
+                    $table->string('tr_id')->nullable();
+                }
+            });
+        }
     
     }
         

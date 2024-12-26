@@ -26,7 +26,7 @@ class TravelerDocumentController extends Controller
         $document = TravelerDocument::where(['lead_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
         
 
-       // dd($document);
+    //    dd($document);
     
         if ($request->ajax()) {
             $document = TravelerDocument::where(['lead_id' => $id])->with(['traveler', 'documenttype','trip'])->latest()->get();
@@ -39,7 +39,7 @@ class TravelerDocumentController extends Controller
                         $middleName = $document->traveler->trtm_middle_name ?? '';
                         $lastName = $document->traveler->trtm_last_name ?? '';
                         
-                        return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name;
+                        return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name ?? '';
                     })
                     ->addColumn('document_type', function($document) {
                         return $document->documenttype->docty_name ?? 'Unknown Document Type';

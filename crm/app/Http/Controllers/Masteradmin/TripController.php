@@ -28,6 +28,7 @@ use App\Models\TravelerDocument;
 use App\Models\PredefineTaskCategory;
 use DataTables;
 use App\Models\TravelingRelationship;
+use App\Models\TripPreference;
 
 
 class TripController extends Controller
@@ -351,6 +352,8 @@ class TripController extends Controller
                 $travelerItem->tr_id = $traveler->tr_id;
                 $travelerItem->id = $user->users_id;
                 $travelerItem->trtm_status = 1;
+                $travelerItem->lead_id = $validatedData['traveler_id'];
+                $travelerItem->lead_status = 2;
                 $travelerItem->trtm_id = $uniqueId1;
 
                 $travelerItem->save();
@@ -453,8 +456,12 @@ class TripController extends Controller
     public function edit($id)
     {
         // dd($id);
-        $trip = Trip::where('tr_id', $id)->with('lead_traveler_name')->firstOrFail();
-        $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
+        $trip = Trip::where('tr_id', $id)->with(relations: 'lead_traveler_name')->firstOrFail();
+        
+        $tripmember = TripTravelingMember::where('lead_id', $trip->tr_traveler_id)
+        ->orWhere('trtm_id', $trip->tr_traveler_id)
+        ->get();
+                // dd($trip->tr_traveler_id);
         $triptinerary = TripItineraryDetail::where('tr_id', $trip->tr_id)->get();
         $typeoftrip = TypeOfTrip::where('tr_id', $trip->tr_id)->orderBy('trip_type_name','asc')->get();
         // dd($trip);
@@ -577,6 +584,8 @@ class TripController extends Controller
                 $travelerItem->tr_id = $id;
                 $travelerItem->id = $user->users_id;
                 $travelerItem->trtm_status = 1;
+                $travelerItem->lead_id = $validatedData['traveler_id'];
+                $travelerItem->lead_status = 2;
                 $travelerItem->trtm_id = $uniqueId1;
 
                 $travelerItem->save();
@@ -812,10 +821,31 @@ class TripController extends Controller
         
         $travelingrelationship = TravelingRelationship::where(['rel_status' => 1])->get();
 
-        // dd($task);            
+        $tripTypes = TripType::whereIn('ty_name', ['Air', 'Cruise', 'Hotel', 'Resort', 'Guided Tours', 'Car Rental', 'Theme Park'])
+        ->where('ty_status', '1')
+        ->orderByRaw("FIELD(ty_name, 'Air', 'Cruise', 'Hotel', 'Resort', 'Guided Tours', 'Car Rental', 'Theme Park')")
+        ->get(['ty_id', 'ty_name']);
+
+        $preference = TripPreference::where('id', $user->users_id)->where('tr_id', $id)
+        ->first();
+
+        $membersCount = TripTravelingMember::with(['travelingrelationship'])
+        ->where('lead_id', $traveler_id)
+        ->where('lead_status', '!=', 1) // Exclude lead status 1
+        ->count();
+
+        // Fetch count of records from the custom table
+        $uniq_id = $user->user_id; 
+        $tripDataCount = \DB::table($uniq_id . '_tc_trip_traveling_member')
+            ->where('trtm_id', $traveler_id)
+            ->where('lead_status', 1) // Only the main lead (lead_status = 1)
+            ->count();
+            $memberTotalCount = $membersCount + $tripDataCount;
+
+        // dd($totalCount);            
         //dd($tripTraveling);
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship','user_id','uniq_id','traveler_id'));
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship','user_id','uniq_id','traveler_id','tripTypes','preference','memberTotalCount'));
     }
 
     public function travelersDetails(): View
@@ -907,18 +937,18 @@ class TripController extends Controller
     {
         // dd($id);
         $trip = TripTravelingMember::where('trtm_id', $id)->firstOrFail();
-        $tripmember = TripTravelingMember::where('tr_id', $trip->tr_id)->get();
+        $tripmember = TripTravelingMember::where('trtm_id', $id)->get();
         // dd($tripmember);
         $triptype = TripType::all();
 
 
         $country = Countries::all();
 
-        $selectedCountryId = $trip->tr_country;
+        $selectedCountryId = $trip->trtm_country;
 
         $states = States::where('country_id', $selectedCountryId)->get();
 
-        $selectedStateId = $trip->tr_state;
+        $selectedStateId = $trip->trtm_state;
 
         $city = Cities::where('state_id', $selectedStateId)->get();
 
@@ -3107,6 +3137,111 @@ public function destroyTraveler($id): RedirectResponse
         ->with('success', 'Traveler deleted successfully.');
 }
 
+public function preferencesStore(Request $request,$id)
+{
+    // dd($request->all());
+        $user = Auth::guard('masteradmins')->user();
 
+        $request->validate([
+            'perferred_airport' => 'nullable|string|max:255',
+            'secondary_airport' => 'nullable|string|max:255',
+            'perferred_airline' => 'nullable|string|max:255',
+            'secondary_airline' => 'nullable|string|max:255',
+            'perferred_class' => 'nullable|string|max:255',
+            'perferred_seat' => 'nullable|string|max:255',
+            'air_notes' => 'nullable|string',
+            'preferred_embarkation_port' => 'nullable|string|max:255',
+            'secondary_embarkation_port' => 'nullable|string|max:255',
+            'favoriate_curuise_line' => 'nullable|string|max:255',
+            'twond_favoriate_curuise_line' => 'nullable|string|max:255',
+            'cabine_preference' => 'nullable|string|max:255',
+            'preferred_deck_location' => 'nullable|string|max:255',
+            'curuise_note' => 'nullable|string',
+            'favorite_hotel_brand' => 'nullable|string|max:255',
+            'preferred_hotel_type' => 'nullable|string|max:255',
+            'bed_preference' => 'nullable|string|max:255',
+            'hotel_notes' => 'nullable|string',
+            'favorite_resort' => 'nullable|string|max:255',
+            'secoundary_resort' => 'nullable|string|max:255',
+            'preferred_room_type' => 'nullable|string|max:255',
+            'secoundary_room_type' => 'nullable|string|max:255',
+            'preferred_meal_plan' => 'nullable|string|max:255',
+            'preferred_atmosphere' => 'nullable|string|max:255',
+            'preferred_resort_type' => 'nullable|string|max:255',
+            'resort_notes' => 'nullable|string',
+            'favorite_toure_company' => 'nullable|string|max:255',
+            'secoundary_favorite_toure_company' => 'nullable|string|max:255',
+            'guided_tours_preferred_room_type' => 'nullable|string|max:255',
+            'guided_tours_notes' => 'nullable|string',
+            'favorite_car_rental_company' => 'nullable|string|max:255',
+            'secoundary_favrioute_car_reantal_company' => 'nullable|string|max:255',
+            'preferred_car_type' => 'nullable|string|max:255',
+            'car_rental_notes' => 'nullable|string',
+            'favorite_theme_park' => 'nullable|string|max:255',
+            'secoundary_favorite_theme_park' => 'nullable|string|max:255',
+            'oneside_offside_hotel' => 'nullable|string|max:255',
+            'theme_park_notes' => 'nullable|string',
+            'preference_status' => 'nullable|string|max:255',
+        ]);
+
+        $preference = TripPreference::where('id', $user->users_id)->where('tr_id', $id)->first();
+        $data = $request->only([
+            'perferred_airport',
+            'secondary_airport',
+            'perferred_airline',
+            'secondary_airline',
+            'perferred_class',
+            'perferred_seat',
+            'air_notes',
+            'preferred_embarkation_port',
+            'secondary_embarkation_port',
+            'favoriate_curuise_line',
+            'twond_favoriate_curuise_line',
+            'cabine_preference',
+            'preferred_deck_location',
+            'curuise_note',
+            'favorite_hotel_brand',
+            'preferred_hotel_type',
+            'bed_preference',
+            'hotel_notes',
+            'favorite_resort',
+            'secoundary_resort',
+            'preferred_room_type',
+            'secoundary_room_type',
+            'preferred_meal_plan',
+            'preferred_atmosphere',
+            'preferred_resort_type',
+            'resort_notes',
+            'favorite_toure_company',
+            'secoundary_favorite_toure_company',
+            'guided_tours_preferred_room_type',
+            'guided_tours_notes',
+            'favorite_car_rental_company',
+            'secoundary_favrioute_car_reantal_company',
+            'preferred_car_type',
+            'car_rental_notes',
+            'favorite_theme_park',
+            'secoundary_favorite_theme_park',
+            'oneside_offside_hotel',
+            'theme_park_notes',
+            'preference_status',
+            
+        ]);
+        if ($preference) {
+            $data['updated_at'] = now();
+            $preference->update($data);
+        } else {
+            // 'preference_id',
+            // 'id',
+            $data['id'] = $user->users_id;
+            $data['tr_id'] = $id;
+            $data['created_at'] = now();
+            $data['preference_status'] = 1;
+            // Create a new record if none exists
+            TripPreference::create($data);
+        }
+        
+        return redirect()->route('trip.view',$id)->with('success', 'Trip preferences saved successfully!');
+    }
    
 }
