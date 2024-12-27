@@ -29,6 +29,7 @@ use App\Models\PredefineTaskCategory;
 use DataTables;
 use App\Models\TravelingRelationship;
 use App\Models\TripPreference;
+use Illuminate\Support\Facades\Validator;
 
 
 class TripController extends Controller
@@ -459,8 +460,9 @@ class TripController extends Controller
         $trip = Trip::where('tr_id', $id)->with(relations: 'lead_traveler_name')->firstOrFail();
         
         $tripmember = TripTravelingMember::where('lead_id', $trip->tr_traveler_id)
-        ->orWhere('trtm_id', $trip->tr_traveler_id)
+        // ->orWhere('trtm_id', $trip->tr_traveler_id)
         ->get();
+        // dd($tripmember);
                 // dd($trip->tr_traveler_id);
         $triptinerary = TripItineraryDetail::where('tr_id', $trip->tr_id)->get();
         $typeoftrip = TypeOfTrip::where('tr_id', $trip->tr_id)->orderBy('trip_type_name','asc')->get();
@@ -569,10 +571,13 @@ class TripController extends Controller
         //TripTravelingMember::where('tr_id', $id)->update(['trtm_status' => 1]);
 
 
-        TripTravelingMember::where('tr_id', $id)->delete();
+        TripTravelingMember::
+        where('lead_id', $request->input('traveler_id'))
+        ->where('lead_status',2)
+        ->delete();
 
         $rawItems = $request->input('items');
-
+            //dd($rawItems);
         if (isset($rawItems) && is_array($rawItems) && count($rawItems) > 0) {
             foreach ($rawItems as $item) {
                 $travelerItem = new TripTravelingMember();
@@ -3142,7 +3147,8 @@ public function preferencesStore(Request $request,$id)
     // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
+            'traveler_id' => 'required|string|max:255',
             'perferred_airport' => 'nullable|string|max:255',
             'secondary_airport' => 'nullable|string|max:255',
             'perferred_airline' => 'nullable|string|max:255',
@@ -3182,10 +3188,18 @@ public function preferencesStore(Request $request,$id)
             'oneside_offside_hotel' => 'nullable|string|max:255',
             'theme_park_notes' => 'nullable|string',
             'preference_status' => 'nullable|string|max:255',
+        ], [
+            'traveler_id.required' => 'Please select a traveler',
         ]);
 
-        $preference = TripPreference::where('id', $user->users_id)->where('tr_id', $id)->first();
+        if ($validator->fails()) {
+            session()->flash('activeTab', 'preferenceinfo');
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $preference = TripPreference::where('id', $user->users_id)->where('tr_id', $id)->where('traveler_id', $request->traveler_id)->first();
         $data = $request->only([
+            'traveler_id',
             'perferred_airport',
             'secondary_airport',
             'perferred_airline',
@@ -3240,8 +3254,37 @@ public function preferencesStore(Request $request,$id)
             // Create a new record if none exists
             TripPreference::create($data);
         }
+        session()->flash('activeTab',  'preferenceinfo');
+
+        // return redirect()->route('trip.view',$id)->with('success', 'Trip preferences saved successfully!');
+        return redirect()->back()->with('success', 'Trip preferences saved successfully!');
         
-        return redirect()->route('trip.view',$id)->with('success', 'Trip preferences saved successfully!');
     }
-   
+  
+public function getFamilyMembers($id)
+{
+    $familyMembers = TripTravelingMember::where('lead_id', $id)
+    // ->orWhere('trtm_id', $trip->tr_traveler_id)
+    ->get();
+    $count = $familyMembers->count();
+    // dd($count);
+    return response()->json([
+        'success' => true,
+        'family_members' => $familyMembers,
+        'count' => $count
+    ]);
+}
+
+public function getTripPreferences($trvm_id)
+{
+    // Fetch the traveler's preferences from the TripPreference model
+    $preference = TripPreference::where('traveler_id', $trvm_id)->first();
+    // dD($preference);
+    // Return the data as JSON
+    return response()->json([
+        'success' => true,
+        'preference' => $preference,
+    ]);
+}
+
 }

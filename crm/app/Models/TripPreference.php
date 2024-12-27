@@ -14,6 +14,7 @@ class TripPreference extends Model
     protected $fillable = [
         'preference_id',
         'id',
+        'traveler_id',
         'perferred_airport',
         'secondary_airport',
         'perferred_airline',
@@ -24,7 +25,7 @@ class TripPreference extends Model
         'preferred_embarkation_port',
         'secondary_embarkation_port',
         'favoriate_curuise_line',
-        '2nd_favoriate_curuise_line',
+        'twond_favoriate_curuise_line',
         'cabine_preference',
         'preferred_deck_location',
         'curuise_note',

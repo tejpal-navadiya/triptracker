@@ -526,8 +526,12 @@ Route::group(['prefix' => $busadminRoute], function () {
         //preferences
         Route::post('/trip-preferences/{id}', [TripController::class, 'preferencesStore'])->name('trip-preferences.store');
 
+        //get all family member
+        Route::get('/travelers/{id}/family-members', [TripController::class, 'getFamilyMembers'])->name('travelers.family_members');
 
-         
+        //prefrence family member wise show
+        Route::get('/trip-preferences/{trvm_id}', [TripController::class, 'getTripPreferences'])->name('trip-preferences.show');
+
     });
      
 

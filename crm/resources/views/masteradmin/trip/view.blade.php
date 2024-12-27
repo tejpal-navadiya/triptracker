@@ -40,8 +40,11 @@
                     </div>
 
                     <div class="card-header d-flex p-0 justify-content-center tab_panal">
+                        @php
+                            $activeTab = session('activeTab', 'Traveleroverview'); // Default to 'personalinformation'
+                        @endphp
                         <ul class="nav nav-pills p-2 tab_box">
-                            <li class="nav-item"><a class="nav-link active" href="#Traveleroverview"
+                            <li class="nav-item"><a class="nav-link {{ $activeTab == 'Traveleroverview' ? 'active' : '' }}" href="#Traveleroverview"
                                     data-toggle="tab">Household Information</a></li>
                             <li class="nav-item"><a class="nav-link" href="#Agentinfo" data-toggle="tab">Agent
                                     Information</a></li>
@@ -50,12 +53,12 @@
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#Emailsinfo" data-toggle="tab">Related Emails</a>
                             </li>
-                            <li class="nav-item"><a class="nav-link" href="#preferenceinfo" data-toggle="tab">Preference</a>
+                            <li class="nav-item"><a class="nav-link {{ $activeTab == 'preferenceinfo' ? 'active' : '' }}" href="#preferenceinfo" data-toggle="tab">Preference</a>
                             </li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="tab-content px-20">
-                        <div class="tab-pane active" id="Traveleroverview">
+                        <div class="tab-pane {{ $activeTab == 'Traveleroverview' ? 'active' : '' }}" id="Traveleroverview">
                             @include('masteradmin.trip.traveler-information')
                         </div>
                         <!-- /.tab-pane -->
@@ -73,7 +76,7 @@
                         <div class="tab-pane" id="Emailsinfo">
                             @include('masteradmin.trip.email-information')
                         </div>
-                        <div class="tab-pane" id="preferenceinfo">
+                        <div class="tab-pane {{ $activeTab == 'preferenceinfo' ? 'active' : '' }}" id="preferenceinfo">
                             @include('masteradmin.trip.preference-information')
                         </div>
                         <!-- /.tab-pane -->
