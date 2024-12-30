@@ -986,7 +986,8 @@ function fetchFamilyMembers(travelerId) {
         url: "{{ route('travelers.family_members', ['id' => ':id']) }}".replace(':id', travelerId), // Replace :id with travelerId
         method: "GET",
         success: function (response) {
-            $("#tr_num_people").val(response.count);
+            
+            $("#tr_num_people").val(response.count+1);
             $('#dynamic_field').empty(); // Clear previous content
 
             if (response.success && response.family_members.length > 0) {
@@ -1054,9 +1055,11 @@ function fetchFamilyMembers(travelerId) {
                                     <div class="d-flex">
                                         <select class="form-control select2" style="width: 100%;" id="trtm_relationship${rowCount}" name="items[${rowCount}][trtm_relationship]">
                                             <option value="" default>Select Relationship</option>
+                                             @foreach ($travelingrelationship as $value)
                                                 <option value="{{ $value->rel_id }}" ${member.trtm_relationship === '{{ $value->rel_id }}' ? 'selected' : ''}>
                                                 {{ $value->rel_name }}
                                             </option>
+                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -1166,7 +1169,12 @@ function fetchFamilyMembers(travelerId) {
 
                 $('#add').click(function() {
                     // alert('add');
-                    rowCount++;
+                    var numofpeople = document.querySelector('#tr_num_people');
+                    var currentValue = parseInt(numofpeople.value) || 0; // Get the current value or default to 0 if empty
+                    // $rowCount = $index + 2; 
+                    // Set the new rowCount based on numofpeople's value
+                    var rowCount = currentValue+1;
+
                     $('#dynamic_field').append(`
          <div class="item-row row" id="row${rowCount}">
          <div class="col-md-12">
@@ -1295,6 +1303,7 @@ function fetchFamilyMembers(travelerId) {
          </div>
          <hr />
          `);
+         numofpeople.value = rowCount;
 
                     $(`#row${rowCount} .family-member-field`).hide();
                     $(`#row${rowCount} .trip-member-field`).hide();
@@ -1351,11 +1360,25 @@ function fetchFamilyMembers(travelerId) {
                 });
 
                 $(document).on('click', '.delete-item', function() {
-                    var rowId = $(this).attr("id");
-                    $('#row' + rowId).remove();
+                    // var rowId = $(this).attr("id");
+                    // $('#row' + rowId).remove();
 
-                    rowCount--;
-                    $('#tr_num_people').val(rowCount);
+                    // rowCount--;
+                    // $('#tr_num_people').val(rowCount);
+
+                    const rowId = $(this).attr("id"); // Get the ID of the button clicked
+                   // alert(rowId);
+                    // Remove the row with the corresponding ID
+                    $(`#row${rowId}`).remove();
+
+                    // Debugging: Ensure the correct row is targeted
+                    // console.log('Attempted to remove: #row' + rowId);
+
+                    // Dynamically calculate the remaining rows
+                    const remainingRows = $('.item-row').length + 1;
+                    //alert(remainingRows);
+                    // Update the total count in the #tr_num_people textbox
+                    $('#tr_num_people').val(remainingRows);
                 });
 
            

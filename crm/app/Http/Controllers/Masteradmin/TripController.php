@@ -247,7 +247,7 @@ class TripController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        // dd($request->all());
+        //dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
         
@@ -306,9 +306,9 @@ class TripController extends Controller
         $existingtrip = $traveler->where('tr_email', $validatedData['tr_email'])->first();
 
 
-        if (!empty($validatedData['traveler_id'])) {
-            $traveler->tr_num_people = ($validatedData['tr_num_people'] ?? 0) + 1;
-        }
+        // if (!empty($validatedData['traveler_id'])) {
+        //     $traveler->tr_num_people = ($validatedData['tr_num_people'] ?? 0) + 1;
+        // }
 
 
         $traveler->id = $user->users_id;
@@ -320,7 +320,7 @@ class TripController extends Controller
         $traveler->tr_number = $validatedData['tr_number'] ?? null; // Use null if not set
         $traveler->tr_email = $validatedData['tr_email'] ?? null; // Use null if not set
         $traveler->tr_phone = $validatedData['tr_phone'] ?? null; // Use null if not set
-        // $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
+        $traveler->tr_num_people = $validatedData['tr_num_people'] ?? null; // Use null if not set
         $traveler->tr_start_date = $validatedData['tr_start_date'] ?? null;
         $traveler->tr_end_date = $validatedData['tr_end_date'] ?? null; // Use null if not set
         $traveler->tr_final_payment_date = $validatedData['tr_final_payment_date'] ?? null; 
@@ -339,7 +339,11 @@ class TripController extends Controller
         $traveler->tr_status = 1;
         $traveler->save();
 
-
+        TripTravelingMember::
+        where('lead_id', $request->input('traveler_id'))
+        ->where('lead_status',2)
+        ->delete();
+        
         $rawItems = $request->input('items');
         if (isset($rawItems) && is_array($rawItems) && count($rawItems) > 0) {
 
@@ -457,7 +461,7 @@ class TripController extends Controller
     public function edit($id)
     {
         // dd($id);
-        $trip = Trip::where('tr_id', $id)->with(relations: 'lead_traveler_name')->firstOrFail();
+        $trip = Trip::where('tr_id', $id)->with( 'lead_traveler_name')->firstOrFail();
         
         $tripmember = TripTravelingMember::where('lead_id', $trip->tr_traveler_id)
         // ->orWhere('trtm_id', $trip->tr_traveler_id)
@@ -489,10 +493,26 @@ class TripController extends Controller
         $selectedStatus = $trip->status;
         $country = Countries::all();
      
-        // dd($agency_user);
+      
+
+            $membersCount = TripTravelingMember::with(['travelingrelationship'])
+            ->where('lead_id', $trip->tr_traveler_id)
+            ->where('lead_status', '!=', 1) // Exclude lead status 1
+            ->count();
+    
+            // Fetch count of records from the custom table
+            $uniq_id = $user->user_id; 
+            $tripDataCount = \DB::table($uniq_id . '_tc_trip_traveling_member')
+                ->where('trtm_id', $trip->tr_traveler_id)
+                ->where('lead_status', 1) // Only the main lead (lead_status = 1)
+                ->count();
+                $memberTotalCount = $membersCount + $tripDataCount;
+    
+            
+       // dd($memberTotalCount);
         //$status = Trip::where('status', $selectedStatus)->get();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user'));
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user','memberTotalCount'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 

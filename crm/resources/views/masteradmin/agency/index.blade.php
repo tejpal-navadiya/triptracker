@@ -62,6 +62,7 @@
                                             <th>Name</th>
                                             <th>Email Address</th>
                                             <th>Phone Number</th>
+                                            <th>Users Id</th>
                                             <th>User Role</th>
                                             <th>Status</th>
                                             <th class="sorting_disabled" data-orderable="false">Actions</th>
@@ -76,6 +77,7 @@
                                                 <td>{{ $value->users_email }}</td>
                                                 <td>{{ $value->user_emergency_phone_number ?? ($value->users_phone ?? '') }}
                                                 </td>
+                                                <td>{{ $value->user_id }}</td>
                                                 <td>{{ $value->userRole->role_name ?? config('global.default_user_role') }}
                                                 </td>
 
