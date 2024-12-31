@@ -30,7 +30,8 @@ use DataTables;
 use App\Models\TravelingRelationship;
 use App\Models\TripPreference;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class TripController extends Controller
 {
@@ -309,7 +310,18 @@ class TripController extends Controller
         // if (!empty($validatedData['traveler_id'])) {
         //     $traveler->tr_num_people = ($validatedData['tr_num_people'] ?? 0) + 1;
         // }
+        $documentimg = '';
+        if ($request->hasFile('trp_document')) {
 
+            if (is_array($request->file('trp_document'))) {
+                
+                $userFolder = session('userFolder');
+                $documents_images =  $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+                //dd($documents_images);
+                $documentimg = json_encode($documents_images);
+
+            }
+        } 
 
         $traveler->id = $user->users_id;
         $traveler->tr_name = $validatedData['tr_name'] ?? null;
@@ -334,6 +346,8 @@ class TripController extends Controller
         $traveler->tr_city = $validatedData['tr_city'] ?? null;
         $traveler->tr_address = $validatedData['tr_address'] ?? null;
         $traveler->tr_zip = $validatedData['tr_zip'] ?? null;
+        $traveler->trp_document = $documentimg ?? '';
+        $traveler->trp_name = $request->input('trp_name') ?? '';
 
         $traveler->status = $validatedData['status'] ?? '1';
         $traveler->tr_status = 1;
@@ -450,6 +464,8 @@ class TripController extends Controller
               ]);
           }
       }
+
+
         
             \MasterLogActivity::addToLog('Master Admin Trip Created.');
 
@@ -507,9 +523,11 @@ class TripController extends Controller
                 ->where('lead_status', 1) // Only the main lead (lead_status = 1)
                 ->count();
                 $memberTotalCount = $membersCount + $tripDataCount;
+      
+     
     
-            
-       // dd($memberTotalCount);
+    //    dd($tripdocument);
+    
         //$status = Trip::where('status', $selectedStatus)->get();
 
         return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user','memberTotalCount'));
@@ -522,6 +540,7 @@ class TripController extends Controller
     {
         // $rawItems = $request->input('items');
         // dd($rawItems);
+
      //dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
@@ -548,6 +567,7 @@ class TripController extends Controller
                 'tr_city' => 'nullable|string',
                 'tr_address' => 'nullable|string',
                 'status' => 'nullable|numeric',
+                'trp_name' => 'nullable|string',
                 'tr_zip' => 'nullable|numeric|digits_between:1,6',
                
             ], [
@@ -558,6 +578,29 @@ class TripController extends Controller
                 'tr_email.regex' => 'Please enter a valid email address.',
             
             ]);
+           // dd($request->all());
+           $document_images = [];
+
+        // Check if existing images are present
+        if ($trip->trp_document) {
+            $existingImages = json_decode($trip->trp_document, true);
+            if (is_array($existingImages)) {
+                $document_images = $existingImages;
+            }
+        }
+
+        $userFolder = session('userFolder');
+
+        $newImages = []; // Ensure $newImages is initialized as an array
+        if (is_array($request->file('trp_document'))) {
+            // Upload multiple images
+            $newImages = $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+            // Ensure $newImages is an array
+            if (is_array($newImages)) {
+                $document_images = array_merge($document_images, $newImages);
+            }
+        }
+            // $validatedData['trp_document'] = $document_images;
 
             $data = [
                 'tr_name' => $request->input('tr_name'),
@@ -581,6 +624,8 @@ class TripController extends Controller
                 'tr_address' => $request->input('tr_address'),
                 'status' => $request->input('status'),
                 'tr_zip' => $request->input('tr_zip'),
+                'trp_name' => $request->input('trp_name'),
+                'trp_document' => $document_images,
                 'tr_type_trip' => json_encode($request->input('tr_type_trip', []))
             ];
         
@@ -693,6 +738,8 @@ class TripController extends Controller
         }
 
        
+ 
+
             \MasterLogActivity::addToLog('Master Admin Trip Updated.');
             return redirect()->route('trip.index')
 
@@ -3335,6 +3382,56 @@ public function getTripPreferences($trvm_id)
         'success' => true,
         'preference' => $preference,
     ]);
+}
+
+public function deleteImage(Request $request, $id, $image)
+{
+
+    $library = Trip::where('tr_id', $id)->firstOrFail();
+
+    $images = json_decode($library->trp_document, true);
+
+    if (($key = array_search($image, $images)) !== false) {
+        $userFolder = session('userFolder');
+
+        unset($images[$key]);
+
+        $library->trp_document = json_encode(array_values($images)); // Re-index the array and encode it back to JSON
+
+        $library->save(); 
+
+        $userFolder = storage_path('app/' . session('userFolder'). '/trip_document/');
+        $filePath = $userFolder . $image; 
+
+        // Log::info('Attempting to delete file at path: ' . $filePath);
+
+        if (Storage::exists($filePath)) {
+            Storage::delete($filePath);
+            // Log::info('File deleted successfully: ' . $filePath);
+        } else {
+            // Log::warning('File does not exist: ' . $filePath);
+        }
+
+        // return redirect()->route('trip.edit', $id)->with('success', 'Image deleted successfully.');
+        session()->flash('success', 'Image deleted successfully.');
+
+        // Return a JSON response indicating success
+        return response()->json([
+            'success' => true,
+            'redirect_url' => route('trip.edit', $id) // URL to redirect after successful delete
+        ]);
+    }
+    \MasterLogActivity::addToLog('Master Admin Library is Deleted.');
+
+    // return redirect()->route('trip.edit', $id)->with('error', 'Image not found.');
+
+    session()->flash('error', 'Image not found.');
+
+    return response()->json([
+        'error' => false,
+        'redirect_url' => route('trip.edit', $id) // URL to redirect if image is not found
+    ]);
+    // return redirect()->back()->with('error', 'Image not found.');
 }
 
 }

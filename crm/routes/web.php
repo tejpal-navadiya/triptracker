@@ -39,6 +39,7 @@ use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MailController;
 use App\Models\MasterUser;
+use App\Http\Controllers\TripDocumentController;
 
 
 
@@ -486,6 +487,22 @@ Route::group(['prefix' => $busadminRoute], function () {
         })->name('agencys.access');
 
 
+        //document trip image/document security 
+        Route::get('/tripdocument/{filename}', function ($filename) {
+            $userFolder = session('userFolder');
+
+                $filePath = storage_path('app/'.$userFolder.'/trip_document/' . $filename);
+
+                if (!file_exists($filePath)) {
+                    abort(404);
+                }
+
+                return response()->file($filePath); 
+        
+
+        })->name('tripdocument.access');
+
+
         //sent email template
         Route::get('/emaildetail', [EmailTemplateController::class, 'EmailTemplate'])->name('masteradmin.emailtemplate.EmailTemplate');
         Route::get('/add-emailtemplate', [EmailTemplateController::class, 'add_emailtemplate'])->name('masteradmin.emailtemplate.addemailtemplate');
@@ -531,6 +548,13 @@ Route::group(['prefix' => $busadminRoute], function () {
 
         //prefrence family member wise show
         Route::get('/trip-preferences/{trvm_id}', [TripController::class, 'getTripPreferences'])->name('trip-preferences.show');
+
+        //trip document upload
+        Route::post('/trip-documents/session/save', [TripDocumentController::class, 'saveDocumentToSession'])->name('trip-documents.session.save');
+        Route::get('/trip-documents/session/get', [TripDocumentController::class, 'getSessionDocuments'])->name('trip-documents.session.get');
+
+        //trip document delete 
+        Route::post('/trip-document/{id}/image/{image}',  [TripController::class, 'deleteImage'])->name('trip.image.delete');
 
     });
      

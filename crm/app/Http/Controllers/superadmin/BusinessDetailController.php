@@ -661,7 +661,6 @@ public function update(Request $request, $id)
              $tableName = reset($table); 
              if (str_starts_with($tableName, $prefix)) {
                  Schema::dropIfExists($tableName);
-                 echo "Dropped table: $tableName\n"; 
              }
          }
          return redirect()->route('businessdetails.index')->with('success', 'Agency  with all associated tables deleted successfully.');

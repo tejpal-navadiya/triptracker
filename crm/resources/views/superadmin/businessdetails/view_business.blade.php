@@ -161,9 +161,11 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Email Address</th>
+                                            <th>Business Email Address</th>
                                             <th>Phone Number</th>
                                             <th>User Role</th>
                                             <th>Last Updated</th>
+                                            <th>User Id</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                             <!-- <th class="sorting_disabled text-right" data-orderable="false">Actions</th> -->
@@ -176,10 +178,12 @@
                                                 <td>{{ $detail->users_first_name ?? '' }}
                                                     {{ $detail->users_last_name ?? '' }}</td>
 
-                                                <td>{{ $detail->users_email }}</td>
+                                                <td>{{ $detail->users_email ?? '' }}</td>
+                                                <td>{{ $detail->users_personal_email ?? '' }}</td>
                                                 <td>{{ $detail->users_phone ?? $detail->user_emergency_phone_number }}</td>
                                                 <td>{{ $detail->role_name }}</td>
                                                 <td>{{ $detail->updated_at }}</td>
+                                                <td>{{ $detail->user_id }}</td>
                                                 <td>
                                                     @if ($detail->users_status == 1)
                                                         <span class="status_btn converted_status"> Active </span>

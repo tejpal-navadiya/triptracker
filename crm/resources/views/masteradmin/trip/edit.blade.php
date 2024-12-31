@@ -34,13 +34,36 @@
 
         <section class="content px-10">
             <div class="container-fluid">
+            @if (Session::has('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ Session::get('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        @php
+                            Session::forget('success');
+                        @endphp
+                    @endif
+
+                    @if (Session::has('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ Session::get('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        @php
+                            Session::forget('error');
+                        @endphp
+                    @endif
                 <!-- card -->
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Edit Trip</h3>
                     </div>
                     <!-- /.card-header -->
-                    <form id="trip-edit-form" action="{{ route('trip.update', $trip->tr_id) }}" method="POST">
+                    <form id="trip-edit-form" action="{{ route('trip.update', $trip->tr_id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <input type="hidden" id="traveler_id" name="traveler_id" value="{{ $trip->tr_traveler_id ?? '' }}">
@@ -229,6 +252,11 @@
                                         <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile"
                                             type="button" role="tab" aria-controls="profile" aria-selected="false">Add
                                             Household</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="document-tab" data-toggle="tab"
+                                            data-target="#document" type="button" role="tab"
+                                            aria-controls="document" aria-selected="false">Add Document</button>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
@@ -559,6 +587,132 @@
                                                     class="fas fa-plus add_plus_icon"></i>Add Household</button>
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="document" role="tabpanel"
+                                            aria-labelledby="document-tab">
+                                            <div class="row pxy-15 px-10">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="trvm_id">Name <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" id="trp_name" name="trp_name" value="{{$trip->trp_name ?? ''}}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 family-member-field">
+                                                    <div class="form-group">
+                                                        <label for="trp_document">Upload Documents</label>
+                                                        <input type="file" class="form-control" id="trp_document" name="trp_document[]" multiple>
+                                                        <p id="document_images"></p>
+                                                        <label for="trp_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                                                    </div>
+                                                    @php
+                                                        $files = json_decode($trip->trp_document);
+                                                    @endphp
+
+                                                    @if (!empty($files) && is_array($files))
+                                                        <div class="mt-2">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>File Preview</th>
+                                                                        <th>Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <!-- Loop through files and display each as an image or PDF -->
+                                                                    @foreach ($files as $file)
+                                                                        <tr>
+                                                                        <td>
+                                                                            @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
+                                                                                <!-- Display Image Preview -->
+                                                                                <a target="_blank" href="{{ route('tripdocument.access', ['filename' => $file]) }}">
+                                                                                    <img src="{{ route('tripdocument.access', ['filename' => $file]) }}" 
+                                                                                        alt="Uploaded Image" class="img-thumbnail"
+                                                                                        style="width: 100px; height: auto;">
+                                                                                </a>
+                                                                            @elseif (preg_match('/\.pdf$/i', $file))
+                                                                                <!-- Display PDF Preview -->
+                                                                                <div class="embed-responsive embed-responsive-4by3" style="max-width: 100px;">
+                                                                                    <embed src="{{ route('tripdocument.access', ['filename' => $file]) }}" 
+                                                                                        type="application/pdf" class="embed-responsive-item" />
+                                                                                </div>
+                                                                                <a target="_blank" href="{{ route('tripdocument.access', ['filename' => $file]) }}">View</a>
+                                                                            @endif
+                                                                        </td>
+
+                                                                            <td>
+                                                                                <!-- Delete Button -->
+                                                                                <!-- <form method="POST"
+                                                                                    action="{{ route('trip.image.delete', ['id' => $trip->tr_id, 'image' => basename($file)]) }}"
+                                                                                    style="display: inline-block;">
+                                                                                    @csrf
+                                                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                                                </form> -->
+                                                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm delete-image" data-image="{{ basename($file) }}" data-trip="{{ $trip->tr_id }}">Delete</a>
+
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    @else
+                                                        <p>No files available.</p>
+                                                    @endif
+
+                                                   
+
+
+
+                                                  </div>
+                                            </div>
+
+
+                                           
+
+                                            <!-- Button to Open Modal -->
+                                            <!-- <a href="javascript:void(0)" class="reminder_btn" data-toggle="modal" data-target="#ajaxModelDocumentModal">Add Document</a> -->
+                                            <!-- <div id="document-list"> -->
+                                                <!-- Dynamically updated list of documents -->
+                                            <!-- </div> -->
+                                            <!-- Modal Structure -->
+                                            <!-- <div class="modal fade" id="ajaxModelDocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="modelHeadingDocument">Add Document</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <ul id="update_msgList"></ul>
+                                                            <div class="modal-body">
+                                                                <div class="row pxy-15 px-10">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="trvm_id">Name <span class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control" id="trp_name" name="trp_name">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6 family-member-field">
+                                                                        <div class="form-group">
+                                                                            <label for="trp_document">Upload Documents</label>
+                                                                            <input type="file" class="form-control" id="trp_document" name="trp_document" multiple>
+                                                                            <p id="document_images"></p>
+                                                                            <label for="trp_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <a type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                                                                    <a id="saveBtnDocument" value="create" class="btn btn-primary" >Save Changes</a>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                         
+                                        </div>
                                 </div>
                                 @if($triptinerary && count($triptinerary) > 0)
                                     <div class="itinerary-link">
@@ -837,7 +991,39 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>
+    $(document).on('click', '.delete-image', function() {
+        var tripId = $(this).data('trip');
+        var image = $(this).data('image');
 
+        // Confirm the delete action (optional, you can remove this if you don't want confirmation)
+        // if (confirm("Are you sure you want to delete this image?")) {
+            // Use the route() function to generate the correct URL for the delete request
+            var actionUrl = '{{ route("trip.image.delete", ["id" => ":tripId", "image" => ":image"]) }}';
+            actionUrl = actionUrl.replace(':tripId', tripId).replace(':image', image);
+
+            // Send AJAX DELETE request
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                    
+                    // Redirect to the page after deletion
+                    window.location.href = response.redirect_url;
+                }
+                },
+                error: function(xhr, status, error) {
+                    // Handle the error (you can add a simple error message here)
+                    console.error('Error:', error);
+                }
+            });
+        // }
+    });
+</script>
 
     <script>
 

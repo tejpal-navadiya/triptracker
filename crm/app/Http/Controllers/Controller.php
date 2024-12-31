@@ -424,6 +424,8 @@ class Controller extends BaseController
                     $table->string('tr_state')->nullable();
                     $table->string('tr_zip')->nullable();
                     $table->string('tr_city')->nullable();
+                    $table->string('trp_name')->nullable();
+                    $table->string('trp_document')->nullable();       
                     $table->tinyInteger('tr_status')->default(0)->nullable();
                     $table->timestamps();
                 });
@@ -482,7 +484,17 @@ class Controller extends BaseController
                     }
                 });
 
-                
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'trp_name')) {
+                        $table->string('trp_name')->nullable();
+                    }
+                });
+
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'trp_document')) {
+                        $table->string('trp_document')->nullable();
+                    }
+                });       
                 
             }
 
@@ -596,6 +608,7 @@ class Controller extends BaseController
                     $table->string('trvt_due_date')->nullable();
                     $table->text('trvt_document')->nullable();
                     $table->text('trvt_note')->nullable();
+                    
                     $table->string('status')->nullable();
                     $table->tinyInteger('trvt_status')->default(0)->nullable();
                     $table->timestamps();
@@ -935,18 +948,18 @@ class Controller extends BaseController
         }
     
         //Trips Document
-        if (!Schema::hasTable($storeId.'_tc_trip_document')){   
-            Schema::create($storeId.'_tc_trip_document', function (Blueprint $table) use ($storeId) {
-                $table->string('trp_id')->unique()->primary();
-                $table->string('id')->nullable()->default(0);
-                $table->string('tr_id')->nullable()->default(0);
-                $table->string('trp_name')->nullable();
-                $table->string('trp_document')->nullable();                    
-                $table->tinyInteger('trp_status')->default(0)->nullable();
-                $table->timestamps();
-            });
+        // if (!Schema::hasTable($storeId.'_tc_trip_document')){   
+        //     Schema::create($storeId.'_tc_trip_document', function (Blueprint $table) use ($storeId) {
+        //         $table->string('trp_id')->unique()->primary();
+        //         $table->string('id')->nullable()->default(0);
+        //         $table->string('tr_id')->nullable()->default(0);
+        //         $table->string('trp_name')->nullable();
+        //         $table->string('trp_document')->nullable();                    
+        //         $table->tinyInteger('trp_status')->default(0)->nullable();
+        //         $table->timestamps();
+        //     });
 
-        }
+        // }
 
     }
         

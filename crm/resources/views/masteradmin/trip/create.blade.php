@@ -48,7 +48,7 @@
                             <h3 class="card-title">Add Trip</h3>
                         </div>
                         <!-- /.card-header -->
-                        <form id="trip-form" method="POST" action="{{ route('trip.store') }}">
+                        <form id="trip-form" method="POST" action="{{ route('trip.store') }}" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" id="traveler_id" name="traveler_id">
 
@@ -244,6 +244,12 @@
                                                 data-target="#profile" type="button" role="tab"
                                                 aria-controls="profile" aria-selected="false">Add Household</button>
                                         </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="document-tab" data-toggle="tab"
+                                                data-target="#document" type="button" role="tab"
+                                                aria-controls="document" aria-selected="false">Add Document</button>
+                                        </li>
+                                       
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
@@ -298,7 +304,74 @@
 
 
                                         </div>
+
+                                        <div class="tab-pane fade" id="document" role="tabpanel"
+                                            aria-labelledby="document-tab">
+                                            <div class="row pxy-15 px-10">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="trvm_id">Name <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" id="trp_name" name="trp_name">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 family-member-field">
+                                                    <div class="form-group">
+                                                        <label for="trp_document">Upload Documents</label>
+                                                        <input type="file" class="form-control" id="trp_document" name="trp_document[]" multiple>
+                                                        <p id="document_images"></p>
+                                                        <label for="trp_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Button to Open Modal -->
+                                            <!-- <a href="javascript:void(0)" class="reminder_btn" data-toggle="modal" data-target="#ajaxModelDocumentModal">Add Document</a> -->
+                                            <!-- <div id="document-list"> -->
+                                                <!-- Dynamically updated list of documents -->
+                                            <!-- </div> -->
+                                            <!-- Modal Structure -->
+                                            <!-- <div class="modal fade" id="ajaxModelDocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="modelHeadingDocument">Add Document</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <ul id="update_msgList"></ul>
+                                                            <div class="modal-body">
+                                                                <div class="row pxy-15 px-10">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="trvm_id">Name <span class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control" id="trp_name" name="trp_name">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6 family-member-field">
+                                                                        <div class="form-group">
+                                                                            <label for="trp_document">Upload Documents</label>
+                                                                            <input type="file" class="form-control" id="trp_document" name="trp_document" multiple>
+                                                                            <p id="document_images"></p>
+                                                                            <label for="trp_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <a type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                                                                    <a id="saveBtnDocument" value="create" class="btn btn-primary" >Save Changes</a>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                         
+                                        </div>
+                                      
+                                      
                                     </div>
+
                                     <div class="itinerary-link">
                                         <div class="dynamic-fields" id="Itinerary-fields">
                                             <div class="row align-items-center mb-3">
@@ -314,7 +387,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                               
                                 <div class="row py-20 px-10">
                                     <div class="col-md-12 text-center">
                                         <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a>
@@ -1509,6 +1582,78 @@ function fetchFamilyMembers(travelerId) {
 
         </script>
         
-           
+        <script>
+//         $(document).ready(function () {
+//             $.ajaxSetup({
+//     headers: {
+//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//     }
+// });
+//     // Save modal data to session
+//     $('#saveBtnDocument').on('click', function (e) {
+//         e.preventDefault();
+
+//         let formData = new FormData();
+//         formData.append('trp_name', $('#trp_name').val());
+//         if ($('#trp_document')[0].files[0]) {
+//             formData.append('trp_document', $('#trp_document')[0].files[0]);
+//         }
+
+//         $.ajax({
+//             url: "{{ route('trip-documents.session.save') }}",
+//             type: "POST",
+//             data: formData,
+//             contentType: false,
+//             processData: false,
+//             success: function (response) {
+//                 if (response.success) {
+//                     // Dynamically update document list
+//                     displayDocuments(response.documents);
+
+//                     // Clear modal fields
+//                     $('#trp_name').val('');
+//                     $('#trp_document').val('');
+//                 } else {
+//                     alert('Failed to save document. Please try again.');
+//                 }
+//             },
+//             error: function () {
+//                 alert('An error occurred. Please try again.');
+//             }
+//         });
+//     });
+
+//     // Load documents from session on page load
+//     loadSessionDocuments();
+
+//     function loadSessionDocuments() {
+//         $.ajax({
+//             url: "{{ route('trip-documents.session.get') }}",
+//             type: "GET",
+//             success: function (response) {
+//                 if (response.success) {
+//                     displayDocuments(response.documents);
+//                 }
+//             },
+//             error: function () {
+//                 alert('Unable to load documents.');
+//             }
+//         });
+//     }
+
+//     function displayDocuments(documents) {
+//         $('#document-list').html(''); // Clear the existing list
+//         documents.forEach((doc, index) => {
+//             $('#document-list').append(`
+//                 <div class="document-item">
+//                     <p><strong>${index + 1}. ${doc.trp_name}</strong></p>
+//                     ${doc.trp_document ? `<p><a href="/storage/${doc.trp_document}" target="_blank">View Document</a></p>` : ''}
+//                 </div>
+//             `);
+//         });
+//     }
+// });
+
+        </script>
     @endsection
 @endif
