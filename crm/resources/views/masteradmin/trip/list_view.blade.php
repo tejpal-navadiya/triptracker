@@ -70,14 +70,19 @@
                                                     </td>
 
                                                     <td>
+                                                    @if (isset($access['details_trip']) && $access['details_trip'])
                                                         <a href="{{ route('trip.view', $value->tr_id) }}"><i
                                                                 class="fas fa-eye edit_icon_grid"></i></a>
+                                                    @endif
+                                                    @if (isset($access['edit_trip']) && $access['edit_trip'])
                                                         <a href="{{ route('trip.edit', $value->tr_id) }}"><i
                                                                 class="fas fa-pen edit_icon_grid"></i></a>
+                                                    @endif
+                                                    @if (isset($access['delete_trip']) && $access['delete_trip'])
                                                         <a data-toggle="modal"
                                                             data-target="#delete-product-modal-{{ $value->tr_id }}"><i
                                                                 class="fas fa-trash delete_icon_grid"></i></a>
-
+                                                    @endif
                                                         <!-- Delete Modal -->
                                                         <div class="modal fade"
                                                             id="delete-product-modal-{{ $value->tr_id }}" tabindex="-1"

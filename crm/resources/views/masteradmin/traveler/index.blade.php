@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Traveler Details | Trip Tracker</title>
-@if (isset($access['traveler_details']) && $access['traveler_details'])
+@if (isset($access['list_traveler']) && $access['list_traveler'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -17,7 +17,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['traveler_details']) && $access['traveler_details'])
+                                @if (isset($access['add_traveler']) && $access['add_traveler'])
                                     <a href="{{ route('masteradmin.travelers.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add
                                             Traveler</button></a>
@@ -81,16 +81,19 @@
 
                                                
                                                 <td>
+                                                @if (isset($access['traveler_details']) && $access['traveler_details'])
                                                     <a href="{{ route('masteradmin.travelers.view', $value->trtm_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
-
+                                                @endif
+                                                @if (isset($access['edit_traveler']) && $access['edit_traveler'])
                                                     <a href="{{ route('masteradmin.travelers.edit', $value->trtm_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
-
+                                                @endif
+                                                @if (isset($access['delete_traveler']) && $access['delete_traveler'])
                                                     <a data-toggle="modal"
                                                         data-target="#delete-product-modal-{{ $value->trtm_id }}"><i
                                                             class="fas fa-solid fa-trash delete_icon_grid"></i></a>
-
+                                                @endif
                                                     <div class="modal fade"
                                                         id="delete-product-modal-{{ $value->trtm_id }}"
                                                         tabindex="-1" role="dialog"

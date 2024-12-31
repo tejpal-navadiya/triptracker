@@ -115,9 +115,12 @@
 							<td>High({{ $trip->task_counts['High'] }})</td>
 							</table>
 						</div>
+						@if (isset($access['edit_trip']) && $access['edit_trip'])
+
 						<a href="{{ route('trip.edit', $trip->tr_id) }}" class="edit-icon">
 							<i class="fas fa-pen"></i>
 						</a>
+						@endif
 					</div>
 				</div>
 				@endforeach

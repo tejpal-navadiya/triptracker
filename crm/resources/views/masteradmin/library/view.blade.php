@@ -1,7 +1,7 @@
 @extends('masteradmin.layouts.app')
 
 <title>Library Details | Trip Tracker</title>
-@if (isset($access['library_item']) && $access['library_item'])
+@if (isset($access['list_library']) && $access['list_library'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -18,7 +18,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['library_item']) && $access['library_item'])
+                                @if (isset($access['add_library']) && $access['add_library'])
                                     <a href="{{ route('library.create') }}" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Library Item</button></a>
                                 @endif
@@ -41,8 +41,10 @@
                             </div>
                         </div>
                         <div class="col-auto">
+                        @if (isset($access['add_library']) && $access['add_library'])
                             <a href="{{ route('library.create') }}" class="btn btn-success" id="createNew">Create New
                                 Library</a>
+                        @endif
                         </div>
                     </div>
 
@@ -107,13 +109,18 @@
                                         <h5 class="card-title">{{ $library->lib_name }}</h5>
 
                                         <p class="card-text">{{ strip_tags($library->lib_basic_information) }}</p>
-
+                                        @if (isset($access['library_item']) && $access['library_item'])
                                         <a href="{{ route('library.show', $library->lib_id) }}"
                                             class="btn btn-primary">View Details</a>
+                                        @endif
+                                        @if (isset($access['edit_library']) && $access['edit_library'])
                                         <a href="{{ route('library.edit', $library->lib_id) }}"
                                             class="btn btn-primary">Edit</a>
+                                        @endif
+                                        @if (isset($access['delete_library']) && $access['delete_library'])
                                         <a href="{{ route('library.destroy', $library->lib_id) }}"
                                             class="btn btn-primary">Delete</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

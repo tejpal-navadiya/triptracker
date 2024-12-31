@@ -2,7 +2,7 @@
 
 
 <title>Library Details | Trip Tracker</title>
-@if (isset($access['library_item']) && $access['library_item'])
+@if (isset($access['list_library']) && $access['list_library'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -19,7 +19,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['library_item']) && $access['library_item'])
+                                @if (isset($access['add_library']) && $access['add_library'])
                                     <a href="{{ route('library.create') }}" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Library Item</button></a>
                                 @endif
@@ -116,17 +116,23 @@
                                     <p class="libary-name">{{ $library->lib_name }}</p>
 
                                     <div class="libary-btnbox">
+                                        @if (isset($access['library_item']) && $access['library_item'])
                                         <a href="{{ route('library.show', $library->lib_id) }}" class="l-view-btn">
                                             <i class="fas fa-eye"></i> View
                                         </a>
+                                        @endif
+                                        @if (isset($access['edit_library']) && $access['edit_library'])
                                         <a href="{{ route('library.edit', $library->lib_id) }}" class="l-edit-btn">
                                             <i class="fas fa-pen"></i> Edit
                                         </a>
+                                        @endif
+                                        @if (isset($access['delete_library']) && $access['delete_library'])
                                         <a href="#" data-toggle="modal"
                                             data-target="#delete-library-modal-{{ $library->lib_id }}"
                                             class="l-delete-btn">
                                             <i class="fas fa-trash"></i> Delete
                                         </a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

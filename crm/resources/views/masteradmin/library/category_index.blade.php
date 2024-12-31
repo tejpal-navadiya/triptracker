@@ -2,7 +2,7 @@
 
 
 <title>Library Category Details | Trip Tracker</title>
-@if (isset($access['library_category']) && $access['library_category'])
+@if (isset($access['list_library_cat']) && $access['list_library_cat'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -19,7 +19,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['library_category']) && $access['library_category'])
+                                @if (isset($access['add_library_cat']) && $access['add_library_cat'])
                                     <a href="{{ route('library_category.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Library
                                             Category</button></a>
@@ -78,16 +78,17 @@
 
                                                     <!-- <a href="{{ route('masteradmin.library.view') }}"><i
                                                                                                                                                                                                                                                                                                                                                                         class="fas fa-regular fa-eye edit_icon_grid"></i></a> -->
-
+                                                    @if (isset($access['edit_library_cat']) && $access['edit_library_cat'])
                                                     <a href="{{ route('library_category.edit', $value->lib_cat_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
 
-
-
+                                                    @endif
+                                                    @if (isset($access['delete_library_cat']) && $access['delete_library_cat'])
                                                     <a data-toggle="modal"
                                                         data-target="#delete-library-modal-{{ $value->lib_cat_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
+                                                    @endif
 
                                                     <div class="modal fade"
                                                         id="delete-library-modal-{{ $value->lib_cat_id }}" tabindex="-1"

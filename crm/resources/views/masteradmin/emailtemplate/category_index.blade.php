@@ -17,7 +17,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['email_category']) && $access['email_category'])
+                                @if (isset($access['add_email_category']) && $access['add_email_category'])
                                     <a href="{{ route('email_category.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Email
                                             Category</button></a>
@@ -73,17 +73,17 @@
 
                                                 <td>
                                                  
-                                                            
+                                                @if (isset($access['edit_email_category']) && $access['edit_email_category'])
                                                     <a href="{{ route('email_category.edit', $value->email_cat_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
+                                                @endif
 
-
-
+                                                @if (isset($access['delete_email_category']) && $access['delete_email_category'])
                                                     <a data-toggle="modal"
                                                         data-target="#delete-email-modal-{{ $value->email_cat_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
-
+                                                @endif
                                                     <div class="modal fade"
                                                         id="delete-email-modal-{{ $value->email_cat_id }}" tabindex="-1"
                                                         role="dialog" aria-labelledby="exampleModalCenterTitle"

@@ -145,19 +145,20 @@ class UserLoggedInListener
                         if (!file_exists($userFolder)) {
                             mkdir($userFolder, 0755, true);
                         }
+                        if (is_array($imageArray) || is_object($imageArray)) {
+                            foreach ($imageArray as $image) {
+                                $sourceFilePath = storage_path('app/superadmin/library_image/' . $image); // Source path
+                                $destinationFilePath = $userFolder . $image; // Destination path
 
-                        foreach ($imageArray as $image) {
-                            $sourceFilePath = storage_path('app/superadmin/library_image/' . $image); // Source path
-                            $destinationFilePath = $userFolder . $image; // Destination path
-
-                            if (file_exists($sourceFilePath)) {
-                                if (copy($sourceFilePath, $destinationFilePath)) {
-                                    Log::info("Copied file: " . $image . " to " . $userFolder);
+                                if (file_exists($sourceFilePath)) {
+                                    if (copy($sourceFilePath, $destinationFilePath)) {
+                                        Log::info("Copied file: " . $image . " to " . $userFolder);
+                                    } else {
+                                        Log::error("Failed to copy file: " . $image);
+                                    }
                                 } else {
-                                    Log::error("Failed to copy file: " . $image);
+                                    Log::warning("Source file does not exist: " . $sourceFilePath);
                                 }
-                            } else {
-                                Log::warning("Source file does not exist: " . $sourceFilePath);
                             }
                         }
                     }

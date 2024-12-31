@@ -34,9 +34,10 @@
                             <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
-                    @if (isset($access['workflow']) && $access['workflow'])
+                  
                     <ul class="nav nav-treeview">
                         <!-- Workflow -->
+                        @if (isset($access['view_trip']) && $access['view_trip'])
                         <li class="nav-item">
                             <a  
                                 href="{{ route('trip.index') }}"
@@ -113,7 +114,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <!-- View All Travelers -->
-                        @if (isset($access['traveler_details']) && $access['traveler_details'])
+                        @if (isset($access['list_traveler']) && $access['list_traveler'])
                                             <li class="nav-item">
                                                 <a href="{{ route('masteradmin.travelers.travelersDetails') }}" class="nav-link {{ request()->is($busadminRoutes . '/travelers*') &&
                             !request()->is($busadminRoutes . '/travelers-create*') || request()->is($busadminRoutes . '/view-travelers*')
@@ -125,7 +126,7 @@
                         @endif
 
                         <!-- Add Traveler -->
-                        @if (isset($access['traveler_details']) && $access['traveler_details'])
+                        @if (isset($access['add_traveler']) && $access['add_traveler'])
                             <li class="nav-item">
                                 <a href="{{ route('masteradmin.travelers.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/travelers-create*') ? 'active' : '' }}">
@@ -220,7 +221,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <!-- Library -->
-                        @if (isset($access['library_item']) && $access['library_item'])
+                        @if (isset($access['list_library']) && $access['list_library'])
                                             <li class="nav-item">
                                                 <a href="{{ route('library.index') }}" class="nav-link {{ request()->is($busadminRoutes . '/library') ||
                             request()->is($busadminRoutes . '/library/view*')
@@ -232,7 +233,7 @@
                         @endif
 
                         <!-- Add Library Item -->
-                        @if (isset($access['library_item']) && $access['library_item'])
+                        @if (isset($access['add_library']) && $access['add_library'])
                             <li class="nav-item">
                                 <a href="{{ route('library.create') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/library/create') ? 'active' : '' }}">
@@ -243,7 +244,7 @@
                         @endif
 
                         <!-- Add Category -->
-                        @if (isset($access['library_category']) && $access['library_category'])
+                        @if (isset($access['list_library_cat']) && $access['list_library_cat'])
                             <li class="nav-item">
                                 <a href="{{ route('library_category.index') }}"
                                     class="nav-link {{ request()->is($busadminRoutes . '/library_category*') ? 'active' : '' }}">

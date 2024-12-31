@@ -2,7 +2,7 @@
 
 <title>Edit Trip | Trip Tracker</title>
 
-@if (isset($access['workflow']) && $access['workflow'])
+@if (isset($access['edit_trip']) && $access['edit_trip'])
 
     @section('content')
 

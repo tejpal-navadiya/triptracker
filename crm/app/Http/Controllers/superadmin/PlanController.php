@@ -153,7 +153,7 @@ class PlanController extends Controller
         ->whereExists(function ($query) {
             $query->select('*')
                 ->from('ta_admin_menu')
-                ->whereRaw('`ta_admin_menu`.`pmenu` IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)');
+                ->whereRaw('`ta_admin_menu`.`pmenu` IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 29)');
         })
         ->get();
         

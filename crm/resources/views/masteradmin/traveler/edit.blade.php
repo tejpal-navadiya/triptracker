@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Edit Trip | Trip Tracker</title>
-@if (isset($access['traveler_details']) && $access['traveler_details'])
+@if (isset($access['edit_traveler']) && $access['edit_traveler'])
     @section('content')
         <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 

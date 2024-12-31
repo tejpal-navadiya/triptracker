@@ -1,6 +1,6 @@
 @extends('masteradmin.layouts.app')
 <title>Trip Details | Trip Tracker</title>
-@if (isset($access['workflow']) && $access['workflow'])
+@if (isset($access['view_trip']) && $access['view_trip'])
     @section('content')
         <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 
@@ -97,7 +97,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['book_trip']) && $access['book_trip'])
+                                @if (isset($access['add_trip']) && $access['add_trip'])
                                     <a href="{{ route('trip.create') }}" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Trip</button></a>
                                 @endif

@@ -17,7 +17,9 @@
     <div id="CertificationList">
     </div>
    <div class="text-center py-3">
+   @if (isset($access['add_certifications']) && $access['add_certifications'])
     <a class="btn add_btn" href="javascript:void(0)" id="createNewCertification"><i class="fas fa-plus add_plus_icon"></i> Add Certification</a>
+    @endif
     </div>
     <div class="modal fade" id="ajaxModel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -188,9 +190,12 @@
                                             '<div class="ptm pbm">-</div>'}
                                     </div>
                                     <div class="col-md-6">
+                                        @if (isset($access['edit_certifications']) && $access['edit_certifications'])
                                         <button type="button" value="${user.users_cert_id}" class="btn btn-primary editCertbtn btn-sm">Edit</button>
+                                        @endif
+                                        @if (isset($access['delete_certifications']) && $access['delete_certifications'])
                                         <button type="button" value="${user.users_cert_id}" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deletesubscription-plans_${user.users_cert_id}">Delete</button>
-                                        
+                                        @endif
                                         <!-- Modal for confirmation -->
                                         <div class="modal fade" id="deletesubscription-plans_${user.users_cert_id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">

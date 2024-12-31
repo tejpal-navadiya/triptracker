@@ -1,7 +1,7 @@
 @extends('masteradmin.layouts.app')
 <!DOCTYPE html>
 <title>Add Library | Trip Tracker</title>
-@if (isset($access['library_item']) && $access['library_item'])
+@if (isset($access['add_library']) && $access['add_library'])
     @section('content')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">

@@ -909,7 +909,7 @@ class TripController extends Controller
                 ]);
         } else {
             // Non-admin query to fetch trips where the user is either the agent or the traveler
-            $tripQuery = TripTravelingMember::where('tr_status', 1)
+            $tripQuery = TripTravelingMember::where('trtm_status', 1)
                 ->where('lead_status', 1)  // Condition for lead_status = 1
                 ->from($tripTable)
                 ->leftjoin($masterUserTable, $tripTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
@@ -1600,17 +1600,32 @@ class TripController extends Controller
                 ->addColumn('due_date', function ($document) {
                     return optional($document->tr_start_date) ? Carbon::parse($document->tr_start_date)->format('M d, Y') : '';
                 })
-                ->addColumn('action', function ($document) {
-                    $viewUrl = route('trip.view', $document->tr_id);
-                    $editUrl = route('trip.edit', $document->tr_id);
-                    $deleteModalId = "delete-product-modal-{$document->tr_id}";
-                    $deleteActionUrl = route('trip.destroy', $document->tr_id);
-            
-                    return '
-                        <a href="' . $viewUrl . '"><i class="fas fa-eye edit_icon_grid"></i></a>
-                        <a href="' . $editUrl . '"><i class="fas fa-pen edit_icon_grid"></i></a>
-                        <a data-toggle="modal" data-target="#' . $deleteModalId . '"><i class="fas fa-trash delete_icon_grid"></i></a>
-            
+                ->addColumn('action', function ($document) use ($access) {
+
+                    $viewUrl = isset($access['details_trip']) && $access['details_trip'] 
+                    ? route('trip.view', $document->tr_id) 
+                    : null;
+                
+                $editUrl = isset($access['edit_trip']) && $access['edit_trip'] 
+                    ? route('trip.edit', $document->tr_id) 
+                    : null;
+                
+                $deleteModalId = isset($access['delete_trip']) && $access['delete_trip'] 
+                    ? "delete-product-modal-{$document->tr_id}" 
+                    : null;
+                
+                $deleteActionUrl = isset($access['delete_trip']) && $access['delete_trip'] 
+                    ? route('trip.destroy', $document->tr_id) 
+                    : null;
+                
+                // Return the HTML dynamically
+                return '
+                    ' . ($viewUrl ? '<a href="' . $viewUrl . '"><i class="fas fa-eye edit_icon_grid"></i></a>' : '') . '
+                    ' . ($editUrl ? '<a href="' . $editUrl . '"><i class="fas fa-pen edit_icon_grid"></i></a>' : '') . '
+                    ' . ($deleteModalId ? '
+                        <a data-toggle="modal" data-target="#' . $deleteModalId . '">
+                            <i class="fas fa-trash delete_icon_grid"></i>
+                        </a>
                         <div class="modal fade" id="' . $deleteModalId . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                 <div class="modal-content">
@@ -1627,8 +1642,8 @@ class TripController extends Controller
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                    ';
+                        </div>' : '') . '
+                ';
                 })
                 ->rawColumns(['task_status_name','action'])
                 ->toJson();
@@ -1805,17 +1820,32 @@ class TripController extends Controller
                 
                     return $daysSinceCompletion . ' days';
                 })    
-                ->addColumn('action', function ($document) {
-                    $viewUrl = route('trip.view', $document->tr_id);
-                    $editUrl = route('trip.edit', $document->tr_id);
-                    $deleteModalId = "delete-product-modal-{$document->tr_id}";
-                    $deleteActionUrl = route('trip.destroy', $document->tr_id);
-            
-                    return '
-                        <a href="' . $viewUrl . '"><i class="fas fa-eye edit_icon_grid"></i></a>
-                        <a href="' . $editUrl . '"><i class="fas fa-pen edit_icon_grid"></i></a>
-                        <a data-toggle="modal" data-target="#' . $deleteModalId . '"><i class="fas fa-trash delete_icon_grid"></i></a>
-            
+                ->addColumn('action', function ($document)use ($access) {
+
+                    $viewUrl = isset($access['details_trip']) && $access['details_trip'] 
+                    ? route('trip.view', $document->tr_id) 
+                    : null;
+                
+                $editUrl = isset($access['edit_trip']) && $access['edit_trip'] 
+                    ? route('trip.edit', $document->tr_id) 
+                    : null;
+                
+                $deleteModalId = isset($access['delete_trip']) && $access['delete_trip'] 
+                    ? "delete-product-modal-{$document->tr_id}" 
+                    : null;
+                
+                $deleteActionUrl = isset($access['delete_trip']) && $access['delete_trip'] 
+                    ? route('trip.destroy', $document->tr_id) 
+                    : null;
+                
+                // Return the HTML dynamically
+                return '
+                    ' . ($viewUrl ? '<a href="' . $viewUrl . '"><i class="fas fa-eye edit_icon_grid"></i></a>' : '') . '
+                    ' . ($editUrl ? '<a href="' . $editUrl . '"><i class="fas fa-pen edit_icon_grid"></i></a>' : '') . '
+                    ' . ($deleteModalId ? '
+                        <a data-toggle="modal" data-target="#' . $deleteModalId . '">
+                            <i class="fas fa-trash delete_icon_grid"></i>
+                        </a>
                         <div class="modal fade" id="' . $deleteModalId . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                 <div class="modal-content">
@@ -1832,9 +1862,9 @@ class TripController extends Controller
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                    ';
-                })            
+                        </div>' : '') . '
+                ';
+                })          
                 ->rawColumns(['task_status_name','action'])
                 ->toJson();
         }

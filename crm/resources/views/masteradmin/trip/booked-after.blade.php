@@ -179,16 +179,18 @@
 
 
                                                     <td>
-
+                                                    @if (isset($access['details_trip']) && $access['details_trip'])
+            
                                                     <a href="{{ route('trip.view', $value->tr_id) }}"><i
                                                             class="fas fa-regular fa-eye edit_icon_grid"></i></a>
+                                                    @endif
 
 
-
+                                                    @if (isset($access['edit_trip']) && $access['edit_trip'])
 
                                                     <a href="{{ route('trip.edit', $value->tr_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
-
+                                                    @endif           
                                                     {{-- <a data-toggle="modal"
                                                                 data-target="#delete-product-modal-{{ $value->sale_product_id }}"><i
                                                                     class="fas fa-solid fa-trash delete_icon_grid"></i></a> --}}

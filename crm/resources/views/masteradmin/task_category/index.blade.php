@@ -19,7 +19,7 @@
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['task_category']) && $access['task_category'])
+                                @if (isset($access['add_task_category']) && $access['add_task_category'])
                                     <a href="{{ route('task-category.create') }}" id="createNew"><button
                                             class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Task
                                             Category</button></a>
@@ -74,14 +74,16 @@
                                                 </td>
 
                                                 <td>
+                                                @if (isset($access['edit_task_category']) && $access['edit_task_category'])
                                                     <a href="{{ route('task-category.edit', $value->task_cat_id) }}"><i
                                                             class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
-
+                                                @endif
+                                                @if (isset($access['delete_task_category']) && $access['delete_task_category'])
                                                     <a data-toggle="modal"
                                                         data-target="#delete-library-modal-{{ $value->task_cat_id }}">
                                                         <i class="fas fa-solid fa-trash delete_icon_grid"></i>
                                                     </a>
-
+                                                @endif
                                                     <div class="modal fade"
                                                         id="delete-library-modal-{{ $value->task_cat_id }}" tabindex="-1"
                                                         role="dialog" aria-labelledby="exampleModalCenterTitle"
