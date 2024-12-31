@@ -69,7 +69,8 @@ class CheckoutController extends Controller
     
         try {
             $invoiceUrl = "";
-    
+           
+
             // // Set Stripe API Key
             // \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
     
@@ -170,7 +171,7 @@ class CheckoutController extends Controller
                 $user_data->save();
                 
             }
-    
+            
             // Redirect to thank you page
             return redirect()->route('thank-you');
     

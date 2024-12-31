@@ -26,6 +26,7 @@ use App\Models\Cities;
 use App\Models\Customer;
 use App\Models\Subscription;
 use Stripe\Stripe;
+use App\Models\AdminMenu;
 
 
 class RegisterController extends Controller
@@ -212,6 +213,7 @@ class RegisterController extends Controller
             'users_id' => $users_id
         ]);
 
+        $this->assignMenuToRoles($admin->buss_unique_id,$users_id, $admin->id);
 
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId(strtolower($buss_unique_id));
@@ -354,4 +356,219 @@ class RegisterController extends Controller
         return response()->json($cities);
     }
         
+    // Assign roles to a user
+public function assignMenuToRoles($userId,$users_id, $id)
+{
+    $roles = [
+        'Owner & Co-Owner', 
+        'Associate/IC',
+        'Assistant',
+        'Hybrid'
+    ];
+    $tableName = $userId. '_tc_users_role';
+
+    foreach ($roles as $roleName) {
+        $ageid = $this->GenerateUniqueRandomString(
+            $table = $tableName, 
+            $column = "role_id", 
+            $chars = 6
+        );
+
+            DB::table($table)->insert([
+                'id' => $id,           
+                'role_id' => $ageid,   
+                'role_name' => $roleName,  
+                'created_at' => now(),  
+                'role_status' => 1,  
+            ]);
+
+            $this->assignPermissionsToRole($userId, $ageid, $roleName, $users_id,  $id);
+    }
+}
+
+protected function assignPermissionsToRole($userId, $roleId, $roleName, $users_id, $id)
+{
+    if($roleName == 'Owner & Co-Owner'){
+
+        $modules = AdminMenu::where('is_deleted', 0)
+        ->where('pmenu', 0) 
+        ->get();
+
+        foreach ($modules as $module) {
+        $mid = $module->mid;
+        $mtitle = $module->mtitle;
+
+        // Fetch sub-permissions for this module
+        $subPermissions = AdminMenu::where('is_deleted', 0)
+            ->where('pmenu', $mid) 
+            ->get();
+
+        foreach ($subPermissions as $subPermission) {
+            $tableName = $userId. '_tc_master_user_access';
+
+            $uniqueId = $this->GenerateUniqueRandomString(
+                $table = $tableName, 
+                $column = "id", 
+                $chars = 6
+            );
+    
+            DB::table($tableName)->insert([
+                'id' => $uniqueId,
+                'u_id' => $id,                  
+                'role_id' => $roleId,             
+                'mname' => $subPermission->mname, 
+                'mtitle' => $subPermission->mtitle,              
+                'mid' => $subPermission->mid,                     
+                'is_access' => 1          
+            ]);  
+            // MasterUserAccess::create([
+            //     'id' => $uniqueId,
+            //     'u_id' => $users_id,                  
+            //     'role_id' => $roleId,             
+            //     'mname' => $subPermission->mname, 
+            //     'mtitle' => $mtitle,              
+            //     'mid' => $mid,                     
+            //     'is_access' => 1                  
+            // ]);
+        }
+        }
+    }else if($roleName == 'Associate/IC'){
+
+        // 5, 124, 120, 115
+        $modules = AdminMenu::where('is_deleted', 0)
+        ->whereRaw('`ta_admin_menu`.`mid` IN (29, 124, 120, 115, 59)')
+        // ->where('pmenu', 0) 
+        ->get();
+
+    foreach ($modules as $module) {
+        $mid = $module->mid;
+        $mtitle = $module->mtitle;
+
+        // Fetch sub-permissions for this module
+        $subPermissions = AdminMenu::where('is_deleted', 0)
+            ->whereRaw('`ta_admin_menu`.`mid` IN (129, 130, 131,133, 134, 151,136,139, 116, 117, 119)')
+            ->get();
+
+        foreach ($subPermissions as $subPermission) {
+            $tableName = $userId. '_tc_master_user_access';
+
+            $uniqueId = $this->GenerateUniqueRandomString(
+                $table = $tableName, 
+                $column = "id", 
+                $chars = 6
+            );
+    
+            DB::table($tableName)->insert([
+                'id' => $uniqueId,
+                'u_id' => $id,                  
+                'role_id' => $roleId,             
+                'mname' => $subPermission->mname, 
+                'mtitle' => $subPermission->mtitle,              
+                'mid' => $subPermission->mid,                     
+                'is_access' => 1          
+            ]);  
+            // MasterUserAccess::create([
+            //     'id' => $uniqueId,
+            //     'u_id' => $users_id,                  
+            //     'role_id' => $roleId,             
+            //     'mname' => $subPermission->mname, 
+            //     'mtitle' => $mtitle,              
+            //     'mid' => $mid,                     
+            //     'is_access' => 1                  
+            // ]);
+        }
+    }
+    }else if($roleName == 'Assistant'){
+        // 29, 125, 122, 116, 117, 118, 13, 14, 58
+        $modules = AdminMenu::where('is_deleted', 0)
+        ->whereRaw('`ta_admin_menu`.`mid` IN (29, 124, 120, 115, 59)')
+        // ->where('pmenu', 0) 
+        ->get();
+
+    foreach ($modules as $module) {
+        $mid = $module->mid;
+        $mtitle = $module->mtitle;
+
+        // Fetch sub-permissions for this module
+        $subPermissions = AdminMenu::where('is_deleted', 0)
+            ->whereRaw('`ta_admin_menu`.`mid` IN (139, 130, 131, 133, 134, 151, 136, 137, 138, 139, 116, 117, 118, 119, 152, 58, 56)')
+            ->get();
+
+        foreach ($subPermissions as $subPermission) {
+            $tableName = $userId. '_tc_master_user_access';
+
+            $uniqueId = $this->GenerateUniqueRandomString(
+                $table = $tableName, 
+                $column = "id", 
+                $chars = 6
+            );
+    
+            DB::table($tableName)->insert([
+                'id' => $uniqueId,
+                'u_id' => $id,                  
+                'role_id' => $roleId,             
+                'mname' => $subPermission->mname, 
+                'mtitle' => $subPermission->mtitle,              
+                'mid' => $subPermission->mid,                     
+                'is_access' => 1          
+            ]);  
+            // MasterUserAccess::create([
+            //     'id' => $uniqueId,
+            //     'u_id' => $users_id,                  
+            //     'role_id' => $roleId,             
+            //     'mname' => $subPermission->mname, 
+            //     'mtitle' => $mtitle,              
+            //     'mid' => $mid,                     
+            //     'is_access' => 1                  
+            // ]);
+        }
+    }
+    }else if($roleName == 'Hybrid'){
+
+        $modules = AdminMenu::where('is_deleted', 0)
+        ->whereRaw('`ta_admin_menu`.`mid` IN (29, 124, 120, 115, 59)')
+        // ->where('pmenu', 0) 
+        ->get();
+
+    foreach ($modules as $module) {
+        $mid = $module->mid;
+        $mtitle = $module->mtitle;
+
+        // Fetch sub-permissions for this module
+        $subPermissions = AdminMenu::where('is_deleted', 0)
+            ->whereRaw('`ta_admin_menu`.`mid` IN (129,130,131,133,134,151,136,137,138,139,116,117,118,119,152,58,56)')
+            ->get();
+
+        foreach ($subPermissions as $subPermission) {
+            $tableName = $userId. '_tc_master_user_access';
+
+            $uniqueId = $this->GenerateUniqueRandomString(
+                $table = $tableName, 
+                $column = "id", 
+                $chars = 6
+            );
+    
+            DB::table($tableName)->insert([
+                'id' => $uniqueId,
+                'u_id' => $id,                  
+                'role_id' => $roleId,             
+                'mname' => $subPermission->mname, 
+                'mtitle' => $subPermission->mtitle,              
+                'mid' => $subPermission->mid,                     
+                'is_access' => 1          
+            ]);  
+            // MasterUserAccess::create([
+            //     'id' => $uniqueId,
+            //     'u_id' => $users_id,                  
+            //     'role_id' => $roleId,             
+            //     'mname' => $subPermission->mname, 
+            //     'mtitle' => $mtitle,              
+            //     'mid' => $mid,                     
+            //     'is_access' => 1                  
+            // ]);
+        }
+    }
+    }
+   
+}
 }

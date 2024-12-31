@@ -53,12 +53,13 @@ class LoginController extends Controller
         Cache::forget('masteradmins_user_' . Auth::guard('masteradmins')->id());
         
         session()->forget('user_configured');
+        Cookie::queue(Cookie::forget('user_session'));
         
         $request->session()->invalidate();
         
         $request->session()->regenerateToken();
-        
-        Cookie::queue(Cookie::forget('user_session'));
+        $request->session()->regenerate();
+
 
         return redirect('/agency/login/');
     }
