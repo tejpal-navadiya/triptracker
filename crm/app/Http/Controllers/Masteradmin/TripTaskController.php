@@ -475,9 +475,15 @@ class TripTaskController extends Controller
                 ->addColumn('task_cat_name', function ($document) {
                     return optional($document->tripCategory)->task_cat_name ?? '';
                 })
-                ->addColumn('trvt_due_date', function ($document) {
-                    return optional($document->trvt_due_date) ? \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y') : '';
-                })
+                ->addColumn('trvt_due_date', function($trvt_due_date) {
+                    if (isset($trvt_due_date->trvt_due_date) && $trvt_due_date->trvt_due_date) {
+                        $trvt_due_date = \Carbon\Carbon::parse($trvt_due_date->trvt_due_date)->format('M d, Y');
+                    } else {
+                        $trvt_due_date = '';
+                    }
+                
+                    return $trvt_due_date;
+                })          
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
@@ -679,8 +685,14 @@ class TripTaskController extends Controller
                 ->addColumn('task_cat_name', function ($document) {
                     return optional($document->tripCategory)->task_cat_name ?? '';
                 })
-                ->addColumn('trvt_due_date', function ($document) {
-                    return optional($document->trvt_due_date) ? \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y') : '';
+                ->addColumn('trvt_due_date', function($trvt_due_date) {
+                    if (isset($trvt_due_date->trvt_due_date) && $trvt_due_date->trvt_due_date) {
+                        $trvt_due_date = \Carbon\Carbon::parse($trvt_due_date->trvt_due_date)->format('M d, Y');
+                    } else {
+                        $trvt_due_date = '';
+                    }
+                
+                    return $trvt_due_date;
                 })
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
@@ -824,8 +836,14 @@ class TripTaskController extends Controller
                 ->addColumn('task_cat_name', function ($document) {
                     return optional($document->tripCategory)->task_cat_name ?? '';
                 })
-                ->addColumn('trvt_due_date', function ($document) {
-                    return optional($document->trvt_due_date) ? \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y') : '';
+                ->addColumn('trvt_due_date', function($trvt_due_date) {
+                    if (isset($trvt_due_date->trvt_due_date) && $trvt_due_date->trvt_due_date) {
+                        $trvt_due_date = \Carbon\Carbon::parse($trvt_due_date->trvt_due_date)->format('M d, Y');
+                    } else {
+                        $trvt_due_date = '';
+                    }
+                
+                    return $trvt_due_date;
                 })
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';

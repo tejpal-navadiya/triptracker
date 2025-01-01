@@ -441,6 +441,7 @@ class TripController extends Controller
                       'trvt_agent_id' =>$traveler->tr_agent_id,
                       'tr_id' => $traveler->tr_id, 
                       'trvt_name' => $task->pre_task_name, 
+                      'trvt_priority' => $task->pre_priority, 
                       'trvt_status' => 1
                   ]);
               }
@@ -664,10 +665,10 @@ class TripController extends Controller
 
         if (isset($validatedData['status'])) {
 
-            $predefinedTasks = PredefineTask::select('pre_task_name')
+            $predefinedTasks = PredefineTask::select('pre_task_name','pre_priority')
                 ->where('pre_task_type', $validatedData['status'])
                 ->get();
-        
+        // dD($predefinedTasks);
             foreach ($predefinedTasks as $task) {
                 $existingTask = TripTask::where('tr_id', $id)
                     ->where('trvt_name', $task->pre_task_name)
@@ -684,6 +685,7 @@ class TripController extends Controller
                         'trvt_agent_id' =>$trip->tr_agent_id,
                         'tr_id' => $id,
                         'trvt_name' => $task->pre_task_name,
+                        'trvt_priority' => $task->pre_priority, 
                         'trvt_status' => 1
                     ]);
                 }
