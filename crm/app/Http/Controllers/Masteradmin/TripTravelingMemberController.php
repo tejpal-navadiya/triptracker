@@ -216,6 +216,8 @@ public function index(Request $request, $id)
                 }
                 return $btn;
                 }
+
+                
                 if (isset($access['traveler_details']) && $access['traveler_details']) {
                     $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                 }
@@ -237,6 +239,12 @@ public function index(Request $request, $id)
                                 </div>
                             </a>';
                 }
+
+                if (isset($access['traveler_details']) && $access['traveler_details']) {
+                    $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+
+                }
+
                 return $btn;
             })
             ->rawColumns(['action'])

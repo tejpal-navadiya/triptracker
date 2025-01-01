@@ -426,7 +426,7 @@ class TripController extends Controller
 
       if (isset($validatedData['status'])) {
 
-        $predefinedTasks = PredefineTask::select('pre_task_name')
+        $predefinedTasks = PredefineTask::select('pre_task_name','pre_priority')
             ->where('pre_task_type', $validatedData['status'])
             ->get();
     

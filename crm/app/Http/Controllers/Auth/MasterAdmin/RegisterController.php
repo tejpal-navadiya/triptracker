@@ -98,16 +98,32 @@ class RegisterController extends Controller
         
 
         $startDate = Carbon::now();
-        if($period == 'monthly'){
+        // if($period == 'monthly'){
+        //     $months = 1;
+        //     $price_stripe_id = $plan->stripe_id ?? '';
+        // }else if($period == 'yearly'){
+        //     $months = 12;
+        //     $price_stripe_id = $plan->stripe_id_yr ?? '';
+        // }else{
+        //     $months = '0';
+        //     $price_stripe_id = '';
+        // }
+
+        if ($period == 'monthly') {
             $months = 1;
-            $price_stripe_id = $plan->stripe_id ?? '';
-        }else if($period == 'yearly'){
+            $price_stripe_id = $plan->stripe_id ?? ''; // Monthly price ID
+            $trialPeriodDays = 7; // 7-day trial for monthly plan
+        } else if ($period == 'yearly') {
             $months = 12;
-            $price_stripe_id = $plan->stripe_id_yr ?? '';
-        }else{
-            $months = '0';
+            $price_stripe_id = $plan->stripe_id_yr ?? ''; // Yearly price ID
+            $trialPeriodDays = 30; // 30-day trial for yearly plan
+        } else {
+            $months = 0;
             $price_stripe_id = '';
+            $trialPeriodDays = null; // No trial for invalid period
         }
+        
+        // dd($price_stripe_id);
         $expirationDate = $startDate->addMonths($months);
         $expiryDate = $expirationDate->toDateString();
         $uniqueId = $this->GenerateUniqueRandomString('buss_master_users', 'id', 6);  
@@ -222,11 +238,11 @@ class RegisterController extends Controller
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $stripePriceId = $price_stripe_id;
-     
+        // dd($stripePriceId);
         $quantity = 1;
 
         try {
-
+          
             $stripeCustomer = \Stripe\Customer::create([
                 'email' => $request->user_email,
                 'name' => $request->user_first_name . ' ' . $request->user_last_name,
@@ -234,7 +250,7 @@ class RegisterController extends Controller
 
             $user_data->stripe_id = $stripeCustomer->id;
             $user_data->save();
-
+           
 
             $customer = Customer::create([
                 'stripe_id' => $stripeCustomer->id,
@@ -242,13 +258,24 @@ class RegisterController extends Controller
                 'name' => $request->user_first_name . ' ' . $request->user_last_name,
             ]);
 
+          
+
+            // $Stripesubscription = \Stripe\Subscription::create([
+            //     'customer' => $stripeCustomer->id,
+            //     'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
+            //     'trial_period_days' => ($request->period == 'yearly') ? 12 : null, // Trial period if needed
+            // ]);
+
             $Stripesubscription = \Stripe\Subscription::create([
                 'customer' => $stripeCustomer->id,
-                'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
-                'trial_period_days' => ($request->period == 'monthly') ? 14 : null, // Trial period if needed
+                'items' => [
+                    ['price' => $price_stripe_id],
+                ],
+                'trial_period_days' => $trialPeriodDays, // Set trial period dynamically
             ]);
+
             $latestInvoiceId = $Stripesubscription->latest_invoice;
-            
+            // dd($Stripesubscription);
 
             $subscription = Subscription::create([
                 'user_id' => $stripeCustomer->id, // Assuming you have a user_id to associate with the subscription
@@ -337,7 +364,7 @@ class RegisterController extends Controller
     
         // Combine the prefix and the current ID
         // Use only the first 2 characters of the current ID
-        $uniqueId = $prefix . substr($current_id, 0, length: 4);
+        $uniqueId = $prefix . substr($current_id, 0,  4);
     
         return $uniqueId;
     }

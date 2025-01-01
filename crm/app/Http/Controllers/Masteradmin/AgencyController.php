@@ -572,15 +572,29 @@ public function store4(Request $request)
     $plan = Plan::where('sp_id', $user->plan_id)->firstOrFail();
 
     // $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
-    if($period == 'monthly'){
+    // if($period == 'monthly'){
+    //     $months = 1;
+    //     $stripePriceId = $plan->stripe_id ?? '';
+    // }else if($period == 'yearly'){
+    //     $months = 12;
+    //     $stripePriceId = $plan->stripe_id_yr ?? '';
+    // }else{
+    //     $months = '';
+    //     $stripePriceId = '';
+    // }
+
+    if ($period == 'monthly') {
         $months = 1;
-        $stripePriceId = $plan->stripe_id ?? '';
-    }else if($period == 'yearly'){
+        $price_stripe_id = $plan->stripe_id ?? ''; // Monthly price ID
+        $trialPeriodDays = 7; // 7-day trial for monthly plan
+    } else if ($period == 'yearly') {
         $months = 12;
-        $stripePriceId = $plan->stripe_id_yr ?? '';
-    }else{
-        $months = '';
-        $stripePriceId = '';
+        $price_stripe_id = $plan->stripe_id_yr ?? ''; // Yearly price ID
+        $trialPeriodDays = 30; // 30-day trial for yearly plan
+    } else {
+        $months = 0;
+        $price_stripe_id = '';
+        $trialPeriodDays = null; // No trial for invalid period
     }
     $quantity = 1;
 
@@ -669,11 +683,21 @@ public function store4(Request $request)
 
     // dd($customer);
 
+    // $Stripesubscription = \Stripe\Subscription::create([
+    //     'customer' => $stripeCustomer->id,
+    //     'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
+    //     'trial_period_days' => ($period == 'monthly') ? 14 : null, // Trial period if needed
+    // ]);
+
     $Stripesubscription = \Stripe\Subscription::create([
         'customer' => $stripeCustomer->id,
-        'items' => [['price' => $stripePriceId]], // Assuming $request->plan_id contains the price ID
-        'trial_period_days' => ($period == 'monthly') ? 14 : null, // Trial period if needed
+        'items' => [
+            ['price' => $price_stripe_id],
+        ],
+        'trial_period_days' => $trialPeriodDays, // Set trial period dynamically
     ]);
+
+    
     $latestInvoiceId = $Stripesubscription->latest_invoice;
     
 
@@ -697,7 +721,7 @@ public function store4(Request $request)
         // Create the user record (you need to save it after successful payment, hence no user data is created here yet)
 
         // Step 2: Redirect to success_url after Stripe payment
-        return $user_data->checkout([$stripePriceId => $quantity], [
+        return $user_data->checkout([$price_stripe_id => $quantity], [
             'success_url' => route('agencysuccess', [
                 'user_id' => $user->user_id, // Pass user_id
                 'email' => $request->users_email, // Pass email
