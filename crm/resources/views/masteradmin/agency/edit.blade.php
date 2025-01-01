@@ -98,11 +98,11 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
 
-                                            <label for="tr_agent_id">Work Email Address<span
+                                            <label for="tr_agent_id">Business Email Address<span
                                                     class="text-danger">*</span></label>
 
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
-                                                placeholder="Enter Work Email Address" name="user_work_email" autofocus
+                                                placeholder="Enter Business Email Address" name="user_work_email" autofocus
                                                 autocomplete="tr_agent_id" :value="old('age_user_id', $agency->user_work_email ?? '')" />
                                             <x-input-error class="mt-2" :messages="$errors->get('user_work_email')" />
                                         </div>

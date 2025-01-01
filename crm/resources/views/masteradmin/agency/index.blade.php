@@ -61,6 +61,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Email Address</th>
+                                            <th>Business Email Address</th>
                                             <th>Phone Number</th>
                                             <th>Users Id</th>
                                             <th>User Role</th>
@@ -75,6 +76,7 @@
                                                 <td>{{ $value->users_first_name ?? ('' . ' ' . $value->users_first_name ?? '')}} {{ $value->users_last_name ?? ('' . ' ' . $value->users_last_name ?? '') }}
                                                 </td>
                                                 <td>{{ $value->users_email }}</td>
+                                                <td>{{ $value->user_work_email ?? $value->users_email }}</td>
                                                 <td>{{ $value->user_emergency_phone_number ?? ($value->users_phone ?? '') }}
                                                 </td>
                                                 <td>{{ $value->user_id }}</td>

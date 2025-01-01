@@ -109,10 +109,10 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="user_work_email">Work Email Address <span
+                                            <label for="user_work_email">Business Email Address <span
                                                     class="text-danger">*</span></label>
                                             <x-text-input type="email" class="form-control" id="user_work_email"
-                                                placeholder="Enter Work Email Address" name="user_work_email" autofocus
+                                                placeholder="Enter Business Email Address" name="user_work_email" autofocus
                                                 autocomplete="user_work_email" value="{{ old('user_work_email') }}" />
 
                                             <x-input-error class="mt-2" :messages="$errors->get('user_work_email')" />

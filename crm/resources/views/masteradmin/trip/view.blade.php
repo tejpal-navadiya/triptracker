@@ -44,6 +44,8 @@
                             $activeTab = session('activeTab', 'Traveleroverview'); // Default to 'personalinformation'
                         @endphp
                         <ul class="nav nav-pills p-2 tab_box">
+                           
+
                             <li class="nav-item"><a class="nav-link {{ $activeTab == 'Traveleroverview' ? 'active' : '' }}" href="#Traveleroverview"
                                     data-toggle="tab">Household Information</a></li>
                             <li class="nav-item"><a class="nav-link" href="#Agentinfo" data-toggle="tab">Agent
@@ -55,9 +57,14 @@
                             </li>
                             <li class="nav-item"><a class="nav-link {{ $activeTab == 'preferenceinfo' ? 'active' : '' }}" href="#preferenceinfo" data-toggle="tab">Preference</a>
                             </li>
+                            <li class="nav-item"><a class="nav-link {{ $activeTab == 'TripDocumentinfo' ? 'active' : '' }}" href="#TripDocumentinfo" data-toggle="tab">Trip Document</a></li>
+
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="tab-content px-20">
+                        <div class="tab-pane {{ $activeTab == 'TripDocumentinfo' ? 'active' : '' }}" id="TripDocumentinfo">
+                            @include('masteradmin.trip.trip-document-information')
+                        </div>
                         <div class="tab-pane {{ $activeTab == 'Traveleroverview' ? 'active' : '' }}" id="Traveleroverview">
                             @include('masteradmin.trip.traveler-information')
                         </div>
@@ -79,6 +86,7 @@
                         <div class="tab-pane {{ $activeTab == 'preferenceinfo' ? 'active' : '' }}" id="preferenceinfo">
                             @include('masteradmin.trip.preference-information')
                         </div>
+                        
                         <!-- /.tab-pane -->
                     </div>
                     <!-- /.tab-content -->

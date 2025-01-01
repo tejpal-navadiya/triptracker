@@ -3434,4 +3434,61 @@ public function deleteImage(Request $request, $id, $image)
     // return redirect()->back()->with('error', 'Image not found.');
 }
 
+public function updateDocument(Request $request, $id): RedirectResponse
+{
+    // $rawItems = $request->input('items');
+    // dd($rawItems);
+
+ //dd($request->all());
+    $user = Auth::guard('masteradmins')->user();
+
+    $trip = Trip::where(['tr_id' => $id])->firstOrFail();
+  
+        $validatedData = $request->validate([
+           
+            'trp_name' => 'nullable|string',
+           
+        ],);
+       // dd($request->all());
+       $document_images = [];
+
+    // Check if existing images are present
+    if ($trip->trp_document) {
+        $existingImages = json_decode($trip->trp_document, true);
+        if (is_array($existingImages)) {
+            $document_images = $existingImages;
+        }
+    }
+
+    $userFolder = session('userFolder');
+
+    $newImages = []; // Ensure $newImages is initialized as an array
+    if (is_array($request->file('trp_document'))) {
+        // Upload multiple images
+        $newImages = $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+        // Ensure $newImages is an array
+        if (is_array($newImages)) {
+            $document_images = array_merge($document_images, $newImages);
+        }
+    }
+        // $validatedData['trp_document'] = $document_images;
+
+        $data = [
+            
+            'trp_name' => $request->input('trp_name'),
+            'trp_document' => $document_images,
+        ];
+    
+
+        $trip->where(['tr_id' => $id])->update($data);
+
+        session()->flash('activeTab',  'TripDocumentinfo');
+
+        \MasterLogActivity::addToLog('Master Admin Trip Updated.');
+        return redirect()->back()->with('document-success', 'Document Updated successfully!');
+
+    
+}
+
+
 }

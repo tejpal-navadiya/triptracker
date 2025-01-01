@@ -556,6 +556,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         //trip document delete 
         Route::post('/trip-document/{id}/image/{image}',  [TripController::class, 'deleteImage'])->name('trip.image.delete');
 
+        //trip document update 
+        Route::post('/trip-documentStore/{id}',  [TripController::class, 'updateDocument'])->name('trip.document.update');
+
     });
      
 

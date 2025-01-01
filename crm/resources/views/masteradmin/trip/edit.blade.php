@@ -604,7 +604,11 @@
                                                         <p id="document_images"></p>
                                                         <label for="trp_document">Only jpg, jpeg, png, and pdf files are allowed</label>
                                                     </div>
-                                                    @php
+                                                
+
+                                                  </div>
+                                                  <div class="col-md-12">
+                                                  @php
                                                         $files = json_decode($trip->trp_document);
                                                     @endphp
 
@@ -658,12 +662,7 @@
                                                     @else
                                                         <p>No files available.</p>
                                                     @endif
-
-                                                   
-
-
-
-                                                  </div>
+                                                </div>
                                             </div>
 
 

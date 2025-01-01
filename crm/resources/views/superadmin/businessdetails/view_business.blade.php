@@ -179,7 +179,7 @@
                                                     {{ $detail->users_last_name ?? '' }}</td>
 
                                                 <td>{{ $detail->users_email ?? '' }}</td>
-                                                <td>{{ $detail->users_personal_email ?? '' }}</td>
+                                                <td>{{ $detail->user_work_email ?? '' }}</td>
                                                 <td>{{ $detail->users_phone ?? $detail->user_emergency_phone_number }}</td>
                                                 <td>{{ $detail->role_name }}</td>
                                                 <td>{{ $detail->updated_at }}</td>

@@ -759,7 +759,7 @@ protected function assignPermissionsToRole($userId, $roleId, $roleName, $users_i
 
         // Fetch sub-permissions for this module
         $subPermissions = AdminMenu::where('is_deleted', 0)
-            ->whereRaw('`ta_admin_menu`.`mid` IN (129, 130, 131,133, 134, 151,136,139, 116, 117, 119)')
+            ->whereRaw('`ta_admin_menu`.`mid` IN (129, 130, 131,133, 134, 151,136,139, 116, 117, 119,123,147,148,149)')
             ->get();
 
         foreach ($subPermissions as $subPermission) {
@@ -804,7 +804,7 @@ protected function assignPermissionsToRole($userId, $roleId, $roleName, $users_i
 
         // Fetch sub-permissions for this module
         $subPermissions = AdminMenu::where('is_deleted', 0)
-            ->whereRaw('`ta_admin_menu`.`mid` IN (139, 130, 131, 133, 134, 151, 136, 137, 138, 139, 116, 117, 118, 119, 152, 58, 56)')
+            ->whereRaw('`ta_admin_menu`.`mid` IN (139, 130, 131, 133, 134, 151, 136, 137, 138, 139, 116, 117, 118, 119, 152, 58, 56, 128,144,145,146,140,141,142,143,123,147,148,149)')
             ->get();
 
         foreach ($subPermissions as $subPermission) {
@@ -849,7 +849,7 @@ protected function assignPermissionsToRole($userId, $roleId, $roleName, $users_i
 
         // Fetch sub-permissions for this module
         $subPermissions = AdminMenu::where('is_deleted', 0)
-            ->whereRaw('`ta_admin_menu`.`mid` IN (129,130,131,133,134,151,136,137,138,139,116,117,118,119,152,58,56)')
+            ->whereRaw('`ta_admin_menu`.`mid` IN (129,130,131,133,134,151,136,137,138,139,116,117,118,119,152,58,56,128,144,145,146,140,141,142,143,123,147,148,149)')
             ->get();
 
         foreach ($subPermissions as $subPermission) {

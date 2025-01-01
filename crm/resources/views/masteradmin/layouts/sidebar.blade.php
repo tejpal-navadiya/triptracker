@@ -16,7 +16,13 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-             
+               @if(
+            (isset($access['view_trip']) && $access['view_trip'])  || 
+            (isset($access['book_after_trip']) && $access['book_after_trip'])  || 
+            (isset($access['follow_up']) && $access['follow_up']) || 
+            (isset($access['task_details']) && $access['task_details'])  || 
+            (isset($access['task_category']) && $access['task_category'])  
+            )
 
                 <li class="nav-item 
                             {{ request()->is($busadminRoutes . '/trip*') ||
@@ -89,7 +95,7 @@
                         @endif
                     </ul>
                 </li>
-
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('masteradmin.home') }}"
                         class="nav-link {{ request()->is($busadminRoutes . '/dashboard*') ? 'active' : '' }}">
@@ -99,7 +105,10 @@
                 </li>
 
 
-
+                @if(
+            (isset($access['list_traveler']) && $access['list_traveler'])  || 
+            (isset($access['add_traveler']) && $access['add_traveler'])  
+            )
                 <li class="nav-item {{ request()->is($busadminRoutes . '/travelers*') ||
     request()->is($busadminRoutes . '/travelers-create*') ||
     request()->is($busadminRoutes . '/view-travelers*')
@@ -137,8 +146,15 @@
                         @endif
                     </ul>
                 </li>
+                @endif          
+                
+                
 
-
+                @if(
+            (isset($access['add_email_template']) && $access['add_email_template'])  || 
+            (isset($access['email_category']) && $access['email_category'])  ||
+            (isset($access['view_email_template']) && $access['view_email_template'])  
+            )
                 <li class="nav-item {{ request()->is($busadminRoutes . '/email-templates*') ||
     request()->is($busadminRoutes . '/email-create*') ||
     request()->is($busadminRoutes . '/email') ||
@@ -205,9 +221,14 @@
                         @endif
                     </ul>
                 </li>
+                @endif     
 
 
-
+                @if(
+            (isset($access['list_library']) && $access['list_library'])  || 
+            (isset($access['add_library']) && $access['add_library'])  ||
+            (isset($access['list_library_cat']) && $access['list_library_cat'])  
+            )
                 <li class="nav-item {{ request()->is($busadminRoutes . '/library*') ||
     request()->is($busadminRoutes . '/library_category*')
     ? 'menu-open' : '' }}">
@@ -255,7 +276,15 @@
                         @endif
                     </ul>
                 </li>
-                @if (isset($access['view_user']) && $access['view_user'])                            
+                @endif   
+                
+                
+                @if(
+            (isset($access['view_user']) && $access['view_user'])  || 
+            (isset($access['add_user']) && $access['add_user'])  
+            )
+
+                          
                 <li class="nav-item {{ request()->is($busadminRoutes . '/agency*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is($busadminRoutes . '/agency*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
@@ -362,6 +391,8 @@
                     </ul>
                 </li>
  -->
+                @if (isset($access['edit_profile']) && $access['edit_profile'])
+
                 <li
                     class="nav-item {{ request()->is($busadminRoutes . '/settings*') || request()->is($busadminRoutes . '/profile*') || request()->is($busadminRoutes . '/logActivity*') || request()->is($busadminRoutes . '/agencies-profile') || request()->is($busadminRoutes . '/mail-settings') ? 'menu-open' : '' }}">
                     <a href="#"
@@ -410,7 +441,7 @@
 
                     </ul>
                 </li>
-
+                @endif                             
 
                 <li class="nav-item">
                     <form id="logout-form" method="POST" action="{{ route('masteradmin.logout') }}"

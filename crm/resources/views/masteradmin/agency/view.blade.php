@@ -62,7 +62,7 @@
                                                         <td>{{ $agency->users_first_name }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Work Email Address:</th>
+                                                        <th>Business Email Address:</th>
                                                         <td>{{ $agency->user_work_email }}</td>
                                                     </tr>
                                                     <tr>

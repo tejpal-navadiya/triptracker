@@ -222,7 +222,10 @@
             </div>
             @endforeach
         </div>
-            <button type="submit">Submit</button>
+            <div class="col-md-12 text-center">
+                <!-- <a href="{{ route('trip.index') }}" class="add_btn_br px-10">Cancel</a> -->
+                <button type="submit" class="add_btn px-10">Save</button>
+            </div>
         </form>
         
     

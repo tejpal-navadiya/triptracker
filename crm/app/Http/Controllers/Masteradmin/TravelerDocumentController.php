@@ -55,11 +55,11 @@ class TravelerDocumentController extends Controller
                     ->addColumn('action', function($document) use ($access){
                         $btn = '';
 
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['traveler_details']) && $access['traveler_details']) {
                             $btn .= '<a data-id="'.$document->trvd_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editDocument"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
 
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['traveler_details']) && $access['traveler_details']) {
 
                             $images = json_decode($document->trvd_document, true);
 
@@ -87,7 +87,7 @@ class TravelerDocumentController extends Controller
                                     </div>';
                         }
                         
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['traveler_details']) && $access['traveler_details']) {
                             $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$document->trvd_id.'">
                                         <i class="fas fa-trash delete_icon_grid"></i>
                                         <div class="modal fade" id="delete-role-modal-'.$document->trvd_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
