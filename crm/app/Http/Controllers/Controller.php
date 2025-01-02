@@ -160,9 +160,9 @@ class Controller extends BaseController
                     $table->string('users_first_name')->nullable();
                     $table->string('users_last_name')->nullable();
                     $table->string('users_email')->nullable()->unique();
-                    $table->string('users_personal_email')->nullable()->unique();
-                    $table->string('users_business_phone')->nullable()->unique();
-                    $table->string('users_personal_phone')->nullable()->unique();
+                    $table->string('users_personal_email')->nullable();
+                    $table->string('users_business_phone')->nullable();
+                    $table->string('users_personal_phone')->nullable();
                     $table->string('users_iata_clia_number')->nullable();
                     $table->string('users_clia_number')->nullable();
                     $table->string('users_iata_number')->nullable();
@@ -181,7 +181,7 @@ class Controller extends BaseController
                     $table->string('user_dob')->nullable();
                     $table->string('user_emergency_contact_person')->nullable();
                     $table->string('user_emergency_phone_number')->nullable();
-                    $table->string('user_emergency_email')->nullable()->unique();
+                    $table->string('user_emergency_email')->nullable();
                     $table->string('users_image')->nullable();
                     $table->string('role_id')->nullable()->default(0);
                     $table->string('id')->nullable()->default(0);
@@ -948,18 +948,18 @@ class Controller extends BaseController
         }
     
         //Trips Document
-        // if (!Schema::hasTable($storeId.'_tc_trip_document')){   
-        //     Schema::create($storeId.'_tc_trip_document', function (Blueprint $table) use ($storeId) {
-        //         $table->string('trp_id')->unique()->primary();
-        //         $table->string('id')->nullable()->default(0);
-        //         $table->string('tr_id')->nullable()->default(0);
-        //         $table->string('trp_name')->nullable();
-        //         $table->string('trp_document')->nullable();                    
-        //         $table->tinyInteger('trp_status')->default(0)->nullable();
-        //         $table->timestamps();
-        //     });
+        if (!Schema::hasTable($storeId.'_tc_trip_document')){   
+            Schema::create($storeId.'_tc_trip_document', function (Blueprint $table) use ($storeId) {
+                $table->string('trp_id')->unique()->autoIncrement();
+                $table->string('id')->nullable()->default(0);
+                $table->string('tr_id')->nullable()->default(0);
+                $table->string('trp_name')->nullable();
+                $table->text('trp_document')->nullable();                    
+                $table->tinyInteger('trp_status')->default(0)->nullable();
+                $table->timestamps();
+            });
 
-        // }
+        }
 
     }
         

@@ -32,6 +32,7 @@ use App\Models\TripPreference;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Models\TripDocument;
 
 class TripController extends Controller
 {
@@ -55,7 +56,7 @@ class TripController extends Controller
 
         $tripTable = $trips->getTable();
         if ($user->users_id && $user->role_id == 0) {
-            $agency = $masterUserDetails->where('users_id', '!=', $user->users_id)->get();
+            $agency = $masterUserDetails->get();
         
         } else {
             $agency = $masterUserDetails->where('users_id', $user->users_id)->get();
@@ -346,8 +347,8 @@ class TripController extends Controller
         $traveler->tr_city = $validatedData['tr_city'] ?? null;
         $traveler->tr_address = $validatedData['tr_address'] ?? null;
         $traveler->tr_zip = $validatedData['tr_zip'] ?? null;
-        $traveler->trp_document = $documentimg ?? '';
-        $traveler->trp_name = $request->input('trp_name') ?? '';
+        // $traveler->trp_document = $documentimg ?? '';
+        // $traveler->trp_name = $request->input('trp_name') ?? '';
 
         $traveler->status = $validatedData['status'] ?? '1';
         $traveler->tr_status = 1;
@@ -442,7 +443,8 @@ class TripController extends Controller
                       'tr_id' => $traveler->tr_id, 
                       'trvt_name' => $task->pre_task_name, 
                       'trvt_priority' => $task->pre_priority, 
-                      'trvt_status' => 1
+                      'trvt_status' => 1,
+                      'status' => 1
                   ]);
               }
          }
@@ -466,8 +468,27 @@ class TripController extends Controller
           }
       }
 
+    $trp_name = $request->input('trp_name') ?? '';
+    if ($request->hasFile('trp_document')) {
 
-        
+        if (is_array($request->file('trp_document'))) {
+            
+            $userFolder = session('userFolder');
+            $documents_images =  $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+            //dd($documents_images);
+            $documentimg = json_encode($documents_images);
+
+        }
+    } 
+
+
+      TripDocument::create([
+        'id' => $user->users_id,
+        'tr_id' =>  $traveler->tr_id,
+        'trp_name' =>  $trp_name ?? '',
+        'trp_document' =>  $documentimg ?? '',
+        'trp_status' =>  1,
+      ]);
             \MasterLogActivity::addToLog('Master Admin Trip Created.');
 
             return redirect()->route('trip.index')
@@ -526,12 +547,12 @@ class TripController extends Controller
                 $memberTotalCount = $membersCount + $tripDataCount;
       
      
-    
+        $tripdocument = TripDocument::where('tr_id', $id)->get();
     //    dd($tripdocument);
     
         //$status = Trip::where('status', $selectedStatus)->get();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user','memberTotalCount'));
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user','memberTotalCount','tripdocument'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 
@@ -592,15 +613,15 @@ class TripController extends Controller
 
         $userFolder = session('userFolder');
 
-        $newImages = []; // Ensure $newImages is initialized as an array
-        if (is_array($request->file('trp_document'))) {
-            // Upload multiple images
-            $newImages = $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
-            // Ensure $newImages is an array
-            if (is_array($newImages)) {
-                $document_images = array_merge($document_images, $newImages);
-            }
-        }
+        // $newImages = []; // Ensure $newImages is initialized as an array
+        // if (is_array($request->file('trp_document'))) {
+        //     // Upload multiple images
+        //     $newImages = $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+        //     // Ensure $newImages is an array
+        //     if (is_array($newImages)) {
+        //         $document_images = array_merge($document_images, $newImages);
+        //     }
+        // }
             // $validatedData['trp_document'] = $document_images;
 
             $data = [
@@ -625,8 +646,8 @@ class TripController extends Controller
                 'tr_address' => $request->input('tr_address'),
                 'status' => $request->input('status'),
                 'tr_zip' => $request->input('tr_zip'),
-                'trp_name' => $request->input('trp_name'),
-                'trp_document' => $document_images,
+                // 'trp_name' => $request->input('trp_name'),
+                // 'trp_document' => $document_images,
                 'tr_type_trip' => json_encode($request->input('tr_type_trip', []))
             ];
         
@@ -686,7 +707,8 @@ class TripController extends Controller
                         'tr_id' => $id,
                         'trvt_name' => $task->pre_task_name,
                         'trvt_priority' => $task->pre_priority, 
-                        'trvt_status' => 1
+                        'trvt_status' => 1,
+                        'status' => 1
                     ]);
                 }
             }
@@ -739,7 +761,27 @@ class TripController extends Controller
             }
         }
 
-       
+        $trp_name = $request->input('trp_name') ?? '';
+    if ($request->hasFile('trp_document')) {
+
+        if (is_array($request->file('trp_document'))) {
+            
+            $userFolder = session('userFolder');
+            $documents_images =  $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+            //dd($documents_images);
+            $documentimg = json_encode($documents_images);
+
+        }
+    } 
+
+
+      TripDocument::create([
+        'id' => $user->users_id,
+        'tr_id' =>  $id,
+        'trp_name' =>  $trp_name ?? '',
+        'trp_document' =>  $documentimg ?? '',
+        'trp_status' =>  1,
+      ]);
  
 
             \MasterLogActivity::addToLog('Master Admin Trip Updated.');
@@ -918,8 +960,10 @@ class TripController extends Controller
 
         // dd($totalCount);            
         //dd($tripTraveling);
+        $tripdocument = TripDocument::where('tr_id', $id)->get();
 
-        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship','user_id','uniq_id','traveler_id','tripTypes','preference','memberTotalCount'));
+
+        return view('masteradmin.trip.view', compact('trip', 'taskCategory', 'tripTraveling', 'documentType', 'tripData', 'tripTravelingMembers','taskstatus','agency_user','trip_id','member','task','document','travelingrelationship','user_id','uniq_id','traveler_id','tripTypes','preference','memberTotalCount','tripdocument'));
     }
 
     public function travelersDetails(): View
@@ -2583,6 +2627,7 @@ public function bookgridView(Request $request)
     $sixtyDaysFromNow = $currentDate->copy()->addDays(60)->format('m/d/Y');
     $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
     $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
+   // dd($twoDaysFromNow);
     if($user->users_id && $user->role_id ==0 ){
 
         $sixtyDaysTripQuery = Trip::where('tr_status', 1)
@@ -2710,12 +2755,17 @@ public function bookgridView(Request $request)
   
     if($user->users_id && $user->role_id ==0 ){
         
+        // \DB::enableQueryLog();
+
     $twoDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
         ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-        ->where($tripTable . '.tr_start_date', '>=', $currentDate->format('m/d/Y'))
-        ->where($tripTable . '.tr_start_date', '<=', $twoDaysFromNow);
+        ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') > STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+        ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$twoDaysFromNow]);
+
+        // ->where($tripTable . '.tr_start_date', '>', $currentDate->format('m/d/Y'))
+        // ->where($tripTable . '.tr_start_date', '<=', $twoDaysFromNow);
     }else{
         $twoDaysTripQuery = Trip::where('tr_status', 1)
         ->from($tripTable)
@@ -2725,10 +2775,13 @@ public function bookgridView(Request $request)
             $query->where($tripTable . '.tr_agent_id', $user->users_id)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
-        ->where($tripTable . '.tr_start_date', '>=', $currentDate->format('m/d/Y'))
-        ->where($tripTable . '.tr_start_date', '<=', $twoDaysFromNow);
+            ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') > STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$twoDaysFromNow]);
+    
     }
-        // Apply filters for 2 Days Trip Bon Voyage Query
+    // dd(\DB::getQueryLog()); 
+
+    // Apply filters for 2 Days Trip Bon Voyage Query
     if ($startDate && !$endDate) {
         $twoDaysTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
     } elseif ($startDate && $endDate) {
@@ -2788,7 +2841,7 @@ public function bookgridView(Request $request)
     }
 
       Trip::where('tr_status', 1)
-        ->where('status', '!=', 7) // Avoid updating trips already marked as completed
+        ->where('status', '=', 7) // Avoid updating trips already marked as completed
         ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
         ->update(['status' => 7]);
 
@@ -2823,11 +2876,13 @@ public function bookgridView(Request $request)
     ->get();
     // dd(\DB::getQueryLog()); 
     // Travelling Trip Query
+
     $travellingTripQuery = Trip::where('tr_status', 1)
     ->from($tripTable)
     ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
     ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-    ->where($tripTable . '.tr_end_date', '=', $currentDateFormatted);
+    ->whereRaw("STR_TO_DATE($tripTable.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDateFormatted])
+    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDateFormatted]);
 
     // Apply filters for Travelling Trip Query
     if ($startDate && !$endDate) {
@@ -3243,6 +3298,7 @@ public function destroyTraveler($id): RedirectResponse
 
 public function preferencesStore(Request $request,$id)
 {
+    // dd($id);
     // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
@@ -3342,7 +3398,7 @@ public function preferencesStore(Request $request,$id)
         ]);
         if ($preference) {
             $data['updated_at'] = now();
-            $preference->update($data);
+            $preference->where('id', $user->users_id)->where('tr_id', $id)->where('traveler_id', $request->traveler_id)->update($data);
         } else {
             // 'preference_id',
             // 'id',
@@ -3376,9 +3432,10 @@ public function getFamilyMembers($id)
 
 public function getTripPreferences($trvm_id)
 {
+    //dd($trvm_id);
     // Fetch the traveler's preferences from the TripPreference model
     $preference = TripPreference::where('traveler_id', $trvm_id)->first();
-    // dD($preference);
+    //dD($preference);
     // Return the data as JSON
     return response()->json([
         'success' => true,
@@ -3386,11 +3443,11 @@ public function getTripPreferences($trvm_id)
     ]);
 }
 
-public function deleteImage(Request $request, $id, $image)
+public function deleteImage(Request $request, $tripid, $documentid, $image)
 {
-
-    $library = Trip::where('tr_id', $id)->firstOrFail();
-
+    // dd($tripid);
+    $library = TripDocument::where('trp_id', $documentid)->firstOrFail();
+    // dd($library);
     $images = json_decode($library->trp_document, true);
 
     if (($key = array_search($image, $images)) !== false) {
@@ -3398,9 +3455,9 @@ public function deleteImage(Request $request, $id, $image)
 
         unset($images[$key]);
 
-        $library->trp_document = json_encode(array_values($images)); // Re-index the array and encode it back to JSON
+        $data_image = json_encode(array_values($images)); // Re-index the array and encode it back to JSON
 
-        $library->save(); 
+        $library->where('trp_id', $documentid)->update(['trp_document' => $data_image]); 
 
         $userFolder = storage_path('app/' . session('userFolder'). '/trip_document/');
         $filePath = $userFolder . $image; 
@@ -3414,13 +3471,19 @@ public function deleteImage(Request $request, $id, $image)
             // Log::warning('File does not exist: ' . $filePath);
         }
 
+        if (empty($library->trp_document) || !$images) {
+            // If trp_document is empty or null, delete the record
+            $library->where('trp_id', $documentid)->delete();
+            // return; // Exit the function to avoid further processing
+        }
+
         // return redirect()->route('trip.edit', $id)->with('success', 'Image deleted successfully.');
         session()->flash('success', 'Image deleted successfully.');
 
         // Return a JSON response indicating success
         return response()->json([
             'success' => true,
-            'redirect_url' => route('trip.edit', $id) // URL to redirect after successful delete
+            'redirect_url' => route('trip.edit', $tripid) // URL to redirect after successful delete
         ]);
     }
     \MasterLogActivity::addToLog('Master Admin Library is Deleted.');
@@ -3431,7 +3494,7 @@ public function deleteImage(Request $request, $id, $image)
 
     return response()->json([
         'error' => false,
-        'redirect_url' => route('trip.edit', $id) // URL to redirect if image is not found
+        'redirect_url' => route('trip.edit', $tripid) // URL to redirect if image is not found
     ]);
     // return redirect()->back()->with('error', 'Image not found.');
 }
@@ -3444,45 +3507,37 @@ public function updateDocument(Request $request, $id): RedirectResponse
  //dd($request->all());
     $user = Auth::guard('masteradmins')->user();
 
-    $trip = Trip::where(['tr_id' => $id])->firstOrFail();
+    // $trip = TripDocument::where(['trp_id' => $id])->firstOrFail();
   
         $validatedData = $request->validate([
            
             'trp_name' => 'nullable|string',
            
         ],);
-       // dd($request->all());
-       $document_images = [];
+ 
+    $trp_name = $request->input('trp_name') ?? '';
+    if ($request->hasFile('trp_document')) {
 
-    // Check if existing images are present
-    if ($trip->trp_document) {
-        $existingImages = json_decode($trip->trp_document, true);
-        if (is_array($existingImages)) {
-            $document_images = $existingImages;
-        }
-    }
-
-    $userFolder = session('userFolder');
-
-    $newImages = []; // Ensure $newImages is initialized as an array
-    if (is_array($request->file('trp_document'))) {
-        // Upload multiple images
-        $newImages = $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
-        // Ensure $newImages is an array
-        if (is_array($newImages)) {
-            $document_images = array_merge($document_images, $newImages);
-        }
-    }
-        // $validatedData['trp_document'] = $document_images;
-
-        $data = [
+        if (is_array($request->file('trp_document'))) {
             
-            'trp_name' => $request->input('trp_name'),
-            'trp_document' => $document_images,
-        ];
-    
+            $userFolder = session('userFolder');
+            $documents_images =  $this->handleImageUpload($request, 'trp_document', null, 'trip_document', $userFolder);
+            //dd($documents_images);
+            $documentimg = json_encode($documents_images);
 
-        $trip->where(['tr_id' => $id])->update($data);
+        }
+    } 
+
+
+      TripDocument::create([
+        'id' => $user->users_id,
+        'tr_id' =>  $id,
+        'trp_name' =>  $trp_name ?? '',
+        'trp_document' =>  $documentimg,
+        'trp_status' =>  1,
+      ]);
+ 
+    
 
         session()->flash('activeTab',  'TripDocumentinfo');
 
@@ -3492,5 +3547,230 @@ public function updateDocument(Request $request, $id): RedirectResponse
     
 }
 
+public function editPreferences($trvm_id,$lead_id)
+{
+    //
+    $id = $trvm_id;
+    $main_lead = $lead_id;
+    $preference = TripPreference::where('traveler_id', $trvm_id)->first();
+    
+    $user = Auth::guard('masteradmins')->user();
+    $uniq_id = $user->user_id;
+    $tripTravelingMembers = DB::table($uniq_id . '_tc_trip_traveling_member')
+    ->select('trtm_id', 'trtm_first_name', 'trtm_last_name')
+    ->where('lead_id', $lead_id)->where('lead_status','!=',1)
+    ->get();
+// dd($tripTravelingMembers);
+        $tripData = \DB::table($uniq_id . '_tc_trip_traveling_member')
+    ->select( 'trtm_first_name', 'trtm_age','trtm_id')
+    ->where('trtm_id', $lead_id)
+    ->where('lead_status', 1)//main lead
+    ->get();
+    // dd($tripData);
+
+    $tripTypes = TripType::whereIn('ty_name', ['Air', 'Cruise', 'Hotel', 'Resort', 'Guided Tours', 'Car Rental', 'Theme Park'])
+    ->where('ty_status', '1')
+    ->orderByRaw("FIELD(ty_name, 'Air', 'Cruise', 'Hotel', 'Resort', 'Guided Tours', 'Car Rental', 'Theme Park')")
+    ->get(['ty_id', 'ty_name']);
+
+    // dd($preference);
+    return view('masteradmin.traveler.member-preferences',compact('preference','id','tripTravelingMembers','tripData','tripTypes','main_lead'));
+
+}
+
+public function getTripPreferencesShow($trvm_id)
+{
+    //dd($trvm_id);
+    // Fetch the traveler's preferences from the TripPreference model
+    $preference = TripPreference::where('traveler_id', $trvm_id)->first();
+    //dD($preference);
+    // Return the data as JSON
+    return response()->json([
+        'success' => true,
+        'preference' => $preference,
+    ]);
+}
+
+public function memberPreferencesStore(Request $request,$id)
+{
+    // dd($id);
+    // dd($request->all());
+        $user = Auth::guard('masteradmins')->user();
+
+        $validator = Validator::make($request->all(), [
+            'traveler_id' => 'required|string|max:255',
+            'perferred_airport' => 'nullable|string|max:255',
+            'secondary_airport' => 'nullable|string|max:255',
+            'perferred_airline' => 'nullable|string|max:255',
+            'secondary_airline' => 'nullable|string|max:255',
+            'perferred_class' => 'nullable|string|max:255',
+            'perferred_seat' => 'nullable|string|max:255',
+            'air_notes' => 'nullable|string',
+            'preferred_embarkation_port' => 'nullable|string|max:255',
+            'secondary_embarkation_port' => 'nullable|string|max:255',
+            'favoriate_curuise_line' => 'nullable|string|max:255',
+            'twond_favoriate_curuise_line' => 'nullable|string|max:255',
+            'cabine_preference' => 'nullable|string|max:255',
+            'preferred_deck_location' => 'nullable|string|max:255',
+            'curuise_note' => 'nullable|string',
+            'favorite_hotel_brand' => 'nullable|string|max:255',
+            'preferred_hotel_type' => 'nullable|string|max:255',
+            'bed_preference' => 'nullable|string|max:255',
+            'hotel_notes' => 'nullable|string',
+            'favorite_resort' => 'nullable|string|max:255',
+            'secoundary_resort' => 'nullable|string|max:255',
+            'preferred_room_type' => 'nullable|string|max:255',
+            'secoundary_room_type' => 'nullable|string|max:255',
+            'preferred_meal_plan' => 'nullable|string|max:255',
+            'preferred_atmosphere' => 'nullable|string|max:255',
+            'preferred_resort_type' => 'nullable|string|max:255',
+            'resort_notes' => 'nullable|string',
+            'favorite_toure_company' => 'nullable|string|max:255',
+            'secoundary_favorite_toure_company' => 'nullable|string|max:255',
+            'guided_tours_preferred_room_type' => 'nullable|string|max:255',
+            'guided_tours_notes' => 'nullable|string',
+            'favorite_car_rental_company' => 'nullable|string|max:255',
+            'secoundary_favrioute_car_reantal_company' => 'nullable|string|max:255',
+            'preferred_car_type' => 'nullable|string|max:255',
+            'car_rental_notes' => 'nullable|string',
+            'favorite_theme_park' => 'nullable|string|max:255',
+            'secoundary_favorite_theme_park' => 'nullable|string|max:255',
+            'oneside_offside_hotel' => 'nullable|string|max:255',
+            'theme_park_notes' => 'nullable|string',
+            'preference_status' => 'nullable|string|max:255',
+        ], [
+            'traveler_id.required' => 'Please select a traveler',
+        ]);
+
+        if ($validator->fails()) {
+            session()->flash('activeTab', 'preferenceinfo');
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $preference = TripPreference::where('id', $user->users_id)->where('traveler_id', $request->traveler_id)->first();
+        // dd($preference);
+        $data = $request->only([
+            'traveler_id',
+            'perferred_airport',
+            'secondary_airport',
+            'perferred_airline',
+            'secondary_airline',
+            'perferred_class',
+            'perferred_seat',
+            'air_notes',
+            'preferred_embarkation_port',
+            'secondary_embarkation_port',
+            'favoriate_curuise_line',
+            'twond_favoriate_curuise_line',
+            'cabine_preference',
+            'preferred_deck_location',
+            'curuise_note',
+            'favorite_hotel_brand',
+            'preferred_hotel_type',
+            'bed_preference',
+            'hotel_notes',
+            'favorite_resort',
+            'secoundary_resort',
+            'preferred_room_type',
+            'secoundary_room_type',
+            'preferred_meal_plan',
+            'preferred_atmosphere',
+            'preferred_resort_type',
+            'resort_notes',
+            'favorite_toure_company',
+            'secoundary_favorite_toure_company',
+            'guided_tours_preferred_room_type',
+            'guided_tours_notes',
+            'favorite_car_rental_company',
+            'secoundary_favrioute_car_reantal_company',
+            'preferred_car_type',
+            'car_rental_notes',
+            'favorite_theme_park',
+            'secoundary_favorite_theme_park',
+            'oneside_offside_hotel',
+            'theme_park_notes',
+            'preference_status',
+            
+        ]);
+        if ($preference) {
+            // dd($data);
+            $data['updated_at'] = now();
+            $preference->where('id', $user->users_id)->where('traveler_id', $request->traveler_id)->update($data);
+        } else {
+            // 'preference_id',
+            // 'id',
+            $data['id'] = $user->users_id;
+            $data['tr_id'] = $id;
+            $data['created_at'] = now();
+            $data['preference_status'] = 1;
+            // Create a new record if none exists
+            TripPreference::create($data);
+        }
+        session()->flash('activeTab',  'preferenceinfo');
+
+        // return redirect()->route('trip.view',$id)->with('success', 'Trip preferences saved successfully!');
+        return redirect()->back()->with('success', 'Trip preferences saved successfully!');
+        
+    }
+
+    public function viewDeleteImage(Request $request, $tripid, $documentid, $image)
+    {
+    
+        
+        $library = TripDocument::where('trp_id', $documentid)->firstOrFail();
+        // dd($library);
+        $images = json_decode($library->trp_document, true);
+
+        
+    
+        if (($key = array_search($image, $images)) !== false) {
+            $userFolder = session('userFolder');
+    
+            unset($images[$key]);
+    
+            $data_image = json_encode(array_values($images)); // Re-index the array and encode it back to JSON
+    
+            $library->where('trp_id', $documentid)->update(['trp_document' => $data_image]); 
+    
+            $userFolder = storage_path('app/' . session('userFolder'). '/trip_document/');
+            $filePath = $userFolder . $image; 
+    
+            // Log::info('Attempting to delete file at path: ' . $filePath);
+    
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+                // Log::info('File deleted successfully: ' . $filePath);
+            } else {
+                // Log::warning('File does not exist: ' . $filePath);
+            }
+
+            if (empty($library->trp_document) || !$images) {
+                // If trp_document is empty or null, delete the record
+                $library->where('trp_id', $documentid)->delete();
+                // return; // Exit the function to avoid further processing
+            }
+    
+            // return redirect()->route('trip.edit', $id)->with('success', 'Image deleted successfully.');
+            session()->flash('document-success', 'Image deleted successfully.');
+            session()->flash('activeTab',  'TripDocumentinfo');
+            // Return a JSON response indicating success
+            return response()->json([
+                'success' => true,
+                'redirect_url' => url()->previous() // URL to redirect after successful delete
+            ]);
+        }
+        \MasterLogActivity::addToLog('Master Admin Library is Deleted.');
+    
+        // return redirect()->route('trip.edit', $id)->with('error', 'Image not found.');
+    
+        session()->flash('error', 'Image not found.');
+        session()->flash('activeTab',  'TripDocumentinfo');
+        return response()->json([
+            'error' => false,
+            'redirect_url' => url()->previous()// URL to redirect if image is not found
+        ]);
+        // return redirect()->back()->with('error', 'Image not found.');
+    }
+    
 
 }

@@ -97,7 +97,8 @@
                                                     config('app.image_url').'/library_images/' . $file;
                                             @endphp
 
-                                            @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
+                                            @if (preg_match('/\.(jpg|jpeg|png|gif|bmp|svg|webp|jfif)$/i', $file))
+
                                                 <img src="{{ $imageUrl }}" alt="Library Image"
                                                     class="libary-img img-fluid img-thumbnail">
                                             @elseif (preg_match('/\.pdf$/i', $file))

@@ -175,8 +175,8 @@
                                         <select class="form-control" id="traveler_id" name="traveler_id" autofocus>
                                             <option value="" > Select Lead Traveler </option>
                                             @foreach ($lead_traveler as $value)
-                                            <option value="{{ $value->tr_id }}"  >
-                                                {{ $value->tr_traveler_name ?? '' }}
+                                            <option value="{{ $value->trtm_id }}"  >
+                                                {{ $value->trtm_first_name ?? '' }} {{ $value->trtm_last_name ?? '' }}
                                             </option>
                                             @endforeach
                                         </select>

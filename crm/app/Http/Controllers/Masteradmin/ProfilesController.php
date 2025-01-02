@@ -132,12 +132,12 @@ class ProfilesController extends Controller
         // dD($agencyuser);
         $country = Countries::all();
     
-        $selectedCountryId = $agencyusers->user_country;
+        $selectedCountryId = $agencyusers->users_country;
 
         $states = States::where('country_id', $selectedCountryId)->orderBy('name', 'ASC')->get();
     
-        $selectedStateId = $agencyusers->user_state;
-    
+        $selectedStateId = $agencyusers->users_state;
+        // dd($agencyusers);
         $cities = Cities::where('state_id', $selectedStateId)->orderBy('name', 'ASC')->get();
 
         // dd($agencyusers);

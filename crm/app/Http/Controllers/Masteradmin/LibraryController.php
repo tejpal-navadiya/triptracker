@@ -19,7 +19,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\LeadTravelerEmail;
-
+use App\Models\TripTravelingMember;
 
 class LibraryController extends Controller
 {
@@ -342,8 +342,8 @@ class LibraryController extends Controller
 
         $user = Auth::guard('masteradmins')->user();
         $libraries = Library::all();
-        $lead_traveler = Trip::where('id', $user->users_id)->get();
-
+        $lead_traveler = TripTravelingMember::where('id', $user->users_id)->where('lead_status',1)->get();
+      //  dd($lead_traveler);
         $library = Library::with('libcategory', 'currency', 'state', 'city', 'country')->where(['lib_status' => 1, 'id' => $user->users_id, 'lib_id' => $id])->firstOrFail();
 
         // dd($trip);
@@ -381,9 +381,9 @@ class LibraryController extends Controller
         ]);
 
         // Retrieve the selected lead traveler by ID
-        $leadTraveler = Trip::where('tr_id', $request->traveler_id)->firstOrFail();
-        // dd($leadTraveler);
-        if (!$leadTraveler || !$leadTraveler->tr_email) {
+        $leadTraveler = TripTravelingMember::where('trtm_id', $request->traveler_id)->firstOrFail();
+        //dd($leadTraveler);
+        if (!$leadTraveler || !$leadTraveler->trtm_email) {
             return back()->withErrors(['error' => 'Invalid traveler selected or email is missing.']);
         }
         
@@ -413,7 +413,7 @@ class LibraryController extends Controller
         // Prepare email data
         $emailData = [
             'subject' => $library->lib_name, 
-            'travelerName' => $leadTraveler->tr_traveler_name,
+            'travelerName' => $leadTraveler->trtm_first_name ?? '',
             'category' => $library->libcategory->lib_cat_name ?? '',
             'basicinformation' => $library->lib_basic_information ?? '',
             'attachment' =>  $attachments ?? '',
@@ -425,7 +425,7 @@ class LibraryController extends Controller
 
         // Send the email
         try {
-            Mail::to($leadTraveler->tr_email)->send(new LeadTravelerEmail($emailData));
+            Mail::to($leadTraveler->trtm_email)->send(new LeadTravelerEmail($emailData));
             
             session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
         } catch (\Exception $e) {
@@ -433,7 +433,7 @@ class LibraryController extends Controller
         }
 
         // Redirect with success message
-        return redirect()->back()->with('success', 'Email sent successfully to ' . $leadTraveler->tr_traveler_name);
+        return redirect()->back()->with('success', 'Email sent successfully to ' . $leadTraveler->trtm_first_name ?? '');
     }
 
 }

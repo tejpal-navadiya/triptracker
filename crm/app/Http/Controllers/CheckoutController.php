@@ -177,6 +177,11 @@ class CheckoutController extends Controller
     
         } catch (\Exception $e) {
             // Log any error for debugging
+            \Log::error('Error processing payment success:', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+            
             \Log::error('Error processing payment success:', ['error' => $e->getMessage()]);
             return back()->with(['link-error' => 'Something went wrong. Please try again later.']);
         }

@@ -75,6 +75,9 @@ $busadminRoute = config('global.businessAdminURL');
     //     include_once resource_path('website/wp-admin/admin-header.php');
     // });
 
+    Route::get('/thank-you', function () {
+        return view('thank-you'); // Laravel view
+    });
 
      
 
@@ -554,10 +557,20 @@ Route::group(['prefix' => $busadminRoute], function () {
         Route::get('/trip-documents/session/get', [TripDocumentController::class, 'getSessionDocuments'])->name('trip-documents.session.get');
 
         //trip document delete 
-        Route::post('/trip-document/{id}/image/{image}',  [TripController::class, 'deleteImage'])->name('trip.image.delete');
+        Route::post('/trip-document/{tripid}/{documentid}/image/{image}', [TripController::class, 'deleteImage'])->name('trip.image.delete');
 
         //trip document update 
         Route::post('/trip-documentStore/{id}',  [TripController::class, 'updateDocument'])->name('trip.document.update');
+
+        //prefrence family member wise show
+        Route::get('/member-preferences/{trvm_id}/{lead_id}', [TripController::class, 'editPreferences'])->name('member.preferences.edit');
+
+        //
+        Route::get('/member-show-preferences/{trvm_id}', [TripController::class, 'getTripPreferencesShow'])->name('trip-preferences.shows');
+        Route::post('/member-preferences/{id}', [TripController::class, 'memberPreferencesStore'])->name('member.trip-preferences.store');
+
+        //view trip 
+        Route::post('/view-trip-document/{tripid}/{documentid}/image/{image}',  [TripController::class, 'viewDeleteImage'])->name('view.trip.image.delete');
 
     });
      

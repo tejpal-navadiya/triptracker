@@ -39,7 +39,7 @@ class TravelerDocumentController extends Controller
                         $middleName = $document->traveler->trtm_middle_name ?? '';
                         $lastName = $document->traveler->trtm_last_name ?? '';
                         
-                        return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $document->trip->tr_traveler_name ?? '';
+                        return trim($firstName . ' ' . $middleName . ' ' . $lastName) ?? '';
                     })
                     ->addColumn('document_type', function($document) {
                         return $document->documenttype->docty_name ?? 'Unknown Document Type';

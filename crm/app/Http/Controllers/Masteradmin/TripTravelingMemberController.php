@@ -185,6 +185,7 @@ public function index(Request $request, $id)
             'trtm_relationship' => 'Main Lead',  // No relationship for trip data
             'trtm_full_name' => $tripData->trtm_first_name ?? '',
             'trtm_age' => $tripData->trtm_age ?? '',
+            'lead_id' => $id ?? '',
             'action' => '-' // Placeholder for action buttons
         ];
     }
@@ -196,6 +197,7 @@ public function index(Request $request, $id)
             'trtm_relationship' => $member->travelingrelationship->rel_name ?? '',
             'trtm_full_name' => $member->trtm_first_name ?? '',
             'trtm_age' => $member->trtm_age ?? '',
+            'lead_id' => $id ?? '',
             'action' => '' // Placeholder for action buttons
         ];
     }
@@ -214,6 +216,16 @@ public function index(Request $request, $id)
                                 </a>';
 
                 }
+
+                if (isset($access['traveler_details']) && $access['traveler_details']) {
+                    $btn .= '<a href="'.route('member.preferences.edit', ['trvm_id' => $members['trtm_id'], 'lead_id' => $members['lead_id']]).'" 
+                    data-toggle="tooltip" 
+                    data-original-title="Set Preferences" 
+                    class="editMember">
+                    <i class="fas fa-sliders-h edit_icon_grid"></i>
+                </a>';
+                }
+                
                 return $btn;
                 }
 
@@ -241,8 +253,12 @@ public function index(Request $request, $id)
                 }
 
                 if (isset($access['traveler_details']) && $access['traveler_details']) {
-                    $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
-
+                    $btn .= '<a href="'.route('member.preferences.edit', ['trvm_id' => $members['trtm_id'], 'lead_id' => $members['lead_id']]).'" 
+                    data-toggle="tooltip" 
+                    data-original-title="Set Preferences" 
+                    class="editMember">
+                    <i class="fas fa-sliders-h edit_icon_grid"></i>
+                </a>';
                 }
 
                 return $btn;

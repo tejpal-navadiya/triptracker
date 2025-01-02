@@ -567,6 +567,7 @@ public function store4(Request $request)
 {
     // Get the current user and plan details
     $user = Auth::guard('masteradmins')->user();
+    //dd($user);
     $dynamicId = $user->id;
     $period = $user->plan_type ?? '';
     $plan = Plan::where('sp_id', $user->plan_id)->firstOrFail();
@@ -864,16 +865,19 @@ public function store(Request $request)
         
     }else{
         
-         if($period == 'monthly'){
+        if ($period == 'monthly') {
             $months = 1;
-            $stripePriceId = $plan->stripe_id ?? '';
-            }else if($period == 'yearly'){
-                $months = 12;
-                $stripePriceId = $plan->stripe_id_yr ?? '';
-            }else{
-                $months = '';
-                $stripePriceId = '';
-            }
+            $price_stripe_id = $plan->stripe_id ?? ''; // Monthly price ID
+            $trialPeriodDays = 7; // 7-day trial for monthly plan
+        } else if ($period == 'yearly') {
+            $months = 12;
+            $price_stripe_id = $plan->stripe_id_yr ?? ''; // Yearly price ID
+            $trialPeriodDays = 30; // 30-day trial for yearly plan
+        } else {
+            $months = 0;
+            $price_stripe_id = '';
+            $trialPeriodDays = null; // No trial for invalid period
+        }
             
               //dd($plan);
             // $stripePriceId = Plan::where('sp_id', $user->plan_id)->value('stripe_id');
@@ -930,10 +934,6 @@ public function store(Request $request)
                 $errors['user_work_email'] = 'The work email address is already in use.';
             } 
             
-            // $existingAgency = $agency->where('user_emergency_email', $validatedData['user_emergency_email'])->first();
-            // if ($existingAgency) {
-            //     $errors['user_emergency_email'] = 'The Emergency email address is already in use.';
-            // }
         
             if (!empty($errors)) {
                 return redirect()->route('agency.create')->withErrors($errors)->withInput();
@@ -956,12 +956,19 @@ public function store(Request $request)
                         'name' => $validatedData['users_first_name'] . ' ' . $validatedData['users_last_name'],
                     ]);
             
-                    // Create Stripe subscription
                     $Stripesubscription = \Stripe\Subscription::create([
                         'customer' => $stripeCustomer->id,
-                        'items' => [['price' => $stripePriceId]],
-                        'trial_period_days' => ($period == 'monthly') ? 14 : null,
+                        'items' => [
+                            ['price' => $price_stripe_id],
+                        ],
+                        'trial_period_days' => $trialPeriodDays, // Set trial period dynamically
                     ]);
+                    // // Create Stripe subscription
+                    // $Stripesubscription = \Stripe\Subscription::create([
+                    //     'customer' => $stripeCustomer->id,
+                    //     'items' => [['price' => $stripePriceId]],
+                    //     'trial_period_days' => ($period == 'monthly') ? 14 : null,
+                    // ]);
             
                     // // Save subscription details in the database
                     // $subscription = Subscription::create([
@@ -999,7 +1006,7 @@ public function store(Request $request)
                     'payment_method_types' => ['card'],
                     'mode' => 'subscription',
                     'line_items' => [[
-                        'price' => $stripePriceId,
+                        'price' => $price_stripe_id,
                         'quantity' => $quantity,
                     ]],
                     'customer_email' => $validatedData['users_email'],

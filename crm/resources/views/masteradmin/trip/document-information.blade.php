@@ -25,12 +25,7 @@
                     @foreach ($document as $documentvalue)
                     <tr>
                         <td>
-                            <?php 
-                                $firstName = $documentvalue->traveler->trtm_first_name ?? '';
-                                $middleName = $documentvalue->traveler->trtm_middle_name ?? '';
-                                $lastName = $documentvalue->traveler->trtm_last_name ?? '';
-                                echo trim($firstName . ' ' . $middleName . ' ' . $lastName) ?: $documentvalue->trip->tr_traveler_name;
-                            ?>
+                            
                         </td>
                         <td>{{ $documentvalue->documenttype->docty_name ?? '' }}</td>
                         <td>
@@ -347,6 +342,7 @@
                 url: url,
                 type: method,
                 dataType: 'json',
+                
                 contentType: false,
                 processData: false,
                 success: function(data) {
@@ -487,6 +483,9 @@
             $.ajax({
                 type: "DELETE",
                 url: url,
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                }
                 success: function(data) {
                     // alert(data.success);
 
