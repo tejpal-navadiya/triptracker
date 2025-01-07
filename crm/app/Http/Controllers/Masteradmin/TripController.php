@@ -1725,12 +1725,14 @@ class TripController extends Controller
                                     <form id="delete-plan-form" action="' . $deleteActionUrl . '" method="POST">
                                         ' . csrf_field() . '
                                         ' . method_field('DELETE') . '
-                                        <div class="modal-body pad-1 text-center">
+                                        <div class="modal-body  pad-1 text-center">
                                             <i class="fas fa-solid fa-trash delete_icon"></i>
-                                            <p class="company_business_name px-10"><b>Delete Trip</b></p>
-                                            <p>Are you sure you want to delete this trip?</p>
-                                            <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="delete_btn px-15">Delete</button>
+                                            <p class="company_business_name px-10"> <b>Delete Trip</b></p>
+                                            <p class="company_details_text">Are you sure you want to delete this trip?</p>
+                                            <button type="button" class="add_btn px-15"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button type="submit"
+                                                class="delete_btn px-15">Delete</button>
                                         </div>
                                     </form>
                                 </div>
@@ -1945,12 +1947,14 @@ class TripController extends Controller
                                     <form id="delete-plan-form" action="' . $deleteActionUrl . '" method="POST">
                                         ' . csrf_field() . '
                                         ' . method_field('DELETE') . '
-                                        <div class="modal-body pad-1 text-center">
+                                        <div class="modal-body  pad-1 text-center">
                                             <i class="fas fa-solid fa-trash delete_icon"></i>
-                                            <p class="company_business_name px-10"><b>Delete Trip</b></p>
-                                            <p>Are you sure you want to delete this trip?</p>
-                                            <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="delete_btn px-15">Delete</button>
+                                            <p class="company_business_name px-10"> <b>Delete Trip</b></p>
+                                            <p class="company_details_text">Are you sure you want to delete this trip?</p>
+                                            <button type="button" class="add_btn px-15"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button type="submit"
+                                                class="delete_btn px-15">Delete</button>
                                         </div>
                                     </form>
                                 </div>

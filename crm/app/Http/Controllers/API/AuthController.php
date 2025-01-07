@@ -488,8 +488,8 @@ class AuthController extends Controller
             $page = $request->input('page');
             $perPage = env('PER_PAGE', 10); // Default to 10 if not set
 
-            $plan = Plan::orderBy('created_at', 'asc')->paginate($perPage);
-
+            $plan = Plan::where('sp_month_amount','!=',0)->where('sp_year_amount','!=',0)->orderBy('created_at', 'asc')->paginate($perPage);
+            //dd($plan);
             if ($plan->isEmpty()) {
                 return $this->sendError('No Subscription Plans found.', [], 404);
             }

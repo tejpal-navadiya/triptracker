@@ -753,7 +753,7 @@ public function store(Request $request)
    //  dd($period);
     $plan = Plan::where('sp_id', $user->plan_id)->first();
     
-    if($plan->sp_id == "cVoHw4" && $plan->sp_month_amount == 0 && $plan->sp_year_amount == 0){
+    if($plan->sp_month_amount == 0 && $plan->sp_year_amount == 0){
         
             $validatedData = $request->validate([
         'users_first_name' => 'required|string|max:255',

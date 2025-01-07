@@ -98,7 +98,7 @@
 								Trip Price: &#36;{{ $trip->tr_value_trip ?? '0' }}
 							</div>
 						</div>
-						<div class="additional-info">
+						<!-- <div class="additional-info">
 							<table class="table">
 								<tr>
 									<td>Created Date: {{ $trip->created_at ? $trip->created_at->format('m/d/Y') : '' }}</td>
@@ -107,7 +107,7 @@
 									<td>Updated Date: {{ $trip->updated_at ? $trip->updated_at->format('m/d/Y') : '' }}</td>
 								</tr>
 							</table>
-						</div>
+						</div> -->
 						<div class="additional-info">
 							<table class="table">
 							<td>Low({{ $trip->task_counts['Low']  }})</td>
@@ -115,12 +115,45 @@
 							<td>High({{ $trip->task_counts['High'] }})</td>
 							</table>
 						</div>
-						@if (isset($access['edit_trip']) && $access['edit_trip'])
-
-						<a href="{{ route('trip.edit', $trip->tr_id) }}" class="edit-icon">
-							<i class="fas fa-pen"></i>
-						</a>
-						@endif
+						<div class="additional-info">
+							@if (isset($access['details_trip']) && $access['details_trip'])
+								<a href="{{ route('trip.view', $trip->tr_id) }}"><i
+										class="fas fa-eye edit_icon_grid"></i></a>
+							@endif
+							@if (isset($access['edit_trip']) && $access['edit_trip'])
+								<a href="{{ route('trip.edit', $trip->tr_id) }}"><i
+										class="fas fa-pen edit_icon_grid"></i></a>
+							@endif
+							@if (isset($access['delete_trip']) && $access['delete_trip'])
+								<a data-toggle="modal"
+									data-target="#delete-product-modal-{{ $trip->tr_id }}"><i
+										class="fas fa-trash delete_icon_grid"></i></a>
+							@endif
+								<!-- Delete Modal -->
+								<div class="modal fade"
+									id="delete-product-modal-{{ $trip->tr_id }}" tabindex="-1"
+									role="dialog">
+									<div class="modal-dialog modal-sm modal-dialog-centered">
+										<div class="modal-content">
+											<form
+												action="{{ route('trip.destroy', $trip->tr_id) }}"
+												method="POST">
+												@csrf
+												@method('DELETE')
+												<div class="modal-body  pad-1 text-center">
+													<i class="fas fa-solid fa-trash delete_icon"></i>
+													<p class="company_business_name px-10"> <b>Delete Trip</b></p>
+													<p class="company_details_text">Are you sure you want to delete this trip?</p>
+													<button type="button" class="add_btn px-15"
+														data-dismiss="modal">Cancel</button>
+													<button type="submit"
+														class="delete_btn px-15">Delete</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
 					</div>
 				</div>
 				@endforeach
