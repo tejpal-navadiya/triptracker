@@ -58,6 +58,9 @@ class TripTaskController extends Controller
                     })
 
                     ->addColumn('trvt_category', function($category) {
+                        if ($category->trvt_category === '0') {
+                            return 'System Created';
+                        }
                         return $category->tripCategory->task_cat_name ?? '';
                     })
                     ->addColumn('trvt_date', function($trvt_date) {
@@ -473,6 +476,9 @@ class TripTaskController extends Controller
                     return optional($document->taskstatus)->ts_status_name ?? '';
                 })
                 ->addColumn('task_cat_name', function ($document) {
+                    if ($document->trvt_category === '0') {
+                        return 'System Created';
+                    }
                     return optional($document->tripCategory)->task_cat_name ?? '';
                 })
                 ->addColumn('trvt_due_date', function($trvt_due_date) {
@@ -683,6 +689,9 @@ class TripTaskController extends Controller
                     return optional($document->taskstatus)->ts_status_name ?? '';
                 })
                 ->addColumn('task_cat_name', function ($document) {
+                    if ($document->trvt_category === '0') {
+                        return 'System Created';
+                    }
                     return optional($document->tripCategory)->task_cat_name ?? '';
                 })
                 ->addColumn('trvt_due_date', function($trvt_due_date) {
