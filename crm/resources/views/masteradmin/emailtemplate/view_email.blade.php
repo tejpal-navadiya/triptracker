@@ -67,7 +67,7 @@
                                     <tbody>
                                         <tr>
                                             <th>Subject:</th>
-                                            <td>{{ $EmailTemplate->email_subject }}</td>
+                                            <td>{{ $EmailTemplate->email_subject ?? ''}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -79,7 +79,7 @@
                                     <tbody>
                                         <tr>
                                             <th>Lead Traveler:</th>
-                                            <td>{{ $EmailTemplate->lead_traveler->tr_traveler_name }}</td>
+                                            <td>{{ $EmailTemplate->lead_traveler->trtm_first_name ?? '' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -94,9 +94,8 @@
                             <div class="card m-2 p-3">
                                 Basic Infomation
                                 <div class="card m-2 p-3">
-                                    Infomation
                                     <p>
-                                        <td>{{ strip_tags($EmailTemplate->email_text ?? '') }}</td>
+                                        <td>{!! html_entity_decode($EmailTemplate->email_text ?? '<p>No content available</p>', ENT_QUOTES, 'UTF-8') !!}</td>
                                     </p>
                                 </div>
                             </div>

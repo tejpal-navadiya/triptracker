@@ -96,13 +96,25 @@
             });
         </script>
 
-        <script>
+        <!-- <script>
             tinymce.init({
                 selector: 'textarea', // This will apply TinyMCE to all textareas
                 menubar: false,
                 plugins: 'code table lists image',
                 toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | table | image',
             });
-        </script>
+        </script> -->
+        <script>
+    tinymce.init({
+        selector: '#email_text', // Targets the textarea with id 'email_text'
+        menubar: false, // Hides the menu bar
+        plugins: 'code table lists image link', // Enable required plugins
+        toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | image link | code', // Toolbar buttons
+        height: 300, // Height of the editor
+        branding: false, // Removes TinyMCE branding
+        valid_elements: '*[*]', // Allow all HTML tags and attributes
+        extended_valid_elements: 'iframe[src|width|height|name|align|class]', // Allow iframe tags with specific attributes
+    });
+</script>
     @endif
 @endsection

@@ -265,7 +265,7 @@ public function storeEmailTemplate(Request $request): RedirectResponse
         $user = Auth::guard('masteradmins')->user();
         $EmailTemplate = EmailTemplateDetails::with(['email_category','lead_traveler'])->where(['emt_id' => $id])->firstOrFail();
         
-        // dd($traveller);
+        // dd($EmailTemplate);
         return view('masteradmin.emailtemplate.view_email', compact( 'EmailTemplate'));
     }
 
