@@ -17,7 +17,7 @@
                         <tr>
                             <th>Task</th>
                             <th>Category</th>
-                            <th>Create Date</th>
+                            <!--<th>Create Date</th>-->
                             <th>Due Date</th>
                             <th>Priority</th>
                             <th>Status</th>
@@ -32,7 +32,7 @@
                             <span data-toggle="tooltip" data-placement="top" title="{{$taskvalue->trvt_name}}">{{ \Illuminate\Support\Str::limit(strip_tags($taskvalue->trvt_name), 30, '...') }}</span>
                         </td>
                         <td>{{ $taskvalue->tripCategory->task_cat_name ?? '' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($taskvalue->trvt_date)->format('M d, Y')  ?? '' }}</td>
+                        <!--<td>{{ \Carbon\Carbon::parse($taskvalue->trvt_date)->format('M d, Y')  ?? '' }}</td>-->
                         <td>{{ \Carbon\Carbon::parse($taskvalue->trvt_due_date)->format('M d, Y')  ?? '' }}</td>
                         <td>{{ $taskvalue->trvt_priority ?? '' }}</td>
                         <td>{{ $taskvalue->taskstatus->ts_status_name ?? '' }}</td>
@@ -275,29 +275,51 @@
     // }else{
     // Initialize DataTable
     setTimeout(function(){
-            TaskDataTable = $('#TaskDataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('masteradmin.task.index', $trip_id) }}",
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
-                    }
-                },
-                columns: [
-                    { data: 'trvt_name', name: 'trvt_name' },
-                    { data: 'trvt_category', name: 'trvt_category' },
-                    { data: 'trvt_date', name: 'trvt_date' },
-                    { data: 'trvt_due_date', name: 'trvt_due_date' },
-                    { data: 'trvt_priority', name: 'trvt_priority' },
-                    { data: 'status_name', name: 'status_name' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false },
-                ]
-            });
-    
+        
+        $.fn.dataTable.ext.order['priority-asc'] = function(settings, col) {
+       return this.api().column(col, {order: 'index'}).nodes().map(function(cell, i) {
+           var val = $(cell).text().trim();
+           if(val === 'High') {
+               return 3;
+           } else if(val === 'Medium') {
+               return 2;
+           } else if(val === 'Low') {
+               return 1;
+           } else {
+               return 0; // For NULL or empty values
+           }
+       });
+   };
+   
+           TaskDataTable = $('#TaskDataTable').DataTable({
+               processing: true,
+               serverSide: true,
+               ajax: {
+                   url: "{{ route('masteradmin.task.index', $trip_id) }}",
+                   type: 'GET',
+                   headers: {
+                       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+                   }
+               },
+               columns: [
+                   { data: 'trvt_name', name: 'trvt_name' },
+                   { data: 'trvt_category', name: 'trvt_category' },
+                   // { data: 'trvt_date', name: 'trvt_date' },
+                   { data: 'trvt_due_date', name: 'trvt_due_date' },
+                   { data: 'trvt_priority', name: 'trvt_priority' },
+                   { data: 'status_name', name: 'status_name' },
+                   { data: 'action', name: 'action', orderable: false, searchable: false },
+               ],
+              columnDefs: [
+           {
+               targets: 3,  // Apply custom sorting for 'trvt_priority' column (index 3)
+               orderDataType: 'priority-asc'  // Custom sorting based on our function
+           }
+       ],
+
+           });
+   
 },2000);  
- 
     // }
 
         //create task
