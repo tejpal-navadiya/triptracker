@@ -27,9 +27,15 @@ class MailController extends Controller
                 ->where('id', $userId)
                 ->first(); 
 
-            if (!$mailSettings) {
-                return response()->json(['error' => 'Mail settings not found.'], 404);
+              if (!$mailSettings) {
+                return response()->json([
+                    'draw' => intval(request()->get('draw')), 
+                    'recordsTotal' => 0,                      
+                    'recordsFiltered' => 0,                 
+                    'data' => []                          
+                ]);
             }
+
 
             $client = $clientManager->make([
                 'host'          => $mailSettings->mail_incoming_host,
@@ -52,7 +58,12 @@ class MailController extends Controller
                 ->first(); 
 
             if (!$trip) {
-                // return response()->json(['error' => 'Trip not found.'], 404);
+               return response()->json([
+                    'draw' => intval(request()->get('draw')), 
+                    'recordsTotal' => 0,                      
+                    'recordsFiltered' => 0,                 
+                    'data' => []                          
+                ]);
             }
 
             $folder = $client->getFolder('INBOX');
@@ -83,6 +94,12 @@ class MailController extends Controller
                 
                 // If no valid messages remain after filtering
                 if ($messages->isEmpty()) {
+                    return response()->json([
+                        'draw' => intval(request()->get('draw')), 
+                        'recordsTotal' => 0,                      
+                        'recordsFiltered' => 0,                 
+                        'data' => []                          
+                    ]);
                     // return response()->json(['error' => 'No new emails found from the specified sender.'], 404);
                 }
                 
@@ -141,7 +158,7 @@ class MailController extends Controller
                 'draw' => intval(request()->get('draw')),
                 'recordsTotal' => $email_fetch->count(), // Use the count of the collection
                 'recordsFiltered' => $email_fetch->count(),
-                'data' => $email_fetch->map(function ($email) {
+                'data' => $email_fetch->isEmpty() ? [] : $email_fetch->map(function ($email) {
                     return [
                         'from'    => $email->inbox_from,    // Correctly access properties of the object
                         'subject' => $email->inbox_subject,

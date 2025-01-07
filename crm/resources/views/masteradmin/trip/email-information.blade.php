@@ -13,7 +13,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
                     </tbody>
                 </table>
             </div>
@@ -44,6 +43,36 @@ socket.onclose = function(event) {
     console.log('WebSocket closed:', event);
 };
 
+// $(document).ready(function() {
+//     var table = $('#EmailDataTable').DataTable({
+//         processing: true,
+//         serverSide: true,
+//         ajax: {
+//             url: "{{ route('masteradmin.trip.fetchEmails', ['tripId' => $trip_id, 'user_id' => $user_id, 'unique_id' => $uniq_id]) }}",
+//             type: 'GET',
+//             dataSrc: function (json) {
+//                 if (json.error) {
+//                     $('#error-message').text(json.error).show();
+//                     return []; // Return an empty array to DataTable
+//                 }
+//                 $('#error-message').hide();
+//                 return json.data; // Return the data to DataTable
+//             },
+//             error: function (xhr) {
+//                 // Handle server errors gracefully
+//                 $('#error-message').text(xhr.responseJSON.error).show();
+//             }
+//         },
+//         columns: [
+//             { data: 'from', name: 'from' },
+//             { data: 'subject', name: 'subject' },
+//             { data: 'date', name: 'date' }
+//         ]
+//     });
+
+   
+// });
+
 $(document).ready(function() {
     var table = $('#EmailDataTable').DataTable({
         processing: true,
@@ -51,17 +80,19 @@ $(document).ready(function() {
         ajax: {
             url: "{{ route('masteradmin.trip.fetchEmails', ['tripId' => $trip_id, 'user_id' => $user_id, 'unique_id' => $uniq_id]) }}",
             type: 'GET',
-            dataSrc: function (json) {
+            dataSrc: function(json) {
+                // If the response contains an error, we do not display the error message
                 if (json.error) {
-                    $('#error-message').text(json.error).show();
-                    return []; // Return an empty array to DataTable
+                    // Instead of showing the error, just return an empty array
+                    return []; // Return empty data to prevent DataTable from displaying
                 }
-                $('#error-message').hide();
-                return json.data; // Return the data to DataTable
+                
+                // If no error, return the data to populate the table
+                return json.data || [];
             },
-            error: function (xhr) {
-                // Handle server errors gracefully
-                $('#error-message').text(xhr.responseJSON.error).show();
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', error);
+                return []; // Return empty data on AJAX error
             }
         },
         columns: [
@@ -70,7 +101,6 @@ $(document).ready(function() {
             { data: 'date', name: 'date' }
         ]
     });
-
-   
 });
+
 </script>
