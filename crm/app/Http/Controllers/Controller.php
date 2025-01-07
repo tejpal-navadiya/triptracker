@@ -425,7 +425,8 @@ class Controller extends BaseController
                     $table->string('tr_zip')->nullable();
                     $table->string('tr_city')->nullable();
                     $table->string('trp_name')->nullable();
-                    $table->string('trp_document')->nullable();       
+                    $table->string('trp_document')->nullable();   
+                    $table->string('tr_booking_date')->nullable();           
                     $table->tinyInteger('tr_status')->default(0)->nullable();
                     $table->timestamps();
                 });
@@ -494,8 +495,14 @@ class Controller extends BaseController
                     if (!Schema::hasColumn($storeId.'_tc_trip', 'trp_document')) {
                         $table->string('trp_document')->nullable();
                     }
-                });       
+                });    
                 
+                Schema::table($storeId.'_tc_trip', function (Blueprint $table) use ($storeId) {
+                    if (!Schema::hasColumn($storeId.'_tc_trip', 'tr_booking_date')) {
+                        $table->string('tr_booking_date')->nullable(); 
+                    }
+                });    
+               
             }
 
             //Trip Traveling Member
@@ -508,7 +515,7 @@ class Controller extends BaseController
                     $table->integer('lead_status')->nullable()->comment('1-lead,2-family member');
                     $table->string('trtm_type')->nullable();
                     $table->string('trtm_first_name')->nullable();
-                    $table->string(column: 'trtm_middle_name')->nullable();
+                    $table->string( 'trtm_middle_name')->nullable();
                     $table->string('trtm_last_name')->nullable();
                     $table->string('trtm_nick_name')->nullable();
                     $table->string('trtm_gender')->nullable();
@@ -787,7 +794,7 @@ class Controller extends BaseController
                     $table->string('id')->nullable()->default(0);
                     $table->string('lib_category')->constrained('tc_lib_categories', 'lib_id')->onDelete('cascade');
                     $table->string('lib_name')->nullable();
-                    $table->string(column: 'lib_currency')->nullable();
+                    $table->string( 'lib_currency')->nullable();
                     $table->string('lib_country')->nullable();
                     $table->string('lib_state')->nullable();
                     $table->string('lib_city')->nullable();
@@ -833,7 +840,7 @@ class Controller extends BaseController
         if (!Schema::hasTable($storeId.'_tc_trip_itinerary_detail')){   
             Schema::create($storeId.'_tc_trip_itinerary_detail', function (Blueprint $table) {
                 $table->string('trit_id')->unique()->primary();
-                $table->string(column: 'id')->nullable()->default(0);
+                $table->string( 'id')->nullable()->default(0);
                 $table->string('tr_id')->nullable();
                 $table->string('trit_text')->nullable();
                 $table->tinyInteger('trit_status')->default(0)->nullable();

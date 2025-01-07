@@ -351,6 +351,10 @@ class TripController extends Controller
         // $traveler->trp_name = $request->input('trp_name') ?? '';
 
         $traveler->status = $validatedData['status'] ?? '1';
+        if (array_key_exists('status', $validatedData) && $validatedData['status'] == '5') {
+            $traveler->tr_booking_date = now()->toDateString();
+        }
+
         $traveler->tr_status = 1;
         $traveler->save();
 
@@ -624,6 +628,7 @@ class TripController extends Controller
         //     }
         // }
             // $validatedData['trp_document'] = $document_images;
+           
 
             $data = [
                 'tr_name' => $request->input('tr_name'),
@@ -651,8 +656,12 @@ class TripController extends Controller
                 // 'trp_document' => $document_images,
                 'tr_type_trip' => json_encode($request->input('tr_type_trip', []))
             ];
+
+            if (array_key_exists('status', $validatedData) && $validatedData['status'] == '5') {
+                $data['tr_booking_date'] = now()->toDateString();  
+            }
         
-    
+
             $trip->where(['tr_id' => $id])->update($data);
 
         // Update the status of TripTravelingMember without deleting it

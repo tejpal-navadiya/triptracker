@@ -27,7 +27,8 @@ class Trip extends Model
             'tr_value_trip' ,
             'tr_type_trip',
             'tr_desc',
-            'tr_status'
+            'tr_status',
+            'tr_booking_date',
             ];
 
     
