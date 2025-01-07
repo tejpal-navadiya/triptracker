@@ -568,6 +568,7 @@ class TripTaskController extends Controller
         $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
 
         if($user->users_id && $user->role_id ==0 ){
+            
             $trips_traveller = TripTravelingMember::where('trtm_status', 1)
             ->from($travelerTable)
             // ->join($masterUserTable, $travelerTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id')
@@ -613,6 +614,8 @@ class TripTaskController extends Controller
            // dd($today);
         //    \DB::enableQueryLog();
             if($user->users_id && $user->role_id ==0 ){
+
+                
                 $taskQuery = TripTask::where($tripTaskTable.'.status', 1)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where($tripTaskTable.'.trvt_date', '=', $today) 
@@ -681,6 +684,7 @@ class TripTaskController extends Controller
                 ->addColumn('agent_name', function ($document) {
                     return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));
                 })
+
                 ->addColumn('traveler_name', function ($document) {
                     return optional($document->trip->lead_traveler_name ?? '')->trtm_first_name ?? '';
 
@@ -706,11 +710,11 @@ class TripTaskController extends Controller
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
-                    if(isset($access['workflow']) && $access['workflow']) {
+                    if(isset($access['task_details']) && $access['task_details']) {
                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTaskreminder"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
-                    if (isset($access['workflow']) && $access['workflow']) {
+                    if (isset($access['task_details']) && $access['task_details']) {
                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modalreminder-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
                                     <div class="modal fade" id="delete-role-modalreminder-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -857,11 +861,11 @@ class TripTaskController extends Controller
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
-                    if(isset($access['workflow']) && $access['workflow']) {
+                    if(isset($access['task_details']) && $access['task_details']) {
                         $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTaskreminder"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
-                    if (isset($access['workflow']) && $access['workflow']) {
+                    if (isset($access['task_details']) && $access['task_details']) {
                         $btn .= '<a data-toggle="modal" data-target="#delete-role-modalreminder-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
                                     <div class="modal fade" id="delete-role-modalreminder-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

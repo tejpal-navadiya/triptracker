@@ -13,6 +13,9 @@ use App\Models\TripTask;
 use App\Models\TaskCategory;
 use App\Models\MasterUserDetails; 
 use DataTables;
+use App\Models\TaskStatus;
+use App\Models\TripTravelingMember;
+
 
 class HomeController extends Controller
 {
@@ -130,78 +133,66 @@ class HomeController extends Controller
 
     public function incompleteDetailshome(Request $request)
     {           
-        $tripAgent = trim($request->input('trip_agent'));
-        $tripTraveler = trim($request->input('trip_traveler'));
-    
+        
         $access = view()->shared('access');
         $user = Auth::guard('masteradmins')->user();
-        // dD($user);
+        // dd()
 
-        $task = TripTask::where(['id' => $user->users_id,'status' => 3])->with(['trip','tripCategory','taskstatus'])->latest()->first();
-
-    
-        $masterUserDetails = new MasterUserDetails();
-        $masterUserDetails->setTableForUniqueId($user->user_id);
-        if($user->users_id && $user->role_id ==0 ){
-            $agency_user = $masterUserDetails->where('users_id', '!=', $user->users_id)->get(); 
-        }else{
-            $agency_user = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
-        }
-
-        
-    
-        $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
-
-        $trip = $tripQuery->get();
-
-        // dd($trip);
-        
+       
         if ($request->ajax()) {
+            try {
             $masterUserDetails = new MasterUserDetails();
             $masterUserDetails->setTableForUniqueId($user->user_id);
             $masterUserDetailsTable = $masterUserDetails->getTable();  
 
             $tripTable = (new Trip())->getTable(); 
             $tripTaskTable = (new TripTask())->getTable();  
-
+            // dd($tripTaskTable);
+            $today = date('m/d/Y');
+           // dd($today);
+        //    \DB::enableQueryLog();
             if($user->users_id && $user->role_id ==0 ){
-                $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
+
+                
+                $taskQuery = TripTask::where($tripTaskTable.'.status', 1)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
-                ->where($tripTaskTable.'.status', 3)
-                ->with(['trip', 'tripCategory', 'taskstatus']);
+                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
+                ->with([
+                    'trip.lead_traveler_name' => function ($query) {
+                        $query->select('trtm_id', 'trtm_first_name'); // Fetch only the necessary fields
+                    },
+                    'trip',
+                    'tripCategory',
+                    'taskstatus'
+                ]);
                 
             }else{
                 $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where('trvt_agent_id', $user->users_id)
-                ->where($tripTaskTable.'.status', 3)
-                ->with(['trip', 'tripCategory', 'taskstatus']);
+                ->where($tripTaskTable.'.status', 1)
+                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
+                ->with([
+                    'trip.lead_traveler_name' => function ($query) {
+                        $query->select('trtm_id', 'trtm_first_name'); // Fetch only the necessary fields
+                    },
+                    'trip',
+                    'tripCategory',
+                    'taskstatus'
+                ]);
             }
            
 
-            // $taskQuery = TripTask::where($tripTaskTable.'.id', $user->users_id)
-            // ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
-            // ->where('trvt_agent_id', $user->users_id)
-            // ->with(['trip', 'tripCategory', 'taskstatus']);
-      
-     
-
-    
-            if ($tripAgent) {
-                $taskQuery->where($tripTaskTable . '.trvt_agent_id', $tripAgent);
-            }
-    
-    
-            if ($tripTraveler) {
-                $taskQuery->whereHas('trip', function ($q) use ($tripTraveler) {
-                    $q->where('tr_traveler_name', 'LIKE', "%{$tripTraveler}%");
-                });
-            }
-    
+        
+            // \DB::enableQueryLog();
             $tasks = $taskQuery->get();
             // dd($tasks);
-            
+            // dd(\DB::getQueryLog()); 
+
             return Datatables::of($tasks)
+                
                 ->addIndexColumn()
                 ->addColumn('trvt_name', function($task_name) {
                     $fullName = strip_tags($task_name->trvt_name);
@@ -215,39 +206,65 @@ class HomeController extends Controller
                 ->addColumn('agent_name', function ($document) {
                     return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));
                 })
+
                 ->addColumn('traveler_name', function ($document) {
-                    return optional($document->trip)->tr_traveler_name ?? '';
+                    return optional($document->trip->lead_traveler_name ?? '')->trtm_first_name ?? '';
+
                 })
                 ->addColumn('task_status_name', function ($document) {
                     return optional($document->taskstatus)->ts_status_name ?? '';
                 })
                 ->addColumn('task_cat_name', function ($document) {
+                    if ($document->trvt_category === '0') {
+                        return 'System Created';
+                    }
                     return optional($document->tripCategory)->task_cat_name ?? '';
                 })
-                ->addColumn('trvt_due_date', function ($document) {
-                    return optional($document->trvt_due_date) ? \Carbon\Carbon::parse($document->trvt_due_date)->format('M d, Y') : '';
+                ->addColumn('trvt_due_date', function($trvt_due_date) {
+                    if (isset($trvt_due_date->trvt_due_date) && $trvt_due_date->trvt_due_date) {
+                        $trvt_due_date = \Carbon\Carbon::parse($trvt_due_date->trvt_due_date)->format('M d, Y');
+                    } else {
+                        $trvt_due_date = '';
+                    }
+                
+                    return $trvt_due_date;
                 })
                 ->addColumn('action', function ($members) use ($access) {
                     $btn = '';
     
-                    if(isset($access['workflow']) && $access['workflow']) {
-                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                    if(isset($access['task_details']) && $access['task_details']) {
+                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTaskreminder"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
-                  
+                    if (isset($access['task_details']) && $access['task_details']) {
+                        $btn .= '<a data-toggle="modal" data-target="#delete-role-modalreminder-' . $members->trvt_id . '">
+                                    <i class="fas fa-trash delete_icon_grid"></i>
+                                    <div class="modal fade" id="delete-role-modalreminder-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body pad-1 text-center">
+                                                    <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                    <p class="company_business_name px-10"><b>Delete Task </b></p>
+                                                    <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
+                                                    <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="delete_btn px-15 deleteTaskbtnreminder" data-id=' . $members->trvt_id . '>Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>';
+                    }
+                    // dd($btn);
                     return $btn;
                 })
                 ->rawColumns(['action','trvt_name'])
                 ->toJson();
-       
+            } catch (\Exception $e) {
+                \Log::error('Error in incompleteDetails AJAX: ', ['error' => $e->getMessage()]);
+                return response()->json(['error' => 'Internal Server Error'], 500);
+            }
         }
-        if($user->users_id && $user->role_id ==0 ){
-            $taskCategory = TaskCategory::where('task_cat_status', 1)->get();
-        }else{
-            $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
-        }
-
-        return view('masteradmin.auth.home',compact('task','taskCategory', 'agency_user','trip'));
+      
     }
 
     public function edit($id, $trip_id)

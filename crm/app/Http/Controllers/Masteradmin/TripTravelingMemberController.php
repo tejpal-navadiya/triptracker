@@ -55,11 +55,11 @@ class TripTravelingMemberController extends Controller
                         $btn = '';
                         
                         
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['traveler_details']) && $access['traveler_details']) {
                             $btn .= '<a data-id="'.$members->trtm_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                         }
                         
-                        if(isset($access['workflow']) && $access['workflow']) {
+                        if(isset($access['traveler_details']) && $access['traveler_details']) {
                             $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members->trtm_id.'">
                                         <i class="fas fa-trash delete_icon_grid"></i>
                                         <div class="modal fade" id="delete-role-modal-'.$members->trtm_id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -123,10 +123,10 @@ class TripTravelingMemberController extends Controller
             ->addColumn('action', function($members) use ($access) {
                 $btn = '';
                 
-                if (isset($access['workflow']) && $access['workflow']) {
+                if (isset($access['traveler_details']) && $access['traveler_details']) {
                     $btn .= '<a data-id="'.$members['trtm_id'].'" data-toggle="tooltip" data-original-title="Edit Role" class="editMember"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                 }
-                if (isset($access['workflow']) && $access['workflow']) {
+                if (isset($access['traveler_details']) && $access['traveler_details']) {
                     $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-'.$members['trtm_id'].'">
                                 <i class="fas fa-trash delete_icon_grid"></i>
                                 <div class="modal fade" id="delete-role-modal-'.$members['trtm_id'].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

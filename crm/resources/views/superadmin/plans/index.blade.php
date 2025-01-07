@@ -102,7 +102,7 @@
                                                     <td>${{ $value->sp_month_amount }}</td>
                                                     <td>${{ $value->sp_year_amount }}</td>
                                                     <!-- <td>{{ $value->sp_month }}</td> -->
-                                                    <td>{{ $value->sp_month }}</td>
+                                                    <td>{{ $value->sp_user  ?? ''}}</td>
 
                                                     <td class="text-right">
                                                         <a href="{{ route('plans.planrole', $value->sp_id) }}"><i
