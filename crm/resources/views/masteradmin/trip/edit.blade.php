@@ -632,11 +632,11 @@
 
                                                                     <li class="nav-item">
 
-                                                                        <a id="tab-{{ $index }}-tab"
+                                                                        <a id="tab-{{ $index }}"
 
                                                                             class="{{ $index === 0 ? 'active' : '' }}" data-toggle="tab"
 
-                                                                            href="#tab-{{ $index }}">
+                                                                            href="#tab-{{ $trip->trip_type_name  }}">
 
                                                                             {{ $trip->trip_type_name }}
 
@@ -718,9 +718,17 @@
 
                                                                                 <div class="col-md-2">
 
-                                                                                    <button type="button" class="add_btn w-100 add-btn1"
+                                                                                    <!-- <button type="button" class="add_btn w-100 add-btn"
 
-                                                                                        data-target="{{ $index }}">+ Add Another</button>
+                                                                                        data-target="{{ $index }}">+ Add Another</button> -->
+
+                                                                                        <button type="button" class="add_btn w-100 add-btn" 
+                                                                                            data-target="{{ $index }}"
+                                                                                            data-trip-type-name="{{ $trip->trip_type_name }}" 
+                                                                                            data-trip-type-text="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_text', $trip->trip_type_text) }}"  
+                                                                                            data-trip-type-confirmation="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_confirmation', $trip->trip_type_confirmation) }}">
+                                                                                        + Add Another
+                                                                                    </button>
 
                                                                                 </div>
 
@@ -769,8 +777,11 @@
                                                                                 </div>
 
                                                                             @endif
+                                                                           
 
                                                                         </div>
+
+                                                                        <div id="{{$index}}-fields"></div>
 
                                                                         @php
 
@@ -2434,356 +2445,208 @@
     </script>
 
 
-
-    <script>
-
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const checkboxes = document.querySelectorAll('input[name="tr_type_trip[]"]');
-
-            const tabList = document.getElementById('tab-content');
-
-            const tabContent = document.getElementById('tab-content');
-
-
-
-            // A set to keep track of currently active trip types to avoid duplicates
-
-            const activeTripTypes = new Set();
-
-            checkboxes.forEach(checkbox => {
-
-                checkbox.addEventListener('change', function () {
-
-                    handleTabCreationAndRemoval(checkbox);
-
-                });
-
-            });
-
-
-
-            // Function to create or remove tabs based on checkbox state
-
-            function handleTabCreationAndRemoval(checkbox) {
-
-                const tripTypeName = checkbox.value;
-
-                const tripTypeId = checkbox.id;
-
-
-
-                // If the checkbox is checked and trip type is not active, add the tab and its fields
-
-                if (checkbox.checked && !activeTripTypes.has(tripTypeName)) {
-
-                    activeTripTypes.add(tripTypeName); // Mark this trip type as active
-
-                    createTabAndFields(tripTypeName, tripTypeId);
-
-                }
-
-
-
-                // If the checkbox is unchecked, remove the tab and its fields
-
-                else if (!checkbox.checked && activeTripTypes.has(tripTypeName)) {
-
-                    activeTripTypes.delete(tripTypeName); // Remove this trip type from active set
-
-                    removeTabAndFields(tripTypeId);
-
-                }
-
-            }
-
-
-
-            // Function to create the tab and fields for a checked checkbox
-
-            function createTabAndFields(tripTypeName, tripTypeId) {
-
-
-
-                // Check if the tab already exists (should not happen due to the set check)
-
-                const existingTab = document.getElementById(`${tripTypeId}-tab`);
-
-                const existingTabPanel = document.getElementById(`tab-${tripTypeId}`);
-
-
-
-                // If tab and panel do not exist, create them
-
-                if (!existingTab) {
-
-                    // Create tab link
-
-                    const tabLink = document.createElement('li');
-
-                    tabLink.className = 'nav-item';
-
-                    tabLink.innerHTML = `
-
-                      <a id="${tripTypeId}-tab" href="#tab-${tripTypeId}" data-bs-toggle="tab">${tripTypeName}</a>
-
-                                            `;
-
-                    tabList.appendChild(tabLink);
-
-                    // Create tab panel
-
-                    const tabPanel = document.createElement('div');
-
-                    tabPanel.id = `tab-${tripTypeId}`; // Set unique ID for the tab panel
-
-                    tabPanel.innerHTML = `
-
-                                <div class="dynamic-fields" id="${tripTypeId}-fields">
-
-                                    <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_name]" value="${tripTypeName}">
-
-                                    <div class="row align-items-center mb-3">
-
-                                        <div class="col-md-4">
-
-                                            <input type="text" name="trip_types[${tripTypeId}][0][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
-
-                                        </div>
-
-                                        <div class="col-md-4">
-
-                                            <input type="text" name="trip_types[${tripTypeId}][0][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
-
-                                        </div>
-
-                                        <div class="col-md-2">
-
-                                            <button type="button" class="add_btn w-100 add-btn" data-target="${tripTypeId}">+ Add Another</button>
-
-                                        </div>
-
-                                        <div class="col-md-2">
-
-                                            <button class="delete_btn delete-btn w-100">
-
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-
-                                                    <path d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732Z" fill="#868686"/>
-
-                                                </svg> Delete
-
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                             `;
-
-                    tabContent.appendChild(tabPanel);
-
-
-
-                    // Attach the Add Button Event Listener
-
-                    const addButton = tabPanel.querySelector('.add-btn');
-
-                    let entryIndex = 1;  // To increment index for each added row
-
-                    addButton.addEventListener('click', function () {
-
-                        addNewRow(tripTypeName, tripTypeId, entryIndex);
-
-                        entryIndex++;
-
-                    });
-
-                    // Activate the first tab when it is created
-
-                    if (tabList.children.length === 1) {
-
-                        tabLink.querySelector('a').classList.add('active');
-
-                        tabPanel.classList.add('show', 'active');
-
-                    }
-
-                }
-
-            }
-
-
-
-            function addNewRow(tripTypeName, tripTypeId, entryIndex) {
-
-                const fieldsContainer = document.getElementById(`${tripTypeId}-fields`);
-
-                const newRow = document.createElement('div');
-
-                newRow.classList.add('row', 'align-items-center', 'mb-3');
-
-                newRow.innerHTML = `
-
-                    <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
-
-                    <div class="col-md-4">
-
-                        <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
-
-                    </div>
-
-                    <div class="col-md-2">
-
-                        <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
-
-                    </div>
-
-                `;
-
-
-
-                fieldsContainer.appendChild(newRow);
-
-                // Add event listener to delete button in new row
-
-                const deleteButton = newRow.querySelector('.delete-btn');
-
-                deleteButton.addEventListener('click', function () {
-
-                    newRow.remove();  // Remove only the specific row
-
-                });
-
-            }
-
-
-
-            // Function to remove the tab and fields for an unchecked checkbox
-
-            function removeTabAndFields(tripTypeId) {
-
-                const tabLink = document.getElementById(`${tripTypeId}-tab`);
-
-                const tabPanel = document.getElementById(`tab-${tripTypeId}`);
-
-                // Remove the tab and the corresponding tab content panel
-
-                if (tabLink) tabLink.remove();
-
-                if (tabPanel) tabPanel.remove();
-
-            }
-
-
-
-            // Function to remove tab and fields for an unchecked checkbox
-
-            function removeTabAndFields(tripTypeId) {
-
-                const tabLink = document.getElementById(`${tripTypeId}-tab`);
-
-                const tabPanel = document.getElementById(`tab-${tripTypeId}`);
-
-                // Remove the tab and the corresponding tab content panel
-
-                if (tabLink) tabLink.remove();
-
-                if (tabPanel) tabPanel.remove();
-
-            }
-
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let rowCountItinerary = 0;
+    const checkboxes = document.querySelectorAll('input[name="tr_type_trip[]"]');
+    const tabList = document.getElementById('tab-content');
+    const tabContent = document.getElementById('tab-content');
+    const activeTripTypes = new Set();
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            handleTabCreationAndRemoval(checkbox);
         });
+    });
 
+    function handleTabCreationAndRemoval(checkbox) {
+        const tripTypeName = checkbox.value;
+        const tripTypeId = checkbox.id;
 
+        if (checkbox.checked && !activeTripTypes.has(tripTypeName)) {
+            activeTripTypes.add(tripTypeName);
+            createTabAndFields(tripTypeName, tripTypeId);
+        } else if (!checkbox.checked && activeTripTypes.has(tripTypeName)) {
+            activeTripTypes.delete(tripTypeName);
+            removeTabAndFields(tripTypeId);
+        }
+    }
 
-        document.addEventListener('DOMContentLoaded', function () {
+    function createTabAndFields(tripTypeName, tripTypeId) {
+        const existingTab = document.getElementById(`${tripTypeId}-tab`);
+        const existingTabPanel = document.getElementById(`tab-${tripTypeId}`);
 
-            const addButtons = document.querySelectorAll('.add-btn');
-
-
-
-            addButtons.forEach(button => {
-
-                button.addEventListener('click', function () {
-
-                    const targetIndex = button.getAttribute('data-target');
-
-                    addNewRow(targetIndex);
-
-                });
-
-            });
-
-
-
-            function addNewRow(targetIndex) {
-
-                const fieldsContainer = document.getElementById(`dynamic-fields-${targetIndex}`);
-
-                const entryIndex = fieldsContainer.children.length; // Get the current number of entries
-
-
-
-                const newRow = document.createElement('div');
-
-                newRow.classList.add('row', 'align-items-center', 'mb-3');
-
-                newRow.innerHTML = `
-
-                <input type="hidden" name="trip_types[${targetIndex}][${entryIndex}][trip_type_name]" value="${targetIndex}">
-
-                <div class="col-md-4">
-
-                    <input type="text" name="trip_types[${targetIndex}][${entryIndex}][trip_type_text]" class="form-control" placeholder="Supplier">
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <input type="text" name="trip_types[${targetIndex}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="Confirmation #">
-
-                </div>
-
-                <div class="col-md-2">
-
-                    <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
-
-                </div>
-
+        if (!existingTab) {
+            const tabLink = document.createElement('li');
+            tabLink.className = 'nav-item';
+            tabLink.innerHTML = `
+                <a id="${tripTypeId}-tab" href="#tab-${tripTypeId}" data-bs-toggle="tab">${tripTypeName}</a>
             `;
+            tabList.appendChild(tabLink);
+
+            const tabPanel = document.createElement('div');
+            tabPanel.id = `tab-${tripTypeId}`;
+            tabPanel.innerHTML = `
+                <div class="dynamic-fields" id="${tripTypeId}-fields">
+                    <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_name]" value="${tripTypeName}">
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-4">
+                            <input type="text" name="trip_types[${tripTypeId}][0][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="trip_types[${tripTypeId}][0][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="add_btn w-100 add-btn" data-target="${tripTypeId}">+ Add Another</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="delete_btn delete-btn w-100">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            tabContent.appendChild(tabPanel);
+
+            const addButton = tabPanel.querySelector('.add-btn');
+            let entryIndex = 1;
+
+            addButton.addEventListener('click', function () {
+                addNewRow(tripTypeName, tripTypeId, entryIndex);
+                entryIndex++;
+            });
+
+            if (tabList.children.length === 1) {
+                tabLink.querySelector('a').classList.add('active');
+                tabPanel.classList.add('show', 'active');
+            }
+        }
+    }
+
+    function addNewRow(tripTypeName, tripTypeId, entryIndex) {
+        const fieldsContainer = document.getElementById(`${tripTypeId}-fields`);
+        if (fieldsContainer) {
+            const newRow = document.createElement('div');
+            newRow.classList.add('row', 'align-items-center', 'mb-3');
+            newRow.innerHTML = `
+                <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
+                <div class="col-md-4">
+                    <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+                </div>
+            `;
+            fieldsContainer.appendChild(newRow);
+
+            const deleteButton = newRow.querySelector('.delete-btn');
+            deleteButton.addEventListener('click', function () {
+                newRow.remove();
+            });
+        }
+    }
+
+    function removeTabAndFields(tripTypeId) {
+        const tabLink = document.getElementById(`${tripTypeId}-tab`);
+        const tabPanel = document.getElementById(`tab-${tripTypeId}`);
+
+        if (tabLink) tabLink.remove();
+        if (tabPanel) tabPanel.remove();
+    }
+
+    // The jQuery portion below ensures the add button and delete button functionality works.
+    $('.add-btn').click(function () {
+    // Increment row count
+    rowCountItinerary++;
+
+    // Get the data attributes from the clicked button
+    var target = $(this).data('target');
+    var tripTypeName = $(this).data('trip-type-name') || '';
+    var tripTypeText = $(this).data('trip-type-text') || '';
+    var tripTypeConfirmation = $(this).data('trip-type-confirmation') || '';
+
+    // Debugging: Log the values of target and other variables
+    console.log('Target:', target);
+    console.log('Trip Type Name:', tripTypeName);
+    console.log('Trip Type Text:', tripTypeText);
+    console.log('Trip Type Confirmation:', tripTypeConfirmation);
+
+    // Create the new row HTML
+    var newRow = `
+        <div class="row align-items-center mb-3">
+            <input type="hidden" name="trip_types[${target}][${rowCountItinerary}][trip_type_name]" value="">
+            <div class="col-md-4">
+                <input type="text" name="trip_types[${target}][${rowCountItinerary}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier" value="">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="trip_types[${target}][${rowCountItinerary}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #" value="">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+            </div>
+        </div>
+    `;
+
+    
+    // Ensure the target element exists before appending
+    var targetContainer = $('#' + target + '-fields');
+    
+    if (targetContainer.length) {
+        // Append the new row to the fields container
+        targetContainer.append(newRow);
+      
+    } else {
+        // If the target container doesn't exist, log an error
+        console.error('Target container not found:', target + '-fields');
+    }
+
+   
+
+});
 
 
 
-                fieldsContainer.appendChild(newRow);
 
 
+// Find the delete button (assuming it's attached to a row or container)
+// Find the delete button (assuming it's attached to a row or container)
+const mainDeleteButton = document.querySelector('.delete_btn');
 
-                // Add event listener for the delete button
+mainDeleteButton.addEventListener('click', function() {
+    // Get all checked checkboxes
+    const checkboxes = document.querySelectorAll('.checkbox-inputbox:checked'); 
 
-                const deleteButton = newRow.querySelector('.delete-btn');
+    // If there are checked checkboxes
+    if (checkboxes.length > 0) {
+        checkboxes.forEach(function(checkbox) {
+            // Get the value of the checked checkbox
+            const checkboxValue = checkbox.value;
 
-                deleteButton.addEventListener('click', function () {
+            // Use the checkbox value to get the associated tab and tab panel
+            const tabLink = document.querySelector(`a[href="#tab-${checkboxValue}"]`);
+            const tabPanel = document.getElementById(`tab-${checkboxValue}`);
 
-                    newRow.remove(); // Remove the specific row
-
-                });
-
+            // Check if both the tab link and tab panel exist
+            if (tabLink && tabPanel) {
+                tabLink.remove();   // Remove the tab link
+                tabPanel.remove();  // Remove the tab panel
             }
 
+            // Uncheck the checkbox
+            checkbox.checked = false;
         });
+    } else {
+        console.log("No checkboxes are checked.");
+    }
+});
 
-    </script>
+
+});
+
+</script>
+
 
 
 

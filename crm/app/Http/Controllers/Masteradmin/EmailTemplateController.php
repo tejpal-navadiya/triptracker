@@ -217,10 +217,18 @@ public function storeEmailTemplate(Request $request): RedirectResponse
     // Create a new EmailTemplateDetails instance
     $emailTemplate = new EmailTemplateDetails();
     $tableName = $emailTemplate->getTable();
-    $uniqueId = $this->GenerateUniqueRandomString($tableName, 'emt_id', 6);
-    // EmailTemplate
 
-    $emailsubject = EmailTemplate::where('category', $request->category_id)->firstOrFail();
+    $uniqueId = $this->GenerateUniqueRandomString($table = $tableName, $column = "emt_id", $chars = 6);
+    // dd($uniqueId);
+    // $uniqueId = $this->GenerateUniqueRandomString($tableName, 'emt_id', 6);
+    // EmailTemplate
+    // \DB::enableQueryLog();
+
+    $emailsubject = EmailTemplate::where('category', $request->category_id)->first();
+ 
+    // dd(\DB::getQueryLog()); 
+
+    // dd($emailsubject);
     $subject = $emailsubject->title ?? '';
 
     // Set the attributes for the model

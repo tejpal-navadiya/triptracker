@@ -950,7 +950,7 @@ class Controller extends BaseController
         //Trips Document
         if (!Schema::hasTable($storeId.'_tc_trip_document')){   
             Schema::create($storeId.'_tc_trip_document', function (Blueprint $table) use ($storeId) {
-                $table->string('trp_id')->unique()->autoIncrement();
+                $table->integer('trp_id')->unique()->autoIncrement();
                 $table->string('id')->nullable()->default(0);
                 $table->string('tr_id')->nullable()->default(0);
                 $table->string('trp_name')->nullable();

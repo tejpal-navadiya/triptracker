@@ -11,7 +11,8 @@
     &nbsp;&nbsp;
     <span class="">  {{ Auth::guard('masteradmins')->user()->users_first_name }}
     {{ Auth::guard('masteradmins')->user()->users_last_name }} 
-    ({{ Auth::guard('masteradmins')->user()->role_id == 0 ? 'Master Admin' : 'Agency User' }})
+    {{ Auth::guard('masteradmins')->user()->role_id == 0 ? '(Master Admin)' : '' }}
+    {{ Auth::guard('masteradmins')->user()->role_id != 0 ? '- ' . (Auth::guard('masteradmins')->user()->userRole->role_name ?? '') : '' }}
 </span>
 
     <!-- Right navbar links -->

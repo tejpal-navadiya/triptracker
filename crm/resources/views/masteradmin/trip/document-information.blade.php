@@ -244,9 +244,9 @@
             ajax: {
                 url: "{{ route('masteradmin.document.index', $traveler_id) }}",
                 type: 'GET',
-                data: function(d) {
-                    d._token = "{{ csrf_token() }}";
-                }
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
             },
             columns: [{
                     data: 'traveler_name',
@@ -331,7 +331,7 @@
             } else {
                 // Update existing
                 var trvd_id = $('#trvd_id').val();
-                url = "{{ route('masteradmin.document.update', [$traveler_id, ':trvd_id']) }}";
+                url = "{{ route('masteradmin.document.update', [':trvd_id']) }}";
                 url = url.replace(':trvd_id', trvd_id);
                 formData.append('_method', 'PATCH');
                 documentsuccessMessage = 'Data has been successfully updated!';
@@ -483,9 +483,9 @@
             $.ajax({
                 type: "DELETE",
                 url: url,
-                data: function(d) {
-                    d._token = "{{ csrf_token() }}";
-                }
+                data: {
+                    _token: "{{ csrf_token() }}" // Properly include the CSRF token here
+                },
                 success: function(data) {
                     // alert(data.success);
 

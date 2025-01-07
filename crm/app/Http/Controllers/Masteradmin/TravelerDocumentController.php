@@ -211,12 +211,13 @@ class TravelerDocumentController extends Controller
 
     public function update(Request $request, $trvd_id)
     {
+        // dd($trvd_id)
         // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->id; 
-        $document = TravelerDocument::where([ 'trvd_id' => $trvd_id])->firstOrFail();
+        $document = TravelerDocument::where([ 'trvd_id' => $trvd_id])->first();
 
-        // dd($task);
+        // dd($document);
         if($document)
         {
             $validatedData = $request->validate([

@@ -52,7 +52,7 @@
                 </div>
                 <div class="card-body">
                     <div class="col-md-12 table-responsive pad_table">
-                        <table id="tripDocumentDataTable" class="table table-hover text-nowrap">
+                        <table id="tripdocumentsDataTable" class="table table-hover text-nowrap">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -201,7 +201,7 @@
 <script>
    
     $(document).ready(function() {
-        $('#tripDocumentDataTable').DataTable();  
+        $('#tripdocumentsDataTable').DataTable();  
          });
 </script>
 
