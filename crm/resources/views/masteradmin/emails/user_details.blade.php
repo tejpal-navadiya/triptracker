@@ -23,7 +23,7 @@
         }
 
         .email-header {
-            background-color: #3f51b5;
+            background-color: #384150;
             padding: 30px;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
@@ -36,7 +36,7 @@
         }
 
         .email-header h1 {
-            font-size: 26px;
+            font-size: 20px;
             margin: 0;
         }
 
@@ -46,6 +46,7 @@
             color: #333;
             font-size: 16px;
             line-height: 1.6;
+            background: #F2F8FF;
         }
 
         .email-button {
@@ -65,16 +66,16 @@
         }
 
         .email-footer {
-            background-color: #f1f1f1;
+            background-color: #384150;
             padding: 15px;
             font-size: 14px;
-            color: #777;
+            color: #fff;
             text-align: center;
         }
 
         .email-footer a {
-            color: #3f51b5;
-            text-decoration: none;
+            color: #fff;
+            text-decoration: underline;
         }
 
         /* Media Queries for Responsive Design */
@@ -119,7 +120,7 @@
         <p>To set your password and access your account, please click the button below:</p>
         <p><a href="{{ $loginUrl }}" class="button">Set Your Password</a></p>
 
-        <p>This link will expire in <strong>[Time Limit, e.g., 24 hours]</strong>. If you do not set your password within this time, you will need to request a new password reset link.</p>
+        <!-- <p>This link will expire in <strong>[Time Limit, e.g., 24 hours]</strong>. If you do not set your password within this time, you will need to request a new password reset link.</p> -->
 
         <p>If you did not create this account, please disregard this email.</p>
         </div>
@@ -127,7 +128,7 @@
         <div class="email-footer">
             <!-- <p>Best regards,<br>The Trip Tracker Team</p> -->
             <p>&copy; {{ date('Y') }} Trip Tracker. All rights reserved.</p>
-            <p>If you have any questions, <a href="mailto:support@yourdomain.com">contact support</a>.</p>
+            <p>If you have any questions, <a href="mailto:support@tatriptracker.com">contact support</a>.</p>
         </div>
     </div>
 </body>
