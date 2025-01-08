@@ -1184,7 +1184,7 @@ public function store(Request $request)
       // Log the deletion
       \MasterLogActivity::addToLog('Master Admin Agency User is Deleted.');
 
-      return redirect()->route(route: 'agency.index')->with('success', 'Agency deleted successfully');
+      return redirect()->route( 'agency.index')->with('success', 'Agency deleted successfully');
    }
   }
   public function getStates($countryId)

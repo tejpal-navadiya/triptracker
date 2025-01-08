@@ -1294,12 +1294,12 @@
                                                                     </button>
                                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                                     <?php
-                                                                    foreach ($images as $image) {
-                                                                        $imageUrl = route('tripdocument.access', ['filename' => $image]);
+                                                                    // foreach ($images as $image) {
+                                                                        $imageUrl = route('tripdocument.access', ['filename' => $file]);
                                                                     ?>
-                                                                        <a class="dropdown-item" href="{{ $imageUrl }}" download> {{ $image }}</a>
+                                                                        <a class="dropdown-item" href="{{ $imageUrl }}" download> {{ $file }}</a>
                                                                     <?php
-                                                                    }
+                                                                    // }
                                                                     ?>
                                                                     </div>
                                                                 </div>

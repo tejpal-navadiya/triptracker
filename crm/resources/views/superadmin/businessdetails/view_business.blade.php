@@ -20,10 +20,10 @@
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col-auto">
-                            <h1 class="m-0">Agencies Details</h1>
+                            <h1 class="m-0">Agency Details</h1>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Agencies Details</li>
+                                <li class="breadcrumb-item active">Agency Details</li>
                             </ol>
                         </div><!-- /.col -->
                         <div class="col-auto">
@@ -192,9 +192,29 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-right">
-                                                    <a data-toggle="modal" data-target="#deleteuser"><i
+                                                    <a data-toggle="modal" data-target="#deleteuser-{{ $detail->users_id }}"><i
                                                             class="fas fa-solid fa-trash delete_icon_grid"></i></a>
                                                 </td>
+                                                <div class="modal fade" id="deleteuser-{{ $detail->users_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                        <form id="delete-plan-form"
+                                                        action="{{ route('superagency.destroy', ['id' => $detail->users_id, 'user_id' => $detail->user_id]) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                                <div class="modal-body pad-1 text-center">
+                                                                    <i class="fas fa-solid fa-trash delete_icon"></i>
+                                                                    <p class="company_business_name px-10"><b>Delete User</b></p>
+                                                                    <p class="company_details_text px-10">Are You Sure You Want to Delete This User?</p>
+                                                                    <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="delete_btn px-15">Delete</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -227,20 +247,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="deleteuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true">
-            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body pad-1 text-center">
-                        <i class="fas fa-solid fa-trash delete_icon"></i>
-                        <p class="company_business_name px-10"><b>Delete User</b></p>
-                        <p class="company_details_text px-10">Are You Sure You Want to Delete This User?</p>
-                        <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="delete_btn px-15">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
     </div>
     <!-- ./wrapper -->
 

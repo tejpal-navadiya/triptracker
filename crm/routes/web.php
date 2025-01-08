@@ -167,6 +167,9 @@ Route::group(['prefix' => $adminRoute], function () {
         //agency delete
           Route::delete('/businessdetails/{id}/{user_id}', [BusinessDetailController::class, 'destroy'])->name('businessdetails.destroy');
 
+          //agency user delete
+          Route::delete('/superagency/destroy/{id}/{user_id}', [BusinessDetailController::class, 'agencyUserdestroy'])->name('superagency.destroy');
+
        
     });
 });

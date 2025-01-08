@@ -885,5 +885,29 @@ protected function assignPermissionsToRole($userId, $roleId, $roleName, $users_i
    
 }
 
+public function agencyUserdestroy($id,$storeId)
+{
+//   dd($id, $storeId);
+
+    $masterUser = MasterUser::where('buss_unique_id', $storeId)->first();
+    //dd($masterUser->id);
+    if ($masterUser) {
+
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($storeId); // Assume this sets the dynamic table name
+        $agencyRecord = $masterUserDetails->where('users_id', $id)->first();
+        // dd($agencyRecord);
+        if ($agencyRecord) {
+            // Delete the record from the dynamic table
+            $agencyRecord->where('users_id', $id)->delete();
+        }
+
+        return redirect()->route('businessdetails.show',$masterUser->id)->with('success', 'Agency User deleted successfully.');
+    } else {
+        return response()->json(['message' => 'MasterUser not found for the provided storeId.'], 404);
+    }
+}
+
+
 
 }
