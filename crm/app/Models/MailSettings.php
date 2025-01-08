@@ -10,7 +10,7 @@ class MailSettings extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['mail_smtp_id','id', 'mail_username' ,'mail_password','mail_outgoing_port','mail_incomiing_port','mail_outgoing_host','mail_incoming_host','mail_smtp_status'];
+    protected $fillable = ['mail_smtp_id','id', 'mail_username' ,'mail_password','mail_outgoing_port','mail_incoming_port','mail_outgoing_host','mail_incoming_host','mail_smtp_status'];
 
     public function __construct(array $attributes = [])
     {

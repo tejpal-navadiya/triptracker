@@ -31,21 +31,27 @@ class TripTaskController extends Controller
        // \DB::enableQueryLog();
 
 
-        $member = TripTask::where(['tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
+        $member = TripTask::where(['tr_id' => $id])->with(['trip','taskstatus','tripCategory'])->latest()->get();
        // dd(\DB::getQueryLog()); 
 
 
-        // dd($member);
+       
 
     
         if ($request->ajax()) {
-            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['taskstatus','tripCategory'])->latest()->get();
+            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['trip','taskstatus','tripCategory'])->latest()->get();
             //  dd($access);
-
+          // dd($member);
             return Datatables::of($member)
 
 
                     ->addIndexColumn()
+
+                    ->addColumn('trip_number', function($trip_number) {
+                        return $trip_number->trip->tr_number ?? '';
+                    })
+
+
                     ->addColumn('trvt_name', function($task_name) {
                         $fullName = strip_tags($task_name->trvt_name);
                         $truncatedName = Str::limit($fullName, 30, '...');

@@ -15,6 +15,7 @@
                 <table id="TaskDataTable" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
+                            <th>Trip Number</th>
                             <th>Task</th>
                             <th>Category</th>
                             <!--<th>Create Date</th>-->
@@ -28,6 +29,7 @@
                     @if (count($task) > 0)
                     @foreach ($task as $taskvalue)
                     <tr>
+                        <td>{{ $taskvalue->tr_value_trip ?? '' }}</td>
                         <td>
                             <span data-toggle="tooltip" data-placement="top" title="{{$taskvalue->trvt_name}}">{{ \Illuminate\Support\Str::limit(strip_tags($taskvalue->trvt_name), 30, '...') }}</span>
                         </td>
@@ -302,6 +304,7 @@
                    }
                },
                columns: [
+                    { data: 'trip_number', name: 'trip_number' },
                    { data: 'trvt_name', name: 'trvt_name' },
                    { data: 'trvt_category', name: 'trvt_category' },
                    // { data: 'trvt_date', name: 'trvt_date' },

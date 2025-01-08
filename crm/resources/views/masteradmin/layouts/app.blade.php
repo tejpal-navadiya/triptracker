@@ -33,6 +33,7 @@ aria-hidden="true" style="display: block;">
         </div>
         <div class="modal-footer">
             <a href="#" class="btn btn-primary">Purchase Plan</a>
+            <a href="{{ route('masteradmin.logout') }}" class="btn btn-primary">Logout</a>
         </div>
     </div>
 </div>

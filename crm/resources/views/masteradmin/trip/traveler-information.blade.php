@@ -6,6 +6,7 @@
             <p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p>
             <p class="company_business_name">Total Person : {{ $memberTotalCount ?? '0' }}</p>
             <p class="company_business_name">Phone Number : {{ $trip->tr_phone ?? '' }}</p>
+            <p class="company_business_name">Trip Number : {{ $trip->tr_number ?? '' }}</p>
             <!-- <p class="company_business_name">Address : 198-8604 Egestas. Rd. Turkey,87363</p> -->
         </div>
     </div>

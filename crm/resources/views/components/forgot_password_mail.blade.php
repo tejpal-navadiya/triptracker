@@ -23,7 +23,7 @@
         }
 
         .email-header {
-            background-color: #3f51b5;
+            background-color: #384150;
             padding: 30px;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
@@ -36,7 +36,7 @@
         }
 
         .email-header h1 {
-            font-size: 26px;
+            font-size: 20px;
             margin: 0;
         }
 
@@ -46,6 +46,7 @@
             color: #333;
             font-size: 16px;
             line-height: 1.6;
+            background: #F2F8FF;
         }
 
         .email-button {
@@ -65,16 +66,16 @@
         }
 
         .email-footer {
-            background-color: #f1f1f1;
+            background-color: #384150;
             padding: 15px;
             font-size: 14px;
-            color: #777;
+            color: #fff;
             text-align: center;
         }
 
         .email-footer a {
-            color: #3f51b5;
-            text-decoration: none;
+            color: #fff;
+            text-decoration: underline;
         }
 
         /* Media Queries for Responsive Design */
@@ -102,8 +103,7 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <img src="http://localhost/laravel/triptracker/crm/public/dist/img/logo.png" alt="Trip Tracker Logo">
-            <h1>Password Reset</h1>
+        <img src="{{url('public/dist/img/logo.png')}}" alt="Trip Tracker Logo" class="brand-image">            <h1>Password Reset</h1>
         </div>
 
         <div class="email-body">
