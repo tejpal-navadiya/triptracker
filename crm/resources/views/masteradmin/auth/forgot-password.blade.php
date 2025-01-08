@@ -13,6 +13,18 @@
 
     <form method="POST" action="{{ route('masteradmin.password.email') }}">
         @csrf
+
+        <div class="input-group mb-2">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-regular fa-user"></span>
+            </div>
+          </div>
+          <input id="user_id" class="form-control" type="text" name="user_id" :value="old('user_id')" autofocus placeholder="Enter Your User id">
+        </div>
+        <x-input-error :messages="$errors->get('user_id')" class="mb-1 mt-1" />
+
+
         <div class="input-group mb-2">
           <div class="input-group-append">
             <div class="input-group-text">

@@ -15,6 +15,7 @@ return [
             'link_send_error' => 'Failed to send password reset email.',
             'send_success' => 'Your password has been reset.',
             'send_error' => 'Invalid token!',
+            'user_not_found' => 'No user found with the provided email address.'
         ],
         'business-profile' => [
             'send_success' => 'Business Profile Updated successfully.',

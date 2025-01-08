@@ -37,12 +37,14 @@ class MasterPasswordResetLinkController extends Controller
         // Validate request
         $request->validate([
             'user_email' => 'required|email',
+            'user_id' => 'required|string',
         ]);
         
         $token = Str::random(64);
     
         // Check if email exists in the table
         $email = $request->user_email;
+        $user_id = $request->user_id;
         $existingToken = DB::table('master_password_reset_tokens')->where('email', $email)->first();
     
         if ($existingToken) {
@@ -63,12 +65,21 @@ class MasterPasswordResetLinkController extends Controller
         }
     
         // Fetch the user associated with the email
-        $users = MasterUser::where('user_email', $email)->first();
+        $users = MasterUser::where('buss_unique_id', $user_id)->first();
+        //dd($users);
+        // if (!$users) {
+        //     // Handle the case where the user is not found
+        //     return back()->withErrors(['user_email' => __('messages.masteradmin.forgot-password.user_not_found')]);
 
+        // }
         $userDetails = new MasterUserDetails();
-        $userDetails->setTableForUniqueId($users->buss_unique_id);
+        $userDetails->setTableForUniqueId($user_id);
         $user = $userDetails->where('users_email', $email)->first();
-    
+        if (!$user) {
+            // Handle the case where the user is not found
+            return back()->withErrors(['user_email' => __('messages.masteradmin.forgot-password.user_not_found')]);
+
+        }
     
        // Send the email
         try {

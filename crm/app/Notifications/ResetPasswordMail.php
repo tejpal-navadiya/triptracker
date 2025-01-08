@@ -33,13 +33,14 @@ class ResetPasswordMail extends Mailable
      */
     public function build()
     {
-        $url = url(config('app.url') . config('global.businessAdminURL') . '/reset-password/' . $this->token . '?email=' . urlencode($this->email));
+        $url = url(config('app.url') .'/'. config('global.businessAdminURL') . '/reset-password/' . $this->token . '?email=' . urlencode($this->email));
+        //$logoUrl = url('public/dist/img/logo.png');
 
         return $this->view('components.forgot_password_mail')
-                    ->subject('Reset Password Notification')
+                    ->subject('Reset Password')
                     ->with([
                         'url' => $url,
-                        'email' => $this->email,
+                        'email' => $this->email
                     ]);
     }
 }

@@ -102,8 +102,9 @@
                         <div class="card-header">
                             <h3 class="card-title">Basic Infomation</h3>
                         </div>                                
-                        <div class="card-body">                                                                        
-                            {{ strip_tags($library->lib_basic_information ?? '') }}                                    
+                        <div class="card-body">               
+                            {!! html_entity_decode($library->lib_basic_information ?? '<p>No content available</p>', ENT_QUOTES, 'UTF-8') !!}
+                            <!--{{ strip_tags($library->lib_basic_information ?? '') }}                                    -->
                         </div>
                     </div>
 

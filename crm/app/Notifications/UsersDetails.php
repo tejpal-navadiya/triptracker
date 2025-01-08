@@ -36,7 +36,7 @@ class UsersDetails extends Mailable
     public function build()
     {
         return $this->view('masteradmin.emails.user_details')
-                    ->subject('Change Password')
+                    ->subject('Password Reset')
                     ->with([
                         'uniqueId' => $this->uniqueId,
                         'loginUrl' => $this->loginUrl,
