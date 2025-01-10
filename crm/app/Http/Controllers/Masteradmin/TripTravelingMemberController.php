@@ -285,7 +285,7 @@ public function index(Request $request, $id)
                 'trtm_last_name' => 'nullable|string',
                 'trtm_nick_name' => 'nullable|string',
                 'trtm_relationship' => 'required',
-                'trtm_gender' => 'required:items.*.trtm_type,2',
+                'trtm_gender' => 'required',
                 'trtm_dob' => 'nullable|string',
                 'trtm_age' => 'nullable|string',
             ], [
@@ -294,7 +294,7 @@ public function index(Request $request, $id)
                 // 'trtm_last_name.required' => 'Last name is required',
                 'trtm_gender.required' => 'Gender is required',
                 'trtm_relationship.required' => 'Relationship is required',
-                // 'trtm_dob.required' => 'Birthdate is required',
+                'trtm_dob.required' => 'Birthdate is required',
                 // 'trtm_age.required' => 'Age is required',
             ]);
 

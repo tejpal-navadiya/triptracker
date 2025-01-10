@@ -13,7 +13,7 @@ class MasterAdminLogCleaner
     public function handle(Request $request, Closure $next)
     {
         try {
-            MasterLogActivity::deleteOldLogs();
+         //   MasterLogActivity::deleteOldLogs();
         } catch (\Throwable $th) {
             \Log::error("Failed to delete old logs for masteradmins: " . $th->getMessage());
         }

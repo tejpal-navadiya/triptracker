@@ -2985,13 +2985,3 @@ button.btn.btn-info {
     text-decoration: none;
     margin-top: 30px;
 }
-.task-faq{
-    position: relative;
-    padding: 20px;
-}
-.task-faq .pr-content-box{
-    padding: 0px;
-}
-.task-faq .task-reminder-ul li a{
-    text-decoration: none;
-}

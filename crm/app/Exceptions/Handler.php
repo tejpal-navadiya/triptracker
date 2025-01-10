@@ -49,6 +49,10 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof TokenMismatchException) {
+            \Log::error('CSRF token mismatch error');
+        }
+
         // Return 404 if a NotFoundHttpException or any exception occurs
         if ($exception instanceof NotFoundHttpException) {
             //return response()->view('errors.404', [], 404);  // Load the 404 view

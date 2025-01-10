@@ -1,4 +1,6 @@
 @extends('masteradmin.layouts.app')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <title>Add Trip | Trip Tracker</title>
 @if (isset($access['add_trip']) && $access['add_trip'])
     @section('content')
@@ -989,63 +991,78 @@
         </style>
         <script>
     $(document).ready(function () {
-    const $input = $("#tr_traveler_name");
-    const $list = $("#autocomplete-list");
 
-    // Handle traveler name input change
-    const $travelerIdInput = $("#traveler_id");
 
-    $input.on("input", function () {
+        const $input = $("#tr_traveler_name");
+const $list = $("#autocomplete-list");
+const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+// Handle traveler name input change
+const $travelerIdInput = $("#traveler_id");
+let typingTimeout;  // Declare a variable to store the timeout ID
+
+$input.on("input", function () {
     const query = $(this).val();
 
     if (query.length < 2) {
-        $list.empty();
+        $list.empty(); // Clear the list if the query is too short
         return;
     }
 
-    $.ajax({
-        url: "{{ route('travelers.autocomplete') }}", // Use named route
-        method: "GET",
-        data: { query: query }, // Pass the input value
-        success: function (data) {
-            $list.empty(); // Clear previous suggestions
-            // console.log(data);
-            if (data.length > 0) {
-                // Display matching results
-                data.forEach(function (traveler) {
-                    const $item = $("<div>")
-                        .addClass("list-group-item")
-                        .text(traveler.trtm_first_name)
-                        .on("click", function () {
-                            // $input.val(name); 
-                            $input.val(traveler.trtm_first_name); // Set input value
-                            $("#tr_email").val(traveler.trtm_email); // Set email field
-                            $("#tr_phone").val(traveler.trtm_number);
-                            $travelerIdInput.val(traveler.trtm_id);
-                                // Set input value
-                            $list.empty(); // Clear suggestions
+    // Clear any existing timeout to prevent multiple AJAX requests
+    clearTimeout(typingTimeout);
 
-                            fetchFamilyMembers(traveler.trtm_id);
-                        });
-                    $list.append($item);
-                });
-            } else {
-                // No results found, display "Add Item" button
-                const $addButton = $("<div>")
-                    .addClass("list-group-item text-primary")
-                    .text(`+ Add New Item "${query}"`)
-                    .on("click", function () {
-                        handleAddItem(query); // Open modal to add traveler
-                        // $list.empty(); // Clear suggestions and stop autocomplete
+    // Set a new timeout for 5 seconds (5000ms)
+    typingTimeout = setTimeout(function () {
+        $.ajax({
+            url: "{{ route('travelers.autocomplete') }}", // Use named route
+            method: "GET",
+            data: { query: query },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken  // Send the CSRF token in the header
+            },
+            success: function (data) {
+                $list.empty(); // Clear previous suggestions
+                if (data.length > 0) {
+                    // Display matching results
+                    data.forEach(function (traveler) {
+                        const $item = $("<div>")
+                            .addClass("list-group-item")
+                            .text(traveler.trtm_first_name)
+                            .on("click", function () {
+                                // Set input values and other fields on click
+                                $input.val(traveler.trtm_first_name);
+                                $("#tr_email").val(traveler.trtm_email);
+                                $("#tr_phone").val(traveler.trtm_number);
+                                $travelerIdInput.val(traveler.trtm_id);
+
+                                $list.empty(); // Clear suggestions
+                                fetchFamilyMembers(traveler.trtm_id); // Fetch family members (if needed)
+                            });
+                        $list.append($item); // Append the item to the list
                     });
-                $list.append($addButton);
+                } else {
+                    // No results found, display "Add Item" button
+                    const $addButton = $("<div>")
+                        .addClass("list-group-item text-primary")
+                        .text(`+ Add New Item "${query}"`)
+                        .on("click", function () {
+                            handleAddItem(query); // Open modal to add traveler
+                        });
+                    $list.append($addButton);
+                }
+            },
+            error: function () {
+                console.error("Error fetching traveler names");
             }
-        },
-        error: function () {
-            console.error("Error fetching traveler names");
-        }
-    });
+        });
+    }, 1000); // Delay the AJAX request by 5000ms (5 seconds)
 });
+
+
+
+
 const $familyMembersDiv = $("#family-members-container");
 
 var rowCount = 0;
@@ -1058,6 +1075,10 @@ function fetchFamilyMembers(travelerId) {
     $.ajax({
         url: "{{ route('travelers.family_members', ['id' => ':id']) }}".replace(':id', travelerId), // Replace :id with travelerId
         method: "GET",
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
         success: function (response) {
             
             $("#tr_num_people").val(response.count+1);
@@ -1526,6 +1547,7 @@ function fetchFamilyMembers(travelerId) {
                         // Reload the autocomplete list to reflect the new entry
                         $input.trigger("input");
                 
+                        typingTimeout = setTimeout(function () {
                         $.ajax({
                             url: "{{ route('travelers.autocomplete') }}",
                             method: "GET",
@@ -1551,7 +1573,9 @@ function fetchFamilyMembers(travelerId) {
                                 console.error("Error refreshing traveler names");
                             }
                         });
-                    $("#addTravelerModal").modal("hide");
+                        }, 1000); 
+
+                        $("#addTravelerModal").modal("hide");
                 } else {
                     alert("Error adding traveler.");
                 }
@@ -1578,82 +1602,11 @@ function fetchFamilyMembers(travelerId) {
             }
         });
     });
+
 });
 
         </script>
         
-        <script>
-//         $(document).ready(function () {
-//             $.ajaxSetup({
-//     headers: {
-//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//     }
-// });
-//     // Save modal data to session
-//     $('#saveBtnDocument').on('click', function (e) {
-//         e.preventDefault();
-
-//         let formData = new FormData();
-//         formData.append('trp_name', $('#trp_name').val());
-//         if ($('#trp_document')[0].files[0]) {
-//             formData.append('trp_document', $('#trp_document')[0].files[0]);
-//         }
-
-//         $.ajax({
-//             url: "{{ route('trip-documents.session.save') }}",
-//             type: "POST",
-//             data: formData,
-//             contentType: false,
-//             processData: false,
-//             success: function (response) {
-//                 if (response.success) {
-//                     // Dynamically update document list
-//                     displayDocuments(response.documents);
-
-//                     // Clear modal fields
-//                     $('#trp_name').val('');
-//                     $('#trp_document').val('');
-//                 } else {
-//                     alert('Failed to save document. Please try again.');
-//                 }
-//             },
-//             error: function () {
-//                 alert('An error occurred. Please try again.');
-//             }
-//         });
-//     });
-
-//     // Load documents from session on page load
-//     loadSessionDocuments();
-
-//     function loadSessionDocuments() {
-//         $.ajax({
-//             url: "{{ route('trip-documents.session.get') }}",
-//             type: "GET",
-//             success: function (response) {
-//                 if (response.success) {
-//                     displayDocuments(response.documents);
-//                 }
-//             },
-//             error: function () {
-//                 alert('Unable to load documents.');
-//             }
-//         });
-//     }
-
-//     function displayDocuments(documents) {
-//         $('#document-list').html(''); // Clear the existing list
-//         documents.forEach((doc, index) => {
-//             $('#document-list').append(`
-//                 <div class="document-item">
-//                     <p><strong>${index + 1}. ${doc.trp_name}</strong></p>
-//                     ${doc.trp_document ? `<p><a href="/storage/${doc.trp_document}" target="_blank">View Document</a></p>` : ''}
-//                 </div>
-//             `);
-//         });
-//     }
-// });
-
-        </script>
+        
     @endsection
 @endif

@@ -87,6 +87,7 @@ class Kernel extends HttpKernel
         'handle.ajax.session' => \App\Http\Middleware\HandleAjaxSession::class,
         'UserLoggedInListener' => \App\Http\Middleware\UserLoggedInListener::class,
         'check.subscription.status' => \App\Http\Middleware\CheckUserPlan::class,
+        'refresh.limit' => \App\Http\Middleware\RefreshLimitMiddleware::class,
         
 
         

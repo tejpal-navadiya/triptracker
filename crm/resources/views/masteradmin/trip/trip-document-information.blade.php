@@ -220,7 +220,9 @@
                 .replace(':documentId', documentId)
                 .replace(':image', image);
 
-
+                clearTimeout(typingTimeout);
+                            
+                typingTimeout = setTimeout(function () {
 
             // Send AJAX DELETE request
             $.ajax({
@@ -229,6 +231,7 @@
                 data: {
                     _token: '{{ csrf_token() }}'
                 },
+
                 success: function(response) {
                     if (response.success) {
                     
@@ -242,5 +245,7 @@
                 }
             });
         // }
+    }, 5000); 
+        
     });
 </script>

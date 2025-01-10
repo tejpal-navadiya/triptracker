@@ -150,7 +150,7 @@ class TripTaskController extends Controller
 
             ], [
                 'trvt_category.required' => 'Category is required',
-                'trvt_priority.required' => 'Priority is required',
+                // 'trvt_priority.required' => 'Priority is required',
 
             ]);
 

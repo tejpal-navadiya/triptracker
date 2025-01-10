@@ -39,14 +39,12 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+            'cookie' => env('SUPERADMIN_SESSION_COOKIE', 'superadmin_session'),
         ],
         'masteradmins' => [
             'driver' => 'session',
             'provider' => 'masteradmin',
-        ],
-        'masteradmins_users' => [
-            'driver' => 'session',
-            'provider' => 'masteradmin',
+            'cookie' => env('MASTERADMIN_SESSION_COOKIE', 'masteradmin_session'),
         ],
        
     ],

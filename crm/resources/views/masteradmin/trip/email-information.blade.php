@@ -74,6 +74,7 @@ socket.onclose = function(event) {
 // });
 
 $(document).ready(function() {
+    typingTimeout = setTimeout(function () {
     var table = $('#EmailDataTable').DataTable({
         processing: true,
         serverSide: true,
@@ -101,6 +102,7 @@ $(document).ready(function() {
             { data: 'date', name: 'date' }
         ]
     });
+}, 4000); 
 });
 
 </script>

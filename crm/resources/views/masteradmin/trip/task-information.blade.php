@@ -129,8 +129,9 @@
                                             <option value="{{ $taskcat->task_cat_id }}">{{ $taskcat->task_cat_name }}
                                             </option>
                                         @endforeach
-                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_category')" />
+                                      
                                     </select>
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_category')" />
                                 </div>
                             </div>
                         </div>
@@ -263,7 +264,16 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
+<style>
+    .is-invalid {
+    border-color: #dc3545;
+}
 
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
+</style>
 <script>
     var TaskDataTable;
 
@@ -276,23 +286,10 @@
     //     TaskDataTable.clear().draw();
     // }else{
     // Initialize DataTable
-    setTimeout(function(){
+    
+    typingTimeout = setTimeout(function () {
         
-        $.fn.dataTable.ext.order['priority-asc'] = function(settings, col) {
-       return this.api().column(col, {order: 'index'}).nodes().map(function(cell, i) {
-           var val = $(cell).text().trim();
-           if(val === 'High') {
-               return 3;
-           } else if(val === 'Medium') {
-               return 2;
-           } else if(val === 'Low') {
-               return 1;
-           } else {
-               return 0; // For NULL or empty values
-           }
-       });
-   };
-   
+      
            TaskDataTable = $('#TaskDataTable').DataTable({
                processing: true,
                serverSide: true,
@@ -313,16 +310,11 @@
                    { data: 'status_name', name: 'status_name' },
                    { data: 'action', name: 'action', orderable: false, searchable: false },
                ],
-              columnDefs: [
-           {
-               targets: 3,  // Apply custom sorting for 'trvt_priority' column (index 3)
-               orderDataType: 'priority-asc'  // Custom sorting based on our function
-           }
-       ],
+
 
            });
    
-},2000);  
+        },2000);  
     // }
 
         //create task
@@ -393,10 +385,27 @@
                     $('#FormTask')[0].reset();
 
                 },
-                error: function(data) {
-                    console.log('Error:', data);
-                    $('#saveBtnTask').html('Save Changes');
+                error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Clear previous error messages
+                    $(".invalid-feedback").remove();
+                    $(".is-invalid").removeClass("is-invalid");
+
+                    // Loop through each validation error and display it in the respective field
+                    for (let field in xhr.responseJSON.errors) {
+                        const errorMessage = xhr.responseJSON.errors[field][0]; // Get the first error message
+
+                        // Find the input field based on the name attribute
+                        const $field = $(`[name="${field}"]`);
+                        
+                        if ($field.length) {
+                            $field.addClass("is-invalid"); // Add invalid class to input field
+                            $field.after(`<div class="invalid-feedback">${errorMessage}</div>`); // Append error message below the field
+                        }
+                    }
                 }
+            }
+            
             });
         });
 

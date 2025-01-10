@@ -262,7 +262,7 @@
 
                             data.forEach(function(image) {
                                 var imageUrl = baseUrl + '/document/' + image;
-                                imageLinks += '<a href="' + imageUrl + '" target="_blank">' + image + '</a>, ';
+                                imageLinks += '<a href="' + imageUrl + '" target="_blank">' + image + '</a>,<br /> ';
                             });
 
                             return imageLinks.slice(0, -2);

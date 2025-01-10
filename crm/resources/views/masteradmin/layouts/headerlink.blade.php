@@ -40,4 +40,5 @@
 
 
     <!-- css style -->
+    <link rel="stylesheet" href="{{url('public/dist/css/bootstrap.css')}}">
     <link rel="stylesheet" href="{{url('public/dist/css/custom.css')}}">

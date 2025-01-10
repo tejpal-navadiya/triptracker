@@ -116,6 +116,8 @@
                                     <input type="text" class="form-control" id="trtm_first_name"
                                         name="trtm_first_name" placeholder="Enter First Name">
                                 </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('trtm_email')" />
+
                             </div>
                         </div>
 
@@ -171,9 +173,9 @@
                                                 {{ $value->rel_name }}
                                             </option>
                                         @endforeach
-                                        <div class="invalid-feedback" id="trtm_relationship_error" ></div>
-                                    </select>
+                                        </select>
                                 </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('trtm_relationship')" />
                             </div>
                         </div>               
 
@@ -189,6 +191,7 @@
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('trtm_gender')" />
                             </div>
                         </div>
 
@@ -249,22 +252,34 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url('public/vendor/flatpickr/js/flatpickr.js') }}"></script>
+<style>
+    .is-invalid {
+    border-color: #dc3545;
+}
 
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
+</style>
 <script>
     $(document).ready(function() {
         // $('#tableTraveler').DataTable();
         // return;
     });
+    
      $(document).ready(function() {
         var tableTraveler;
-
+        let typingTimeout;
         // function initializeDataTable() {
         //     if ($.fn.dataTable.isDataTable('#tableTraveler')) {
         //         tableTraveler.clear().draw();
 
         //     } else {
-
-        setTimeout(function(){
+            clearTimeout(typingTimeout);
+                            
+            typingTimeout = setTimeout(function () {
+        
                 tableTraveler = $('#tableTraveler').DataTable({
                     processing: true,
                     serverSide: true,
@@ -346,11 +361,28 @@
                     $('#Form')[0].reset();
                     }
                 },
-                error: function(data) {
-                    console.log('Error:', data);
-                    $('#saveBtn').html('Save Changes');
+                error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Clear previous error messages
+                    $(".invalid-feedback").remove();
+                    $(".is-invalid").removeClass("is-invalid");
+
+                    // Loop through each validation error and display it in the respective field
+                    for (let field in xhr.responseJSON.errors) {
+                        const errorMessage = xhr.responseJSON.errors[field][0]; // Get the first error message
+
+                        // Find the input field based on the name attribute
+                        const $field = $(`[name="${field}"]`);
+                        
+                        if ($field.length) {
+                            $field.addClass("is-invalid"); // Add invalid class to input field
+                            $field.after(`<div class="invalid-feedback">${errorMessage}</div>`); // Append error message below the field
+                        }
+                    }
                 }
-            });
+            }
+            
+        });
         });
 
         //edit popup

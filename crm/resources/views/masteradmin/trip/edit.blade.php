@@ -1560,21 +1560,85 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="preferences-box">
-                            <div class="preferences-title">Tasks & Reminders</div>
-                            <div class="pr-content-box">
-                                <ul class="task-reminder-ul">
-                                    <li><a href="#">Send Trip Request Form</a></li>
-                                    <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
-                                    <li><a href="#">Send Proposal</a></li>
-                                    <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
-                                    <li><a href="#">Book Trip Components</a></li>
-                                    <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
-                                    <li><a href="#">Send Credit Card Authoriza Form</a></li>
-                                    <li><a href="#">Send Invoice</a></li>
-                                </ul>
+
+                    <div class="preferences-box">
+
+                        <div class="preferences-title">Tasks & Reminders</div>
+
+                        <div class="accordion task-faq" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Before Booked
+                                </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="pr-content-box">
+                                    <ul class="task-reminder-ul">
+                                        <li><a href="#">Send Trip Request Form</a></li>
+                                        <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
+                                        <li><a href="#">Send Proposal</a></li>
+                                        <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
+                                        <li><a href="#">Book Trip Components</a></li>
+                                        <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
+                                        <li><a href="#">Send Credit Card Authoriza Form</a></li>
+                                        <li><a href="#">Send Invoice</a></li>
+                                    </ul>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    After Sold
+                                </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="pr-content-box">
+                                    <ul class="task-reminder-ul">
+                                        <li><a href="#">Send Trip Request Form</a></li>
+                                        <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
+                                        <li><a href="#">Send Proposal</a></li>
+                                        <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
+                                        <li><a href="#">Book Trip Components</a></li>
+                                        <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
+                                        <li><a href="#">Send Credit Card Authoriza Form</a></li>
+                                        <li><a href="#">Send Invoice</a></li>
+                                    </ul>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    After Travel (Completed Status)
+                                </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="pr-content-box">
+                                    <ul class="task-reminder-ul">
+                                        <li><a href="#">Send Trip Request Form</a></li>
+                                        <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
+                                        <li><a href="#">Send Proposal</a></li>
+                                        <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
+                                        <li><a href="#">Book Trip Components</a></li>
+                                        <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
+                                        <li><a href="#">Send Credit Card Authoriza Form</a></li>
+                                        <li><a href="#">Send Invoice</a></li>
+                                    </ul>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                         </div>
+
+                    </div>
+
                     </div>
                 </div>
 
@@ -2723,13 +2787,14 @@ mainDeleteButton.addEventListener('click', function() {
             const $input = $("#tr_traveler_name");
 
             const $list = $("#autocomplete-list");
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 
 
             // Handle traveler name input change
 
             const $travelerIdInput = $("#traveler_id");
-
+            let typingTimeout; 
 
 
             $input.on("input", function () {
@@ -2745,8 +2810,8 @@ mainDeleteButton.addEventListener('click', function() {
                     return;
 
                 }
-
-
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(function () {
 
                 $.ajax({
 
@@ -2755,6 +2820,10 @@ mainDeleteButton.addEventListener('click', function() {
                     method: "GET",
 
                     data: { query: query }, // Pass the input value
+                    dataType: "json",
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken  // Send the CSRF token in the header
+                    },
 
                     success: function (data) {
 
@@ -2829,7 +2898,7 @@ mainDeleteButton.addEventListener('click', function() {
                     }
 
                 });
-
+            }, 1000);
             });
 
            
@@ -3844,6 +3913,9 @@ mainDeleteButton.addEventListener('click', function() {
 
                             $input.trigger("input");
 
+                            clearTimeout(typingTimeout);
+
+                            typingTimeout = setTimeout(function () {
 
 
                             $.ajax({
@@ -3896,8 +3968,9 @@ mainDeleteButton.addEventListener('click', function() {
 
                             });
 
+                        }, 1000); 
                             $("#addTravelerModal").modal("hide");
-
+                         
                         } else {
 
                             alert("Error adding traveler.");
