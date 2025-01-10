@@ -557,9 +557,20 @@ class TripController extends Controller
         $tripdocument = TripDocument::where('tr_id', $id)->get();
     //    dd($tripdocument);
     
+        // $tripstatus = TripStatus::get();
+        $triptask = PredefineTask::get();
+        // dd($triptask);
         //$status = Trip::where('status', $selectedStatus)->get();
+        $taskCategory = new TaskCategory();
+        if($user->users_id && $user->role_id ==0 ){
+            $taskCategory = $taskCategory->where(['task_cat_status' => 1])->get();
+        }else{
+            $taskCategory = $taskCategory->where(['task_cat_status' => 1, 'id' => $user->users_id])->get();
+        }
+        $taskstatus = TaskStatus::all();
 
-        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user','memberTotalCount','tripdocument'));
+
+        return view('masteradmin.trip.edit', compact('trip', 'triptype', 'tripmember', 'tripstatus', 'selectedStatus','agency_users','triptinerary','typeoftrip','travelingrelationship','country','user','memberTotalCount','tripdocument','triptask','taskCategory','taskstatus'));
 
         //return view('masteradmin.trip.edit',compact('trip','triptype', 'tripmember','tripstatus','status'));
 
@@ -3794,5 +3805,136 @@ public function memberPreferencesStore(Request $request,$id)
         // return redirect()->back()->with('error', 'Image not found.');
     }
     
+    public function storeTask1(Request $request, $id)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'trvt_name' => 'nullable|string|max:255',
+            'trvt_agent_id' => 'nullable|string',
+            'trvt_category' => 'required|string',
+            'trvt_priority' => 'nullable|string',
+            'trvt_date' => 'nullable|date',
+            'trvt_due_date' => 'nullable|date',
+            'trvt_note' => 'nullable|string',
+            'trvt_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
+    
+        $tripTask = new TripTask();
+        $tableName = $tripTask->getTable();
+        $uniqueId1 = $this->GenerateUniqueRandomString($tableName, 'trvt_id', 6);
+    
+        if ($request->hasFile('trvt_document')) {
+            $userFolder = session('userFolder');
+    
+            $users_cert_document = $this->handleImageUpload($request, 'trvt_document', null, 'task_image', $userFolder);
+    
+            $validated['trvt_document'] = $users_cert_document;
+        } else {
+            $validated['trvt_document'] = $request->file('trvt_document') ? $request->file('trvt_document')->store('documents') : null;
+        }
+    
+        $task = TripTask::updateOrCreate(
+            [
+                'tr_id' => $id,
+                'trvt_name' => $request->input('trvt_name'),
+                'trvt_id' => $request->input('trvt_id')
+            ],
+            [
+                'trvt_agent_id' => $request->input('trvt_agent_id'),
+                'trvt_category' => $request->input('trvt_category'),
+                'trvt_priority' => $request->input('trvt_priority'),
+                'trvt_date' => $request->input('trvt_date'),
+                'trvt_due_date' => $request->input('trvt_due_date'),
+                'trvt_note' => $request->input('trvt_note'),
+                'trvt_document' => $validated['trvt_document'],
+            ]
+        );
+    
+        return response()->json(['success' => true, 'task' => $task]);
+    }
 
+    public function storeTask(Request $request, $id)
+    {
+    //    dd($request->all());
+
+        // Validate the request
+        $validated = $request->validate([
+            'trvt_name' => 'nullable|string|max:255',
+            'trvt_agent_id' => 'nullable|string',
+            'trvt_category' => 'required|string',
+            'trvt_priority' => 'nullable|string',
+            'trvt_date' => 'nullable|date',
+            'trvt_due_date' => 'nullable|date',
+            'trvt_note' => 'nullable|string',
+            'trvt_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ],[
+           
+            'trvt_category.required' => 'Category is required',
+            
+        ]);
+    
+       
+    
+        // Check if the task exists
+        $task = TripTask::where('tr_id', $id)
+                         ->where('trvt_name', $request->input('trvt_name'))
+                         ->where('trvt_id', $request->input('trvt_id'))
+                         ->first();
+    
+            if ($request->hasFile('trvt_document')) {
+            $userFolder = session('userFolder');
+
+            // Handle the image upload
+            $users_cert_document = $this->handleImageUpload($request, 'trvt_document', null, 'task_image', $userFolder);
+            $validated['trvt_document'] = $users_cert_document;
+        } else {
+           $validated['trvt_document'] = $task->trvt_document;
+        }
+        // If task doesn't exist, assign a new trvt_id
+        if (!$task) {
+            $tripTask = new TripTask();
+            $tableName = $tripTask->getTable();
+            $validated['trvt_id'] = $this->GenerateUniqueRandomString($tableName, 'trvt_id', 6);
+        }
+    
+        // Update or create the task
+        $task = TripTask::updateOrCreate(
+            [
+                'tr_id' => $id,
+                'trvt_name' => $request->input('trvt_name'),
+                'trvt_id' => $request->input('trvt_id') ?? $validated['trvt_id']
+            ],
+            [
+                'trvt_agent_id' => $request->input('trvt_agent_id'),
+                'trvt_category' => $request->input('trvt_category'),
+                'trvt_priority' => $request->input('trvt_priority'),
+                'trvt_date' => $request->input('trvt_date'),
+                'trvt_due_date' => $request->input('trvt_due_date'),
+                'trvt_note' => $request->input('trvt_note'),
+                'trvt_document' => $validated['trvt_document'],
+                'status' => 1,
+            ]
+        );
+
+        // dd($task);
+        return response()->json(['success' => true, 'task' => $task]);
+    }
+    
+    
+
+    public function getTripTask($trip_id, $task_name)
+    {
+        // dD($trip_id,$task_name);
+        $tripTask = TripTask::where('tr_id', $trip_id)
+                            ->where('trvt_name', $task_name)
+                            ->first();
+        //dD($tripTask);
+        if ($tripTask) {
+            return response()->json(['exists' => true, 'data' => $tripTask]);
+        } else {
+            return response()->json(['exists' => false]);
+        }
+    }
+
+    
 }

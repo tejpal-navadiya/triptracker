@@ -1561,84 +1561,34 @@
                     </div>
                     <div class="col-md-4">
 
-                    <div class="preferences-box">
+                        <div class="preferences-box">
 
-                        <div class="preferences-title">Tasks & Reminders</div>
+                            <div class="preferences-title">Tasks & Reminders</div>
 
-                        <div class="accordion task-faq" id="accordionExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Before Booked
-                                </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="pr-content-box">
-                                    <ul class="task-reminder-ul">
-                                        <li><a href="#">Send Trip Request Form</a></li>
-                                        <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
-                                        <li><a href="#">Send Proposal</a></li>
-                                        <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
-                                        <li><a href="#">Book Trip Components</a></li>
-                                        <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
-                                        <li><a href="#">Send Credit Card Authoriza Form</a></li>
-                                        <li><a href="#">Send Invoice</a></li>
-                                    </ul>
+                            <div class="accordion task-faq" id="accordionExample">
+                            @foreach ($tripstatus as $index => $status)
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-{{ $status->tr_status_id ?? '' }}">
+                                    <button class="accordion-button {{ $index == 0 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $status->tr_status_id ?? '' }}" aria-expanded="{{ $index == 0 ? 'true' : 'false' }}" aria-controls="collapse-{{ $status->tr_status_id ?? '' }}">
+                                    {{ $status->tr_status_name ?? '' }}
+                                    </button>
+                                    </h2>
+                                    <div id="collapse-{{ $status->tr_status_id ?? '' }}" class="accordion-collapse collapse {{ $index == 0 ? 'show' : '' }}" aria-labelledby="heading-{{ $status->tr_status_id ?? '' }}" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="pr-content-box">
+                                        <ul class="task-reminder-ul">
+                                            @foreach ($triptask->where('pre_task_type', $status->tr_status_id) as $task)
+                                                <li><a href="#" class="task-link" data-trip-id="{{ $trip->tr_id }}" data-task-name="{{ $task->pre_task_name }}" data-toggle="modal" data-target="#ajaxModelTask">{{ $task->pre_task_name }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
-                                </div>
+                            @endforeach
                             </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    After Sold
-                                </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="pr-content-box">
-                                    <ul class="task-reminder-ul">
-                                        <li><a href="#">Send Trip Request Form</a></li>
-                                        <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
-                                        <li><a href="#">Send Proposal</a></li>
-                                        <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
-                                        <li><a href="#">Book Trip Components</a></li>
-                                        <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
-                                        <li><a href="#">Send Credit Card Authoriza Form</a></li>
-                                        <li><a href="#">Send Invoice</a></li>
-                                    </ul>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    After Travel (Completed Status)
-                                </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="pr-content-box">
-                                    <ul class="task-reminder-ul">
-                                        <li><a href="#">Send Trip Request Form</a></li>
-                                        <li><a href="#">Send Plan To Go Credit Card Authorization</a></li>
-                                        <li><a href="#">Send Proposal</a></li>
-                                        <li><a href="#" class="ul-btn">Send Welcome Email</a></li>
-                                        <li><a href="#">Book Trip Components</a></li>
-                                        <li><a href="#" class="ul-btn">Send Thank You for Booking Email</a></li>
-                                        <li><a href="#">Send Credit Card Authoriza Form</a></li>
-                                        <li><a href="#">Send Invoice</a></li>
-                                    </ul>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
+
                         </div>
-
-                    </div>
-
                     </div>
                 </div>
 
@@ -2084,7 +2034,188 @@
 
     </div>
 
+    <div class="modal fade" id="ajaxModelTask" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingTask"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
+
+            <form id="FormTask" name="FormTask" class="mt-6 space-y-6" enctype="multipart/form-data">
+
+                <input type="hidden" name="trvt_id" id="trvt_id">
+                <ul id="update_msgList"></ul>
+                <div class="modal-body">
+                    <div class="row pxy-15 px-10">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_name">Task</label>
+                                <div class="d-flex">
+                                    <input type="text" class="form-control" id="trvt_name" name="trvt_name" placeholder="Enter Task">
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_name')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 family-member-field">
+                            <div class="form-group">
+                                <label for="trvt_agent_id">Assign Agent</label>
+                                <div class="d-flex">
+                                    <select id="trvt_agent_id" style="width: 100%;" name="trvt_agent_id"
+                                        class="form-control select2" >
+                                        <option value="">Select Agent</option>
+                                        @foreach ($agency_users as $value)
+                                            <option value="{{ $value->users_id }}"  {{ old('tr_agent_id', $trip->tr_agent_id ?? '') == $value->users_id ? 'selected' : '' }}>
+                                                {{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" id="selected_agent_id" name="selected_agent_id" value="{{ old('tr_agent_id', $trip->tr_agent_id ?? '') }}">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_category">Category<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_category"
+                                        name="trvt_category">
+                                        <option value="">Select Category</option>
+                                        
+                                        @foreach ($taskCategory as $taskcat)
+                                            <option value="{{ $taskcat->task_cat_id }}">{{ $taskcat->task_cat_name }}
+                                            </option>
+                                        @endforeach
+                                      
+                                    </select>
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_category')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_priority">Priority</label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_priority"
+                                        name="trvt_priority">
+                                        <option default>Select Priority</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_priority')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_date">Create Date</label>
+                                <div class="d-flex">
+                                    <div class="input-group date" id="trvt_date" data-target-input="nearest">
+                                        <x-flatpickr id="create_date" name="trvt_date" placeholder="mm/dd/yyyy" />
+                                        <div class="input-group-append">
+                                            <div class="input-group-text" id="create-date-icon">
+                                                <i class="fa fa-calendar-alt"></i>
+                                                <input type="hidden" id="trvt_date_hidden" />
+                                            </div>
+                                        </div>
+                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_date')" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_due_date">Due Date</label>
+                                <div class="d-flex">
+                                    <div class="input-group date" id="trvt_due_date" data-target-input="nearest">
+                                        <x-flatpickr id="due_date" name="trvt_due_date" placeholder="mm/dd/yyyy" />
+                                        <div class="input-group-append">
+                                            <div class="input-group-text" id="due-date-icon">
+                                                <i class="fa fa-calendar-alt"></i>
+                                                <input type="hidden" id="trvt_due_date_hidden" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <x-input-error class="mt-2" :messages="$errors->get('trvt_due_date')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 family-member-field">
+                            <div class="form-group">
+                                <label for="trvt_document">Upload Documents</label>
+                                <div class="d-flex">
+                                    <x-text-input type="file" name="trvt_document" id="trvt_document" />
+                                </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('trvt_document')" />
+                                <p id="task_document"></p>
+                                <label for="trvt_document">Only jpg, jpeg, png, and pdf files are allowed</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="trvt_note">Notes </label>
+                                <div class="d-flex">
+                                    <textarea type="text" class="form-control" id="trvt_note" placeholder="Enter Notes" name="trvt_note"
+                                    autofocus autocomplete="trvt_note">{{ old('trvt_note') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6" id="statusField" style="display: none;"> <!-- Initially hidden -->
+                            <div class="form-group">
+                                <label for="trvt_category">Status<span class="text-danger">*</span></label>
+                                <div class="d-flex">
+                                    <select class="form-control select2" style="width: 100%;" id="trvt_status"
+                                        name="status">
+                                        <option value="" default>Select Status</option>
+                                        @foreach ($taskstatus as $value)
+                                            <option value="{{ $value->ts_status_id }}">
+                                                {{ $value->ts_status_name }}
+                                            </option>
+                                        @endforeach
+                                        <x-input-error class="mt-2" :messages="$errors->get('trvt_status')" />
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="add_btn_br" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="saveBtnTask" value="create"
+                            class="add_btn">{{ __('Save Changes') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="task-success-modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body pad-1 text-center">
+                <i class="fas fa-check-circle success_icon"></i>
+                <p class="company_business_name px-10"><b>Success!</b></p>
+                <p class="company_details_text px-10" id="task-success-message1">Data has been successfully Save!</p>
+                <button type="button" class="add_btn px-15" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- ./wrapper -->
 
@@ -2095,7 +2226,262 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var fromdatepicker = flatpickr("#create_date", {
+            locale: 'en',
+            altInput: true,
+            dateFormat: "m/d/Y",
+            altFormat: "m/d/Y",
+            allowInput: true,
+        });
+
+        var todatepicker = flatpickr("#due_date", {
+            locale: 'en',
+            altInput: true,
+            dateFormat: "m/d/Y",
+            altFormat: "m/d/Y",
+            allowInput: true,
+        });
+
+        document.getElementById('create-date-icon').addEventListener('click', function() {
+            fromdatepicker.open();
+        });
+
+        document.getElementById('due-date-icon').addEventListener('click', function() {
+            todatepicker.open();
+        });
+
+
+    });
+</script>
+<script>
+    var getTripTaskUrl = "{{ route('get.trip.task', ['trip_id' => ':trip_id', 'task_name' => ':task_name']) }}";
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 and Flatpickr
+       
+
+        // When a task link is clicked
+        $('.task-link').on('click', function() {
+           
+            var taskId = $(this).data('task-id'); // Assuming you have data-task-id attribute
+            $('#trvt_name').val($(this).data('task-name'));
+            $('#ajaxModelTask').modal('show');
+
+            $('#modelHeadingTask').text($(this).data('task-name'));
+
+              var tripId = $(this).data('trip-id');
+            var taskName = $(this).data('task-name');
+            
+
+            var url = getTripTaskUrl.replace(':trip_id', tripId).replace(':task_name', taskName);
+            // alert(url);
+            // Fetch task data
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function(response) {
+                    if (response.exists) {
+                        var task = response.data;
+                        // console.log(task);
+                        $('#trvt_id').val(task.trvt_id);
+                        $('#trvt_name').val(task.trvt_name);
+                        $('#trvt_agent_id').val(task.trvt_agent_id).trigger('change');
+                        if (task.trvt_category === '0') {
+                            if ($('#trvt_category option[value="0"]').length === 0) {
+                                $('#trvt_category').append('<option value="0">System Created</option>');
+                            }
+                            $('#trvt_category').val('0').trigger('change');
+                        } else {
+                            $('#trvt_category option[value="0"]').remove();
+                            $('#trvt_category').val(task.trvt_category).trigger('change');
+                        }
+
+                       
+                        
+                        $('#trvt_priority').val(task.trvt_priority).trigger('change');
+                        // $('#trvt_date').val(task.trvt_date);
+                        // $('#trvt_due_date').val(task.trvt_due_date);
+
+                        $('#trvt_date_hidden').val(task.trvt_date);
+                        $('#trvt_due_date_hidden').val(task.trvt_due_date);
+
+                        var trvt_date_hidden = document.getElementById('trvt_date_hidden');
+                    var trvt_due_date_hidden = document.getElementById('trvt_due_date_hidden');
+
+                    if (trvt_date_hidden && trvt_due_date_hidden) {
+                        var completed_date = flatpickr("#create_date", {
+                            locale: 'en',
+                            altInput: true,
+                            dateFormat: "m/d/Y",
+                            altFormat: "m/d/Y",
+                            allowInput: true,
+                            defaultDate: trvt_date_hidden.value || null,
+                        });
+
+                        var todatepicker = flatpickr("#due_date", {
+                            locale: 'en',
+                            altInput: true,
+                            dateFormat: "m/d/Y",
+                            altFormat: "m/d/Y",
+                            allowInput: true,
+                            defaultDate: trvt_due_date_hidden.value || null,
+                        });
+
+                        document.getElementById('create-date-icon').addEventListener('click',
+                            function() {
+                                fromdatepicker.open();
+                            });
+
+                        document.getElementById('due-date-icon').addEventListener('click',
+                            function() {
+                                todatepicker.open();
+                            });
+                        }
+
+
+                        $('#trvt_note').val(task.trvt_note);
+
+                        $('#task_document').html('');
+                    var baseUrl = "{{ config('app.image_url') }}";
+                    if (task.trvt_document) {
+                        $('#task_document').append(
+                            '<a href="' + baseUrl + '/tasks/' +
+                            task
+                            .trvt_document + '" target="_blank">' +
+                            task.trvt_document +
+                            '</a>'
+                        );
+                    }
+
+                    } else {
+                        // Clear the form fields
+                        // $('#trvt_name').val('');
+                        $('#trvt_id').val('');
+                        $('#trvt_agent_id').val(null).trigger('change');
+                        $('#trvt_category').val(null).trigger('change');
+                        $('#trvt_priority').val(null).trigger('change');
+                        $('#trvt_date_hidden').val('');
+                        $('#trvt_due_date_hidden').val('');
+                        $('#create_date').val('');
+                        $('#due_date').val('');
+                        $('#trvt_note').val('');
+                        $('#task_document').html('');
+                        $('#trvt_category option[value="0"]').remove();
+                        const fromDatePicker = flatpickr("#create_date", {
+                            locale: 'en',
+                            altInput: true,
+                            dateFormat: "MM/DD/YYYY",
+                            altFormat: "MM/DD/YYYY",
+                            parseDate: (datestr, format) => {
+                                return moment(datestr, format, true).toDate();
+                            },
+                            formatDate: (date, format, locale) => {
+                                return moment(date).format(format);
+                            }
+                        });
+                        fromDatePicker.clear(); // Clears the "from" datepicker
+
+                        const todatepicker = flatpickr("#due_date", {
+                            locale: 'en',
+                            altInput: true,
+                            dateFormat: "MM/DD/YYYY",
+                            altFormat: "MM/DD/YYYY",
+                            parseDate: (datestr, format) => {
+                                return moment(datestr, format, true).toDate();
+                            },
+                            formatDate: (date, format, locale) => {
+                                return moment(date).format(format);
+                            }
+                        });
+
+                        todatepicker.clear();
+                        
+                    }
+
+                },
+                error: function(response) {
+                    console.log('Error:', response);
+                }
+            });
+       
+        });
+
+        
+
+       
+    });
+</script>
+
     <script>
+    $(document).ready(function() {
+
+
+        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
+        $('#FormTask').on('submit', function (e) {
+            e.preventDefault();
+            
+            var formData = new FormData(this);
+           console.log(formData);
+            var trvt_id = $('#trvt_id').val();
+            //alert(trvt_id);
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('trip.taskStoreUpdate',$trip->tr_id) }}", // Replace with your route name
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        $('#task-success-message1').text('Data has been successfully Save!');
+                        $('#task-success-modal1').modal('show');
+                        $('#ajaxModelTask').modal('hide');
+                        $('#FormTask')[0].reset();
+                        // Optionally, refresh the task list or notify the user
+                    } else {
+                        // Handle validation errors
+                        let errors = response.errors;
+                        let errorMsgList = $('#update_msgList');
+                        errorMsgList.empty();
+                        $.each(errors, function (key, value) {
+                            errorMsgList.append('<li>' + value + '</li>');
+                        });
+                    }
+                },
+                error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Clear previous error messages
+                    $(".invalid-feedback").remove();
+                    $(".is-invalid").removeClass("is-invalid");
+
+                    // Loop through each validation error and display it in the respective field
+                    for (let field in xhr.responseJSON.errors) {
+                        const errorMessage = xhr.responseJSON.errors[field][0]; // Get the first error message
+
+                        // Find the input field based on the name attribute
+                        const $field = $(`[name="${field}"]`);
+                        
+                        if ($field.length) {
+                            $field.addClass("is-invalid"); // Add invalid class to input field
+                            $field.after(`<div class="invalid-feedback">${errorMessage}</div>`); // Append error message below the field
+                        }
+                    }
+                }
+            }
+            });
+        });
+    });
+</script>
+
+
+    <script>
+   
    
    $(document).ready(function() {
        $('#tripDocumentDataTable').DataTable();  

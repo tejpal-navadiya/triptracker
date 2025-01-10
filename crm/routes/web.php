@@ -575,6 +575,12 @@ Route::group(['prefix' => $busadminRoute], function () {
         //view trip 
         Route::post('/view-trip-document/{tripid}/{documentid}/image/{image}',  [TripController::class, 'viewDeleteImage'])->name('view.trip.image.delete');
 
+        //edit trip save/edit the task
+        Route::post('/edit-trip/store-task/{id}', [TripController::class, 'storeTask'])->name('trip.taskStoreUpdate');
+
+        //check if set the task or not in db
+        Route::get('/get-trip-task/{trip_id}/{task_name}', [TripController::class, 'getTripTask'])->name('get.trip.task');
+
     });
      
 

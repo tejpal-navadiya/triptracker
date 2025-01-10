@@ -10,7 +10,7 @@ class TripTask extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['trvt_id','id','tr_id', 'trvt_name', 'trvt_agent_id', 'trvt_category', 'trvt_priority', 'trvt_date', 'trvt_due_date', 'trvt_document', 'status', 'trtm_relationship', 'trvt_status'];
+    protected $fillable = ['trvt_id','id','tr_id', 'trvt_name', 'trvt_agent_id', 'trvt_category', 'trvt_priority', 'trvt_date', 'trvt_due_date', 'trvt_document', 'status', 'trtm_relationship', 'trvt_status','trvt_note'];
 
     public function __construct(array $attributes = [])
     {
