@@ -17,13 +17,21 @@ class CheckUserPlan
      */
     public function handle(Request $request, Closure $next): Response
     {
+
         $user = Auth::guard('masteradmins')->user();
-       
+       //dD($user);
         $masterUser = $user->masterUser()->first();
+        // dd($masterUser);
         $currentDate = Carbon::now();
         $sevenDaysBeforeExpiry = $currentDate->copy()->addDays(7); 
 
         $plan = $masterUser->sp_id;
+        
+        $plan_details = $user->checkplan()->first();
+        //dd($plan_details); 
+         $spMonthAmount = $plan_details->sp_month_amount ?? '0'; 
+         $myAmount = $plan_details->sp_year_amount ?? '0'; 
+         if ($spMonthAmount == 0 && $myAmount == 0) { return $next($request); }
         
         if ($user->role_id == 0) {
             // dd($user->role_id);
