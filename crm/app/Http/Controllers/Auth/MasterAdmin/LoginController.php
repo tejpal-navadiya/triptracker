@@ -35,13 +35,9 @@ class LoginController extends Controller
         $request->authenticate();
         session()->setId('master_admin_' . session_id());
 
+        $request->session()->regenerate();
 
         $user = Auth::guard('masteradmins')->user();
-        $minutes = 30;
-
-        Cache::store('masteradmin_cache')->put('user_id', $user->users_id, $minutes);
-
-        // Cache::store('masteradmin_cache')->put('user_'.$user->users_id, $user->toArray(), $minutes);
 
         $this->createTable($user->id);
 
@@ -53,18 +49,19 @@ class LoginController extends Controller
        
         Auth::guard('masteradmins')->logout();
     
+        // Clear masteradmins-specific cache if needed
+        Cache::forget('masteradmins_user_' . Auth::guard('masteradmins')->id());
         
         session()->forget('user_configured');
         Cookie::queue(Cookie::forget('user_session'));
-        session()->forget('user_id');
-       
+        
+        $request->session()->invalidate();
+        
+        $request->session()->regenerateToken();
+        $request->session()->regenerate();
 
-        $request->session()->forget('masteradmin');
-        $response = redirect()->route('masteradmin.login')->with('message', 'Successfully logged out.');
-        $response->withCookie(Cookie::forget(env('MASTERADMIN_SESSION_COOKIE')));
 
-        return $response;
-
+        return redirect('/agency/login/');
     }
 
 }

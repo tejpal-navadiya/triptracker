@@ -92,16 +92,6 @@ return [
             'driver' => 'octane',
         ],
 
-          'superadmin_cache' => [
-        'driver' => 'file', // Or 'database', 'redis', etc.
-        'path' => storage_path('framework/cache/superadmin'), // Path to store cache files
-    ],
-
-    'masteradmin_cache' => [
-        'driver' => 'file', // You can change this to 'database' or 'redis' if needed
-        'path' => storage_path('framework/cache/masteradmin'), // Path to store cache files
-    ],
-
     ],
 
     /*

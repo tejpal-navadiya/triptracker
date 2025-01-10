@@ -31,23 +31,21 @@ class TripTaskController extends Controller
        // \DB::enableQueryLog();
 
 
-        $member = TripTask::where(['tr_id' => $id])->with(['trip','taskstatus','tripCategory'])->latest()->get();
-       // dd(\DB::getQueryLog()); 
+        $member = TripTask::where(['tr_id' => $id])->with(['trip','taskstatus','tripCategory'])->latest()->get();       // dd(\DB::getQueryLog()); 
 
 
-       
+        // dd($member);
 
     
         if ($request->ajax()) {
-            $member = TripTask::where(['id' => $user->users_id, 'tr_id' => $id])->with(['trip','taskstatus','tripCategory'])->latest()->get();
-            //  dd($access);
-          // dd($member);
+            $member = TripTask::where(['tr_id' => $id])->with(['trip','taskstatus','tripCategory'])->latest()->get();            //  dd($access);
+
             return Datatables::of($member)
 
 
                     ->addIndexColumn()
-
-                    ->addColumn('trip_number', function($trip_number) {
+                    
+                      ->addColumn('trip_number', function($trip_number) {
                         return $trip_number->trip->tr_number ?? '';
                     })
 
@@ -150,7 +148,7 @@ class TripTaskController extends Controller
 
             ], [
                 'trvt_category.required' => 'Category is required',
-                // 'trvt_priority.required' => 'Priority is required',
+                'trvt_priority.required' => 'Priority is required',
 
             ]);
 

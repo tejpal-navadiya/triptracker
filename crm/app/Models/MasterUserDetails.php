@@ -109,9 +109,8 @@ class MasterUserDetails extends Authenticatable
         return $this->belongsTo(MasterUserDetails::class, 'id', 'users_id');
     }
     
-    public function checkplan()
+     public function checkplan()
     {
         return $this->belongsTo(Plan::class, 'plan_id', 'sp_id');
     }
-
 }

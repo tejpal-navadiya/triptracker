@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => env('SESSION_LIFETIME', 240),
 
     'expire_on_close' => false,
 
@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'encrypt' => false,
+    'encrypt' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -131,18 +131,7 @@ return [
     //     Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
     // ),
 
-    // 'cookie' => env('SESSION_COOKIE', 'laravel_session'),
-   
-     'cookie' => env(
-        'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_') . '_session'
-    ),
-
-    
-    'superadmin_cookie' => env('SUPERADMIN_SESSION_COOKIE', 'superadmin_session'),
-    'masteradmin_cookie' => env('MASTERADMIN_SESSION_COOKIE', 'masteradmin_session'),
-   
-   
+    'cookie' => env('SESSION_COOKIE', 'laravel_session'),
     'masteradmins_cookie' => env('MASTERADMINS_SESSION_COOKIE', 'laravel_session_masteradmins'),
 
 
@@ -171,7 +160,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => env('SESSION_DOMAIN'),
 
     /*
     |--------------------------------------------------------------------------
@@ -184,7 +173,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', false),
+    'secure' => env('SESSION_SECURE_COOKIE'),
 
     /*
     |--------------------------------------------------------------------------

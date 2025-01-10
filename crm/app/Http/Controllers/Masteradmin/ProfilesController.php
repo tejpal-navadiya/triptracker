@@ -483,7 +483,7 @@ class ProfilesController extends Controller
     {
         // Get the currently authenticated user
         $user = Auth::guard('masteradmins')->user();
-        // mail_incoming_port
+    
         // Validate the incoming request data
         $validatedData = $request->validate([
             'mail_username' => 'required|string',

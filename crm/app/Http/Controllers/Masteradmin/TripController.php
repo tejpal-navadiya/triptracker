@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\TripDocument;
 use Illuminate\Validation\ValidationException;
 
+
 class TripController extends Controller
 {
     
@@ -2998,9 +2999,7 @@ public function bookgridView(Request $request)
 
 public function getTravelerNames(Request $request)
 {
-
-    try {
-   
+     try {
     $user = Auth::guard('masteradmins')->user(); // Authenticated user
     $specificId = $user->users_id;
 
@@ -3037,7 +3036,8 @@ public function getTravelerNames(Request $request)
     $travelerNames = $query->get();
     // dd($travelerNames);
     return response()->json($travelerNames); // Return as JSON
-} catch (ValidationException $e) {
+    
+     } catch (ValidationException $e) {
     return response()->json(['errors' => $e->errors()], 422); 
 }
 }
