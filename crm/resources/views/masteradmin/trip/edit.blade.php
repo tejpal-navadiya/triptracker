@@ -1565,7 +1565,7 @@
 
                             <div class="preferences-title">Tasks & Reminders</div>
 
-                            <div class="accordion task-faq" id="accordionExample">
+                            <!-- <div class="accordion task-faq" id="accordionExample">
                             @foreach ($tripstatus as $index => $status)
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading-{{ $status->tr_status_id ?? '' }}">
@@ -1583,6 +1583,24 @@
                                         </ul>
                                         </div>
                                     </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            </div> -->
+
+                            <div class="accordion">
+                            @foreach ($tripstatus as $index => $status)
+                                <div class="accordion__item">
+                                    <div class="accordion__header {{ $index == 0 ? 'active show' : '' }}" data-toggle="#collapse-{{ $status->tr_status_id ?? '' }}">{{ $status->tr_status_name ?? '' }}</div>
+                                    <div class="accordion__content active" id="collapse-{{ $status->tr_status_id ?? '' }}">
+                                        <div class="pr-content-box">
+                                            <ul class="task-reminder-ul">
+                                                @foreach ($triptask->where('pre_task_type', $status->tr_status_id) as $task)
+                                                    <li><a href="#" class="task-link" data-trip-id="{{ $trip->tr_id }}" data-task-name="{{ $task->pre_task_name }}" data-toggle="modal" data-target="#ajaxModelTask">{{ $task->pre_task_name }}</a></li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+
                                     </div>
                                 </div>
                             @endforeach
@@ -2226,7 +2244,82 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style type="text/css">
 
+
+/*start styles*/
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.accordion__item {
+    border: 1px solid #e5f3fa;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.accordion__header {
+padding: 20px 25px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+}
+
+.accordion__header::after {
+    content: '';
+    background: url(https://www.svgrepo.com/show/357035/angle-down.svg) no-repeat center;
+    width: 20px;
+    height: 20px;
+    transition: .4s;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 1;
+}
+
+.accordion__header.active {
+    background: #e5f3fa;
+}
+
+.accordion__header.active::after {
+    transform: rotateX(180deg);
+}
+
+.accordion__item .accordion__content {
+    padding: 0 ;
+    max-height: 0;
+    transition: .5s;
+    overflow: hidden;
+}
+.show {
+    display: block !important;
+}
+
+</style>
+
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', () => {
+  	const togglers = document.querySelectorAll('[data-toggle]');
+  
+    togglers.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+         const selector = e.currentTarget.dataset.toggle
+         const block = document.querySelector(`${selector}`);
+        if (e.currentTarget.classList.contains('active')) {
+          block.style.maxHeight = '';
+        } else {
+          block.style.maxHeight = block.scrollHeight + 'px';
+        }
+          
+         e.currentTarget.classList.toggle('active')
+      })
+    })
+	})
+</script>
     
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -2275,7 +2368,7 @@
             $('#ajaxModelTask').modal('show');
 
             $('#modelHeadingTask').text($(this).data('task-name'));
-
+            $(".invalid-feedback").remove();
               var tripId = $(this).data('trip-id');
             var taskName = $(this).data('task-name');
             
@@ -4488,12 +4581,6 @@ mainDeleteButton.addEventListener('click', function() {
             });
 
         </script>
-
-
-
-
-
-
 
         <script>
 
