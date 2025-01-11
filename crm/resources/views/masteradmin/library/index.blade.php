@@ -147,13 +147,21 @@
                                         <form action="{{ route('library.destroy', $library->lib_id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <div class="modal-body text-center">
-                                                <i class="fas fa-trash fa-2x text-danger mb-3"></i>
-                                                <p><strong>Delete Library</strong></p>
-                                                <p>Are you sure you want to delete this library?</p>
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            <div class="modal-body text-center p-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
+                                                <path d="M39.0625 15.625H10.9375V42.1875C10.9375 43.9141 12.3359 45.3125 14.0625 45.3125H35.9375C37.6641 45.3125 39.0625 43.9141 39.0625 42.1875V15.625Z" stroke="#FF313A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M31.25 10.9375H18.75V7.8125C18.75 6.08594 20.1484 4.6875 21.875 4.6875H28.125C29.8516 4.6875 31.25 6.08594 31.25 7.8125V10.9375Z" stroke="#FF313A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M43.75 15.625H6.25V12.5C6.25 11.6375 6.95 10.9375 7.8125 10.9375H42.1875C43.05 10.9375 43.75 11.6375 43.75 12.5V15.625Z" stroke="#FF313A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M20.3125 25L29.6875 34.375" stroke="#FF313A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M20.3125 34.375L29.6875 25" stroke="#FF313A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>                                            
+
+                                            <p class="delete-text">Are you sure you want to delete this library?</p>
+
+                                            <button type="button" class="add_btn mr-2" data-dismiss="modal">Cancel</button>
+
+                                            <button type="submit" class="add_btn add_btn_danger">Delete</button>
+
                                             </div>
                                         </form>
                                     </div>

@@ -9,8 +9,33 @@
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
-                    <div class="col-lg-12 fillter_box">
-                        <div class="row align-items-center justify-content-between">
+                    
+
+
+
+
+
+
+
+
+                    <div class="row mb-2 align-items-center justify-content-between">
+                        <div class="col">
+                            <div class="d-flex">    
+                                <h1 class="m-0">{{ __('Trip Workflow') }}</h1>
+                                <ol class="breadcrumb ml-auto">
+                                    <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li>
+                                </ol>
+                            </div>
+                        <div class="col-auto">
+                            <ol class="breadcrumb float-sm-right">
+                               
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+                <div class="col-lg-12 fillter_box new_fillter_box1">
+                        <div class="row align-items-center justify-content-between d-none">
                             <div class="col-auto">
                                 <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
                             </div><!-- /.col -->
@@ -31,7 +56,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-3 col-1024 col-md-6 px-10">
+                            <div class="col-lg-2 col-1024 col-md-6 px-10">
                                 <select id="trip_traveler" class="form-control select2" style="width: 100%;"
                                     name="trip_traveler">
                                     <option value="" default >Choose Traveler</option>
@@ -54,9 +79,8 @@
                                     @endforeach
                                 </select>
                             </div>
-
-                            <div class="col-lg-5 col-1024 col-md-6 px-10 d-flex new-space-remove">
-                                <div class="col-lg-4 input-group date">
+                            <div class="col-lg-3 col-1024 col-md-6 px-10 d-flex">
+                                <div class="col-lg-6 input-group date">
                                     <x-flatpickr id="from-datepicker" placeholder="From" />
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="from-calendar-icon">
@@ -65,7 +89,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4 input-group date">
+                                <div class="col-lg-6 input-group date">
                                     <x-flatpickr id="to-datepicker" placeholder="To" />
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="to-calendar-icon">
@@ -73,38 +97,27 @@
                                         </span>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="col-lg-3 col-1024 col-md-6 px-10 d-flex new-space-remove">                               
 
                                  <!-- Toggle Buttons for Views -->
-                                 <div class="col-lg-4 d-flex justify-content-end align-items-center">
-                                    <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin me-2">
+                                 <div class="col-lg-12 d-flex justify-content-end align-items-center">
+                                    <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin mr-2">
                                         <i class="fas fa-list"></i>
                                     </a>
-                                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active ml-2">
+                                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active mr-2">
                                         <i class="fas fa-th-large"></i>
-                                    </a>
-                                </div>
+                                    </a>                                
+                                 @if (isset($access['add_trip']) && $access['add_trip'])
+                                    <a href="{{ route('trip.create') }}" id="createNew"><button class="add_btn"><i
+                                                class="fas fa-plus add_plus_icon"></i>Add Trip</button></a>
+                                @endif
+                            </div>
                             </div>
 
                         </div>
                     </div>
-                    <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
-                            <h1 class="m-0">{{ __('Trip Workflow') }}</h1>
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li>
-                            </ol>
-                        </div><!-- /.col -->
-                        <div class="col-auto">
-                            <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['add_trip']) && $access['add_trip'])
-                                    <a href="{{ route('trip.create') }}" id="createNew"><button class="add_btn"><i
-                                                class="fas fa-plus add_plus_icon"></i>Add Trip</button></a>
-                                @endif
-                            </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
             </div>
             <div id="viewContainer">
             <!-- /.content-header -->

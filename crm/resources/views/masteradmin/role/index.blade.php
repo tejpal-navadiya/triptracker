@@ -61,7 +61,7 @@
                                     <thead>
                                         <tr>
                                             <th>Role Name</th>
-                                            <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
+                                            <th class="sorting_disabled" data-orderable="false">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>

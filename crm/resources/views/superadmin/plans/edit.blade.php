@@ -77,7 +77,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="planamount">Amount Monthy
+                                            <label for="planamount">Amount Monthy</label>
 
                                                 <input type="text"
                                                     class="form-control @error('sp_month_amount') is-invalid @enderror"

@@ -88,7 +88,7 @@
                                             <th>Amount Yearly</th>
                                             <!-- <th>Validity (In Months)</th> -->
                                             <th>Create User</th>
-                                            <th class="sorting_disabled text-right" data-orderable="false">Actions</th>
+                                            <th class="sorting_disabled" data-orderable="false">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -104,9 +104,9 @@
                                                     <!-- <td>{{ $value->sp_month }}</td> -->
                                                     <td>{{ $value->sp_user  ?? ''}}</td>
 
-                                                    <td class="text-right">
+                                                    <td>
                                                         <a href="{{ route('plans.planrole', $value->sp_id) }}"><i
-                                                                class="fas ffa-solid fa-key view_icon_grid"></i></a>
+                                                                class="fas ffa-solid fa-key view_icon_grid ml-0"></i></a>
                                                         <a href="{{ route('plans.edit', $value->sp_id) }}"><i
                                                                 class="fas fa-solid fa-pen-to-square edit_icon_grid"></i></a>
                                                         @if( $value->sp_month_amount != 0 && $value->sp_year_amount != 0 )

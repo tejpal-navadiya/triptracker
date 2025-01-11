@@ -43,7 +43,7 @@
                         @php
                             $activeTab = session('activeTab', 'Traveleroverview'); // Default to 'personalinformation'
                         @endphp
-                        <ul class="nav nav-pills p-2 tab_box">
+                        <ul class="nav nav-pills p-2 tab_box tab_box12">
                            
 
                             <li class="nav-item"><a class="nav-link {{ $activeTab == 'Traveleroverview' ? 'active' : '' }}" href="#Traveleroverview"
@@ -61,7 +61,7 @@
 
                         </ul>
                     </div><!-- /.card-header -->
-                    <div class="tab-content px-20">
+                    <div class="tab-content tab-content12">
                         <div class="tab-pane {{ $activeTab == 'TripDocumentinfo' ? 'active' : '' }}" id="TripDocumentinfo">
                             @include('masteradmin.trip.trip-document-information')
                         </div>
