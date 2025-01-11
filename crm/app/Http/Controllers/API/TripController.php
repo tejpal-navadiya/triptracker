@@ -582,8 +582,6 @@ class TripController extends Controller
             return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
         }
     }
-    
- 
 
     public function GetTravelerList(Request $request) 
     {
