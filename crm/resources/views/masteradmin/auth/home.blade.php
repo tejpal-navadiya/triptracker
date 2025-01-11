@@ -1,5 +1,5 @@
 @extends('masteradmin.layouts.app')
-<title>Dashboard | Trip Tracker</title>
+<title>Analytics | Trip Tracker</title>
 @section('content')
 <div class="preloader flex-column justify-content-center align-items-center">
     <img class="animation__shake" src="{{ url('public/dist/img/logo.png') }}" alt="Trip Tracker Logo">

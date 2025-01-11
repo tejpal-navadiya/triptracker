@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MasterUserDetails;
 use App\Models\TripStatus;
 use App\Models\TaskStatus;
+use App\Models\TripTravelingMember;
 
 
 class TripController extends Controller
@@ -582,7 +583,56 @@ class TripController extends Controller
         }
     }
     
+ 
+
+    public function GetTravelerList(Request $request) 
+    {
+        try{
+            $auth_user = $request->attributes->get('authenticated_user');
+            //dd($auth_user->users_id);
+            if (!$auth_user) {
+                return $this->sendError('Unauthenticated.', [], 500);
+            }
+
+            $uniqueId = $request->header('X-UniqueId');
+
+            $page = $request->input('page', 1); 
+            $perPage = env('PER_PAGE', 10); 
+
+            $member = DB::table($uniqueId . '_tc_trip_traveling_member')
+                ->where('trtm_status', 1)
+                ->where('lead_status',1)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+                
+        //   dd($task);
+
+            if ($member->isEmpty()) {
+                return $this->sendError('No Traveler found.', [], 500);
+            }
+
+           
+            //dd($taskItem);
+            $response = [
+                'total_records' => $member->total(),
+                'per_page' => $member->perPage(),
+                'current_page' => $member->currentPage(),
+                'total_page' => $member->lastPage(),
+                'data' => ($member->items()), 
+            ];
+
+            return $this->sendResponse($response, __('messages.api.travelersmemeber.list_success'));      
+        }
+        catch(\Exception $e)
+        {
+            
+            $this->serviceLogError('GetTravelerList', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
+        }    
+
+    }
     
+      
 
     
     

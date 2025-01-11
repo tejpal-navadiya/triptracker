@@ -2911,14 +2911,14 @@ public function bookgridView(Request $request)
         // \DB::enableQueryLog();
 
         $travellingTripQuery = Trip::where('tr_status', 1)
-        ->from($tripTable)
-        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-        // ->where($tripTable . '.tr_end_date', '>', $currentDate->format('m/d/Y'))
-        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]);
+         ->from($tripTable)
+          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
+          ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+          ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+           ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]);
 
         // ->where($tripTable . '.status', '=', 7); // Trip Completed
-     
+        // dd(\DB::getQueryLog());
 
     }else{
 
@@ -2931,7 +2931,9 @@ public function bookgridView(Request $request)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
         // ->where($tripTable . '.tr_end_date', '>', $currentDate->format('m/d/Y'))
-        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]);
+
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) ;
 
         // ->where($tripTable . '.status', '=', 7); // Trip Completed
     }

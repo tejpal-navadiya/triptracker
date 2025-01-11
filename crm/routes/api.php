@@ -47,6 +47,8 @@ Route::middleware(['handleAuthErrors'])->group( function () {
     Route::post('filter_trip',     [TripController::class,'filterTrip']);
     Route::post('filter_task',     [TripController::class,'filterTask']);
     Route::get('agent_all_list',     [TripController::class,'allAgentList']);
+
+    Route::post('traveler_list',     [TripController::class,'GetTravelerList']);
     
     
     Route::get('Logout',            [AuthController::class,'Logout']);

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 @extends('layouts.app')
-<title>Dashboard | Trip Tracker</title>
+<title>Analytics | Trip Tracker</title>
 @section('content')
     <!-- /.Main Sidebar Container -->
 

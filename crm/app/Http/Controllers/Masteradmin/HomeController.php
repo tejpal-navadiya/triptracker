@@ -109,9 +109,13 @@ class HomeController extends Controller
         $bookedPercentage = $totalStatusTrips ? round(($totalBooked / $totalStatusTrips) * 100, 2) : 0;
         if ($user->users_id && $user->role_id == 0){
             $inProgressTrips = $tripModel->where('tr_status', 1) 
-            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) ->count();
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            ->count();
         }else{
-            $inProgressTrips = $tripModel->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            $inProgressTrips = $tripModel
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
              ->where(function($query) use ($tripTable, $user, $specificId)
               { $query->where($tripTable . '.tr_agent_id', $user->users_id)
                  ->orWhere($tripTable . '.id', $specificId); })

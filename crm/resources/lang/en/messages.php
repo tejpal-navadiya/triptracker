@@ -141,6 +141,9 @@ return [
         ],
         'agent' => [
             'list_success' => 'Agency data get successfully.',
+        ],
+        'travelersmemeber' => [
+            'list_success' => 'Traveler data get successfully.',
         ]
     ]
     
