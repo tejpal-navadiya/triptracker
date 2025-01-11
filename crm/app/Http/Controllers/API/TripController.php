@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MasterUserDetails;
 use App\Models\TripStatus;
 use App\Models\TaskStatus;
-use App\Models\TripTravelingMember;
 
 
 class TripController extends Controller
@@ -51,13 +50,16 @@ class TripController extends Controller
              $masterUserDetails->setTableForUniqueId($uniqueId); 
              $masterUserTable = $masterUserDetails->getTable();
 
+             $travelerTable = $uniqueId.'_tc_trip_traveling_member';
+
             $trips = $trip
                         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id')
                         ->where('tr_status', 1)
                         ->orderBy($tripTable.'.created_at', 'desc')
                         ->paginate($perPage);
                         
-                        // dd($trips);
+                       // dd($trips);
 
         foreach ($trips as $tripItem) {
             $tripItem->uniqueId = $uniqueId;
@@ -107,6 +109,7 @@ class TripController extends Controller
             return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
         }    
     }
+
 
     public function GetTaskList(Request $request) 
     {
@@ -321,10 +324,12 @@ class TripController extends Controller
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($uniqueId); 
         $masterUserTable = $masterUserDetails->getTable();
-
+        
+        $travelerTable = $uniqueId.'_tc_trip_traveling_member';
         // Start building the query
         $tripQuery = $trip
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id')
             ->where('tr_status', 1);
 
         // Apply filters
@@ -355,7 +360,7 @@ class TripController extends Controller
         }
 
         if ($trip_traveler) {
-            $tripQuery->where($tripTable . '.tr_traveler_name', 'LIKE', "%{$trip_traveler}%");
+            $tripQuery->where($tripTable . '.tr_traveler_id', 'LIKE', "%{$trip_traveler}%");
         }
 
         if ($trip_status1) {
@@ -582,8 +587,8 @@ class TripController extends Controller
             return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
         }
     }
-
-    public function GetTravelerList(Request $request) 
+    
+      public function GetTravelerList(Request $request) 
     {
         try{
             $auth_user = $request->attributes->get('authenticated_user');
@@ -629,8 +634,6 @@ class TripController extends Controller
         }    
 
     }
-    
-      
 
     
     
