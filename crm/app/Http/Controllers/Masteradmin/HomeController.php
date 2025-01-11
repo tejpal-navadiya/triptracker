@@ -47,7 +47,7 @@ class HomeController extends Controller
         if (!$user) {
             return redirect()->route('masteradmin.login'); 
         }
-   
+        $currentDate = Carbon::now();
     
         // Fetch the total trip count
         // $tripModel = new Trip();
@@ -80,32 +80,104 @@ class HomeController extends Controller
         }
 
         // Fetch dynamic data for Trip Request vs. Booked
-        $totalRequests = $tripModel->where('status', 1)->count(); // Assuming 1 = Trip Requested
-        $totalBooked = $tripModel->where('status', 4)->count();   // Assuming 2 = Trip Booked
+        if($user->users_id && $user->role_id ==0 ){
+            $totalRequests = $tripModel->where('status', 1)->count(); // Assuming 1 = Trip Requested
+        }else{
+            $totalRequests = $tripModel->where('status', 1)
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })->count(); // Assuming 1 = Trip Requested
 
+        }
+
+        if($user->users_id && $user->role_id ==0 ){
+        $totalBooked = $tripModel->where('status', 4)->count();   // Assuming 2 = Trip Booked
+        
+        }else{
+            $totalBooked = $tripModel->where('status', 4)
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })->count(); 
+            
+        }
         $totalStatusTrips = $totalRequests + $totalBooked;
 
         // Calculate percentages
         $requestPercentage = $totalStatusTrips ? round(($totalRequests / $totalStatusTrips) * 100, 2) : 0;
         $bookedPercentage = $totalStatusTrips ? round(($totalBooked / $totalStatusTrips) * 100, 2) : 0;
+        if ($user->users_id && $user->role_id == 0){
+            $inProgressTrips = $tripModel->where('tr_status', 1) 
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) ->count();
+        }else{
+            $inProgressTrips = $tripModel->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+             ->where(function($query) use ($tripTable, $user, $specificId)
+              { $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                 ->orWhere($tripTable . '.id', $specificId); })
+                  ->count();
+        }
+        // $inProgressTrips = $tripModel->where(['status'=> 9,'id'=> $user->users_id])->count(); 
+        if($user->users_id && $user->role_id ==0 ){
 
-        
-        $inProgressTrips = $tripModel->where(['status'=> 9,'id'=> $user->users_id])->count(); 
-        $totalcompletedTrips = $tripModel->where(['status'=> 7,'id'=> $user->users_id])->count();
-        $completedTrips = $tripModel->where(['status'=> 7,'id'=> $user->users_id])->count(); 
-    
-        $acceptTrips = $tripModel->where(['status'=> 4,'id'=> $user->users_id])->count(); 
-      
+        $totalcompletedTrips = $tripModel->where(['status'=> 7])->count();
+        }else{
+
+            $totalcompletedTrips = $tripModel->where(['status'=> 7])
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })->count(); 
+
+        }  
+
+        if($user->users_id && $user->role_id ==0 ){
+            $completedTrips = $tripModel->where(['status'=> 7])->count(); 
+        }else{
+            $completedTrips = $tripModel->where(['status'=> 7])
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })->count(); 
+
+        } 
+
+        if($user->users_id && $user->role_id ==0 ){
+        $acceptTrips = $tripModel->where(['status'=> 4])->count(); 
+        }else{
+            $acceptTrips = $tripModel->where(['status'=> 4])
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })->count(); 
+ 
+        } 
 
          // Fetch monthly completed trips count
-        $completedTrips = $tripModel
-        ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
-        ->where('status', 7)
-        ->groupBy('month')
-        ->orderBy('month')
-        ->pluck('count', 'month')
-        ->toArray();
-
+         if($user->users_id && $user->role_id ==0 ){
+            $completedTrips = $tripModel
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+            ->where('status', 7)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
+    
+         }else{
+            $completedTrips = $tripModel
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+            ->where('status', 7)
+            ->where(function($query) use ($tripTable, $user, $specificId) {
+                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
+    
+         }
+        
         // Prepare data for all 12 months
         $monthlyData = [];
         for ($i = 1; $i <= 12; $i++) {
