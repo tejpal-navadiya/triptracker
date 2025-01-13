@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="card-header d-flex p-0 justify-content-center tab_panal">
-                <ul class="nav nav-pills p-2 tab_box">
+                <ul class="nav nav-pills p-2 tab_box tab_box12">
                     <li class="nav-item">
                         <a class="nav-link active" href="#inprocessTrip" data-toggle="tab" data-tab="pending">In Process</a>
                     </li>
@@ -81,7 +81,7 @@
                     </li>
                 </ul>
             </div><!-- /.card-header -->
-            <div class="tab-content px-20">
+            <div class="tab-content tab-content12">
                 <div class="tab-pane active" id="inprocessTrip">
                     @include('masteradmin.follow_up.pending-information')
                 </div>

@@ -68,14 +68,14 @@
               </div>
         </div>
         <div class="card-header d-flex p-0 justify-content-center tab_panal">
-          <ul class="nav nav-pills p-2 tab_box">
+          <ul class="nav nav-pills p-2 tab_box tab_box12">
             <li class="nav-item"><a class="nav-link active" href="#Traveleroverview" data-toggle="tab">View All Task</a></li>
             @if(isset($access['reminder_all_task']) && $access['reminder_all_task'])
             <li class="nav-item"><a class="nav-link" href="#Agentinfo" data-toggle="tab">View All Reminder Task</a></li>
             @endif
           </ul>
         </div><!-- /.card-header -->
-          <div class="tab-content px-20">
+          <div class="tab-content tab-content12">
             <div class="tab-pane active" id="Traveleroverview">
                 @include('masteradmin.task.all-information')
             </div>
