@@ -19,12 +19,14 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex"> 
                             <h1 class="m-0">Agency Details</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">Agency Details</li>
                             </ol>
+                            </div>
                         </div><!-- /.col -->
                         <div class="col-auto">
                             <!-- <ol class="breadcrumb float-sm-right">
@@ -145,18 +147,18 @@
                                 <div class="col-auto">
                                     <h3 class="card-title">Agency User</h3>
                                 </div>
-                                <div class="col-auto">
+                                <!-- <div class="col-auto">
                                     <ol class="float-sm-right">
                                         <a href="{{ route('businessdetails.agencycreate', $user_id ) }}" id="createNew"><button class="add_btn"><i
                                         class="fas fa-plus add_plus_icon"></i>Agency User</button></a>
                                     </ol>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example4" class="table table-hover text-nowrap">
+                                <table id="agencyUserList" class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
@@ -250,8 +252,32 @@
         
     </div>
     <!-- ./wrapper -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+$(document).ready(function() {
+    $('#agencyUserList').DataTable({
+        dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus"></i> Agency User',
+                    action: function (e, dt, node, config) {
+                        window.location.href = "{{ route('businessdetails.agencycreate', $user_id) }}";
+                    },
+                    className: 'add_btn'
+                }
+            ],
+    });
+});
+</script>
 
 
+
+<style type="text/css">
+#agencyUserList_length{ float: left; width: 50%; }
+
+#agencyUserList_filter{ float: left; width: 30%; }
+</style>
     @include('layouts.footerlink')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>

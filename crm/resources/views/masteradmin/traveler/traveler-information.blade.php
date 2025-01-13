@@ -1,18 +1,40 @@
 <link rel="stylesheet" href="{{ url('public/vendor/flatpickr/css/flatpickr.css') }}">
 <div class="card">
-    <div class="col-lg-4 card-body3">
-        <div class="card-body">
-            <p class="company_business_name">Name :{{ $trip->trtm_first_name ?? '' }}</p>
-            <p class="company_business_name">Email Address : {{ $trip->trtm_email ?? '' }}</p>
-            <!-- <p class="company_business_name">Total Person : {{ $trip->tr_num_people ?? '' }}</p> -->
-            <p class="company_business_name">Phone Number : {{ $trip->trtm_number ?? '' }}</p>
-            <p class="company_business_name">Address : {{ $trip->city_name ?? '' }}{{ $trip->city_name && ($trip->state_name || $trip->country_name || $trip->trtm_zip) ? ', ' : '' }}
+
+    <div class="col-lg-12 card-body3">
+
+        <div class="card-body d-flex data-tab-content">
+
+            <table class="table card-body-table" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td><p class="company_business_name">Name :{{ $trip->trtm_first_name ?? '' }}</p></td>
+                </tr>
+                <tr>
+                    <td><p class="company_business_name">Email Address : {{ $trip->trtm_email ?? '' }}</p></td>
+                </tr>
+                   
+            </table>
+
+            <table class="table card-body-table" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td><p class="company_business_name">Phone Number : {{ $trip->trtm_number ?? '' }}</p></td>
+                </tr>
+                <tr>
+                    <td><p class="company_business_name">Address : {{ $trip->city_name ?? '' }}{{ $trip->city_name && ($trip->state_name || $trip->country_name || $trip->trtm_zip) ? ', ' : '' }}
                                                     {{ $trip->state_name ?? '' }}{{ $trip->state_name && ($trip->country_name || $trip->trtm_zip) ? ', ' : '' }}
                                                     {{ $trip->country_name ?? '' }}{{ $trip->country_name && $trip->trtm_zip ? ' ' : '' }}
-                                                    {{ $trip->trtm_zip ?? '' }}</p>
+                                                    {{ $trip->trtm_zip ?? '' }}</p></td>
+                </tr>
+            </table>
+            <!-- <p class="company_business_name">Address : 198-8604 Egestas. Rd. Turkey,87363</p> -->
+
         </div>
+
     </div>
+
 </div>
+
+
 <div class="card">
     <div class="card-header">
         <div class="row justify-content-between align-items-center">

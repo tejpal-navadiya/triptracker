@@ -41,7 +41,7 @@ class LibraryController extends Controller
             $librariesQuery->where('tag_name', 'LIKE', '%' . $tag_name . '%'); 
         }
 
-        $libraries = $librariesQuery->paginate(10)->appends([
+        $libraries = $librariesQuery->paginate(12)->appends([
             'category' => $category,
             'tag_name' => $tag_name,
         ]);

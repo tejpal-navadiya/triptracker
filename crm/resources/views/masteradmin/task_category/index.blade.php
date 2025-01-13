@@ -9,24 +9,29 @@
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
-                    <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                <div class="row mb-2 align-items-center justify-content-between">
+                    <div class="col">
+                        <div class="d-flex">    
                             <h1 class="m-0">{{ __('Task Category') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Task Category') }}</li>
                             </ol>
-                        </div><!-- /.col -->
-                        <div class="col-auto">
-                            <ol class="breadcrumb float-sm-right">
-                                @if (isset($access['add_task_category']) && $access['add_task_category'])
-                                    <a href="{{ route('task-category.create') }}" id="createNew"><button
-                                            class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Task
-                                            Category</button></a>
-                                @endif
-                            </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
+                        </div>
+                    <!-- <div class="col-auto">
+                        <ol class="breadcrumb float-sm-right">
+                            @if (isset($access['add_task_category']) && $access['add_task_category'])
+                                <a href="{{ route('task-category.create') }}" id="createNew"><button
+                                        class="add_btn"><i class="fas fa-plus add_plus_icon"></i>Add Task
+                                        Category</button></a>
+                            @endif
+                        </ol> -->
+                    <!-- </div> -->
+                    <!-- /.col -->
+                </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+
+                   
                 </div><!-- /.container-fluid -->
             </div>
             <!-- /.content-header -->
@@ -50,7 +55,7 @@
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap data-table">
+                                <table id="taskCategoryList" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
                                             <th>Category Name</th>
@@ -139,5 +144,36 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
-    @endsection
+           @endsection
 @endif
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#taskCategoryList').DataTable({
+            @if (isset($access['add_email_category']) && $access['add_email_category'])
+            dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus"></i> Add Email Category',
+                    action: function (e, dt, node, config) {
+                        window.location.href = "{{ route('task-category.create') }}";
+                    },
+                    className: 'add_btn'
+                }
+            ]
+            @endif
+        });
+    });
+</script>
+
+
+<style type="text/css">
+#taskCategoryList_length{ float: left; width: 50%; }
+
+#taskCategoryList_filter{ float: left; width: 30%; }
+</style>

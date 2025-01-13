@@ -9,16 +9,23 @@
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2 align-items-center justify-content-between">
-          <div class="col-auto">
-            <h1 class="m-0">Trip Detail</h1>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-              <li class="breadcrumb-item active">Trip Information</li>
-            </ol>
-          </div><!-- /.col -->
-          <div class="col-auto"><button href="javascript:void(0)" id="createNewTask3" class="reminder_btn">Add
-                    Task</button></div>
+            <div class="col">
+                <div class="d-flex">    
+                    <h1 class="m-0">{{ __('Task Details') }}</h1>
+                    <ol class="breadcrumb ml-auto">
+                        <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
+                        <li class="breadcrumb-item active">{{ __('Task Details') }}</li>
+                    </ol>
+                </div>
+            <div class="col-auto">
+                <ol class="breadcrumb float-sm-right">
+                    
+                </ol>
+            </div><!-- /.col -->
         </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+
+       
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -26,8 +33,8 @@
     <section class="content px-10">
       <div class="container-fluid">
     
-        <div class="col-lg-12 fillter_box">
-          <div class="row align-items-center justify-content-between">
+        <div class="col-lg-12 fillter_box new_fillter_box1">
+            <div class="row align-items-center justify-content-between d-none">
               <div class="col-auto">
                   <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
               </div><!-- /.col -->

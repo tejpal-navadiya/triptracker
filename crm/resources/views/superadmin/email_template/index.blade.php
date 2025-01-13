@@ -17,19 +17,22 @@
         <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex"> 
                             <h1 class="m-0">{{ __('Email Template') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Email Template') }}</li>
                             </ol>
                         </div><!-- /.col -->
-                        <div class="col-auto">
+                        </div>
+                        <!-- <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                     <a href="{{ route('emails-templates.create') }}"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Email Template</button></a>
                             </ol>
-                        </div><!-- /.col -->
+                        </div> -->
+                        <!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -64,7 +67,7 @@
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap data-table">
+                                <table id="emailTemplateList" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
                                             <th>Category</th>
@@ -147,6 +150,33 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#emailTemplateList').DataTable({
+        dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+        buttons: [
+            {
+                text: '<i class="fas fa-plus"></i> Add Email Template',
+                action: function (e, dt, node, config) {
+                    window.location.href = "{{ route('emails-templates.create') }}";
+                },
+                className: 'add_btn'
+            }
+        ]
+    });
+});
+</script>
+
+
+<style type="text/css">
+#emailTemplateList_length{ float: left; width: 50%; }
+
+#emailTemplateList_filter{ float: left; width: 30%; }
+</style>
+
     @include('layouts.footerlink')
 </body>
 

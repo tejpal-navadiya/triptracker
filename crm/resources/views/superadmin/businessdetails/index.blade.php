@@ -21,21 +21,23 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
-                        <div class="col-sm-6">
+                        <div class="col">
+                        <div class="d-flex">    
                             <h1 class="m-0">Agency List</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">Agency</li>
                                 <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Agency List</a>
                                 </li>
                             </ol>
+                            </div>
                         </div><!-- /.col -->
-                        <div class="col-auto">
+                        <!-- <div class="col-auto">
                             <ol class="float-sm-right">
                                     <a href="{{ route('businessdetails.agencyadd') }}" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Agency</button></a>
                             </ol>
-                        </div>
+                        </div> -->
 
                     </div><!-- /.row -->
 
@@ -222,11 +224,28 @@
 <script>
 $(document).ready(function() {
     $('#agencyList').DataTable({
+        dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus"></i> Add Agency',
+                    action: function (e, dt, node, config) {
+                        window.location.href = "{{ route('businessdetails.agencyadd') }}";
+                    },
+                    className: 'add_btn'
+                }
+            ],
         order: [[6, 'desc']],  // Sort by 'Created Date' column (7th column, index 6)
     });
 });
 </script>
 
+
+
+<style type="text/css">
+#agencyList_length{ float: left; width: 50%; }
+
+#agencyList_filter{ float: left; width: 30%; }
+</style>
 </body>
 
 </html>

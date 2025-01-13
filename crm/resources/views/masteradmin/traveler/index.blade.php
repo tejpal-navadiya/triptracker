@@ -8,14 +8,16 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex">    
                             <h1 class="m-0">{{ __('Travelers') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Travelers') }}</li>
                             </ol>
+                        </div>
                         </div><!-- /.col -->
-                        <div class="col-auto">
+                        <!-- <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['add_traveler']) && $access['add_traveler'])
                                     <a href="{{ route('masteradmin.travelers.create') }}" id="createNew"><button
@@ -23,7 +25,7 @@
                                             Traveler</button></a>
                                 @endif
                             </ol>
-                        </div><!-- /.col -->
+                        </div> -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -55,7 +57,7 @@
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap data-table">
+                                <table id="travelerList" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
@@ -186,3 +188,30 @@
         <!-- ./wrapper -->
     @endsection
 @endif
+<style type="text/css">
+#travelerList_length{ float: left; width: 50%; }
+
+#travelerList_filter{ float: left; width: 30%; }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#travelerList').DataTable({
+            @if (isset($access['add_traveler']) && $access['add_traveler'])
+            dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus add_plus_icon"></i> Add Traveler',
+                    action: function (e, dt, node, config) {
+                        window.location.href = "{{ route('masteradmin.travelers.create') }}";
+                    },
+                    className: 'btn btn-primary add_btn'
+                }
+            ]
+            @endif
+        });
+    });
+</script>

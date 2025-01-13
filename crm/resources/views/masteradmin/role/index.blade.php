@@ -8,21 +8,25 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex">    
                             <h1 class="m-0">{{ __('User Role') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('User Role') }}</li>
                             </ol>
-                        </div><!-- /.col -->
-                        <div class="col-auto">
+                        </div>
+                        </div>
+                        <!-- /.col -->
+                        <!-- <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['add_role']) && $access['add_role'])
                                     <a href="javascript:void(0)" id="createNew"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add User Role</button></a>
                                 @endif
                             </ol>
-                        </div><!-- /.col -->
+                        </div> -->
+                        <!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -57,7 +61,7 @@
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example9" class="table table-hover text-nowrap data-table">
+                                <table id="userRoleList" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
                                             <th>Role Name</th>
@@ -127,6 +131,21 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        
+       
+
+        <script>
+    $(document).ready(function () {
+        
+    });
+</script>
+
+
+<style type="text/css">
+#userRoleList_length{ float: left; width: 50%; }
+
+#userRoleList_filter{ float: left; width: 30%; }
+</style>
         <script>
             $(document).ready(function() {
                 $.ajaxSetup({
@@ -136,10 +155,27 @@
                 });
 
                 //datatable list
-                var table = $('#example9').DataTable();
-                table.destroy();
+    var table = $('#userRoleList').DataTable();
+      
 
-                table = $('#example9').DataTable({
+
+                table.destroy();
+                
+
+                table = $('#userRoleList').DataTable({
+                    @if (isset($access['add_role']) && $access['add_role'])  
+                    dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+                    buttons: [
+                        {
+                            text: '<i class="fas fa-plus add_plus_icon"></i> Add User Role ',
+                            action: function (e, dt, node, config) {
+                                window.location.href = "javascript:void(0)";
+                            },
+                            className: 'add_btn',
+                            attr: { id: 'createNew' },
+                        }
+                    ],
+                    @endif
                     processing: true,
                     serverSide: true,
                     ajax: {
@@ -262,5 +298,7 @@
 
             });
         </script>
+
+
     @endsection
 @endif

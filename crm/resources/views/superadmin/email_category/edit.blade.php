@@ -19,12 +19,14 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex">
                             <h1 class="m-0">{{ __('Edit Email Category') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Edit Email Category ') }}</li>
                             </ol>
+                            
                         </div><!-- /.col -->
 
                     </div><!-- /.row -->

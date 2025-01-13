@@ -21,12 +21,14 @@
       <div class="content-header">
         <div class="container-fluid">
           <div class="row mb-2 align-items-center">
-            <div class="col-sm-6">
+            <div class="col">
+            <div class="d-flex">
               <h1 class="m-0">Log Activity</h1>
-              <ol class="breadcrumb">
+              <ol class="breadcrumb ml-auto">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Analytics</a></li>
                 <li class="breadcrumb-item active">Log Activity</li>
               </ol>
+              </div>
             </div><!-- /.col -->
             
           </div><!-- /.row -->

@@ -10,14 +10,16 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex">    
                             <h1 class="m-0">{{ __('Library Category') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Dashboard</a></li>
                                 <li class="breadcrumb-item active">{{ __('Library Category') }}</li>
                             </ol>
+                            </div>
                         </div><!-- /.col -->
-                        <div class="col-auto">
+                        <!-- <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['add_library_cat']) && $access['add_library_cat'])
                                     <a href="{{ route('library_category.create') }}" id="createNew"><button
@@ -25,7 +27,8 @@
                                             Category</button></a>
                                 @endif
                             </ol>
-                        </div><!-- /.col -->
+                        </div> -->
+                        <!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -50,7 +53,7 @@
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap data-table">
+                                <table id="libraryCategoryList" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
                                             <th>Category Name</th>
@@ -145,5 +148,35 @@
         <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+   
+<script>
+    $(document).ready(function () {
+        $('#libraryCategoryList').DataTable({
+            @if (isset($access['add_library_cat']) && $access['add_library_cat'])  
+            dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus add_plus_icon"></i> Add Library Category',
+                    action: function (e, dt, node, config) {
+                        window.location.href = "{{ route('library_category.create') }}";
+                    },
+                    className: 'btn btn-primary add_btn'
+                }
+            ]
+            @endif
+        });
+    });
+</script>
+
+
+<style type="text/css">
+#libraryCategoryList_length{ float: left; width: 50%; }
+
+#libraryCategoryList_filter{ float: left; width: 28%; }
+</style>
+
     @endsection
 @endif

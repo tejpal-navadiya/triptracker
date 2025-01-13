@@ -9,12 +9,14 @@
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2 align-items-center justify-content-between">
-          <div class="col-auto">
+          <div class="col">
+          <div class="d-flex">   
             <h1 class="m-0">Traveler Detail</h1>
-            <ol class="breadcrumb">
+            <ol class="breadcrumb ml-auto">
               <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
               <li class="breadcrumb-item active">Traveler Information</li>
             </ol>
+            </div>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -23,15 +25,14 @@
     <!-- Main content -->
     <section class="content px-10">
       <div class="container-fluid">
-      
         <div class="card-header d-flex p-0 justify-content-center tab_panal">
-          <ul class="nav nav-pills p-2 tab_box">
+          <ul class="nav nav-pills p-2 tab_box12">
             <li class="nav-item"><a class="nav-link active" href="#Traveleroverview" data-toggle="tab">Household Information</a></li>
             <li class="nav-item"><a class="nav-link" href="#Documentsinfo" data-toggle="tab">Documents</a></li>
             <li class="nav-item"><a class="nav-link" href="#Emailsinfo" data-toggle="tab">Trip History</a></li>
           </ul>
         </div><!-- /.card-header -->
-          <div class="tab-content px-20">
+          <div class="tab-content tab-content12">
             <div class="tab-pane active" id="Traveleroverview">
                 @include('masteradmin.traveler.traveler-information')
             </div>            

@@ -8,21 +8,24 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center justify-content-between">
-                        <div class="col-auto">
+                        <div class="col">
+                        <div class="d-flex">    
                             <h1 class="m-0">{{ __('Email Template Details') }}</h1>
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
                                 <li class="breadcrumb-item active">{{ __('Email Template Details') }}</li>
                             </ol>
+                            </div>
                         </div><!-- /.col -->
-                        <div class="col-auto">
+                        <!-- <div class="col-auto">
                             <ol class="breadcrumb float-sm-right">
                                 @if (isset($access['add_email_template']) && $access['add_email_template'])
                                     <a href="{{ route('masteradmin.emailtemplate.addemailtemplate') }}"><button class="add_btn"><i
                                                 class="fas fa-plus add_plus_icon"></i>Add Email Template</button></a>
                                 @endif
                             </ol>
-                        </div><!-- /.col -->
+                        </div> -->
+                        <!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -57,7 +60,7 @@
                     <div class="card px-20">
                         <div class="card-body1">
                             <div class="col-md-12 table-responsive pad_table">
-                                <table id="example1" class="table table-hover text-nowrap data-table">
+                                <table id="emailTemplateDetails" class="table table-hover text-nowrap data-table">
                                     <thead>
                                         <tr>
                                             <th>Category Name</th>
@@ -149,5 +152,30 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#emailTemplateDetails').DataTable({
+            @if (isset($access['add_email_template']) && $access['add_email_template'])       
+            dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus add_plus_icon"></i> Add Email Template',
+                    action: function (e, dt, node, config) {
+                        window.location.href = "{{ route('masteradmin.emailtemplate.addemailtemplate') }}";
+                    },
+                    className: 'btn btn-primary add_btn'
+                }
+            ]
+            @endif
+        });
+    });
+</script>
+
+<style type="text/css">
+#emailTemplateDetails_length{ float: left; width: 50%; }
+
+#emailTemplateDetails_filter{ float: left; width: 30%; }
+</style>
     @endsection
 @endif

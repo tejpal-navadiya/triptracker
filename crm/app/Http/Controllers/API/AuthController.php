@@ -295,6 +295,17 @@ class AuthController extends Controller
             
             $this->createTable($userDetailRecord->user_id);
 
+            if(!empty($userDetailRecord->users_image))
+                {
+                    $userFolder = 'masteradmin/' .$userDetailRecord->user_id.'_'.$masterUser->user_first_name;
+                //    dd($userFolder);
+                    $imageurl = url(env('APP_URL') .''.asset('storage/app/' . $userFolder . '/profile_image/'.$userDetailRecord->users_image));
+                }else{
+                    $imageurl="";
+                }
+       
+            $userDetailRecord->users_image = $imageurl;
+            
             // $userDetailRecord->Authorization = $token;
 
             // $userDetailRecord->Authorization = $token;
