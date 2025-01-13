@@ -14,6 +14,7 @@
                         <thead>
                             <tr>
                                 <th>Trip Name</th>
+                                <th>Trip Number</th>
                                 <th>Agent Name</th>
                                 <th>Traveler Name</th>
                                 <th>Task</th>
@@ -273,6 +274,10 @@
                 {
                     data: 'trip_name',
                     name: 'trip_name'
+                },
+                {
+                    data: 'trip_number',
+                    name: 'trip_number'
                 },
                 {
                     data: 'agent_name',

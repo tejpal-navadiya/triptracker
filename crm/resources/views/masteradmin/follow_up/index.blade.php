@@ -126,9 +126,10 @@
                 { data: 'tr_name', name: 'tr_name' },
                 { data: 'agent_name', name: 'agent_name' },
                 { data: 'trtm_first_name', name: 'trtm_first_name' },
+                { data: 'tr_number', name: 'tr_number' },
                 { data: 'tr_start_date', name: 'tr_start_date' },
                 { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
+                { data: 'action',  name:'action', orderable: false, searchable: false }
             ]
         });
     }, 4000);
@@ -149,6 +150,7 @@
                 { data: 'tr_name', name: 'tr_name' },
                 { data: 'agent_name', name: 'agent_name' },
                 { data: 'trtm_first_name', name: 'trtm_first_name' },
+                { data: 'tr_number', name: 'tr_number' },
                 { data: 'trip_date', name: 'trip_date' },
                 { data: 'complete_days', name: 'complete_days' },
                 { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false },

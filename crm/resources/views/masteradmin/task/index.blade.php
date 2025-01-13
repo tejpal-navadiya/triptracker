@@ -326,6 +326,10 @@
                     name: 'trip_name'
                 },
                 {
+                    data: 'trip_number',
+                    name: 'trip_number'
+                },
+                {
                     data: 'agent_name',
                     name: 'agent_name'
                 },
@@ -630,6 +634,10 @@
             columns: [{
                     data: 'trip_name',
                     name: 'trip_name'
+                },
+                {
+                    data: 'trip_number',
+                    name: 'trip_number'
                 },
                 {
                     data: 'agent_name',

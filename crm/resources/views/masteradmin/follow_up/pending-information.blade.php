@@ -23,6 +23,7 @@
                                     <th>Trip Name</th>
                                     <th>Agent Name</th>
                                     <th>Traveler Name</th>
+                                    <th>Trip Number</th>
                                     <th>Start Date</th>
                                     <!-- <th>Trip Due Days</th> -->
                                     <th class="sorting_disabled">Status</th>
@@ -35,6 +36,7 @@
                                     <td>{{ $value->tr_name ?? '' }}</td>
                                     <td>{{ $value->users_first_name ?? ''}} {{$value->users_last_name ?? '' }}</td>
                                     <td>{{ $value->trtm_first_name ?? ''}}</td>
+                                    <td>{{ $value->tr_number ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}</td>
                                     <td>
                                         <?php 

@@ -468,6 +468,9 @@ class TripTaskController extends Controller
                 ->addColumn('trip_name', function ($document) {
                     return optional($document->trip)->tr_name ?? '';
                 })
+                ->addColumn('trip_number', function ($document) {
+                    return optional($document->trip)->tr_number ?? '';
+                })
                 ->addColumn('agent_name', function ($document) {
                     return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));
                 })
@@ -622,7 +625,7 @@ class TripTaskController extends Controller
                 
                 $taskQuery = TripTask::where($tripTaskTable.'.status', 1)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
-                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->where($tripTaskTable.'.trvt_due_date', '<=', $today) 
                 ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
                 ->with([
                     'trip.lead_traveler_name' => function ($query) {
@@ -638,7 +641,7 @@ class TripTaskController extends Controller
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where('trvt_agent_id', $user->users_id)
                 ->where($tripTaskTable.'.status', 1)
-                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->where($tripTaskTable.'.trvt_due_date', '<=', $today) 
                 ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
                 ->with([
                     'trip.lead_traveler_name' => function ($query) {
@@ -684,6 +687,9 @@ class TripTaskController extends Controller
                 })
                 ->addColumn('trip_name', function ($document) {
                     return optional($document->trip)->tr_name ?? '';
+                })
+                ->addColumn('trip_number', function ($document) {
+                    return optional($document->trip)->tr_number ?? '';
                 })
                 ->addColumn('agent_name', function ($document) {
                     return trim(($document->users_first_name ?? '') . ' ' . ($document->users_last_name ?? ''));

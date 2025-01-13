@@ -232,7 +232,7 @@ class HomeController extends Controller
                 
                 $taskQuery = TripTask::where($tripTaskTable.'.status', 1)
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
-                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->where($tripTaskTable.'.trvt_due_date', '<=', $today) 
                 ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
                 ->with([
                     'trip.lead_traveler_name' => function ($query) {
@@ -248,7 +248,7 @@ class HomeController extends Controller
                 ->leftJoin($masterUserDetailsTable, "{$masterUserDetailsTable}.users_id", '=', "{$tripTaskTable}.trvt_agent_id")
                 ->where('trvt_agent_id', $user->users_id)
                 ->where($tripTaskTable.'.status', 1)
-                ->where($tripTaskTable.'.trvt_date', '=', $today) 
+                ->where($tripTaskTable.'.trvt_due_date', '<=', $today) 
                 ->orderByRaw("FIELD(trvt_priority, 'High', 'Medium', 'Low')")
                 ->with([
                     'trip.lead_traveler_name' => function ($query) {

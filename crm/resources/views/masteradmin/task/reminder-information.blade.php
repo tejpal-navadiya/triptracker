@@ -13,6 +13,7 @@
                     <thead>
                         <tr>
                             <th>Trip Name</th>
+                            <th>Trip Number</th>
                             <th>Agent Name</th>
                             <th>Traveler Name</th>
                             <th>Task</th>

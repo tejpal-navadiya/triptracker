@@ -8,6 +8,7 @@
                         <th>Trip Name</th>
                         <th>Agent Name</th>
                         <th>Traveler Name</th>
+                        <th>Trip Number</th>
                         <th>Price</th>
                         <th>Start to End Date</th>
                         <th>Status</th>
@@ -20,6 +21,7 @@
                             <td>{{ $value->tr_name ?? ''}}</td>
                             <td>{{ $value->users_first_name ?? '' }} {{ $value->users_last_name ?? ''}}</td>
                             <td>{{ $value->trtm_first_name ?? ''}}</td>
+                            <td>{{ $value->tr_number ?? ''}}</td>
                             <td>{{ $value->tr_value_trip ?? ''}}</td>
                             <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }} -
                                 {{ \Carbon\Carbon::parse($value->tr_end_date ?? '')->format('M d, Y') }}

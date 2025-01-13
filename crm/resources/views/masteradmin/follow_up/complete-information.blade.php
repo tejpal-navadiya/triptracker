@@ -23,6 +23,7 @@
                                     <th>Trip Name</th>
                                     <th>Agent Name</th>
                                     <th>Traveler Name</th>
+                                    <th>Trip Number</th>
                                     <th>Start to End Date</th>
                                     <th>Trip After Complete Days</th>
                                     <th class="sorting_disabled">Status</th>
@@ -35,6 +36,7 @@
                                     <td>{{ $comvalue->tr_name ?? '' }}</td>
                                     <td>{{ $comvalue->users_first_name ?? ''}} {{$comvalue->users_last_name ?? '' }}</td>
                                     <td>{{ $comvalue->trtm_first_name ?? ''}}</td>
+                                    <td>{{ $comvalue->tr_number ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($comvalue->tr_start_date ?? '')->format('M d, Y') }} - {{ \Carbon\Carbon::parse($comvalue->tr_end_date ?? '')->format('M d, Y') }}</td>
                                     <td>
                                     <?php 
