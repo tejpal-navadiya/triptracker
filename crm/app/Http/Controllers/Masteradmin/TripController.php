@@ -41,7 +41,7 @@ class TripController extends Controller
     
     public function index(Request $request)
     {
-        // dd($request->all());
+        //dd($request->all());
         $user = Auth::guard('masteradmins')->user();
 
         $startDate = $request->input('start_date'); 
@@ -49,7 +49,8 @@ class TripController extends Controller
         $trip_agent = $request->input('trip_agent');   
         $trip_traveler = $request->input('trip_traveler');   
         $trip_status1 = $request->input('trip_status');   
-
+        $tr_number = $request->input('tr_number'); 
+        
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
         $masterUserTable = $masterUserDetails->getTable();
@@ -166,9 +167,11 @@ class TripController extends Controller
             $tripQuery->where($tripTable . '.status', $trip_status1);
         }
 
+        if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
+        }
 
         $trip = $tripQuery->get();
-        
 
         if ($request->ajax()) {
             // dd(\DB::getQueryLog()); 
@@ -1308,6 +1311,7 @@ class TripController extends Controller
         $trip_agent = $request->input('trip_agent');   
         $trip_traveler = $request->input('trip_traveler');   
         $trip_status1 = $request->input('trip_status');   
+        $tr_number = $request->input('tr_number'); 
 
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
@@ -1422,8 +1426,11 @@ class TripController extends Controller
             $tripQuery->where($tripTable . '.status', $trip_status1);
         }
 
-        
+        if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
+        }
 
+      
         $trip = $tripQuery->orderBy($tripTable . '.tr_start_date', 'ASC')->get();
         // dd($trip);
         if ($request->ajax()) {
@@ -1445,7 +1452,8 @@ class TripController extends Controller
     
         $trip_agent = $request->input('trip_agent');   
         $trip_traveler = $request->input('trip_traveler');   
-    
+        $tr_number = $request->input('tr_number');   
+
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
         $masterUserTable = $masterUserDetails->getTable();
@@ -1533,6 +1541,10 @@ class TripController extends Controller
         if ($trip_traveler) {
             $tripQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
         }
+
+        if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
+        }
     
         // For the initial page load, fetch the trips
         $trip = $tripQuery->get();
@@ -1592,7 +1604,8 @@ class TripController extends Controller
         $user = Auth::guard('masteradmins')->user();
     
         $trip_agent = $request->input('trip_agent');   
-        $trip_traveler = $request->input('trip_traveler');   
+        $trip_traveler = $request->input('trip_traveler');  
+        $tr_number = $request->input('tr_number'); 
     
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
@@ -1683,6 +1696,10 @@ class TripController extends Controller
     
         if ($trip_traveler) {
             $tripQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+        }
+
+        if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
         }
     
         $trip = $tripQuery->get();
@@ -1788,6 +1805,7 @@ class TripController extends Controller
     
         $trip_agent = $request->input('trip_agent');   
         $trip_traveler = $request->input('trip_traveler');   
+        $tr_number = $request->input('tr_number');   
     
         $masterUserDetails = new MasterUserDetails();
         $masterUserDetails->setTableForUniqueId($user->user_id); 
@@ -1879,6 +1897,11 @@ class TripController extends Controller
         if ($trip_traveler) {
             $tripQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
         }
+
+        if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
+        }
+
 
         $trip = $tripQuery->get();
         // dd($trip);
@@ -2009,7 +2032,8 @@ class TripController extends Controller
           $endDate = $request->input('end_date');   
           $trip_agent = $request->input('trip_agent');   
           $trip_traveler = $request->input('trip_traveler');   
-          $trip_status1 = $request->input('trip_status');   
+          $trip_status1 = $request->input('trip_status'); 
+          $tr_number = $request->input('tr_number');   
   
           $masterUserDetails = new MasterUserDetails();
           $masterUserDetails->setTableForUniqueId($user->user_id); 
@@ -2127,6 +2151,9 @@ class TripController extends Controller
               $tripQuery->where($tripTable . '.status', $trip_status1);
           }
   
+          if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
+        }
   
           $trip = $tripQuery->get();
           
@@ -2239,7 +2266,8 @@ public function gridView(Request $request)
           $endDate = $request->input('end_date');   
           $trip_agent = $request->input('trip_agent');   
           $trip_traveler = $request->input('trip_traveler');   
-          $trip_status1 = $request->input('trip_status');   
+          $trip_status1 = $request->input('trip_status');  
+          $tr_number = $request->input('tr_number');  
   
           $masterUserDetails = new MasterUserDetails();
           $masterUserDetails->setTableForUniqueId($user->user_id); 
@@ -2340,6 +2368,9 @@ public function gridView(Request $request)
             $tripQuery->where($tripTable . '.status', $trip_status1);
         }
 
+        if ($tr_number) {
+            $tripQuery->where($tripTable . '.tr_number', $tr_number);
+        }
 
     // Execute the query
     $tripResults = $tripQuery->get();
@@ -2571,6 +2602,7 @@ public function bookgridView(Request $request)
     $trip_agent = $request->input('trip_agent');   
     $trip_traveler = $request->input('trip_traveler');   
     $trip_status1 = $request->input('trip_status');   
+    $tr_number = $request->input('tr_number'); 
 
     $masterUserDetails = new MasterUserDetails();
     $masterUserDetails->setTableForUniqueId($user->user_id); 
@@ -2648,6 +2680,9 @@ public function bookgridView(Request $request)
         $bookedTripQuery->where($tripTable . '.status', $trip_status1);
     }
 
+    if ($tr_number) {
+        $bookedTripQuery->where($tripTable . '.tr_number', $tr_number);
+    }
     // Execute the query
     $bookedTripQuery = $bookedTripQuery->get();
     
@@ -2714,6 +2749,10 @@ public function bookgridView(Request $request)
         $sixtyDaysTripQuery->where($tripTable . '.status', $trip_status1);
     }
 
+    if ($tr_number) {
+        $sixtyDaysTripQuery->where($tripTable . '.tr_number', $tr_number);
+    }
+
     // Execute the query
     $sixtyDaysTripQuery = $sixtyDaysTripQuery->orderBy($tripTable . '.tr_start_date', 'ASC')->get();
 
@@ -2774,6 +2813,10 @@ public function bookgridView(Request $request)
      if ($trip_status1) {
          $thirtyDaysTripQuery->where($tripTable . '.status', $trip_status1);
      }
+
+     if ($tr_number) {
+        $thirtyDaysTripQuery->where($tripTable . '.tr_number', $tr_number);
+    }
  
      // Execute the query
      $thirtyDaysTripQuery = $thirtyDaysTripQuery->orderBy($tripTable . '.tr_start_date', 'ASC')->get();
@@ -2827,6 +2870,10 @@ public function bookgridView(Request $request)
 
     if ($trip_status1) {
         $twoDaysTripQuery->where($tripTable . '.status', $trip_status1);
+    }
+    
+    if ($tr_number) {
+        $twoDaysTripQuery->where($tripTable . '.tr_number', $tr_number);
     }
 
     $twoDaysTripQuery = $twoDaysTripQuery->select([
@@ -2891,6 +2938,10 @@ public function bookgridView(Request $request)
 
     if ($trip_status1) {
     $completedTripQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    if ($tr_number) {
+        $completedTripQuery->where($tripTable . '.tr_number', $tr_number);
     }
 
     $completedTripQuery = $completedTripQuery->select([
@@ -2959,6 +3010,10 @@ public function bookgridView(Request $request)
 
     if ($trip_status1) {
     $travellingTripQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    if ($tr_number) {
+        $travellingTripQuery->where($tripTable . '.tr_number', $tr_number);
     }
 
     $travellingTripQuery = $travellingTripQuery->select([
@@ -3964,6 +4019,49 @@ public function memberPreferencesStore(Request $request,$id)
             return response()->json(['exists' => false]);
         }
     }
+
+    public function getTripNumber(Request $request)
+    {
+        try {
+        $user = Auth::guard('masteradmins')->user(); // Authenticated user
+        $specificId = $user->users_id;
+
+        $agency_users = new MasterUserDetails();
+        $agency_users->setTableForUniqueId($user->user_id);
+        $masterUserTable = $agency_users->getTable();
+
+        $trips = new Trip();
+        $tripTable = $trips->getTable();
+
+        $search = $request->get('query', ''); // Get the input query
+
+        $tripQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->select([
+            $tripTable . '.*', 
+        ]);
+    
+    if ($user->role_id != 0) {
+        $tripQuery->where(function ($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                  ->orWhere($tripTable . '.id', $specificId);
+        });
+    }
+    
+    if (!empty($search)) 
+    { 
+        $tripQuery->where($tripTable . '.tr_number', 'like', '%' . $search . '%'); 
+    } 
+    $tripResults = $tripQuery->get();
+        
+    return response()->json($tripResults); // Return the results as JSON
+      
+        
+        } catch (ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422); 
+    }
+}
 
     
 }

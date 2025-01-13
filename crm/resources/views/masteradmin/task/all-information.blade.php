@@ -253,70 +253,7 @@
         //datatable list
         // var allTable;
         //datatable list
-        var allTable = $('#allTaskDataTable').DataTable();
-        allTable.destroy();
-
-        setTimeout(function(){
-           allTable = $('#allTaskDataTable').DataTable({
-            processing: true,
-            async:true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('masteradmin.task.all') }}",
-                type: 'GET',
-                data: function(d) {
-                    d.trip_agent = $('#trip_agent').val(); 
-                    d.trip_traveler = $('#trip_traveler').val(); 
-                    d._token = '{{ csrf_token() }}';
-                }
-            },
-            columns: [
-                {
-                    data: 'trip_name',
-                    name: 'trip_name'
-                },
-                {
-                    data: 'trip_number',
-                    name: 'trip_number'
-                },
-                {
-                    data: 'agent_name',
-                    name: 'agent_name'
-                },
-                {
-                    data: 'traveler_name',
-                    name: 'traveler_name'
-                },
-                {
-                    data: 'trvt_name',
-                    name: 'trvt_name'
-                },
-                {
-                    data: 'task_cat_name',
-                    name: 'task_cat_name'
-                },
-                {
-                    data: 'trvt_due_date',
-                    name: 'trvt_due_date'
-                },
-                {
-                    data: 'trvt_priority',
-                    name: 'trvt_priority'
-                },
-                {
-                    data: 'task_status_name',
-                    name: 'task_status_name'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
-    },1000);    
-        
+       
 
         //}
    // }

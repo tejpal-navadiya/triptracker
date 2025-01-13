@@ -581,6 +581,9 @@ Route::group(['prefix' => $busadminRoute], function () {
         //check if set the task or not in db
         Route::get('/get-trip-task/{trip_id}/{task_name}', [TripController::class, 'getTripTask'])->name('get.trip.task');
 
+        //get all trip number
+        Route::get('trip/api/number', [TripController::class, 'getTripNumber'])->name('trip.number.autocomplete');
+
     });
      
 

@@ -350,6 +350,7 @@ class TripTaskController extends Controller
     {
         $tripAgent = trim($request->input('trip_agent'));
         $tripTraveler = trim($request->input('trip_traveler'));
+        $tr_number = trim($request->input('tr_number'));
     
         $access = view()->shared('access');
         $user = Auth::guard('masteradmins')->user();
@@ -451,7 +452,14 @@ class TripTaskController extends Controller
                 $taskQuery->whereHas('trip', function ($q) use ($tripTraveler) {
                     $q->where('tr_traveler_id', 'LIKE', "%{$tripTraveler}%");
                 });
+
             }
+            if ($tr_number) {
+                $taskQuery->whereHas('trip', function ($q) use ($tr_number) {
+                    $q->where('tr_number', "$tr_number");
+                });
+            }
+    
     
             $tasks = $taskQuery->get();
            
@@ -549,6 +557,7 @@ class TripTaskController extends Controller
     {
         $tripAgent = trim($request->input('trip_agent'));
         $tripTraveler = trim($request->input('trip_traveler'));
+        $tr_number = trim($request->input('tr_number'));
     
         $access = view()->shared('access');
         $user = Auth::guard('masteradmins')->user();
@@ -671,6 +680,13 @@ class TripTaskController extends Controller
                     $q->where('tr_traveler_id', 'LIKE', "%{$tripTraveler}%");
                 });
             }
+
+            if ($tr_number) {
+                $taskQuery->whereHas('trip', function ($q) use ($tr_number) {
+                    $q->where('tr_number', "$tr_number");
+                });
+            }
+    
             // \DB::enableQueryLog();
             $tasks = $taskQuery->get();
             // dd($tasks);

@@ -1,4 +1,4 @@
-<section class="content px-10">
+<section class="content">
     <div class="container-fluid">
         @if (Session::has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -14,7 +14,7 @@
         <!-- <input type="hidden" name="inProcessTrips" id="inProcessTrips" value="inProcessTrips" > -->
         <!-- Main row -->
         <div id="filter_data">
-            <div class="card px-20">
+            <div class="card ">
                 <div class="card-body1">
                     <div class="col-md-12 table-responsive pad_table">
                         <table id="pendingDataTable" class="table table-hover text-nowrap data-table">

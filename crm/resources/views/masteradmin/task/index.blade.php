@@ -64,7 +64,13 @@
                       @endforeach
                   </select>
               </div>
-       
+              <div class="col-lg-3 input-group date">
+                    <input type="text" class="form-control" id="tr_number" name="tr_number"
+                        placeholder="Trip Number" autocomplete="off" />
+                        <input type="hidden" id="tr_id" name="tr_id">
+                        <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
+                </div>
+                          
               </div>
         </div>
         <div class="card-header d-flex p-0 justify-content-center tab_panal">
@@ -301,14 +307,81 @@
             }
         });
 
-           //datatable list
-           var allTableList = $('#example11').DataTable();
-         allTableList.destroy();
+        let allTableList, table;
+
+        // var allTableList = $('#example11').DataTable();
+        //  allTableList.destroy();
+
+        //  var table = $('#example15').DataTable();
+        // table.destroy();
+        function updateAllTables() { 
+            if (allTableList) allTableList.ajax.reload(); 
+            if (table) table.ajax.reload();
+        }
+         
+        const $input = $("#tr_number");
+        const $list = $("#autocomplete-list");
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        let typingTimeout;  // Declare a variable to store the timeout I
+
+        const $trIdInput = $("#tr_id");
+        $input.on("input", function () {
+        const query = $(this).val();
+
+        if (query.length < 2) {
+            $list.empty(); // Clear the list if the query is too short
+            return;
+        }
+        // Clear any existing timeout to prevent multiple AJAX requests
+        clearTimeout(typingTimeout);
+        // Set a new timeout for 5 seconds (5000ms)
+        typingTimeout = setTimeout(function () {
+            $.ajax({
+                url: "{{ route('trip.number.autocomplete') }}", // Use named route
+                method: "GET",
+                data: { query: query },
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken  // Send the CSRF token in the header
+                },
+                success: function (data) {
+                    $list.empty(); // Clear previous suggestions
+                    if (data.length > 0) {
+                        // Display matching results
+                        data.forEach(function (traveler) {
+                            const $item = $("<div>")
+                                .addClass("list-group-item")
+                                .text(traveler.tr_number)
+                                .on("click", function () {
+                                    // Set input values and other fields on click
+                                    $input.val(traveler.tr_number);
+                                    $trIdInput.val(traveler.tr_id);
+                                   
+                                    updateAllTables();
+                                    $list.empty(); // Clear suggestions
+                                });
+                            $list.append($item); // Append the item to the list
+                        });
+                    } else {
+                        // No results found, display "Add Item" button
+                        const $addButton = $("<div>")
+                            .addClass("list-group-item text-primary")
+                            .text(`Not found Trip Number`);
+                        $list.append($addButton);
+                    }
+                },
+                error: function () {
+                    console.error("Error fetching trip number");
+                }
+            });
+        }, 1500); 
+        });
+
 
         //list
         setTimeout(function(){
 
-        allTableList = $('#example11').DataTable({
+        allTableList = $('#allTaskDataTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -317,6 +390,7 @@
                 data: function(d) {
                     d.trip_agent = $('#trip_agent').val(); 
                     d.trip_traveler = $('#trip_traveler').val(); 
+                    d.tr_number = $('#tr_number').val();
                     d._token = '{{ csrf_token() }}';
                 }
             },
@@ -367,7 +441,67 @@
         });
     },1000);  
 
-
+        //list
+        setTimeout(function(){
+            table = $('#example15').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('masteradmin.task.incomplete') }}",
+                type: 'GET',
+                data: function(d) {
+                    d.trip_agent = $('#trip_agent').val(); 
+                    d.trip_traveler = $('#trip_traveler').val(); 
+                    d.tr_number = $('#tr_number').val();
+                    d._token = '{{ csrf_token() }}';
+                }
+            },
+            columns: [{
+                    data: 'trip_name',
+                    name: 'trip_name'
+                },
+                {
+                    data: 'trip_number',
+                    name: 'trip_number'
+                },
+                {
+                    data: 'agent_name',
+                    name: 'agent_name'
+                },
+                {
+                    data: 'traveler_name',
+                    name: 'traveler_name'
+                },
+                {
+                    data: 'trvt_name',
+                    name: 'trvt_name'
+                },
+                {
+                    data: 'task_cat_name',
+                    name: 'task_cat_name'
+                },
+                {
+                    data: 'trvt_due_date',
+                    name: 'trvt_due_date'
+                },
+                {
+                    data: 'trvt_priority',
+                    name: 'trvt_priority'
+                },
+                {
+                    data: 'task_status_name',
+                    name: 'task_status_name'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+        },1500);
+       
         //create task
         $('#createNewTask3').click(function() {
             // alert('hii');
@@ -577,8 +711,7 @@
 
 
     });
-</script>
-<script>
+
     document.addEventListener('DOMContentLoaded', function() {
 
         var fromdatepicker = flatpickr("#create_date", {
@@ -607,76 +740,12 @@
 
 
     });
-</script>
 
-<script>
-    $(document).ready(function() {
        
         //datatable list
         
-        var table = $('#example15').DataTable();
-        table.destroy();
-
-        //list
-        setTimeout(function(){
-            table = $('#example15').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('masteradmin.task.incomplete') }}",
-                type: 'GET',
-                data: function(d) {
-                    d.trip_agent = $('#trip_agent').val(); 
-                    d.trip_traveler = $('#trip_traveler').val(); 
-                    d._token = '{{ csrf_token() }}';
-                }
-            },
-            columns: [{
-                    data: 'trip_name',
-                    name: 'trip_name'
-                },
-                {
-                    data: 'trip_number',
-                    name: 'trip_number'
-                },
-                {
-                    data: 'agent_name',
-                    name: 'agent_name'
-                },
-                {
-                    data: 'traveler_name',
-                    name: 'traveler_name'
-                },
-                {
-                    data: 'trvt_name',
-                    name: 'trvt_name'
-                },
-                {
-                    data: 'task_cat_name',
-                    name: 'task_cat_name'
-                },
-                {
-                    data: 'trvt_due_date',
-                    name: 'trvt_due_date'
-                },
-                {
-                    data: 'trvt_priority',
-                    name: 'trvt_priority'
-                },
-                {
-                    data: 'task_status_name',
-                    name: 'task_status_name'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
-        },2000);
-        
+      
+       
 
         setTimeout(function(){
         //insert/update data
@@ -871,8 +940,51 @@
             $('#example15').DataTable().ajax.reload();
         });
 
-    });
+    
 </script>
+
+<style>
+
+#autocomplete-list {
+    margin-top: 47px;
+    width: 100%;
+
+    max-height: 200px;
+
+    overflow-y: auto;
+
+    border: 1px solid #ddd;
+
+    background-color: white;
+
+    display: block;
+
+}
+
+.list-group-item {
+
+    padding: 10px;
+
+    cursor: pointer;
+
+}
+
+.list-group-item:hover {
+
+    background-color: #f8f9fa;
+
+}
+
+.text-muted {
+
+    color: #6c757d;
+
+}
+
+
+
+</style>
+
 
   @endsection
 @endif
