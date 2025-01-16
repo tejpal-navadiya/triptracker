@@ -76,7 +76,7 @@
                 </div>     
               </div>
         </div>
-        <div class="card-header d-flex p-0 justify-content-center tab_panal">
+        <div class="card-header d-flex p-0 justify-content-center tab_panal mt-4">
           <ul class="nav nav-pills p-2 tab_box tab_box12">
             <li class="nav-item"><a class="nav-link active" href="#Traveleroverview" data-toggle="tab">View All Task</a></li>
             @if(isset($access['reminder_all_task']) && $access['reminder_all_task'])

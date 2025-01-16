@@ -466,6 +466,7 @@
             data: formData,
             success: function (response) {
                 $('#viewContainer').html(response); // Update container with grid view content
+                
             },
             error: function (xhr) {
                 console.error('Error loading grid view:', xhr);

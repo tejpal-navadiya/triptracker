@@ -74,28 +74,44 @@
                         <input type="hidden" id="tr_id" name="tr_id">
                         <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
                 </div>
+                <div class="col-lg-3 d-flex justify-content-end align-items-center">
+                    <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin me-2">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <a id="gridViewBtn" href="#grid-info" class="btn btn-primary active ml-2">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </div>
                 </div>
               
             </div>
-            <div class="card-header d-flex p-0 justify-content-center tab_panal">
-                <ul class="nav nav-pills p-2 tab_box tab_box12">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#inprocessTrip" data-toggle="tab" data-tab="pending">In Process</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#completeTrip" data-toggle="tab" data-tab="complete">Complete</a>
-                    </li>
-                </ul>
-            </div><!-- /.card-header -->
-            <div class="tab-content tab-content12">
-                <div class="tab-pane active" id="inprocessTrip">
-                    @include('masteradmin.follow_up.pending-information')
+            <div id="viewContainer">
+                <div class="card-header d-flex p-0 justify-content-center tab_panal">
+                    <ul class="nav nav-pills p-2 tab_box tab_box12">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#inprocessTrip" data-toggle="tab" data-tab="pending">Trip Traveling</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#completeTrip" data-toggle="tab" data-tab="complete">Welcome Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#completeTrip" data-toggle="tab" data-tab="complete">6 month Review</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#completeTrip" data-toggle="tab" data-tab="complete">1 year Review</a>
+                        </li>
+                    </ul>
+                </div><!-- /.card-header -->
+                <div class="tab-content tab-content12">
+                    <div class="tab-pane active" id="inprocessTrip">
+                        @include('masteradmin.follow_up.pending-information')
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="completeTrip">
+                        @include('masteradmin.follow_up.complete-information')
+                    </div>
+                    <!-- /.tab-pane -->
                 </div>
-                <!-- /.tab-pane -->
-                <div class="tab-pane" id="completeTrip">
-                    @include('masteradmin.follow_up.complete-information')
-                </div>
-                <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->
         </div><!-- /.container-fluid -->
@@ -156,8 +172,8 @@
                                     $input.val(traveler.tr_number);
                                     $trIdInput.val(traveler.tr_id);
                                     $list.empty(); // Clear suggestions
-                                    pendingDataTable1();
-                                    completedDatatable1();
+                                    fetchFilteredData();
+                                    fetchFilteredData1();
                                 });
                             $list.append($item); // Append the item to the list
                         });
@@ -176,80 +192,190 @@
         }, 1500); 
         });
         
-    // Initialize DataTables for Pending Trips
-    function pendingDataTable1() { pendingDataTable.ajax.reload(); }
 
-    function completedDatatable1() { completedDatatable.ajax.reload(); }
+        var trip_agent = "";
+        var trip_traveler = "";
 
 
-    setTimeout(function() {
-        pendingDataTable = $('#pendingDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('masteradmin.trip.follow_up_trip') }}",
-                type: 'GET',
-                data: function (d) {
-                    d.trip_agent = $('#trip_agent').val(); // Fetch current filter values
-                    d.trip_traveler = $('#trip_traveler').val();
-                    d.tr_number = $('#tr_number').val();
-                }
-               
-            },
-            columns: [
-                { data: 'tr_name', name: 'tr_name' },
-                { data: 'agent_name', name: 'agent_name' },
-                { data: 'trtm_first_name', name: 'trtm_first_name' },
-                { data: 'tr_number', name: 'tr_number' },
-                { data: 'tr_start_date', name: 'tr_start_date' },
-                { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false },
-                { data: 'action',  name:'action', orderable: false, searchable: false }
-            ]
+
+
+        $('#trip_agent').val(trip_agent);
+
+        $('#trip_traveler').val(trip_traveler);
+      
+        $('.filter-text').on('click', function(e) {
+            e.preventDefault();
+            clearFilters();
         });
-    }, 4000);
 
-    setTimeout(function() {
-        completedDatatable = $('#completedDatatable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('masteradmin.trip.follow_up_complete_trip') }}",
+
+        function fetchFilteredData() {
+            // var sdate = $('#from-datepicker').val(defaultStartDate);
+            // alert(sdate);
+            var formData = {
+                tr_number: $input.val(),
+                trip_agent: $('#trip_agent').val(),
+                trip_traveler: $('#trip_traveler').val(),
+                _token: '{{ csrf_token() }}'
+            };
+            // alert('hii');
+
+            $.ajax({
+                url: '{{ route('masteradmin.trip.follow_up_trip_details') }}',
                 type: 'GET',
-                data: function (d) {
-                    d.trip_agent = $('#trip_agent').val(); // Fetch current filter values
-                    d.trip_traveler = $('#trip_traveler').val();
-                    d.tr_number = $('#tr_number').val();
+                data: formData,
+                success: function(response) {
+                    $('#filter_data').html(
+                        response); // Update the results container with HTML content
+                        $('#pendingDataTable').DataTable();
+                        $('#completedDatatable').DataTable();
+                        $('#oneYearDatatable').DataTable();
+                        $('#sixMonthDatatable').DataTable();
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    //alert('An error occurred while fetching data.');
                 }
-            },
-            columns: [
-                { data: 'tr_name', name: 'tr_name' },
-                { data: 'agent_name', name: 'agent_name' },
-                { data: 'trtm_first_name', name: 'trtm_first_name' },
-                { data: 'tr_number', name: 'tr_number' },
-                { data: 'trip_date', name: 'trip_date' },
-                { data: 'complete_days', name: 'complete_days' },
-                { data: 'task_status_name', name: 'task_status_name', orderable: false, searchable: false },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-                ]
             });
-    }, 2000);
 
-    // Handle filter changes and reload tables
-    $('#trip_agent, #trip_traveler').on('change', function () {
-            completedDatatable.ajax.reload(); // Reload the DataTable when filters are changed
-            pendingDataTable.ajax.reload();
+        }
+
+        function fetchFilteredData1() {
+            var formData = {
+                tr_number: $input.val(),
+                trip_agent: $('#trip_agent').val(),
+                trip_traveler: $('#trip_traveler').val(),
+                _token: '{{ csrf_token() }}'
+            };
+            // alert('hii');
+
+            $.ajax({
+                url: "{{ route('follow-up-trip.gridView') }}",
+                type: 'GET',
+                data: formData,
+                success: function(response) {
+                    $('#filter_grid_data').html(
+                        response); // Update the results container with HTML content
+           
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    //alert('An error occurred while fetching data.');
+                }
+            });
+
+        }
+
+        // Attach change event handlers to filter inputs
+        $('#trip_agent, #trip_traveler').on('change keyup', function(e) {
+
+            e.preventDefault();
+            //   alert('hii');
+            setTimeout(function() {
+            fetchFilteredData();
+            }, 1000);
+            setTimeout(function() {
+                fetchFilteredData1();
+            }, 500);
+        });
+
+
+        function clearFilters() {
+            // Clear filters
+            $('#trip_agent').val('').trigger('change');
+            $('#trip_traveler').val('').trigger('change');
+            $('#tr_number').val('');
+        }
+
+
+    // Event Listener: Load List View when listViewBtn is clicked
+$('#listViewBtn').click(function (e) {
+    e.preventDefault();
+
+    // Update button active states
+    $('#listViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary active');
+    $('#gridViewBtn').removeClass('btn-primary active').addClass('btn-outline-secondary');
+
+    // Prepare the filter parameters
+    var formData = {
+        tr_number: $input.val(),
+        trip_agent: $('#trip_agent').val(),
+        trip_traveler: $('#trip_traveler').val(),
+        _token: '{{ csrf_token() }}'
+    };
+
+    // Load List View via AJAX
+    $.ajax({
+        url: '{{ route('masteradmin.trip.follow_up_trip_details') }}',
+        data: formData,
+        type: 'GET',
+        success: function (response) {
+            $('#viewContainer').html(response);
+
+            // Initialize DataTable
+            $('#pendingDataTable').DataTable();
+            $('#completedDatatable').DataTable();
+            $('#oneYearDatatable').DataTable();
+            $('#sixMonthDatatable').DataTable();
+            
+            
+        },
+        error: function (xhr) {
+            console.error('Error loading list view:', xhr);
+        }
     });
+});
 
-    // Clear filters and reload tables
-    $('.filter-text').on('click', function() {
-        $('#trip_agent, #trip_traveler, #tr_number').val('').trigger('change');
-        $('#pendingDataTable').DataTable().ajax.reload();
-        $('#completedDatatable').DataTable().ajax.reload();
-        pendingDataTable1();
-        completedDatatable1();
+// Event Listener: Load Grid View when gridViewBtn is clicked
+$('#gridViewBtn').click(function (e) {
+    e.preventDefault();
+
+    // Update button active states
+    $(this).removeClass('btn-outline-secondary').addClass('btn-primary active');
+    $('#listViewBtn').removeClass('btn-primary active').addClass('btn-outline-secondary');
+
+    // Call the Grid View loader
+    setTimeout(function () {
+            loadGridView(); // Call the Grid View load function after the delay
+        }, 1000);
 
 
+});
+
+// Set default active view to Grid View
+setTimeout(function () {
+        loadGridView(); // Call the Grid View load function after the delay
+    }, 1000);
+
+
+// Function to load Grid View
+function loadGridView() {
+    // alert('hii');
+    // Update button active states
+    $('#gridViewBtn').removeClass('btn-outline-secondary').addClass('btn-primary active');
+    $('#listViewBtn').removeClass('btn-primary').addClass('btn-outline-secondary');
+
+    // Prepare the filter parameters
+    var formData = {
+        tr_number: $input.val(),
+        trip_agent: $('#trip_agent').val(),
+        trip_traveler: $('#trip_traveler').val(),
+        _token: '{{ csrf_token() }}'
+    };
+
+    // Load Grid View via AJAX
+    $.ajax({
+        url: "{{ route('follow-up-trip.gridView') }}",
+        type: 'GET',
+        data: formData,
+        success: function (response) {
+            $('#viewContainer').html(response); // Update container with grid view content
+        },
+        error: function (xhr) {
+            console.error('Error loading grid view:', xhr);
+        }
     });
+}
 });
 
 </script>

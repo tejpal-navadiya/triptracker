@@ -426,7 +426,7 @@
                 _token: '{{ csrf_token() }}'
             };
             //alert('hii');
-            console.log(formData);
+            //console.log(formData);
 
             $.ajax({
                 url: '{{ route('masteradmin.trip.booked_after') }}',

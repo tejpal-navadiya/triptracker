@@ -584,6 +584,11 @@ Route::group(['prefix' => $busadminRoute], function () {
         //get all trip number
         Route::get('trip/api/number', [TripController::class, 'getTripNumber'])->name('trip.number.autocomplete');
 
+        //follow up kanban
+        Route::get('/follow-up-trip/grid-view', [TripController::class, 'followUpBookgridView'])->name('follow-up-trip.gridView');
+
+
+
     });
      
 

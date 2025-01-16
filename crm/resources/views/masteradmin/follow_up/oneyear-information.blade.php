@@ -17,7 +17,7 @@
             <div class="card ">
                 <div class="card-body1">
                     <div class="col-md-12 table-responsive pad_table">
-                        <table id="completedDatatable" class="table table-hover text-nowrap data-table">
+                        <table id="oneYearDatatable" class="table table-hover text-nowrap data-table">
                             <thead>
                                 <tr>
                                     <th>Trip Name</th>
@@ -31,18 +31,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($tripCompleted as $comvalue)
+                            @foreach ($oneYearFollowUp as $yearvalue)
                                 <tr>
-                                    <td>{{ $comvalue->tr_name ?? '' }}</td>
-                                    <td>{{ $comvalue->users_first_name ?? ''}} {{$comvalue->users_last_name ?? '' }}</td>
-                                    <td>{{ $comvalue->trtm_first_name ?? ''}}</td>
-                                    <td>{{ $comvalue->tr_number ?? ''}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($comvalue->tr_start_date ?? '')->format('M d, Y') }} - {{ \Carbon\Carbon::parse($comvalue->tr_end_date ?? '')->format('M d, Y') }}</td>
+                                    <td>{{ $yearvalue->tr_name ?? '' }}</td>
+                                    <td>{{ $yearvalue->users_first_name ?? ''}} {{$yearvalue->users_last_name ?? '' }}</td>
+                                    <td>{{ $yearvalue->trtm_first_name ?? ''}}</td>
+                                    <td>{{ $yearvalue->tr_number ?? ''}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($yearvalue->tr_start_date ?? '')->format('M d, Y') }} - {{ \Carbon\Carbon::parse($yearvalue->tr_end_date ?? '')->format('M d, Y') }}</td>
                                     <td>
                                     <?php 
 
-                                        $currentDate = \Carbon\Carbon::now()->startOfDay();
-                                        $endDate = $comvalue->tr_end_date ?? '0';
+                                        $currentDate = \Carbon\Carbon::now()->startOfDay(); // Get today's date at midnight
+                                        $endDate = $yearvalue->tr_end_date ?? '0'; // End date from your data
 
                                         // Initialize $endDateParsed with a default value
                                         $endDateParsed = null;
@@ -51,6 +51,7 @@
                                         if ($endDate && $endDate !== '0') {
                                             // Parse the end date and ensure it's in the correct format
                                             try {
+                                                // Parse the end date from the given format (m/d/Y)
                                                 $endDateParsed = \Carbon\Carbon::createFromFormat('m/d/Y', $endDate)->startOfDay();
                                             } catch (\Exception $e) {
                                                 $endDateParsed = null; // Ensure $endDateParsed is always defined
@@ -58,19 +59,27 @@
                                         }
 
                                         // Check if $endDateParsed is not null before proceeding
-                                        if ($endDateParsed && $endDateParsed->lt($currentDate)) {
-                                            $daysSinceCompletion = $endDateParsed->diffInDays($currentDate);
+                                        if ($endDateParsed) {
+                                            // Check if the end date is in the past or future
+                                            if ($endDateParsed->lt($currentDate)) {
+                                                // If end date is in the past, calculate how many days ago it was
+                                                $daysSinceCompletion = $endDateParsed->diffInDays($currentDate);
+                                                echo $daysSinceCompletion . ' days'; // This is how many days since the completion
+                                            } else {
+                                                // If end date is in the future, calculate how many days until the end date
+                                                $daysUntilCompletion = $currentDate->diffInDays($endDateParsed);
+                                                echo $daysUntilCompletion . ' days'; // This is how many days until completion
+                                            }
                                         } else {
-                                            $daysSinceCompletion = 0; // Default to 0 days if no valid end date
+                                            echo 'No valid end date'; // If no valid end date is available
                                         }
 
-                                        echo $daysSinceCompletion . ' days';
-
                                         ?>
+
                                     </td>
                                     <td>
                                         @php
-                                            $statusName = $comvalue->trip_status->tr_status_name ?? '';
+                                            $statusName = $yearvalue->trip_status->tr_status_name ?? '';
 
                                             $buttonColor = match (strtolower($statusName)) {
                                                 'trip request' => '#DB9ACA',
@@ -91,24 +100,24 @@
                                         </button>
                                     </td>
                                     <td>
-                                        <a href="{{ route('trip.view', $comvalue->tr_id) }}"><i
+                                        <a href="{{ route('trip.view', $yearvalue->tr_id) }}"><i
                                                 class="fas fa-eye edit_icon_grid"></i></a>
-                                        <a href="{{ route('trip.edit', $comvalue->tr_id) }}"><i
+                                        <a href="{{ route('trip.edit', $yearvalue->tr_id) }}"><i
                                                 class="fas fa-pen edit_icon_grid"></i></a>
                                         <a data-toggle="modal"
-                                            data-target="#delete-product-modal-{{ $comvalue->tr_id }}"><i
+                                            data-target="#delete-product-modal-{{ $yearvalue->tr_id }}"><i
                                                 class="fas fa-trash delete_icon_grid"></i></a>
 
 
                                         <div class="modal fade"
-                                            id="delete-product-modal-{{ $comvalue->tr_id }}"
+                                            id="delete-product-modal-{{ $yearvalue->tr_id }}"
                                             tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                             <div class="modal-dialog modal-sm modal-dialog-centered"
                                                 role="document">
                                                 <div class="modal-content">
                                                     <form id="delete-plan-form"
-                                                        action="{{ route('trip.destroy', $comvalue->tr_id) }}"
+                                                        action="{{ route('trip.destroy', $yearvalue->tr_id) }}"
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')

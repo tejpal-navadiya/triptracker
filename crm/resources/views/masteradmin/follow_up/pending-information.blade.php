@@ -39,19 +39,28 @@
                                     <td>{{ $value->tr_number ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($value->tr_start_date ?? '')->format('M d, Y') }}</td>
                                     <td>
-                                        <?php 
-                                        if (isset($value->trip_status) && $value->trip_status->tr_status_name == 'In Process') {
-                                            $buttonColor = '#F6A96D';
-                                        } else {
-                                            $buttonColor = '';
-                                        }
+                                        @php
+                                            $statusName = $value->trip_status->tr_status_name ?? '';
 
-                                        // Check if trip_status is not null and then access tr_status_name
-                                        $statusName = $value->trip_status->tr_status_name ?? ''; 
+                                            $buttonColor = match (strtolower($statusName)) {
+                                                'trip request' => '#DB9ACA',
+                                                'trip proposal' => '#F6A96D',
+                                                'trip modification' => '#FBC11E',
+                                                'trip accepted' => '#28C76F',
+                                                'trip sold' => '#C5A070',
+                                                'trip lost' => '#F56B62',
+                                                'trip completed' => '#F56B62',
+                                                'trip pending' => '#F6A96D',
+                                                'in process' => '#F6A96D',
+                                            };
+                                        @endphp
 
-                                        echo '<button type="button" class="btn text-white" style="background-color: ' . $buttonColor . ';">' . $statusName . '</button>';
-                                        ?>
+                                        <button type="button" class="btn text-white"
+                                            style="background-color: {{ $buttonColor }};">
+                                            {{ $statusName }}
+                                        </button>
                                     </td>
+
                                     <td>
                                     <a href="{{ route('trip.view', $value->tr_id) }}"><i
                                             class="fas fa-eye edit_icon_grid"></i></a>

@@ -1449,6 +1449,7 @@ class TripController extends Controller
         $access = view()->shared('access');
     
         $user = Auth::guard('masteradmins')->user();
+        $currentDate = Carbon::now();
     
         $trip_agent = $request->input('trip_agent');   
         $trip_traveler = $request->input('trip_traveler');   
@@ -1499,12 +1500,19 @@ class TripController extends Controller
             ])->get();
         }
 
+        $sevenDaysAgo = now()->subDays(7)->format('m/d/Y');
+        $today = now()->format('m/d/Y');
+        $sixMonthsAgo = now()->subMonths(6)->format('m/d/Y'); // 6 months ago
+        $oneYearAgo = now()->addYear()->format('m/d/Y'); // 1 year ago
+        // dd($oneYearAgo);
+
         if($user->users_id && $user->role_id ==0 ){
         $tripQuery = Trip::where('tr_status', 1)
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
             ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-            ->where($tripTable . '.status', 9) // Pending trips
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
             ->with('trip_status')
             ->select([
                 $tripTable . '.*', 
@@ -1519,7 +1527,8 @@ class TripController extends Controller
             ->from($tripTable)
             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
             ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-            ->where($tripTable . '.status', 9) // Pending trips
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+            ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
             ->where(function($query) use ($tripTable, $user, $specificId) {
                 $query->where($tripTable . '.tr_agent_id', $user->users_id)
                     ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
@@ -1545,28 +1554,35 @@ class TripController extends Controller
         if ($tr_number) {
             $tripQuery->where($tripTable . '.tr_number', $tr_number);
         }
-    
+        
         // For the initial page load, fetch the trips
         $trip = $tripQuery->get();
         // dd($trip);
         // If the request is AJAX, return the filtered results
+      
 
       
-      
+        // \DB::enableQueryLog();
+
             if($user->users_id && $user->role_id ==0 ){
                 $tripQueryCompleted = Trip::where('tr_status', 1)
-                    ->from($tripTable)
-                    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-                    ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-                    ->where($tripTable . '.status', 7) // complete trips
-                    ->with('trip_status')
-                    ->select([
-                        $tripTable . '.*', 
-                        $masterUserTable . '.users_first_name', 
-                        $masterUserTable . '.users_last_name' ,
-                        $travelerTable . '.trtm_first_name',  
-                        $travelerTable . '.trtm_last_name' 
-                    ]);
+                ->from($tripTable)
+                ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                ->where($tripTable . '.status', 7) // complete trips
+                ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) 
+                ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])      
+                
+                ->with('trip_status')
+                ->select([
+                    $tripTable . '.*', 
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name' ,
+                    $travelerTable . '.trtm_first_name',  
+                    $travelerTable . '.trtm_last_name' 
+                ]); // Collect IDs for exclusion
+                
+
                 }else{
                     $specificId = $user->users_id;
                     $tripQueryCompleted = Trip::where('tr_status', 1)
@@ -1579,6 +1595,9 @@ class TripController extends Controller
                             ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
                     })
                     ->where($tripTable . '.status', 7) // complete trips
+                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) 
+                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])   
+                        
                     ->with('trip_status')
                     ->select([
                         $tripTable . '.*', 
@@ -1586,15 +1605,160 @@ class TripController extends Controller
                         $masterUserTable . '.users_last_name',
                         $travelerTable . '.trtm_first_name',  
                         $travelerTable . '.trtm_last_name'  
-                    ]);
+                    ]); 
         
                 }
 
+                if ($trip_agent) {
+                    $tripQueryCompleted->where($tripTable . '.tr_agent_id', $trip_agent);
+                }
+            
+                if ($trip_traveler) {
+                    $tripQueryCompleted->where($tripTable . '.tr_traveler_id', $trip_traveler);
+                }
+        
+                if ($tr_number) {
+                    $tripQueryCompleted->where($tripTable . '.tr_number', $tr_number);
+                }
+
+
                 $tripCompleted = $tripQueryCompleted->get();
+                // dd(\DB::getQueryLog()); 
+
+
+                if($user->users_id && $user->role_id ==0 ){
+                    $sixMonthFollowUpQuery = Trip::where('tr_status', 1)
+                        ->from($tripTable)
+                        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                        ->where($tripTable . '.status', 7) // complete trips
+                        // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                        // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo])
+                        ->with('trip_status')
+                        ->select([
+                            $tripTable . '.*', 
+                            $masterUserTable . '.users_first_name', 
+                            $masterUserTable . '.users_last_name' ,
+                            $travelerTable . '.trtm_first_name',  
+                            $travelerTable . '.trtm_last_name' 
+                        ]);
+                    }else{
+                        $specificId = $user->users_id;
+                        $sixMonthFollowUpQuery = Trip::where('tr_status', 1)
+                        ->from($tripTable)
+                        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                        ->where($tripTable . '.id', $user->users_id)
+                        ->where(function($query) use ($tripTable, $user, $specificId) {
+                            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                        })
+                        ->where($tripTable . '.status', 7) // complete trips
+                        // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                        // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo])
+                        ->with('trip_status')
+                        ->select([
+                            $tripTable . '.*', 
+                            $masterUserTable . '.users_first_name', 
+                            $masterUserTable . '.users_last_name',
+                            $travelerTable . '.trtm_first_name',  
+                            $travelerTable . '.trtm_last_name'  
+                        ]);
+            
+                    }
+                    if ($trip_agent) {
+                        $sixMonthFollowUpQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+                    }
+                
+                    if ($trip_traveler) {
+                        $sixMonthFollowUpQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+                    }
+            
+                    if ($tr_number) {
+                        $sixMonthFollowUpQuery->where($tripTable . '.tr_number', $tr_number);
+                    }
+    
+                   
+    
+                    $sixMonthFollowUp = $sixMonthFollowUpQuery->get();
+                    // \DB::enableQueryLog();
+
+                    if($user->users_id && $user->role_id ==0 ){
+                        $oneYearFollowUpQuery = Trip::where('tr_status', 1)
+                            ->from($tripTable)
+                            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                            ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                            ->where($tripTable . '.status', 7) // complete trips
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
+                            // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+          
+                            ->with('trip_status')
+                            ->select([
+                                $tripTable . '.*', 
+                                $masterUserTable . '.users_first_name', 
+                                $masterUserTable . '.users_last_name' ,
+                                $travelerTable . '.trtm_first_name',  
+                                $travelerTable . '.trtm_last_name' 
+                            ]);
+                        }else{
+                            $specificId = $user->users_id;
+                            $oneYearFollowUpQuery = Trip::where('tr_status', 1)
+                            ->from($tripTable)
+                            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                            ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                            ->where($tripTable . '.id', $user->users_id)
+                            ->where(function($query) use ($tripTable, $user, $specificId) {
+                                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                            })
+                            ->where($tripTable . '.status', 7) // complete trips
+                            // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                            // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])  
+                            // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
+                            ->with('trip_status')
+                            ->select([
+                                $tripTable . '.*', 
+                                $masterUserTable . '.users_first_name', 
+                                $masterUserTable . '.users_last_name',
+                                $travelerTable . '.trtm_first_name',  
+                                $travelerTable . '.trtm_last_name'  
+                            ]);
+                
+                        }
+        
+                        if ($trip_agent) {
+                            $oneYearFollowUpQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+                        }
+                    
+                        if ($trip_traveler) {
+                            $oneYearFollowUpQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+                        }
+                
+                        if ($tr_number) {
+                            $oneYearFollowUpQuery->where($tripTable . '.tr_number', $tr_number);
+                        }
+        
+                        $oneYearFollowUp = $oneYearFollowUpQuery->get();
+                        // dd(\DB::getQueryLog()); 
+
+
+
                 // dd($tripCompleted);
+
+        if ($request->ajax()) {
+            
+                return view('masteradmin.follow_up.followupbooked-list', compact('trip', 'agency', 'trip_status','traveller','tripCompleted','sixMonthFollowUp','oneYearFollowUp'))->render();
+            }
     
         // Return the main page view
-        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller','tripCompleted'));
+        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller','tripCompleted','sixMonthFollowUp','oneYearFollowUp'));
     }
 
     public function follow_up_after(Request $request)
@@ -4063,5 +4227,376 @@ public function memberPreferencesStore(Request $request,$id)
     }
 }
 
+
+public function followUpBookgridView(Request $request)
+{
+    $user = Auth::guard('masteradmins')->user();
+    $currentDate = Carbon::now();
+    $currentDateFormatted = $currentDate->format('m/d/Y');
+
+    $startDate = $request->input('start_date'); 
+    $endDate = $request->input('end_date');   
+    $trip_agent = $request->input('trip_agent');   
+    $trip_traveler = $request->input('trip_traveler');   
+    $trip_status1 = $request->input('trip_status');   
+    $tr_number = $request->input('tr_number'); 
+
+    $masterUserDetails = new MasterUserDetails();
+    $masterUserDetails->setTableForUniqueId($user->user_id); 
+    $masterUserTable = $masterUserDetails->getTable();
+
+    // Get agencies based on user role
+    if($user->users_id && $user->role_id == 0){
+        $agency = $masterUserDetails->get(); 
+    } else {
+        $agency = $masterUserDetails->where('users_id', $user->users_id)->get(); 
+    }
+
+    // Get trip data
+    $trips = new Trip();
+    $tripTable = $trips->getTable();
+    $specificId = $user->users_id;
+    $currentDate = now();
+    $traveler = new TripTravelingMember();
+    $travelerTable = $traveler->getTable();
+
+    $sevenDaysAgo = now()->subDays(7)->format('m/d/Y');
+    $today = now()->format('m/d/Y');
+    $sixMonthsAgo = now()->subMonths(6)->format('m/d/Y'); // 6 months ago
+    $oneYearAgo = now()->addYear()->format('m/d/Y'); // 1 year ago
     
+ 
+    // Travelling Trip Query
+    if($user->users_id && $user->role_id == 0 ){
+        // Completed Trip Query
+        // \DB::enableQueryLog();
+
+        $travellingTripQuery = Trip::where('tr_status', 1)
+         ->from($tripTable)
+          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
+          ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+          ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+           ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]);
+
+        // ->where($tripTable . '.status', '=', 7); // Trip Completed
+        // dd(\DB::getQueryLog());
+
+    }else{
+
+        $travellingTripQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+        // ->where($tripTable . '.tr_end_date', '>', $currentDate->format('m/d/Y'))
+
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) ;
+
+        // ->where($tripTable . '.status', '=', 7); // Trip Completed
+    }
+
+    // Apply filters for Travelling Trip Query
+    if ($startDate && !$endDate) {
+    $travellingTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+    } elseif ($startDate && $endDate) {
+    $travellingTripQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+        ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+    }
+
+    if ($trip_agent) {
+    $travellingTripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+    }
+
+    if ($trip_traveler) {
+    $travellingTripQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+    }
+
+    if ($trip_status1) {
+    $travellingTripQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    if ($tr_number) {
+        $travellingTripQuery->where($tripTable . '.tr_number', $tr_number);
+    }
+
+    $travellingTripQuery = $travellingTripQuery->select([
+        $tripTable . '.*',
+        $masterUserTable . '.users_first_name',
+        $masterUserTable . '.users_last_name',
+        $travelerTable . '.trtm_first_name',  
+        $travelerTable . '.trtm_last_name' 
+    ])
+    ->orderBy($tripTable . '.tr_start_date', 'ASC')
+    ->get();
+
+    // Welcome Home 
+
+    if($user->users_id && $user->role_id == 0 ){
+        // Completed Trip Query
+        // \DB::enableQueryLog();
+
+        $welcomeHomeQuery = Trip::where('tr_status', 1)
+         ->from($tripTable)
+          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
+          ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+          ->where($tripTable . '.status', '=', 7)
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) 
+                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today]);   
+          
+        //   ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysFromNow]);
+
+        // ->where($tripTable . '.status', '=', 7); // Trip Completed
+        // dd(\DB::getQueryLog());
+
+    }else{
+
+        $welcomeHomeQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+        // ->where($tripTable . '.tr_end_date', '>', $currentDate->format('m/d/Y'))
+        ->where($tripTable . '.status', '=', 7)
+        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) 
+        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])   ;    
+
+        // ->where($tripTable . '.status', '=', 7); // Trip Completed
+    }
+
+    // Apply filters for welcome home Trip Query
+    if ($startDate && !$endDate) {
+    $welcomeHomeQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+    } elseif ($startDate && $endDate) {
+    $welcomeHomeQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+        ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+    }
+
+    if ($trip_agent) {
+    $welcomeHomeQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+    }
+
+    if ($trip_traveler) {
+    $welcomeHomeQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+    }
+
+    if ($trip_status1) {
+    $welcomeHomeQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    if ($tr_number) {
+        $welcomeHomeQuery->where($tripTable . '.tr_number', $tr_number);
+    }
+
+    $welcomeHomeQuery = $welcomeHomeQuery->select([
+        $tripTable . '.*',
+        $masterUserTable . '.users_first_name',
+        $masterUserTable . '.users_last_name',
+        $travelerTable . '.trtm_first_name',  
+        $travelerTable . '.trtm_last_name' 
+    ])
+    ->orderBy($tripTable . '.tr_start_date', 'ASC')
+    ->get();
+
+
+    //6month follow up
+    $sixMonthsAgo = now()->subMonths(6)->format('m/d/Y');
+     if($user->users_id && $user->role_id == 0 ){
+
+        $sixMonthFollowUpQuery = Trip::where('tr_status', 1)
+         ->from($tripTable)
+          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
+          ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+          ->where($tripTable . '.status', 7) // complete trips
+
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]);
+
+
+
+    }else{
+
+        $sixMonthFollowUpQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->where($tripTable . '.status', 7) // complete trips
+
+            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]);
+    }
+
+    // Apply filters for welcome home Trip Query
+    if ($startDate && !$endDate) {
+    $sixMonthFollowUpQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+    } elseif ($startDate && $endDate) {
+    $sixMonthFollowUpQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+        ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+    }
+
+    if ($trip_agent) {
+    $sixMonthFollowUpQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+    }
+
+    if ($trip_traveler) {
+    $sixMonthFollowUpQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+    }
+
+    if ($trip_status1) {
+    $sixMonthFollowUpQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    if ($tr_number) {
+        $sixMonthFollowUpQuery->where($tripTable . '.tr_number', $tr_number);
+    }
+
+    $sixMonthFollowUpQuery = $sixMonthFollowUpQuery->select([
+        $tripTable . '.*',
+        $masterUserTable . '.users_first_name',
+        $masterUserTable . '.users_last_name',
+        $travelerTable . '.trtm_first_name',  
+        $travelerTable . '.trtm_last_name' 
+    ])
+    ->orderBy($tripTable . '.tr_start_date', 'ASC')
+    ->get();
+
+
+    //1year follow up
+    if($user->users_id && $user->role_id == 0 ){
+        $oneYearFollowUpQuery = Trip::where('tr_status', 1)
+         ->from($tripTable)
+          ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
+          ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+          ->where($tripTable . '.status', 7) // complete trips
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today]); 
+
+
+
+    }else{
+
+        $oneYearFollowUpQuery = Trip::where('tr_status', 1)
+        ->from($tripTable)
+        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+        ->where(function($query) use ($tripTable, $user, $specificId) {
+            $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+            })
+            ->where($tripTable . '.status', 7) // complete trips
+            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today]);
+
+    }
+
+    // Apply filters for welcome home Trip Query
+    if ($startDate && !$endDate) {
+    $oneYearFollowUpQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$startDate]);
+    } elseif ($startDate && $endDate) {
+    $oneYearFollowUpQuery->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$startDate])
+        ->whereRaw("STR_TO_DATE(tr_start_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$endDate]);
+    }
+
+    if ($trip_agent) {
+    $oneYearFollowUpQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+    }
+
+    if ($trip_traveler) {
+    $oneYearFollowUpQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+    }
+
+    if ($trip_status1) {
+    $oneYearFollowUpQuery->where($tripTable . '.status', $trip_status1);
+    }
+
+    if ($tr_number) {
+        $oneYearFollowUpQuery->where($tripTable . '.tr_number', $tr_number);
+    }
+
+    $oneYearFollowUpQuery = $oneYearFollowUpQuery->select([
+        $tripTable . '.*',
+        $masterUserTable . '.users_first_name',
+        $masterUserTable . '.users_last_name',
+        $travelerTable . '.trtm_first_name',  
+        $travelerTable . '.trtm_last_name' 
+    ])
+    ->orderBy($tripTable . '.tr_start_date', 'ASC')
+    ->get();
+
+
+    // Combine all trip queries into one collection
+    $allTripsResults = collect([
+        'Trip Traveling' => $travellingTripQuery,
+        'Welcome Home' => $welcomeHomeQuery,
+        '6 month Review' => $sixMonthFollowUpQuery,
+        '1 year Review' => $oneYearFollowUpQuery,
+    ]);
+
+    // Flatten all trips to get their IDs for the task count query
+    $allTripIds = $allTripsResults->flatten()->pluck('tr_id')->unique();
+
+    // Count the number of tasks for each priority (low, medium, high) for each trip
+    $taskCountByTrip = TripTask::whereIn('tr_id', $allTripIds)
+        ->groupBy('tr_id', 'trvt_priority')
+        ->selectRaw('tr_id, trvt_priority, count(*) as count')
+        ->get();
+
+    $taskCountByTripGrouped = [];
+
+    // Loop through each task count and group by trip ID and valid priority
+    foreach ($taskCountByTrip as $taskCount) {
+        $validPriorities = ['Low', 'Medium', 'High'];  // Valid priorities
+
+        // Ensure that the priority is valid, otherwise skip the task
+        if (in_array($taskCount->trvt_priority, $validPriorities)) {
+            if (!isset($taskCountByTripGrouped[$taskCount->tr_id])) {
+                $taskCountByTripGrouped[$taskCount->tr_id] = [
+                    'Low' => 0,
+                    'Medium' => 0,
+                    'High' => 0,
+                ];
+            }
+
+            // Set the count for the valid priority
+            $taskCountByTripGrouped[$taskCount->tr_id][$taskCount->trvt_priority] = $taskCount->count;
+        }
+    }
+
+    // Add task counts to each trip in the allTripsResults collection
+    $allTripsResults = $allTripsResults->map(function ($group) use ($taskCountByTripGrouped) {
+        return $group->map(function ($trip) use ($taskCountByTripGrouped) {
+            $trip->task_counts = $taskCountByTripGrouped[$trip->tr_id] ?? [
+                'Low' => 0,
+                'Medium' => 0,
+                'High' => 0
+            ];
+            return $trip;
+        });
+    });
+
+    // Sum the total trip values for each group
+    $totalsByStatus = $allTripsResults->map(function ($group) {
+        return $group->sum('tr_value_trip');
+    });
+
+    // Return view
+    if ($request->ajax()) {
+        return view('masteradmin.follow_up.followupbooked-workflow', compact('allTripsResults', 'totalsByStatus'))->render();
+    }
+
+    return view('masteradmin.follow_up.followupbooked-workflow', compact('allTripsResults', 'totalsByStatus'));
 }
+
+
+}
+
