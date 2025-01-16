@@ -882,7 +882,7 @@
 
 
 
-                                                <x-input-label for="tr_desc" :value="__('Description')" />
+                                                <x-input-label for="tr_desc" :value="__('Notes')" />
 
 
 
@@ -890,7 +890,7 @@
 
 
 
-                                                    placeholder="Enter Description" name="tr_desc" autofocus
+                                                    placeholder="Enter Notes" rows="5" cols="50" name="tr_desc" autofocus
 
 
 
@@ -1014,7 +1014,7 @@
 
 
 
-                                                    Household</button>
+                                                    Traveler</button>
 
 
 
@@ -2368,7 +2368,7 @@
 
 
 
-                                                            class="fas fa-plus add_plus_icon"></i>Add Household</button>
+                                                            class="fas fa-plus add_plus_icon"></i>Add Traveler</button>
 
 
 
@@ -3754,7 +3754,7 @@
 
 
 
-                                            <textarea type="text" class="form-control" id="trtm_notes" placeholder="Enter Notes" name="trtm_notes"
+                                            <textarea type="text" rows="8" cols="50" class="form-control" id="trtm_notes" placeholder="Enter Notes" name="trtm_notes"
 
 
 

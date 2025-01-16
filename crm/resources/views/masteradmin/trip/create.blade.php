@@ -424,9 +424,9 @@
 
                                         <div class="form-group">
 
-                                            <x-input-label for="tr_desc" :value="__('Description')" />
+                                            <x-input-label for="tr_desc" :value="__('Notes')" />
 
-                                            <textarea type="text" class="form-control" id="tr_desc" placeholder="Enter Description" name="tr_desc"
+                                            <textarea type="text" rows="5" cols="50" class="form-control" id="tr_desc" placeholder="Enter Notes" name="tr_desc"
 
                                                 autofocus autocomplete="tr_desc">{{ old('tr_desc') }}</textarea>
 
@@ -490,7 +490,7 @@
 
                                                 data-target="#profile" type="button" role="tab"
 
-                                                aria-controls="profile" aria-selected="false">Add Household</button>
+                                                aria-controls="profile" aria-selected="false">Add Traveler</button>
 
                                         </li>
 
@@ -600,7 +600,7 @@
 
                                                     class="add_tripmembertbtn add_btn"><i
 
-                                                        class="fas fa-plus add_plus_icon"></i>Add Household</button>
+                                                        class="fas fa-plus add_plus_icon"></i>Add Traveler</button>
 
                                                         <div id="family-members-container"></div>
 

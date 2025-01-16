@@ -13,10 +13,10 @@
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col">
                             <div class="d-flex">    
-                                <h1 class="m-0">{{ __('Trip Workflow') }}</h1>
+                                <h1 class="m-0">{{ __('Pre Booked Trips Workflow') }}</h1>
                                 <ol class="breadcrumb ml-auto">
                                     <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                    <li class="breadcrumb-item active">{{ __('Trip Workflow') }}</li>
+                                    <li class="breadcrumb-item active">{{ __('Pre Booked Trips Workflow') }}</li>
                                 </ol>
                             </div>
                         <div class="col-auto">
