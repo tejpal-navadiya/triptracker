@@ -34,7 +34,7 @@
       <div class="container-fluid">
     
         <div class="col-lg-12 fillter_box new_fillter_box1">
-            <div class="row align-items-center justify-content-between d-none">
+            <div class="row align-items-center justify-content-between ">
               <div class="col-auto">
                   <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
               </div><!-- /.col -->
@@ -67,10 +67,13 @@
               <div class="col-lg-3 input-group date">
                     <input type="text" class="form-control" id="tr_number" name="tr_number"
                         placeholder="Trip Number" autocomplete="off" />
-                        <input type="hidden" id="tr_id" name="tr_id">
+                        <input type="hidden" id="tr_idName" name="tr_id">
                         <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
                 </div>
-                          
+                <div>
+                <div class="col-auto"><button href="javascript:void(0)" id="createNewTask3" class="reminder_btn">Add
+                Task</button></div>
+                </div>     
               </div>
         </div>
         <div class="card-header d-flex p-0 justify-content-center tab_panal">
@@ -122,7 +125,7 @@
                             <div class="form-group">
                                 <label for="tr_id">Trip Name</label>
                                 <div class="d-flex">
-                                    <select class="form-control select2" style="width: 100%;" id="tr_id"
+                                    <select class="form-control select2" style="width: 100%;" id="tr_ids"
                                         name="tr_id">
                                         <option value="" default>Select Trip Name</option>
                                         @foreach ($trip as $tripvalue)
@@ -324,10 +327,14 @@
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         let typingTimeout;  // Declare a variable to store the timeout I
 
-        const $trIdInput = $("#tr_id");
+        const $trIdInput = $("#tr_idName");
         $input.on("input", function () {
         const query = $(this).val();
-
+        
+        if (query === "") {
+            updateAllTables();
+        }
+        
         if (query.length < 2) {
             $list.empty(); // Clear the list if the query is too short
             return;
@@ -511,7 +518,7 @@
             $('#modelHeadingTask3').html("Add Task");
             $('body').addClass('modal-open');
             $('#task_document').html('');
-            
+            $('#trvt_category').val('').trigger('change.select2');
             $('#statusField').hide(); // Hide status field during add
 
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask3'));
@@ -600,7 +607,27 @@
                     $('#tr_id').val(data.tr_id).trigger('change.select2');
 
                     $('#trvt_agent_id').val(data.trvt_agent_id).trigger('change.select2');
-                    $('#trvt_category').val(data.trvt_category).trigger('change.select2');
+
+                    if (data.trvt_category === '0') {
+
+                        if ($('#trvt_category option[value="0"]').length === 0) {
+
+                            $('#trvt_category').append('<option value="0">System Created</option>');
+
+                        }
+
+                        $('#trvt_category').val('0').trigger('change');
+
+                        } else {
+
+                        $('#trvt_category option[value="0"]').remove();
+
+                        $('#trvt_category').val(data.trvt_category).trigger('change.select2');
+
+                        }
+
+
+                    
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
                     $('#trvt_note').val(data.trvt_note);
@@ -705,7 +732,8 @@
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
-            $('#allTaskDataTable').DataTable().ajax.reload();
+             $('#tr_number').val('');           
+             $('#example11').DataTable().ajax.reload();
         });
 
 
@@ -829,8 +857,29 @@
                     $('#trvt_nameReminder').val(data.trvt_name);
                     
                     $('#trvt_agent_idReminder').val(data.trvt_agent_id).trigger('change.select2');
-                    
+
+
+                    if (data.trvt_category === '0') {
+
+                    if ($('#trvt_categoryReminder option[value="0"]').length === 0) {
+
+                        $('#trvt_categoryReminder').append('<option value="0">System Created</option>');
+
+                    }
+
+                    $('#trvt_categoryReminder').val('0').trigger('change');
+
+                    } else {
+
+                    $('#trvt_categoryReminder option[value="0"]').remove();
+
                     $('#trvt_categoryReminder').val(data.trvt_category).trigger('change.select2');
+
+                    }
+
+
+                    
+                    // $('#trvt_categoryReminder').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_datereminder').val(data.trvt_date);
                     $('#trvt_due_dateReminder').val(data.trvt_due_date);
                     $('#trvt_noteReminder').val(data.trvt_note);
@@ -937,7 +986,8 @@
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
-            $('#example15').DataTable().ajax.reload();
+             $('#tr_number').val('');    
+             $('#example15').DataTable().ajax.reload();
         });
 
     

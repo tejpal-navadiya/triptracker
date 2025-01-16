@@ -27,7 +27,7 @@
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
                 <div class="col-lg-12 fillter_box new_fillter_box1">
-                        <div class="row align-items-center justify-content-between d-none">
+                        <div class="row align-items-center justify-content-between ">
                             <div class="col-auto">
                                 <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
                             </div><!-- /.col -->
@@ -194,6 +194,11 @@
         $input.on("input", function () {
         const query = $(this).val();
 
+        if (query === "") {
+        fetchFilteredData(); // Fetch all data if the input is cleared
+        fetchFilteredData1(); // Fetch additional data if the input is cleared
+    }
+
         if (query.length < 2) {
             $list.empty(); // Clear the list if the query is too short
             return;
@@ -202,45 +207,50 @@
         clearTimeout(typingTimeout);
         // Set a new timeout for 5 seconds (5000ms)
         typingTimeout = setTimeout(function () {
-            $.ajax({
-                url: "{{ route('trip.number.autocomplete') }}", // Use named route
-                method: "GET",
-                data: { query: query },
-                dataType: "json",
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken  // Send the CSRF token in the header
-                },
-                success: function (data) {
-                    $list.empty(); // Clear previous suggestions
-                    if (data.length > 0) {
-                        // Display matching results
-                        data.forEach(function (traveler) {
-                            const $item = $("<div>")
-                                .addClass("list-group-item")
-                                .text(traveler.tr_number)
-                                .on("click", function () {
-                                    // Set input values and other fields on click
-                                    $input.val(traveler.tr_number);
-                                    $trIdInput.val(traveler.tr_id);
-                                    $list.empty(); // Clear suggestions
-                                    fetchFilteredData();
-                                    fetchFilteredData1();
-                                });
-                            $list.append($item); // Append the item to the list
+    const query = $input.val().trim(); // Get the trimmed value of the input field
+   
+    $.ajax({
+        url: "{{ route('trip.number.autocomplete') }}",
+        method: "GET",
+        data: { query: query },
+        dataType: "json",
+        headers: {
+            'X-CSRF-TOKEN': csrfToken  // Send the CSRF token in the header
+        },
+        success: function (data) {
+            $list.empty(); // Clear previous suggestions
+            if (data.length > 0) {
+                // Display matching results
+                data.forEach(function (traveler) {
+                    const $item = $("<div>")
+                        .addClass("list-group-item")
+                        .text(traveler.tr_number)
+                        .on("click", function () {
+                            // Set input values and other fields on click
+                            $input.val(traveler.tr_number);
+                            $trIdInput.val(traveler.tr_id);
+                            $list.empty(); // Clear suggestions
+                            fetchFilteredData();
+                            fetchFilteredData1();
                         });
-                    } else {
-                        // No results found, display "Add Item" button
-                        const $addButton = $("<div>")
-                            .addClass("list-group-item text-primary")
-                            .text(`Not found Trip Number`);
-                        $list.append($addButton);
-                    }
-                },
-                error: function () {
-                    console.error("Error fetching trip number");
-                }
-            });
-        }, 1500); 
+                    $list.append($item); // Append the item to the list
+                });
+            } else {
+                // No results found, display "Add Item" button
+                const $addButton = $("<div>")
+                    .addClass("list-group-item text-primary")
+                    .text(`Not found Trip Number`);
+                $list.append($addButton);
+            }
+        },
+        error: function () {
+            console.error("Error fetching trip number");
+        }
+    });
+
+    
+}, 1500);
+
         });
 
         var defaultStartDate = "";
@@ -391,6 +401,7 @@
             $('#trip_traveler').val('').trigger('change');
             $('#trip_status').val('').trigger('change');
 
+            $('#tr_number').val('');
             // Clear datepicker fields
             const fromDatePicker = flatpickr("#from-datepicker", {
                 locale: 'en',
@@ -421,8 +432,6 @@
 
             todatepicker.clear();
 
-            fetchFilteredData();
-            fetchFilteredData1();
         }
 
        

@@ -265,7 +265,7 @@
             $('#modelHeadingTask').html("Add Task");
             $('body').addClass('modal-open');
             $('#task_document').html('');
-
+            $('#trvt_category').val('').trigger('change.select2');
             $('#statusField').hide(); // Hide status field during add
 
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));

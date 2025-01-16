@@ -124,7 +124,7 @@
                                 <div class="d-flex">
                                     <select class="form-control select2" style="width: 100%;" id="trvt_category"
                                         name="trvt_category">
-                                        <option default>Select Category</option>
+                                        <option value="" default>Select Category</option>
                                         @foreach ($taskCategory as $taskcat)
                                             <option value="{{ $taskcat->task_cat_id }}">{{ $taskcat->task_cat_name }}
                                             </option>
@@ -325,7 +325,7 @@
             $('#modelHeadingTask').html("Add Task");
             $('body').addClass('modal-open');
             $('#task_document').html('');
-
+            $('#trvt_category').val('').trigger('change.select2');
             $('#statusField').hide(); // Hide status field during add
 
             var editModal = new bootstrap.Modal(document.getElementById('ajaxModelTask'));
@@ -430,7 +430,26 @@
                     $('#trvt_id').val(data.trvt_id);
                     $('#trvt_name').val(data.trvt_name);
                     $('#trvt_agent_id').val(data.trvt_agent_id).trigger('change.select2');
+
+                    if (data.trvt_category === '0') {
+
+                    if ($('#trvt_category option[value="0"]').length === 0) {
+
+                        $('#trvt_category').append('<option value="0">System Created</option>');
+
+                    }
+
+                    $('#trvt_category').val('0').trigger('change');
+
+                    } else {
+
+                    $('#trvt_category option[value="0"]').remove();
+
                     $('#trvt_category').val(data.trvt_category).trigger('change.select2');
+
+                    }
+
+                    // $('#trvt_category').val(data.trvt_category).trigger('change.select2');
                     $('#trvt_date').val(data.trvt_date);
                     $('#trvt_due_date').val(data.trvt_due_date);
                     $('#trvt_note').val(data.trvt_note);

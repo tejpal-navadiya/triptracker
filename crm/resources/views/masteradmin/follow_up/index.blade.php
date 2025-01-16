@@ -35,7 +35,7 @@
         <div class="container-fluid">
 
             <div class="col-lg-12 fillter_box new_fillter_box1">
-                <div class="row align-items-center justify-content-between d-none">
+                <div class="row align-items-center justify-content-between ">
                     <div class="col-auto">
                         <p class="m-0 filter-text"><i class="fas fa-solid fa-filter"></i>Filters</p>
                     </div><!-- /.col -->
@@ -121,6 +121,11 @@
         const $trIdInput = $("#tr_id");
         $input.on("input", function () {
         const query = $(this).val();
+
+        if (query === "") {
+            pendingDataTable1(); // Fetch all data if the input is cleared
+            completedDatatable1(); // Fetch additional data if the input is cleared
+        }
 
         if (query.length < 2) {
             $list.empty(); // Clear the list if the query is too short
