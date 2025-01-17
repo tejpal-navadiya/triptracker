@@ -1,5 +1,5 @@
 <div id="filter_data">
-<div class="card-header d-flex p-0 justify-content-center tab_panal">
+<div class="card-header d-flex p-0 justify-content-center tab_panal mt-4">
     <ul class="nav nav-pills p-2 tab_box tab_box12">
         <li class="nav-item">
             <a class="nav-link active" href="#inprocessTrip" data-toggle="tab" data-tab="pending">Trip Traveling</a>

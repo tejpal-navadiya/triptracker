@@ -82,6 +82,8 @@
                                     </div>
                                 </div>
 
+                             
+
                                 <div class="col-lg-4 input-group date">
                                     <x-flatpickr id="to-datepicker" placeholder="To" />
                                     <div class="input-group-append">
@@ -102,12 +104,27 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="col-lg-4 input-group date">
+
+                            <div class="col-lg-3 input-group date px-10">
+                                <div class="flatpickr-container">
+                                    <input type="text" class="form-control" id="tr_number" name="tr_number"
+                                        placeholder="Trip Number" autocomplete="off" />
+                                    <input type="hidden" id="tr_id" name="tr_id">
+                                    <div id="autocomplete-list" class="list-group position-absolute mt-0" style="z-index: 1000;"></div>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="clear-icon">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                </div>
+                            </div>
+                                                    
+                        <!-- <div class="col-lg-4 input-group date">
                             <input type="text" class="form-control" id="tr_number" name="tr_number"
                                 placeholder="Trip Number" autocomplete="off" />
                                 <input type="hidden" id="tr_id" name="tr_id">
                                 <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
-                        </div>
+                        </div> -->
 
                         </div>
                        
@@ -531,6 +548,13 @@
 
        
 
+        $('#clear-icon').click(function() {
+            // Clear the tr_number input field
+            $('#tr_number').val('');
+            fetchFilteredData();
+            fetchFilteredData1();
+ 
+        });
 
 // Set default active view to Grid View
 setTimeout(function () {

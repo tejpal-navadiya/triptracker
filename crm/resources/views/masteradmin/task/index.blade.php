@@ -64,14 +64,27 @@
                       @endforeach
                   </select>
               </div>
-              <div class="col-lg-3 input-group date">
+              <!-- <div class="col-lg-3 input-group date">
                     <input type="text" class="form-control" id="tr_number" name="tr_number"
                         placeholder="Trip Number" autocomplete="off" />
                         <input type="hidden" id="tr_idName" name="tr_id">
                         <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
+                </div> -->
+                <div class="col-lg-3 input-group date px-10">
+                    <div class="flatpickr-container">
+                        <input type="text" class="form-control" id="tr_number" name="tr_number"
+                            placeholder="Trip Number" autocomplete="off" />
+                            <input type="hidden" id="tr_idName" name="tr_id">
+                        <div id="autocomplete-list" class="list-group position-absolute mt-0" style="z-index: 1000;"></div>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="clear-icon">
+                            <i class="fa fa-times"></i>
+                        </span>
+                    </div>
                 </div>
                 <div>
-                <div class="col-auto"><button href="javascript:void(0)" id="createNewTask3" class="reminder_btn">Add
+                <div class="col-auto px-10"><button href="javascript:void(0)" id="createNewTask3" class="reminder_btn">Add
                 Task</button></div>
                 </div>     
               </div>
@@ -736,6 +749,13 @@
              $('#example11').DataTable().ajax.reload();
         });
 
+        $('#clear-icon').click(function() {
+            // Clear the tr_number input field
+            $('#tr_number').val('');
+            $('#example11').DataTable().ajax.reload();
+            $('#allTaskDataTable').DataTable().ajax.reload();
+ 
+        });
 
 
     });

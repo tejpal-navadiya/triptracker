@@ -748,9 +748,9 @@ class TripController extends Controller
             if (!empty($tripTypes)) {
                 foreach ($tripTypes as $tripTypeId => $tripTypeEntries) {
                     foreach ($tripTypeEntries as $entry) {
-                        $tripTypeText = $entry['trip_type_text'];
-                        $tripTypeConfirmation = $entry['trip_type_confirmation'];
-                        $tripTypeName = $entry['trip_type_name'];
+                        $tripTypeText = $entry['trip_type_text'] ?? '';
+                        $tripTypeConfirmation = $entry['trip_type_confirmation'] ?? '';
+                        $tripTypeName = $entry['trip_type_name'] ?? '';
 
                         $typeOfTrip = new TypeOfTrip();
                         $tableNameType = $typeOfTrip->getTable();
@@ -1503,7 +1503,7 @@ class TripController extends Controller
         $sevenDaysAgo = now()->subDays(7)->format('m/d/Y');
         $today = now()->format('m/d/Y');
         $sixMonthsAgo = now()->subMonths(6)->format('m/d/Y'); // 6 months ago
-        $oneYearAgo = now()->addYear()->format('m/d/Y'); // 1 year ago
+        $oneYearAgo = now()->subYear()->format('m/d/Y'); // 1 year ago
         // dd($oneYearAgo);
 
         if($user->users_id && $user->role_id ==0 ){
@@ -1632,10 +1632,8 @@ class TripController extends Controller
                         ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
                         ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
                         ->where($tripTable . '.status', 7) // complete trips
-                        // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
-                        // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
                         ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
-                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) // Exclude 7 days data
                         ->with('trip_status')
                         ->select([
                             $tripTable . '.*', 
@@ -1659,7 +1657,7 @@ class TripController extends Controller
                         // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
                         // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
                         ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
-                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo])
+                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) // Exclude 7 days data
                         ->with('trip_status')
                         ->select([
                             $tripTable . '.*', 
@@ -1685,7 +1683,7 @@ class TripController extends Controller
                    
     
                     $sixMonthFollowUp = $sixMonthFollowUpQuery->get();
-                    // \DB::enableQueryLog();
+                    //\DB::enableQueryLog();
 
                     if($user->users_id && $user->role_id ==0 ){
                         $oneYearFollowUpQuery = Trip::where('tr_status', 1)
@@ -1693,8 +1691,8 @@ class TripController extends Controller
                             ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
                             ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
                             ->where($tripTable . '.status', 7) // complete trips
-                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
-                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo]) // Exclude 6 months data
                             // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
           
                             ->with('trip_status')
@@ -1720,8 +1718,9 @@ class TripController extends Controller
                             // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
                             // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today])  
                             // ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
-                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
-                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today])
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+                            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
+                        
                             ->with('trip_status')
                             ->select([
                                 $tripTable . '.*', 
@@ -1747,6 +1746,7 @@ class TripController extends Controller
         
                         $oneYearFollowUp = $oneYearFollowUpQuery->get();
                         // dd(\DB::getQueryLog()); 
+                        
 
 
 
@@ -4263,7 +4263,7 @@ public function followUpBookgridView(Request $request)
     $sevenDaysAgo = now()->subDays(7)->format('m/d/Y');
     $today = now()->format('m/d/Y');
     $sixMonthsAgo = now()->subMonths(6)->format('m/d/Y'); // 6 months ago
-    $oneYearAgo = now()->addYear()->format('m/d/Y'); // 1 year ago
+    $oneYearAgo = now()->subYear()->format('m/d/Y'); // 1 year ago
     
  
     // Travelling Trip Query
@@ -4345,7 +4345,7 @@ public function followUpBookgridView(Request $request)
           ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
           ->where($tripTable . '.status', '=', 7)
           ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) 
-                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today]);   
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$today]);   
           
         //   ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') = STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysFromNow]);
 
@@ -4404,19 +4404,21 @@ public function followUpBookgridView(Request $request)
     ->orderBy($tripTable . '.tr_start_date', 'ASC')
     ->get();
 
+    
 
     //6month follow up
     $sixMonthsAgo = now()->subMonths(6)->format('m/d/Y');
      if($user->users_id && $user->role_id == 0 ){
+        // \DB::enableQueryLog();
 
         $sixMonthFollowUpQuery = Trip::where('tr_status', 1)
          ->from($tripTable)
           ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
           ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
           ->where($tripTable . '.status', 7) // complete trips
-
           ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
-          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]);
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]) ;// Exclude 7 days data
+     
 
 
 
@@ -4431,9 +4433,9 @@ public function followUpBookgridView(Request $request)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
             ->where($tripTable . '.status', 7) // complete trips
-
             ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo])
-                        ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]);
+            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sevenDaysAgo]); // Exclude 7 days data
+       
     }
 
     // Apply filters for welcome home Trip Query
@@ -4470,6 +4472,7 @@ public function followUpBookgridView(Request $request)
     ->orderBy($tripTable . '.tr_start_date', 'ASC')
     ->get();
 
+    // dd(\DB::getQueryLog()); 
 
     //1year follow up
     if($user->users_id && $user->role_id == 0 ){
@@ -4478,8 +4481,8 @@ public function followUpBookgridView(Request $request)
           ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id') 
           ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
           ->where($tripTable . '.status', 7) // complete trips
-          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
-          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today]); 
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+          ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo]);
 
 
 
@@ -4494,8 +4497,8 @@ public function followUpBookgridView(Request $request)
                 ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
             ->where($tripTable . '.status', 7) // complete trips
-            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') <= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
-                    ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$today]);
+            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$oneYearAgo])
+            ->whereRaw("STR_TO_DATE($tripTable.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$sixMonthsAgo]);
 
     }
 

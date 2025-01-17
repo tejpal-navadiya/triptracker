@@ -68,13 +68,27 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3 input-group date">
+                    <!-- <div class="col-lg-3 input-group date">
                     <input type="text" class="form-control" id="tr_number" name="tr_number"
                         placeholder="Trip Number" autocomplete="off" />
                         <input type="hidden" id="tr_id" name="tr_id">
                         <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
+                </div> -->
+                <div class="col-lg-3 input-group date px-10">
+                    <div class="flatpickr-container">
+                        <input type="text" class="form-control" id="tr_number" name="tr_number"
+                            placeholder="Trip Number" autocomplete="off" />
+                        <input type="hidden" id="tr_id" name="tr_id">
+                        <div id="autocomplete-list" class="list-group position-absolute mt-0" style="z-index: 1000;"></div>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="clear-icon">
+                            <i class="fa fa-times"></i>
+                        </span>
+                    </div>
                 </div>
-                <div class="col-lg-3 d-flex justify-content-end align-items-center">
+
+                <div class="col-lg-3 d-flex justify-content-end align-items-center mt-4">
                     <a id="listViewBtn" href="#list-info" class="btn btn-outline-secondary custom-margin me-2">
                         <i class="fas fa-list"></i>
                     </a>
@@ -286,6 +300,15 @@
             $('#trip_traveler').val('').trigger('change');
             $('#tr_number').val('');
         }
+
+        $('#clear-icon').click(function() {
+            // Clear the tr_number input field
+            $('#tr_number').val('');
+            fetchFilteredData();
+            fetchFilteredData1();
+ 
+        });
+
 
 
     // Event Listener: Load List View when listViewBtn is clicked

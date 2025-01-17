@@ -93,12 +93,20 @@
                                 
                             </div>
 
-                            <div class="col-lg-6 input-group date">
-                                <input type="text" class="form-control" id="tr_number" name="tr_number"
-                                    placeholder="Trip Number" autocomplete="off" />
+                            <div class="col-lg-6 input-group date px-10">
+                                <div class="flatpickr-container">
+                                    <input type="text" class="form-control" id="tr_number" name="tr_number"
+                                        placeholder="Trip Number" autocomplete="off" />
                                     <input type="hidden" id="tr_id" name="tr_id">
-                                    <div id="autocomplete-list" class="list-group position-absolute" style="z-index: 1000;"></div>
+                                    <div id="autocomplete-list" class="list-group position-absolute mt-0" style="z-index: 1000;"></div>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="clear-icon">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                </div>
                             </div>
+
                           
 
                             <div class="col-lg-3 col-1024 col-md-6 px-10 d-flex new-space-remove">                               
@@ -318,6 +326,7 @@
         $('.filter-text').on('click', function(e) {
             e.preventDefault();
             clearFilters();
+
         });
 
 
@@ -434,7 +443,13 @@
 
         }
 
-       
+        $('#clear-icon').click(function() {
+            // Clear the tr_number input field
+            $('#tr_number').val('');
+            fetchFilteredData();
+            fetchFilteredData1();
+ 
+        });
 
     // Set default active view to Grid View
       setTimeout(function () {
