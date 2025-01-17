@@ -211,6 +211,25 @@ class HomeController extends Controller
         $userModel = new MasterUserDetails();
         $userModel->setTableForUniqueId($user->user_id); 
         $totalUserCount = $userModel->where('users_email', '!=', $user->users_email)->count();
+        
+        $tripQuery = Trip::where('tr_status', 1)->where('id', $user->users_id);
+        $trip = $tripQuery->get();
+
+        $masterUserDetails = new MasterUserDetails();
+        $masterUserDetails->setTableForUniqueId($user->user_id);
+        $tableName = $masterUserDetails->getTable();
+        if($user->users_id && $user->role_id == 0 ){
+            $agency_user = $masterUserDetails->get(); 
+        }else{
+            $agency_user = $masterUserDetails->where('users_id' , $user->users_id)->get(); 
+        }
+
+        if($user->users_id && $user->role_id ==0 ){
+            $taskCategory = TaskCategory::where('task_cat_status', 1)->get();
+        }else{
+            $taskCategory = TaskCategory::where('task_cat_status', 1)->where('id', $user->users_id)->get();
+        }
+        $taskstatus = TaskStatus::all();
 
         return view('masteradmin.auth.home', compact('monthlyData',
         'totalTrips',
@@ -223,7 +242,7 @@ class HomeController extends Controller
         'requestPercentage',
         'bookedPercentage',
         'totalRequests',
-        'totalBooked','travelercount'));
+        'totalBooked','travelercount','trip','agency_user','taskCategory','taskstatus'));
     }
 
     public function incompleteDetailshome(Request $request)
@@ -328,13 +347,13 @@ class HomeController extends Controller
                     $btn = '';
     
                     if(isset($access['task_details']) && $access['task_details']) {
-                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTaskreminder"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
+                        $btn .= '<a data-id="'.$members->trvt_id.'" data-toggle="tooltip" data-original-title="Edit Role" class="editTask"><i class="fas fa-pen-to-square edit_icon_grid"></i></a>';
                     }
                     
                     if (isset($access['task_details']) && $access['task_details']) {
-                        $btn .= '<a data-toggle="modal" data-target="#delete-role-modalreminder-' . $members->trvt_id . '">
+                        $btn .= '<a data-toggle="modal" data-target="#delete-role-modal-' . $members->trvt_id . '">
                                     <i class="fas fa-trash delete_icon_grid"></i>
-                                    <div class="modal fade" id="delete-role-modalreminder-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal fade" id="delete-role-modal-' . $members->trvt_id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body pad-1 text-center">
@@ -342,7 +361,7 @@ class HomeController extends Controller
                                                     <p class="company_business_name px-10"><b>Delete Task </b></p>
                                                     <p class="company_details_text px-10">Are You Sure You Want to Delete This Task ?</p>
                                                     <button type="button" class="add_btn px-15" data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="delete_btn px-15 deleteTaskbtnreminder" data-id=' . $members->trvt_id . '>Delete</button>
+                                                    <button type="submit" class="delete_btn px-15 deleteTaskbtn" data-id=' . $members->trvt_id . '>Delete</button>
                                                 </div>
                                             </div>
                                         </div>

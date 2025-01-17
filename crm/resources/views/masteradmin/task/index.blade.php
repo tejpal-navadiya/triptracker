@@ -330,6 +330,8 @@
 
         //  var table = $('#example15').DataTable();
         // table.destroy();
+
+        
         function updateAllTables() { 
             if (allTableList) allTableList.ajax.reload(); 
             if (table) table.ajax.reload();
