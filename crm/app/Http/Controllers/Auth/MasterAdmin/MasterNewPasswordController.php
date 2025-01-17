@@ -26,7 +26,8 @@ class MasterNewPasswordController extends Controller
         // dd($request);
         $email = $request->query('email');
         $token = $request->route('token'); 
-        return view('masteradmin.auth.reset-password', ['email' => $email,'token' => $token]);
+        $user_id = $request->query('user_id'); 
+        return view('masteradmin.auth.reset-password', ['email' => $email,'token' => $token, 'user_id' => $user_id]);
     }
 
     /**
@@ -36,7 +37,7 @@ class MasterNewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // dd($request);
+       // dd($request);
         $request->validate([
             'token' => ['required'],
             'user_email' => ['required', 'email'],
@@ -72,10 +73,10 @@ class MasterNewPasswordController extends Controller
             // $user = MasterUser::where('user_email', $request->user_email)
             // ->update(['user_password' => Hash::make($request->user_password)]);
             $userDetails = new MasterUserDetails();
-            $userDetails->setTableForUniqueId($users->buss_unique_id);
+            $userDetails->setTableForUniqueId($request->user_id);
 
             $user = $userDetails->where('users_email', $request->user_email)
-            ->where('user_id', $users->buss_unique_id )
+            ->where('user_id', $request->user_id )
             ->update(['users_password' => Hash::make($request->user_password)]);
             
 

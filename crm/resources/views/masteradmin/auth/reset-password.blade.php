@@ -7,7 +7,7 @@
 
         <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $token }}">
-        
+        <input type="hidden" name="user_id" value="{{ $user_id }}">
         <!-- Email Address -->
         <div class="input-group mb-3">
           <div class="input-group-append">

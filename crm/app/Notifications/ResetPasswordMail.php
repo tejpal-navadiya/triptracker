@@ -12,6 +12,8 @@ class ResetPasswordMail extends Mailable
     public $token;
     public $email;
 
+    public $user_id;
+
     /**
      * Create a new message instance.
      *
@@ -19,11 +21,12 @@ class ResetPasswordMail extends Mailable
      * @param  string  $email
      * @return void
      */
-    public function __construct($token, $email)
+    public function __construct($token, $email,$user_id)
     {   
         // dd($email);
         $this->token = $token;
         $this->email = $email;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -33,7 +36,7 @@ class ResetPasswordMail extends Mailable
      */
     public function build()
     {
-        $url = url(config('app.url') .'/'. config('global.businessAdminURL') . '/reset-password/' . $this->token . '?email=' . urlencode($this->email));
+        $url = url(config('app.url') .'/'. config('global.businessAdminURL') . '/reset-password/' . $this->token . '?email=' . urlencode($this->email).'&user_id=' . urlencode($this->user_id));
         //$logoUrl = url('public/dist/img/logo.png');
 
         return $this->view('components.forgot_password_mail')

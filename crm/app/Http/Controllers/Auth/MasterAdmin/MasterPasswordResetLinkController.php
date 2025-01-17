@@ -83,7 +83,7 @@ class MasterPasswordResetLinkController extends Controller
     
        // Send the email
         try {
-            Mail::to($email)->send(new ResetPasswordMail($token, $email));
+            Mail::to($email)->send(new ResetPasswordMail($token, $email,$user_id));
             return back()->with(['forgotpassword-link-success' =>__('messages.masteradmin.forgot-password.link_send_success')]);
         } catch (\Exception $e) {
             return back()->with(['forgotpassword-link-error' =>__('messages.masteradmin.forgot-password.link_send_error')]);
