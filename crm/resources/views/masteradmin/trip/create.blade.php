@@ -1320,28 +1320,6 @@
 
 
 
-                var birthdatedate = flatpickr("#birthdate_date", {
-
-                    locale: 'en',
-
-                    altInput: true,
-
-                    dateFormat: "m/d/Y",
-
-                    altFormat: "m/d/Y",
-
-                    allowInput: true,
-
-                });
-
-
-
-                document.getElementById('birthdate-hidden-icon').addEventListener('click', function() {
-
-                    birthdatedate.open();
-
-                });
-
 
 
             });
@@ -1706,71 +1684,51 @@
 
         
 
-         <script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-        document.addEventListener('DOMContentLoaded', function() {
-
-          var birthdatedate = flatpickr("#birthdate_date", {
-
-                    locale: 'en',
-
-                    altInput: true,
-
-                    dateFormat: "m/d/Y",
-
-                    altFormat: "m/d/Y",
-
-                    allowInput: true,
-
-                });
-
-
-
-                document.getElementById('birthdate-hidden-icon').addEventListener('click', function() {
-
-                    birthdatedate.open();
-
-                });
-
-                var birthdateInput = document.querySelector('#birthdate_date');
-
-                var ageInput = document.querySelector('#tr_age');
-
-
-
-                birthdateInput.addEventListener('change', function() {
-
-                    var birthdate = new Date(birthdateInput.value);
-
-                    var today = new Date();
-
-                    var age = today.getFullYear() - birthdate.getFullYear();
-
-                    var m = today.getMonth() - birthdate.getMonth();
-
-                    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
-
-                        age--;
-
-                    }
-
-                    if (age < 0) {
-
-                        ageInput.value = 0;
-
-                        // alert("Invalid birthdate. Please enter a valid birthdate.");
-
-                    } else {
-
-                        ageInput.value = age;
-
-                    }
-
-                });
-
+        // Initialize the birthdate flatpickr after the modal is shown
+        $('#addTravelerModal').on('shown.bs.modal', function () {
+            var birthdatedate = flatpickr("#birthdate_date", {
+                locale: 'en',
+                altInput: true,  // Show the alternative input
+                dateFormat: "m/d/Y",  // Format for the main input field
+                altFormat: "m/d/Y",   // Format for the alt input (shown to the user)
+                allowInput: true,      // Allow manual input in the field
             });
 
-        </script>
+            // Open the calendar when the hidden icon is clicked
+            document.getElementById('birthdate-hidden-icon').addEventListener('click', function() {
+                birthdatedate.open();
+            });
+
+            var birthdateInput = document.querySelector('#birthdate_date');
+            var ageInput = document.querySelector('#tr_age');
+
+            // Event listener to calculate age when birthdate is changed
+            birthdateInput.addEventListener('change', function() {
+                var birthdate = new Date(birthdateInput.value);
+                var today = new Date();
+                var age = today.getFullYear() - birthdate.getFullYear();
+                var m = today.getMonth() - birthdate.getMonth();
+
+                if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                    age--;
+                }
+
+                if (age < 0) {
+                    ageInput.value = 0;
+                    // Optionally, alert for invalid date
+                    // alert("Invalid birthdate. Please enter a valid birthdate.");
+                } else {
+                    ageInput.value = age;
+                }
+            });
+        });
+
+    });
+</script>
+
 
         
 
