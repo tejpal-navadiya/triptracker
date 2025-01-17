@@ -12,10 +12,10 @@
                     <div class="row mb-2 align-items-center justify-content-between">
                         <div class="col">
                             <div class="d-flex">  
-                            <h1 class="m-0">Email Templates</h1>
+                            <h1 class="m-0">Add Email Templates</h1>
                             <ol class="breadcrumb ml-auto">
                                 <li class="breadcrumb-item"><a href="{{ route('masteradmin.home') }}">Analytics</a></li>
-                                <li class="breadcrumb-item active">Email Templates</li>
+                                <li class="breadcrumb-item active">Add Email Templates</li>
                             </ol>
                             </div>
                         </div><!-- /.col -->

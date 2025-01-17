@@ -159,7 +159,7 @@
             dom: '<"mb-3"<l<fB>>>rt<"row"<i><p>>',
             buttons: [
                 {
-                    text: '<i class="fas fa-plus"></i> Add Email Category',
+                    text: '<i class="fas fa-plus"></i> Add Task Category',
                     action: function (e, dt, node, config) {
                         window.location.href = "{{ route('task-category.create') }}";
                     },
