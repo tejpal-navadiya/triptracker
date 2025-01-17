@@ -225,7 +225,7 @@
     <div class="small-box bg-customers-new1" style="background: #00CFE8;">
       
       <div><p class="total_text">Total Travelers</p>
-      <h3 class="customer_total">{{$totalTrips}}</h3>
+      <h3 class="customer_total">{{$travelercount}}</h3>
 </div>
       <svg width="70" height="56" viewBox="0 0 70 56" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_408_827)">

@@ -6712,7 +6712,7 @@ mainDeleteButton.addEventListener('click', function() {
 
 
 
-                                .text(`+ Add New Item "${query}"`)
+                                .text(`+ Add New Traveler "${query}"`)
 
 
 

@@ -188,6 +188,25 @@ class HomeController extends Controller
             $monthlyData[] = $completedTrips[$i] ?? 0;
         }
 
+
+        if ($user->users_id && $user->role_id == 0) {
+            $travelercountQuery = TripTravelingMember::where('trtm_status', 1)
+            ->where('lead_status', 1);
+                // ->leftjoin($masterUserTable, $tripTable . '.trtm_agent_id', '=', $masterUserTable . '.users_id');
+        } else {
+            $travelercountQuery = TripTravelingMember::where('trtm_status', 1)
+            ->where('lead_status', 1)
+            ->where(function ($query) use ($user) {
+                // Filtering trips based on the user being either the agent or traveler
+                $query->where('trtm_agent_id', $user->users_id)
+                      ->orWhere('id', $user->users_id);  // Assuming traveler is identified by user ID in the trip
+            });
+        }
+        
+        // Perform count on the query without selecting unnecessary fields
+        $travelercount = $travelercountQuery->count();
+        
+
       // Fetch the total user count
         $userModel = new MasterUserDetails();
         $userModel->setTableForUniqueId($user->user_id); 
@@ -204,7 +223,7 @@ class HomeController extends Controller
         'requestPercentage',
         'bookedPercentage',
         'totalRequests',
-        'totalBooked'));
+        'totalBooked','travelercount'));
     }
 
     public function incompleteDetailshome(Request $request)

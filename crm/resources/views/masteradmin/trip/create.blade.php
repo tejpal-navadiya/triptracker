@@ -2094,7 +2094,7 @@ $input.on("input", function () {
 
                         .addClass("list-group-item text-primary")
 
-                        .text(`+ Add New Item "${query}"`)
+                        .text(`+ Add New Traveler "${query}"`)
 
                         .on("click", function () {
 

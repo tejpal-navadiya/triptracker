@@ -8,7 +8,7 @@
 
             <table class="table card-body-table" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td><p class="company_business_name">Name :{{ $trip->trtm_first_name ?? '' }}</p></td>
+                    <td><p class="company_business_name">Name : {{ $trip->trtm_first_name ?? '' }}</p></td>
                 </tr>
                 <tr>
                     <td><p class="company_business_name">Email Address : {{ $trip->tr_email ?? '' }}</p></td>

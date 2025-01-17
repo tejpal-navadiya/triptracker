@@ -30,6 +30,7 @@ class UserLoggedInListener
         // dd($request->all());
             if (Auth::guard('masteradmins')->check()) {
                 $user = session('user_details');
+                
                 if (!session()->has('user_configured')) {
                //dd($user);
                 session()->flash('alert-configured-data', "We're currently configuring your data. Please wait a few moments.");
