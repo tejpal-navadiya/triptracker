@@ -14,7 +14,7 @@ use App\Models\TaskStatus;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use App\Models\TripTravelingMember;
-
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 
 class TripTaskController extends Controller
@@ -403,6 +403,7 @@ class TripTaskController extends Controller
         $trip = $tripQuery->get();
       //  dd($trip);
         // dd($request->ajax());
+        
         if ($request->ajax()) {
             try {
             $masterUserDetails = new MasterUserDetails();
@@ -534,7 +535,7 @@ class TripTaskController extends Controller
                     return $btn;
                 })
                 ->rawColumns(['action','trvt_name'])
-                ->toJson();
+                ->make(true);
 
             } catch (\Exception $e) {
                 \Log::error('Error in all  AJAX: ', ['error' => $e->getMessage()]);
@@ -689,7 +690,7 @@ class TripTaskController extends Controller
     
             // \DB::enableQueryLog();
             $tasks = $taskQuery->get();
-            // dd($tasks);
+          //  dd($tasks);
             // dd(\DB::getQueryLog()); 
 
             return Datatables::of($tasks)

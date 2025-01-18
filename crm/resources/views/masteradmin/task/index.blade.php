@@ -522,7 +522,7 @@
                 },
             ]
         });
-        },1500);
+        },2000);
        
         //create task
         $('#createNewTask3').click(function() {
@@ -574,9 +574,8 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    $('#example11').DataTable().ajax.reload();
-                    $('#example15').DataTable().ajax.reload();
-                    $('#allTaskDataTable').DataTable().ajax.reload();
+                    setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+                     setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
                     $('#task-success-message1').text(tasksuccessMessage);
                     $('#task-success-modal1').modal('show');
                     $('#ajaxModelTask3').modal('hide');
@@ -719,8 +718,8 @@
                 url: url,
                 success: function(data) {
                     // alert(data.success);
-                    $('#example11').DataTable().ajax.reload();
-                    $('#allTaskDataTable').DataTable().ajax.reload();
+                    setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+                     setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
                     $('#task-success-message').text('Data has been successfully Deleted!');
                     $('#task-success-modal').modal('show');
                     $('.ajaxModelTask').modal('hide');
@@ -728,7 +727,6 @@
                     $('body').removeClass('modal-open');
                     $('.ajaxModelTask').css('display', 'none');
 
-                    $('#example15').DataTable().ajax.reload();
 
                 },
                 error: function(data) {
@@ -741,21 +739,23 @@
       
 
         $('#trip_agent, #trip_traveler').on('change', function() {
-            $('#allTaskDataTable').DataTable().ajax.reload();
+            setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+            setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
         });
 
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
              $('#tr_number').val('');           
-             $('#example11').DataTable().ajax.reload();
+             setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+            setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
         });
 
         $('#clear-icon').click(function() {
             // Clear the tr_number input field
             $('#tr_number').val('');
-            $('#example11').DataTable().ajax.reload();
-            $('#allTaskDataTable').DataTable().ajax.reload();
+            setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+            setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
  
         });
 
@@ -831,8 +831,10 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    $('#example11').DataTable().ajax.reload();
-                    $('#example15').DataTable().ajax.reload();
+
+                    setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+                     setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
+
                     $('#task-success-message2').text(tasksuccessMessage);
                     $('#task-success-modal2').modal('show');
                     $('#ajaxModelTask1').modal('hide');
@@ -841,7 +843,6 @@
                     $('#ajaxModelTask1').css('display', 'none');
                     $('#saveBtnTaskReminder').html('Save');
                     $('#FormTask1')[0].reset();
-                    $('#allTaskDataTable').DataTable().ajax.reload();
                     
 
                 },
@@ -981,9 +982,9 @@
                 type: "DELETE",
                 url: url,
                 success: function(data) {
-                    $('#example11').DataTable().ajax.reload();
-                    $('#example15').DataTable().ajax.reload();
-                    $('#allTaskDataTable').DataTable().ajax.reload();
+                    setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+                     setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
+
                     $('#task-success-message2').text('Data has been successfully Deleted!');
                     $('#task-success-modal2').modal('show');
                     $('.ajaxModelTask1').modal('hide');
@@ -1002,14 +1003,18 @@
       
 
         $('#trip_agent, #trip_traveler').on('change', function() {
-            $('#example15').DataTable().ajax.reload();
+            setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+            setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
+
         });
 
         $('.filter-text').on('click', function() {
             $('#trip_agent').val('').trigger('change'); 
             $('#trip_traveler').val('').trigger('change');
              $('#tr_number').val('');    
-             $('#example15').DataTable().ajax.reload();
+             setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+            setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
+
         });
 
     

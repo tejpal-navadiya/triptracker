@@ -310,7 +310,8 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    $('#allTaskDataTable').DataTable().ajax.reload();
+                    setTimeout(function() { $('#example15').DataTable().ajax.reload(); }, 2000);
+                     setTimeout(function() { $('#allTaskDataTable').DataTable().ajax.reload(); }, 3000);
                     $('#task-success-message').text(tasksuccessMessage);
                     $('#task-success-modal').modal('show');
                     $('#example15').DataTable().ajax.reload();
