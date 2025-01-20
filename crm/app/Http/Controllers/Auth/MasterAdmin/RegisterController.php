@@ -71,9 +71,34 @@ class RegisterController extends Controller
             'user_business_phone' => ['required', 'string', 'max:255'],
             'user_personal_phone' => ['nullable', 'string', 'max:255'],
             'user_password' => [
-                'required',
-                'string',
-                Password::min(8)->mixedCase()->letters()->numbers()->symbols(), // Custom password rules
+                function ($attribute, $value, $fail) {
+                    $errors = [];
+
+                    // Include all validation checks in the same message, even if empty
+                    if (empty($value)) {
+                        $errors[] = 'be provided';
+                    }
+                    if (strlen($value) < 8) {
+                        $errors[] = 'have at least 8 characters';
+                    }
+                    if (!preg_match('/[a-z]/', $value)) {
+                        $errors[] = 'contain at least one lowercase letter';
+                    }
+                    if (!preg_match('/[A-Z]/', $value)) {
+                        $errors[] = 'contain at least one uppercase letter';
+                    }
+                    if (!preg_match('/[0-9]/', $value)) {
+                        $errors[] = 'contain at least one number';
+                    }
+                    if (!preg_match('/[@$!%*?&]/', $value)) {
+                        $errors[] = 'contain at least one special character';
+                    }
+
+                    // Combine all errors into a single message
+                    if (!empty($errors)) {
+                        $fail('Password must ' . implode(', ', $errors) . '.');
+                    }
+                },
             ],
             'password_confirmation' => ['required', 'same:user_password'], // Confirm password must match user_password
         ], [

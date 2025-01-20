@@ -42,13 +42,34 @@ class MasterNewPasswordController extends Controller
             'token' => ['required'],
             'user_email' => ['required', 'email'],
             'user_password' => [
-                'required',
-                'string',
-                Password::min(8)
-                    ->mixedCase()
-                    ->letters()
-                    ->numbers()
-                    ->symbols()
+                function ($attribute, $value, $fail) {
+                    $errors = [];
+
+                    // Include all validation checks in the same message, even if empty
+                    if (empty($value)) {
+                        $errors[] = 'be provided';
+                    }
+                    if (strlen($value) < 8) {
+                        $errors[] = 'have at least 8 characters';
+                    }
+                    if (!preg_match('/[a-z]/', $value)) {
+                        $errors[] = 'contain at least one lowercase letter';
+                    }
+                    if (!preg_match('/[A-Z]/', $value)) {
+                        $errors[] = 'contain at least one uppercase letter';
+                    }
+                    if (!preg_match('/[0-9]/', $value)) {
+                        $errors[] = 'contain at least one number';
+                    }
+                    if (!preg_match('/[@$!%*?&]/', $value)) {
+                        $errors[] = 'contain at least one special character';
+                    }
+
+                    // Combine all errors into a single message
+                    if (!empty($errors)) {
+                        $fail('Password must ' . implode(', ', $errors) . '.');
+                    }
+                },
             ],
         ], [
             'user_email.required' => 'The Email field is required.',
