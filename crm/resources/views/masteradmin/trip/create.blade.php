@@ -1503,6 +1503,7 @@
                                 tabPanel.id = `tab-${tripTypeId}`; // Assign unique ID for panel
 
                                 tabPanel.innerHTML = `
+                                    <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_id]" value="${tripTypeId}">
 
                                     <div class="dynamic-fields" id="${tripTypeId}-fields">
 
@@ -1577,6 +1578,8 @@
                                         newRow.classList.add('row', 'align-items-center', 'mb-3');
 
                                         newRow.innerHTML = `
+
+                                         <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_id]" value="${tripTypeId}">
 
                                             <input type="hidden" name="trip_types[${targetId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
 

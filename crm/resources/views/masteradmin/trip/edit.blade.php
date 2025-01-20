@@ -1207,422 +1207,152 @@
 
 
                                                         @php
-
-
-
+                                                       // dd($trip);
                                                             $tripTypes = json_decode($trip->tr_type_trip, true) ?? []; // Decode and ensure it's an array
-
-
-
+                                                            //dd($tripTypes);
                                                         @endphp
 
-
-
-                                                        <div class="dynamic-fields" id="4-fields">
-
-
-
+                                                       
                                                             @php
-
-
-
                                                                 $displayedTripTypes = []; // Array to track displayed trip types
-
-
-
                                                             @endphp
 
-
-
+                                                             <div class="dynamic-fields" id="0fields">
                                                             @foreach ($typeoftrip as $index => $trip)
-
-
-
-
-
-
-
-                                                                @if (in_array($trip->trip_type_name, $tripTypes) && !in_array($trip->trip_type_name, $displayedTripTypes))
-
-
-
-                                                                {{-- Check if current trip type is in $tripTypes --}}
-
-
-
+                                                           
+                                                            @if (in_array($trip->trip_type_name, $tripTypes) && !in_array($trip->trip_type_name, $displayedTripTypes))
+                                                            {{-- Check if current trip type is in $tripTypes --}}
+                                                          
+                                                            @php
+                                                             $tripTypeName = $trip->trip_type_name;
+                                                                        $rowtriptype = 0; 
+                                                                    @endphp
                                                                     @php
-
-
-
                                                                         $rowtriptypeIndex = 0; // Initialize a counter for row trip type
-
-
-
                                                                     @endphp
-
-
-
+                                                                    
                                                                     <li class="nav-item">
-
-
-
-                                                                        <a id="tab-{{ $index }}"
-
-
-
+                                                                        <a id="{{ $trip->ty_id  }}-tab"
                                                                             class="{{ $index === 0 ? 'active' : '' }}" data-toggle="tab"
-
-
-
                                                                             href="#tab-{{ $trip->trip_type_name  }}">
-
-
-
                                                                             {{ $trip->trip_type_name }}
-
-
-
                                                                         </a>
-
-
-
                                                                     </li>
-
-
-
-
-
-
-
                                                                     @php
-
-
-
                                                                         $displayedTripTypes[] = $trip->trip_type_name; // Add the trip type to the displayed array
-
-
-
                                                                     @endphp
-
-
-
-
-
-
-
+                                                                    
                                                                 @endif
-
-
-
                                                                 <!-- Tab Content -->
-
-
-
-                                                                <div id="tab-{{ $index }}"
-
-
-
+                                                                <div id="tab-{{ $trip->ty_id }}"
                                                                     class="tab-pane {{ $index === 0 ? 'active' : '' }}">
-
-
-
+                                                                    
                                                                     @php
+                                                                    
+                                                                    
+                                                                  
+                                                                     $tripFields = collect($tripTypes)->filter(function ($t) use ($tripTypeName) {
+        return strtolower($t) === strtolower($tripTypeName);
+    })->values();
+   // print_r("Trip Type Name: " . $tripFields->count());
+    // Debug the final filtered result
+                                                                   @endphp  
 
 
-
-                                                                        $tripFields = collect($tripTypes)->filter(fn($t) => $t === $trip->trip_type_name)->values();
-
-
-
-                                                                    @endphp
-
-
-
-                                                                    @php
-
-
-
-                                                                        $rowtriptype = 0; // Initialize a counter for row trip type
-
-
-
-                                                                    @endphp
-
-
-
+                                                                                                             
                                                                     @foreach ($tripFields as $fieldIndex => $tripField)
-
-
-
-                                                                        @php
-
-
-
-                                                                            $fieldIndex = $fieldIndex + 1; // Initialize a counter for row trip type
-
-
-
-                                                                        @endphp
-
-
-
+                                                                    
+                                                                   
                                                                         <div class="row align-items-center mb-3">
 
-
+                                                                        <input type="hidden"
+                                                                                name="trip_types[{{ $trip->ty_id }}][{{ $rowtriptype }}][trip_type_id]"
+                                                                                value="{{ $trip->ty_id }}">
 
                                                                             <input type="hidden"
-
-
-
-                                                                                name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_name]"
-
-
-
+                                                                                name="trip_types[{{ $trip->ty_id }}][{{ $rowtriptype }}][trip_type_name]"
                                                                                 value="{{ $trip->trip_type_name }}">
 
 
-
                                                                             <div class="col-md-4">
-
-
-
                                                                                 <input type="text"
-
-
-
-                                                                                    name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_text]"
-
-
-
+                                                                                    name="trip_types[{{ $trip->ty_id }}][{{ $rowtriptype }}][trip_type_text]"
                                                                                     class="form-control" placeholder="Supplier"
-
-
-
                                                                                     value="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_text', $trip->trip_type_text) }}">
-
-
-
                                                                             </div>
-
-
-
                                                                             <div class="col-md-4">
-
-
-
                                                                                 <input type="text"
-
-
-
-                                                                                    name="trip_types[{{ $fieldIndex }}][{{ $rowtriptype }}][trip_type_confirmation]"
-
-
-
+                                                                                    name="trip_types[{{  $trip->ty_id  }}][{{ $rowtriptype }}][trip_type_confirmation]"
                                                                                     class="form-control" placeholder="Confirmation #"
-
-
-
                                                                                     value="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_confirmation', $trip->trip_type_confirmation) }}">
-
-
-
                                                                             </div>
-
-
-
+                                                                            <?php //print_r($rowtriptype);
+                                                                            
+                                                                            
+                                                                            ?>
+                                                                    
+                                                                    
                                                                             @if ($rowtriptypeIndex === 0)
-
-
-
                                                                                 <div class="col-md-2">
-
-
-
-                                                                                    <!-- <button type="button" class="add_btn w-100 add-btn"
-
-
-
-                                                                                        data-target="{{ $index }}">+ Add Another</button> -->
-
-
-
                                                                                         <button type="button" class="add_btn w-100 add-btn" 
-
                                                                                             data-target="{{ $index }}"
-
+                                                                                            data-trip-type-id="{{ $trip->ty_id }}"
                                                                                             data-trip-type-name="{{ $trip->trip_type_name }}" 
-
                                                                                             data-trip-type-text="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_text', $trip->trip_type_text) }}"  
-
-                                                                                            data-trip-type-confirmation="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_confirmation', $trip->trip_type_confirmation) }}">
-
+                                                                                            data-trip-type-confirmation="{{ old('trip_types.' . $rowtriptype . '.' . $fieldIndex . '.trip_type_confirmation', $trip->trip_type_confirmation) }}
+                                                                                            " data-target-div-id="tab-5">
                                                                                         + Add Another
-
                                                                                     </button>
-
-
-
                                                                                 </div>
-
-
-
                                                                                 <!-- Delete Button -->
-
-
-
                                                                                 <div class="col-md-2">
-
-
-
                                                                                     <button class="delete_btn delete-btn w-100">
-
-
-
                                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="14"
-
-
-
                                                                                             height="14" viewBox="0 0 14 14" fill="none">
-
-
-
                                                                                             <path
-
-
-
                                                                                                 d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
-
-
-
                                                                                                 fill="#9A9DA4"></path>
-
-
-
                                                                                         </svg> Delete
-
-
-
                                                                                     </button>
-
-
-
                                                                                 </div>
-
-
-
                                                                             @else
-
-
-
                                                                                 <div class="col-md-2">
-
-
-
-                                                                                    <button class="delete_btn delete-btn w-100">
-
-
-
+                                                                                    <button class="delete_btn delete-btn-child w-100">
                                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="14"
-
-
-
                                                                                             height="14" viewBox="0 0 14 14" fill="none">
-
-
-
                                                                                             <path
-
-
-
-                                                                                                d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
-
-
-
-                                                                                                fill="#9A9DA4"></path>
-
-
-
+                                                                                            d="M5.66732 2.33333H8.33398C8.33398 1.97971 8.19351 1.64057 7.94346 1.39052C7.69341 1.14048 7.35427 1 7.00065 1C6.64703 1 6.30789 1.14048 6.05784 1.39052C5.80779 1.64057 5.66732 1.97971 5.66732 2.33333ZM4.66732 2.33333C4.66732 2.02692 4.72767 1.7235 4.84493 1.44041C4.96219 1.15731 5.13407 0.900088 5.35074 0.683418C5.56741 0.466748 5.82463 0.294875 6.10772 0.177614C6.39082 0.0603535 6.69423 0 7.00065 0C7.30707 0 7.61049 0.0603535 7.89358 0.177614C8.17667 0.294875 8.4339 0.466748 8.65057 0.683418C8.86724 0.900088 9.03911 1.15731 9.15637 1.44041C9.27363 1.7235 9.33398 2.02692 9.33398 2.33333H13.1673C13.2999 2.33333 13.4271 2.38601 13.5209 2.47978C13.6146 2.57355 13.6673 2.70073 13.6673 2.83333C13.6673 2.96594 13.6146 3.09312 13.5209 3.18689C13.4271 3.28066 13.2999 3.33333 13.1673 3.33333H12.2873L11.5073 11.4073C11.4475 12.026 11.1593 12.6002 10.6991 13.0179C10.2389 13.4356 9.63952 13.6669 9.01798 13.6667H4.98332C4.36189 13.6667 3.76272 13.4354 3.30262 13.0177C2.84252 12.6 2.55447 12.0259 2.49465 11.4073L1.71398 3.33333H0.833984C0.701376 3.33333 0.574199 3.28066 0.480431 3.18689C0.386663 3.09312 0.333984 2.96594 0.333984 2.83333C0.333984 2.70073 0.386663 2.57355 0.480431 2.47978C0.574199 2.38601 0.701376 2.33333 0.833984 2.33333H4.66732ZM6.00065 5.5C6.00065 5.36739 5.94797 5.24022 5.8542 5.14645C5.76044 5.05268 5.63326 5 5.50065 5C5.36804 5 5.24087 5.05268 5.1471 5.14645C5.05333 5.24022 5.00065 5.36739 5.00065 5.5V10.5C5.00065 10.6326 5.05333 10.7598 5.1471 10.8536C5.24087 10.9473 5.36804 11 5.50065 11C5.63326 11 5.76044 10.9473 5.8542 10.8536C5.94797 10.7598 6.00065 10.6326 6.00065 10.5V5.5ZM8.50065 5C8.63326 5 8.76044 5.05268 8.8542 5.14645C8.94797 5.24022 9.00065 5.36739 9.00065 5.5V10.5C9.00065 10.6326 8.94797 10.7598 8.8542 10.8536C8.76044 10.9473 8.63326 11 8.50065 11C8.36804 11 8.24087 10.9473 8.1471 10.8536C8.05333 10.7598 8.00065 10.6326 8.00065 10.5V5.5C8.00065 5.36739 8.05333 5.24022 8.1471 5.14645C8.24087 5.05268 8.36804 5 8.50065 5ZM3.48998 11.3113C3.52594 11.6824 3.69881 12.0268 3.9749 12.2774C4.25098 12.528 4.61048 12.6667 4.98332 12.6667H9.01798C9.39082 12.6667 9.75032 12.528 10.0264 12.2774C10.3025 12.0268 10.4754 11.6824 10.5113 11.3113L11.2833 3.33333H2.71798L3.48998 11.3113Z"
+                                                                                            fill="#9A9DA4"></path>
                                                                                         </svg> Delete
-
-
-
                                                                                     </button>
-
-
-
                                                                                 </div>
-
-
-
                                                                             @endif
-
-                                                                           
-
-
-
-                                                                        </div>
-
-
-
-                                                                        <div id="{{$index}}-fields"></div>
-
-
-
+                                                                            
+                                                                            </div>
+                                                                            <div id="{{$index}}-fields"></div>
+                                                                       
                                                                         @php
-
-
-
-                                                                            $rowtriptype = $rowtriptype + 1; // Initialize a counter for row trip type
-
-
-
+                                                                            $rowtriptype++; // Increment the counter after each row
                                                                         @endphp
-
-
-
-                                                                    @endforeach
-
-
-
+                                                                        @endforeach
+                                                                        
+                                                                       
                                                                 </div>
-
-
-
+                                                                <input type="hidden" id="hiddenRowtriptype_{{ $trip->ty_id }}" name="hiddenRowtriptype_{{ $trip->ty_id }}" value="{{ $rowtriptype-1 }}">
+                                                                
                                                                 @php
-
-
-
                                                                     $rowtriptypeIndex = $rowtriptypeIndex + 1; // Initialize a counter for row trip type
-
-
-
                                                                 @endphp
-
-
-
+                                                                
                                                             @endforeach
-
-
-
-                                                        </div>
-
-
-
+                                                           
+                                                            </div>
+                                                          
                                                     </div>
-
-
-
                                                 </div>
-
-
-
                                             </div>
 
-
-
                                             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-
 
                                             <div id="family-members-container">
 
@@ -6010,10 +5740,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function handleTabCreationAndRemoval(checkbox) {
 
+       // alert('hiii');
         const tripTypeName = checkbox.value;
 
         const tripTypeId = checkbox.id;
-
+        //alert(tripTypeId);
 
 
         if (checkbox.checked && !activeTripTypes.has(tripTypeName)) {
@@ -6065,6 +5796,8 @@ document.addEventListener('DOMContentLoaded', function () {
             tabPanel.innerHTML = `
 
                 <div class="dynamic-fields" id="${tripTypeId}-fields">
+                        <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_id]" value="${tripTypeId}">
+
 
                     <input type="hidden" name="trip_types[${tripTypeId}][0][trip_type_name]" value="${tripTypeName}">
 
@@ -6147,6 +5880,7 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.innerHTML = `
 
                 <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_name]" value="${tripTypeName}">
+                <input type="hidden" name="trip_types[${tripTypeId}][${entryIndex}][trip_type_id]" value="${tripTypeId}">
 
                 <div class="col-md-4">
 
@@ -6203,181 +5937,231 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // The jQuery portion below ensures the add button and delete button functionality works.
+    // var target = 0;
+    // $('.add-btn').click(function () {
 
-    $('.add-btn').click(function () {
+    // // Increment row count
 
-    // Increment row count
-
-    rowCountItinerary++;
-
+    
+    // target++;
 
 
-    // Get the data attributes from the clicked button
-
-    var target = $(this).data('target');
-
-    var tripTypeName = $(this).data('trip-type-name') || '';
-
-    var tripTypeText = $(this).data('trip-type-text') || '';
-
-    var tripTypeConfirmation = $(this).data('trip-type-confirmation') || '';
+    // // Get the data attributes from the clicked button
+   
+    //  target = $(this).data('target');
 
 
 
-    // Debugging: Log the values of target and other variables
+    // var tripTypeName = $(this).data('trip-type-name') || '';
 
-    console.log('Target:', target);
+    // var tripTypeText = $(this).data('trip-type-text') || '';
 
-    console.log('Trip Type Name:', tripTypeName);
+    // var tripTypeConfirmation = $(this).data('trip-type-confirmation') || '';
 
-    console.log('Trip Type Text:', tripTypeText);
+    // var tripTypeId = $(this).data('trip-type-id') || '';
 
-    console.log('Trip Type Confirmation:', tripTypeConfirmation);
+    // // Debugging: Log the values of target and other variables
+
+    // console.log('Target:', target);
+
+    // console.log('Trip Type Name:', tripTypeName);
+
+    // console.log('Trip Type Text:', tripTypeText);
+
+    // console.log('Trip Type Confirmation:', tripTypeConfirmation);
 
 
 
-    // Create the new row HTML
+    // // Create the new row HTML
 
-    var newRow = `
+    // var newRow = `
 
-        <div class="row align-items-center mb-3">
+    //     <div class="row align-items-center mb-3">
 
-            <input type="hidden" name="trip_types[${target}][${rowCountItinerary}][trip_type_name]" value="">
+    //         <input type="hidden" name="trip_types[${tripTypeId}][${target}][trip_type_name]" value="">
 
-            <div class="col-md-4">
+    //         <div class="col-md-4">
 
-                <input type="text" name="trip_types[${target}][${rowCountItinerary}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier" value="">
+    //             <input type="text" name="trip_types[${tripTypeId}][${target}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier" value="">
 
-            </div>
+    //         </div>
 
-            <div class="col-md-4">
+    //         <div class="col-md-4">
 
-                <input type="text" name="trip_types[${target}][${rowCountItinerary}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #" value="">
+    //             <input type="text" name="trip_types[${tripTypeId}][${target}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #" value="">
 
-            </div>
+    //         </div>
 
-            <div class="col-md-2">
+    //         <div class="col-md-2">
 
-                <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+    //             <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
 
-            </div>
+    //         </div>
 
-        </div>
+    //     </div>
 
-    `;
+    // `;
 
 
 
     
 
-    // Ensure the target element exists before appending
+    // // Ensure the target element exists before appending
 
+    // var targetContainer = $('#' + target + '-fields');
+
+    
+
+    // if (targetContainer.length) {
+
+    //     // Append the new row to the fields container
+
+    //     targetContainer.append(newRow);
+
+      
+
+    // } else {
+
+    //     // If the target container doesn't exist, log an error
+
+    //     console.error('Target container not found:', target + '-fields');
+
+    // }
+
+    let targetId = 0;
+
+// Function to get the value of the last hiddenRowtriptype
+function getLastHiddenRowtriptypeValue(tripTypeId) {
+    // Select all elements with the specific ID pattern
+    const hiddenFields = document.querySelectorAll(`input[id^="hiddenRowtriptype_${tripTypeId}"]`);
+    // Check if there are any hidden fields found
+    if (hiddenFields.length > 0) {
+        // Return the value of the last hidden field
+        return hiddenFields[hiddenFields.length - 1].value;
+    } else {
+        // Return 0 if no hidden fields found
+        return 0;
+    }
+}
+
+$('.add-btn').click(function() {
+    const addButton = this;
+    var target = $(this).data('target');
+    const tripTypeId = addButton.getAttribute('data-trip-type-id');
+    const tripTypeName = addButton.getAttribute('data-trip-type-name');
+
+    // Get the value of the last hiddenRowtriptype using tripTypeId
+    let lastRowtriptypeValue = getLastHiddenRowtriptypeValue(tripTypeId);
+    lastRowtriptypeValue = parseInt(lastRowtriptypeValue, 10); // Convert to integer
+
+    // Increment the value by 1
+    lastRowtriptypeValue++;
+    console.log(`New targetId: ${lastRowtriptypeValue}`);
+
+    // Get the container for tab-5
+    const tab5Container = document.getElementById('fieldss');
+    
+    // Create a new row with incrementing index
+    const newRow = document.createElement('div');
+    newRow.classList.add('row', 'align-items-center', 'mb-3');
+    newRow.innerHTML = `
+        <input type="hidden" name="trip_types[${tripTypeId}][${lastRowtriptypeValue}][trip_type_id]" value="${tripTypeId}">
+        <input type="hidden" name="trip_types[${tripTypeId}][${lastRowtriptypeValue}][trip_type_name]" value="${tripTypeName}">
+        <div class="col-md-4">
+            <input type="text" name="trip_types[${tripTypeId}][${lastRowtriptypeValue}][trip_type_text]" class="form-control" placeholder="${tripTypeName} Supplier">
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="trip_types[${tripTypeId}][${lastRowtriptypeValue}][trip_type_confirmation]" class="form-control" placeholder="${tripTypeName} Confirmation #">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-danger btn-sm delete-btn w-100">Delete</button>
+        </div>
+    `;
+
+    // Append the new row to the end of the tab-5 container
+    // tab5Container.appendChild(newRow);
     var targetContainer = $('#' + target + '-fields');
 
     
 
-    if (targetContainer.length) {
+if (targetContainer.length) {
 
-        // Append the new row to the fields container
+    // Append the new row to the fields container
 
-        targetContainer.append(newRow);
+    targetContainer.append(newRow);
 
-      
+  
 
+} else {
+
+    // If the target container doesn't exist, log an error
+
+    console.error('Target container not found:', target + '-fields');
+
+}
+    // Update the hidden field to reflect the new value
+    const hiddenRowtriptypeField = document.getElementById(`hiddenRowtriptype_${tripTypeId}_${lastRowtriptypeValue}`);
+    if (hiddenRowtriptypeField) {
+        hiddenRowtriptypeField.value = lastRowtriptypeValue;
     } else {
-
-        // If the target container doesn't exist, log an error
-
-        console.error('Target container not found:', target + '-fields');
-
+        // If hidden field doesn't exist, create it
+        const newHiddenField = document.createElement('input');
+        newHiddenField.type = 'hidden';
+        newHiddenField.id = `hiddenRowtriptype_${tripTypeId}_${lastRowtriptypeValue}`;
+        newHiddenField.name = `hiddenRowtriptype_${tripTypeId}_${lastRowtriptypeValue}`;
+        newHiddenField.value = lastRowtriptypeValue;
+        document.body.appendChild(newHiddenField);
     }
 
+    const deleteButton = newRow.querySelector('.delete-btn');
+    deleteButton.addEventListener('click', function() {
+        newRow.remove(); // Remove only the specific row
+    });
+});
 
 
-   
+$('.delete-btn').click(function() {
 
 
+const tabContent = $(this).closest('.tab-pane'); 
+
+const tabId = tabContent.attr('id');
+
+
+    
+    const checkboxId = tabId.split('-')[1];  
+
+    
+    $(`#${checkboxId}-tab`).remove();
+    $(`[id^="tab-${checkboxId}"]`).remove();
+
+    tabContent.remove();
+
+    const checkbox = $(`#${checkboxId}`);
+    checkbox.prop('checked', false);
 
 });
 
 
 
+// $('.delete-btn').click(function() {
+//     const checkbox = $(this).closest('.row').find('.checkbox-inputbox');
+//     const checkboxId = checkbox.attr('id');
+//     console.log(`Checkbox ID: ${checkboxId}`);
+//     alert(checkboxId);
+//     // Remove all elements whose ID starts with "tab-5"
+//     $('[id^="tab-5"]').remove();
 
+//     // Remove all elements whose ID starts with "5-tab"
+//     $('[id^="5-tab"]').remove();
 
-
-
-
-
-
-
-// Find the delete button (assuming it's attached to a row or container)
-
-// Find the delete button (assuming it's attached to a row or container)
-
-const mainDeleteButton = document.querySelector('.delete_btn');
-
-
-
-mainDeleteButton.addEventListener('click', function() {
-
-    // Get all checked checkboxes
-
-    const checkboxes = document.querySelectorAll('.checkbox-inputbox:checked'); 
-
-
-
-    // If there are checked checkboxes
-
-    if (checkboxes.length > 0) {
-
-        checkboxes.forEach(function(checkbox) {
-
-            // Get the value of the checked checkbox
-
-            const checkboxValue = checkbox.value;
-
-
-
-            // Use the checkbox value to get the associated tab and tab panel
-
-            const tabLink = document.querySelector(`a[href="#tab-${checkboxValue}"]`);
-
-            const tabPanel = document.getElementById(`tab-${checkboxValue}`);
-
-
-
-            // Check if both the tab link and tab panel exist
-
-            if (tabLink && tabPanel) {
-
-                tabLink.remove();   // Remove the tab link
-
-                tabPanel.remove();  // Remove the tab panel
-
-            }
-
-
-
-            // Uncheck the checkbox
-
-            checkbox.checked = false;
-
-        });
-
-    } else {
-
-        console.log("No checkboxes are checked.");
-
-    }
-
-});
-
-
+//     // Uncheck the checkbox with id="5"
+//     $('#5').prop('checked', false);
+// });
 
 
 
 });
-
 
 
 </script>
@@ -6713,20 +6497,11 @@ mainDeleteButton.addEventListener('click', function() {
 
 
                                 .text(`+ Add New Traveler "${query}"`)
-
-
-
                                 .on("click", function () {
-
-
 
                                     handleAddItem(query); // Open modal to add traveler
 
-
-
-                                    // $list.empty(); // Clear suggestions and stop autocomplete
-
-
+                                    // $list.empty(); // Clear suggestions and stop autocomplet
 
                                 });
 

@@ -254,7 +254,7 @@ class TripController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        //dd($request->all());
+       // dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
         
@@ -397,6 +397,7 @@ class TripController extends Controller
                         $tripTypeText = $entry['trip_type_text'];
                         $tripTypeConfirmation = $entry['trip_type_confirmation'];
                         $tripTypeName = $entry['trip_type_name'];
+                        $triptypeid = $entry['trip_type_id'] ?? '';
 
                         $typeOfTrip = new TypeOfTrip();
                         $tableNameType = $typeOfTrip->getTable();
@@ -408,6 +409,7 @@ class TripController extends Controller
                         $typeOfTrip->trip_type_text = $tripTypeText;
                         $typeOfTrip->trip_type_confirmation = $tripTypeConfirmation;
                         $typeOfTrip->trip_status = '1';
+                        $typeOfTrip->ty_id = $triptypeid;
                         $typeOfTrip->save();
                     }
                 }
@@ -751,6 +753,7 @@ class TripController extends Controller
                         $tripTypeText = $entry['trip_type_text'] ?? '';
                         $tripTypeConfirmation = $entry['trip_type_confirmation'] ?? '';
                         $tripTypeName = $entry['trip_type_name'] ?? '';
+                        $triptypeid = $entry['trip_type_id'] ?? '';
 
                         $typeOfTrip = new TypeOfTrip();
                         $tableNameType = $typeOfTrip->getTable();
@@ -762,6 +765,8 @@ class TripController extends Controller
                         $typeOfTrip->trip_type_text = $tripTypeText;
                         $typeOfTrip->trip_type_confirmation = $tripTypeConfirmation;
                         $typeOfTrip->trip_status = '1';
+                        $typeOfTrip->ty_id = $triptypeid;
+                        
                         $typeOfTrip->save();
                     }
                 }

@@ -828,11 +828,18 @@ class Controller extends BaseController
                 $table->string('trip_type_id')->unique()->primary();
                 $table->string('id')->nullable()->default(0);
                 $table->string('tr_id')->nullable();
+                $table->string('ty_id')->nullable();
                 $table->string('trip_type_name')->nullable();
                 $table->text('trip_type_text')->nullable();
                 $table->text('trip_type_confirmation')->default(0)->nullable();
                 $table->tinyInteger('trip_status')->default(0)->nullable();
                 $table->timestamps();
+            });
+        }else{
+            Schema::table($storeId.'_tc_type_of_trip', function (Blueprint $table) use ($storeId) {
+                if (!Schema::hasColumn($storeId.'_tc_type_of_trip', 'ty_id')) {
+                    $table->string('ty_id')->nullable();
+                }
             });
         }
 
