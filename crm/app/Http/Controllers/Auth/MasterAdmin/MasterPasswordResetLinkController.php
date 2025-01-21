@@ -46,7 +46,7 @@ class MasterPasswordResetLinkController extends Controller
         $email = $request->user_email;
         $user_id = $request->user_id;
         $existingToken = DB::table('master_password_reset_tokens')->where('email', $email)->first();
-    
+       // dd($existingToken);
         if ($existingToken) {
             // Update the existing record
             DB::table('master_password_reset_tokens')
@@ -63,9 +63,10 @@ class MasterPasswordResetLinkController extends Controller
                 'created_at' => Carbon::now()
             ]);
         }
-    
+        
+        
         // Fetch the user associated with the email
-        $users = MasterUser::where('buss_unique_id', $user_id)->first();
+        //$users = MasterUser::where('buss_unique_id', $user_id)->first();
         //dd($users);
         // if (!$users) {
         //     // Handle the case where the user is not found
@@ -74,7 +75,31 @@ class MasterPasswordResetLinkController extends Controller
         // }
         $userDetails = new MasterUserDetails();
         $userDetails->setTableForUniqueId($user_id);
-        $user = $userDetails->where('users_email', $email)->first();
+
+
+
+        $user = $userDetails->where('user_id', $user_id)->get();
+     
+        
+        // Checking if user exists before accessing role_id
+        // if ($user->isNotEmpty() && $user->first()->role_id == '0') {
+          
+
+        //     $user = $userDetails->where('users_email', $email)->first();
+        // } else {
+        //     $user = $userDetails->where('user_work_email', $email)->first();
+        // }
+
+        if ($user->isNotEmpty()) {
+            $users = $user->firstWhere('role_id', '0');
+        
+            if ($user) {
+                $users = $userDetails->where('users_email', $email)->first();
+            } else {
+                $users = $userDetails->where('user_work_email', $email)->first();
+            }
+        }
+     
         if (!$user) {
             // Handle the case where the user is not found
             return back()->withErrors(['user_email' => __('messages.masteradmin.forgot-password.user_not_found')]);

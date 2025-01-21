@@ -31,7 +31,7 @@ class MasterPasswordController extends Controller
         $userDetails->setTableForUniqueId($user->user_id);
 
         $existingUser = $userDetails->where('users_id', $user->users_id)->first();
-
+        
         // dd($existingUser);
         if (!$existingUser) {
             return back()->withErrors(['user' => 'User not found.']);

@@ -37,7 +37,7 @@ class MasterNewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-       // dd($request);
+      // dd($request->all());
         $request->validate([
             'token' => ['required'],
             'user_email' => ['required', 'email'],
@@ -86,20 +86,37 @@ class MasterNewPasswordController extends Controller
                                 ])
                                 ->first();
                                 // dd(\DB::getQueryLog());
-
+            // dd($updatePassword);                     
             if(!$updatePassword){
                 return back()->with(['forgotpassword-error' =>__('messages.masteradmin.forgot-password.send_error')]);
             }
-            $users = MasterUser::where('user_email', $request->user_email)->first();
+            // $users = MasterUser::where('user_email', $request->user_email)->first();
             // $user = MasterUser::where('user_email', $request->user_email)
             // ->update(['user_password' => Hash::make($request->user_password)]);
             $userDetails = new MasterUserDetails();
             $userDetails->setTableForUniqueId($request->user_id);
+         
 
-            $user = $userDetails->where('users_email', $request->user_email)
-            ->where('user_id', $request->user_id )
-            ->update(['users_password' => Hash::make($request->user_password)]);
-            
+            $userWithRoleZero = $userDetails->where('user_id', $request->user_id)
+                                ->where('role_id', 0)
+                                ->where('users_email', $request->user_email)
+                                ->first();
+
+            if ($userWithRoleZero) {
+                // dd('if');
+                // If user with role_id == 0 exists, update password using users_email
+                $usersd = $userDetails->where('users_email', $request->user_email)
+                    ->where('user_id', $request->user_id)
+                    ->update(['users_password' => Hash::make($request->user_password)]);
+            } else {
+                // dd( 'else');
+                // If no user with role_id == 0, update password using user_work_email
+                $usersd = $userDetails->where('user_work_email', $request->user_email)
+                    ->where('user_id', $request->user_id)
+                    ->update(['users_password' => Hash::make($request->user_password)]);
+            }
+
+          
 
             DB::table('master_password_reset_tokens')->where(['email'=> $request->user_email])->delete();
            

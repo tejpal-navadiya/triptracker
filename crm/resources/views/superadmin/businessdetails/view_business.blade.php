@@ -122,11 +122,17 @@
                                                     <tr>
                                                         <td><strong>Address :</strong></td>
                                                         <td>
-                                                            {{ $userdetailss->city_name ?? '' }}{{ $userdetailss->city_name && ($userdetailss->state_name || $userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
-                                                            {{ $userdetailss->state_name ?? '' }}{{ $userdetailss->state_name && ($userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
-                                                            {{ $userdetailss->country_name ?? '' }}{{ $userdetailss->country_name && $userdetailss->users_zip ? ' ' : '' }}
-                                                            {{ $userdetailss->users_zip ?? '' }}
-                                                        </td> 
+                                                            @if($userdetailss)
+                                                                {{ $userdetailss->city_name ?? '' }}{{ $userdetailss->city_name && ($userdetailss->state_name || $userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
+                                                                {{ $userdetailss->state_name ?? '' }}{{ $userdetailss->state_name && ($userdetailss->country_name || $userdetailss->users_zip) ? ', ' : '' }}
+                                                                {{ $userdetailss->country_name ?? '' }}{{ $userdetailss->country_name && $userdetailss->users_zip ? ' ' : '' }}
+                                                                {{ $userdetailss->users_zip ?? '' }}
+                                                            @else
+                                                                <!-- Handle the case when $userdetailss is null -->
+                                                            @endif
+                                                        </td>
+
+                                                      
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Business Email Address :</strong></td>
