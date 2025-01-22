@@ -75,7 +75,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Email Address</th>
+                                            <th>Personal Email Address</th>
                                             <th>Business Email Address</th>
                                             <th>Phone Number</th>
                                             <th>Users Id</th>

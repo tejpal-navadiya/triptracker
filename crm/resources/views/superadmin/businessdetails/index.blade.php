@@ -88,7 +88,7 @@
                                         <tr>
                                             <th>Agency Name</th>
                                             <th>Name</th>
-                                            <th>Email Address</th>
+                                            <th>Business Email Address</th>
                                             <th>Subscription Plan</th>
                                             <!-- <th>Membership Plan</th> -->
                                             <!-- <th>IATA or CLIA Number</th> -->

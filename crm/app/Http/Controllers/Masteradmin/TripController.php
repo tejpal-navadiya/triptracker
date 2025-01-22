@@ -2834,6 +2834,9 @@ public function bookgridView(Request $request)
         $agency = $masterUserDetails->where('users_id', $user->users_id)->get(); 
     }
 
+ $sixtyDaysFromNow = $currentDate->copy()->addDays(60)->format('m/d/Y');
+    $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
+    $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
     // Get trip data
     $trips = new Trip();
     $tripTable = $trips->getTable();
@@ -2844,18 +2847,39 @@ public function bookgridView(Request $request)
     
     if($user->users_id && $user->role_id ==0 ){
     // Base Query for Trip Booked
-      $bookedTripQuery = Trip::where('tr_status', 1)
-      ->from($tripTable)
-      ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
-      ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
-      ->where($tripTable . '.status', '=', 5)  // Trip Sold
-      ->select([
-          $tripTable . '.*',
-          $masterUserTable . '.users_first_name',
-          $masterUserTable . '.users_last_name',
-          $travelerTable . '.trtm_first_name',  
-          $travelerTable . '.trtm_last_name' 
-      ]);
+    //   $bookedTripQuery = Trip::where('tr_status', 1)
+    //   ->from($tripTable)
+    //   ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+    //   ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+    //   ->where($tripTable . '.status', '=', 5)  // Trip Sold
+    //   ->select([
+    //       $tripTable . '.*',
+    //       $masterUserTable . '.users_first_name',
+    //       $masterUserTable . '.users_last_name',
+    //       $travelerTable . '.trtm_first_name',  
+    //       $travelerTable . '.trtm_last_name' 
+    //   ]);
+    
+     $bookedTripQuery = Trip::where('tr_status', 1)
+    ->from($tripTable)
+    ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+    ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id')
+    ->where($tripTable . '.status', '=', 5)  // Trip Sold
+    ->where(function ($query) use ($currentDateFormatted, $twoDaysFromNow, $thirtyDaysFromNow, $sixtyDaysFromNow, $tripTable) {
+        $query->whereNotBetween($tripTable . '.tr_start_date', [$currentDateFormatted, $twoDaysFromNow])
+              ->whereNotBetween($tripTable . '.tr_start_date', [$currentDateFormatted, $thirtyDaysFromNow])
+              ->whereNotBetween($tripTable . '.tr_start_date', [$currentDateFormatted, $sixtyDaysFromNow]);
+    })
+    ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) // State trip logic
+    ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') > STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) // Active trip logic
+    // ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) // Completed trip logic
+    ->select([
+        $tripTable . '.*',
+        $masterUserTable . '.users_first_name',
+        $masterUserTable . '.users_last_name',
+        $travelerTable . '.trtm_first_name',
+        $travelerTable . '.trtm_last_name'
+    ]);
 
         }else{
             $specificId = $user->users_id;
@@ -2867,7 +2891,13 @@ public function bookgridView(Request $request)
                 $query->where($tripTable . '.tr_agent_id', $user->users_id)
                     ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
             })
-            ->where($tripTable . '.status', '=', 5)  // Trip Sold
+             ->where(function ($query) use ($currentDateFormatted, $twoDaysFromNow, $thirtyDaysFromNow, $sixtyDaysFromNow, $tripTable) {
+        $query->whereNotBetween($tripTable . '.tr_start_date', [$currentDateFormatted, $twoDaysFromNow])
+              ->whereNotBetween($tripTable . '.tr_start_date', [$currentDateFormatted, $thirtyDaysFromNow])
+              ->whereNotBetween($tripTable . '.tr_start_date', [$currentDateFormatted, $sixtyDaysFromNow]);
+    })
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_start_date, '%m/%d/%Y') >= STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) // State trip logic
+        ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') > STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')]) // Active trip logic
             ->select([
                 $tripTable . '.*', 
                 $masterUserTable . '.users_first_name', 
@@ -2906,9 +2936,7 @@ public function bookgridView(Request $request)
     $bookedTripQuery = $bookedTripQuery->get();
     
     // 60 Days Trip Review Query
-    $sixtyDaysFromNow = $currentDate->copy()->addDays(60)->format('m/d/Y');
-    $thirtyDaysFromNow = $currentDate->copy()->addDays(30)->format('m/d/Y');
-    $twoDaysFromNow = $currentDate->copy()->addDays(7)->format('m/d/Y');
+   
    // dd($twoDaysFromNow);
     if($user->users_id && $user->role_id ==0 ){
 
@@ -3135,7 +3163,6 @@ public function bookgridView(Request $request)
     }
 
       Trip::where('tr_status', 1)
-        ->where('status', '=', 7) // Avoid updating trips already marked as completed
         ->whereRaw("STR_TO_DATE({$tripTable}.tr_end_date, '%m/%d/%Y') < STR_TO_DATE(?, '%m/%d/%Y')", [$currentDate->format('m/d/Y')])
         ->update(['status' => 7]);
 
@@ -3309,6 +3336,8 @@ public function bookgridView(Request $request)
 
     return view('masteradmin.trip.booked-workflow', compact('allTripsResults', 'totalsByStatus'));
 }
+
+
 
 
 public function getTravelerNames(Request $request)

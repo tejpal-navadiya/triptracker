@@ -115,7 +115,7 @@ class MasterPasswordResetLinkController extends Controller
         //     }
         // }
      
-        if (!$userWithRoleZero) {
+        if (!$usersd) {
             // Handle the case where the user is not found
             return back()->withErrors(['user_email' => __('messages.masteradmin.forgot-password.user_not_found')]);
 
