@@ -77,9 +77,24 @@ class MasterPasswordResetLinkController extends Controller
         $userDetails->setTableForUniqueId($user_id);
 
 
+        $userWithRoleZero = $userDetails->where('user_id', $request->user_id)
+        ->where('role_id', '0')
+        ->where('users_email', $request->user_email)
+        ->first();
+        if ($userWithRoleZero) {
+            // dd('if');
+            // If user with role_id == 0 exists, update password using users_email
+            $usersd = $userDetails->where('users_email', $request->user_email)
+                ->where('user_id', $request->user_id)
+                ->where('role_id', '0')->first();
+        } else {
+            // dd( 'else');
+            // If no user with role_id == 0, update password using user_work_email
+            $usersd = $userDetails->where('user_work_email', $request->user_email)
+                ->where('user_id', $request->user_id)
+                ->first();
+        }
 
-        $user = $userDetails->where('user_id', $user_id)->get();
-     
         
         // Checking if user exists before accessing role_id
         // if ($user->isNotEmpty() && $user->first()->role_id == '0') {
@@ -90,17 +105,17 @@ class MasterPasswordResetLinkController extends Controller
         //     $user = $userDetails->where('user_work_email', $email)->first();
         // }
 
-        if ($user->isNotEmpty()) {
-            $users = $user->firstWhere('role_id', '0');
+        // if ($user->isNotEmpty()) {
+        //     $users = $user->where('role_id', '0');
         
-            if ($user) {
-                $users = $userDetails->where('users_email', $email)->first();
-            } else {
-                $users = $userDetails->where('user_work_email', $email)->first();
-            }
-        }
+        //     if ($user) {
+        //         $users = $userDetails->where('role_id', '0')->where('users_email', $email)->first();
+        //     } else {
+        //         $users = $userDetails->where('user_work_email', $email)->first();
+        //     }
+        // }
      
-        if (!$user) {
+        if (!$userWithRoleZero) {
             // Handle the case where the user is not found
             return back()->withErrors(['user_email' => __('messages.masteradmin.forgot-password.user_not_found')]);
 

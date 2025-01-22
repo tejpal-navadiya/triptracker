@@ -170,21 +170,54 @@
                                     </div>
 
 
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tr_agent_id">Password
                                             <span class="text-danger">*</span></label>
                                             @php
                                             $hiddenPassword = substr($agency->users_password, 0, 6) . str_repeat('', max(0, strlen($agency->users_password) - 6));
                                             @endphp
-                                            <x-text-input type="password" class="form-control" id="tr_agent_id"
+                                            <div class="input-group"> 
+                                                <input type="password" class="form-control" id="tr_agent_id" placeholder="Enter Password" name="users_password" autofocus autocomplete="tr_agent_id" value="{{ old('users_password', $hiddenPassword) }}" /> 
+                                                <div class="input-group-append"> 
+                                                    <span class="input-group-text" id="toggle-password"> 
+                                                        <i class="fas fa-eye"></i> 
+                                                    </span> 
+                                                </div> 
+                                            </div> -->
+                                            <!-- <x-text-input type="password" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Password" name="users_password" autofocus
-                                                autocomplete="tr_agent_id" :value="old('users_password', $hiddenPassword ?? '')" />
-                                            <x-input-error class="mt-2" :messages="$errors->get('users_password')" />
+                                                autocomplete="tr_agent_id" :value="old('users_password', $hiddenPassword ?? '')" /> -->
+                                            <!-- <x-input-error class="mt-2" :messages="$errors->get('users_password')" /> -->
+                                        <!-- </div>
+                                    </div>
+                                </div> -->
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="users_password">Password
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        @php
+
+                                        try {
+                                            $decryptedPassword = Illuminate\Support\Facades\Crypt::decryptString($agency->users_password);
+                                        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+                                            $decryptedPassword = ''; // Fallback value if decryption fails
+                                        }
+                                    @endphp
+
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="users_password" placeholder="Enter Password" name="users_password" autofocus autocomplete="users_password" value="{{ $decryptedPassword }}" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="toggle-password">
+                                                    <i class="fas fa-eye"></i>
+                                                </span>
+                                            </div>
                                         </div>
+                                        <x-input-error class="mt-2" :messages="$errors->get('users_password')" />
                                     </div>
                                 </div>
-
 
                                 <div class="row pxy-15 px-10">
 
@@ -611,3 +644,24 @@
                     </script>
                 @endsection
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('users_password');
+        const icon = togglePassword.querySelector('i');
+
+        togglePassword.addEventListener('click', function (e) {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+</script>
+

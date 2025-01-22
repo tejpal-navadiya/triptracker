@@ -32,6 +32,7 @@ Route::get('subscription_plans_list',            [AuthController::class,'getPlan
 Route::post('forgot_password',            [AuthController::class,'forgotPassword']);
 Route::get('trip_status',     [TripController::class,'TripStatus']);
 Route::get('task_status',     [TripController::class,'TaskStatus']);
+Route::get('typeoftrip_list',     [TripController::class,'GetTripTypeofList']);
 
 Route::middleware(['handleAuthErrors'])->group( function () {
     //user profile
@@ -43,6 +44,7 @@ Route::middleware(['handleAuthErrors'])->group( function () {
     Route::get('trip_list',     [TripController::class,'GetTripList']);
     Route::post('task_list',     [TripController::class,'GetTaskList']);
     Route::post('reminder_task_list',     [TripController::class,'GetTaskReminderList']);
+   
     Route::post('add_trip',     [TripController::class,'AddTrip']);
     Route::post('filter_trip',     [TripController::class,'filterTrip']);
     Route::post('filter_task',     [TripController::class,'filterTask']);

@@ -8,6 +8,9 @@
             <a class="nav-link" href="#completeTrip" data-toggle="tab" data-tab="complete">Welcome Home</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="#completedTrip" data-toggle="tab" data-tab="completed">Trip Completed</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="#sixmonthTrip" data-toggle="tab" data-tab="sixmonth">6 month Review</a>
         </li>
         <li class="nav-item">
@@ -23,6 +26,9 @@
     <!-- /.tab-pane -->
     <div class="tab-pane" id="completeTrip">
         @include('masteradmin.follow_up.complete-information')
+    </div>
+    <div class="tab-pane" id="completedTrip">
+        @include('masteradmin.follow_up.completed-information')
     </div>
     <div class="tab-pane" id="sixmonthTrip">
         @include('masteradmin.follow_up.sixmonth-information')

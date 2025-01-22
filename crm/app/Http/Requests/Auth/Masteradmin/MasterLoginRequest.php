@@ -78,56 +78,34 @@ class MasterLoginRequest extends FormRequest
         }
 
         $userDetails = new MasterUserDetails();
-        $userDetails->setTableForUniqueId($user->buss_unique_id);
+        $userDetails->setTableForUniqueId(strtolower($user->buss_unique_id));
 
-       // $user = $userDetails->where('user_id', $user->buss_unique_id)->get();
-        //dD($user);
-        
-        // Checking if user exists before accessing role_id
-        // if ($user->isNotEmpty() && $user->first()->role_id == 0) {
-        //     $users = $userDetails->where('users_email', $credentials['user_email'])
-        //     ->where('user_id', $credentials['user_id'])
-        //     ->first();
-        // } else {
-        //     $users = $userDetails->where('user_work_email', $credentials['user_email'])
-        //     ->where('user_id', $credentials['user_id'])
-        //     ->first();
-        // }
-    
-        // if ($user->isNotEmpty()) {
-        //     $users = $user->firstWhere('role_id', '0');
-            
-        //     if ($user) {
-        //         $users = $userDetails->where('users_email', $credentials['user_email'])
-        //     ->where('user_id', $credentials['user_id'])
-        //     ->first();
-        //     } else {
-        //         $users = $userDetails->where('user_work_email', $credentials['user_email'])
+        // Find the user in the dynamically set table based on email and user_id
+        // $users = $userDetails->where('users_email', $credentials['user_email'])
         //             ->where('user_id', $credentials['user_id'])
         //             ->first();
-        //     }
-        // }
-     
+        
         $userWithRoleZero = $userDetails->where('user_id', $user->buss_unique_id)
-        ->where('role_id', 0)
+        ->where('role_id', '0')
         ->where('users_email', $credentials['user_email'])
         ->first();
-
+       // dd($userWithRoleZero);
         if ($userWithRoleZero) {
-        // dd('if');
+    //    dd('if');
         // If user with role_id == 0 exists, update password using users_email
         $users = $userDetails->where('users_email', $credentials['user_email'])
             ->where('user_id', $credentials['user_id'])
+            ->where('role_id', 0)
              ->first();
         } else {
-        // dd( 'else');
+    //    dd( 'else');
         // If no user with role_id == 0, update password using user_work_email
         $users = $userDetails->where('user_work_email', $credentials['user_email'])
                      ->where('user_id', $credentials['user_id'])
                      ->first();
         }
-
-        //dd($users);
+       
+    
         if (! $users || ! Hash::check($credentials['user_password'], $users->users_password)) {
             RateLimiter::hit($this->throttleKey());
     

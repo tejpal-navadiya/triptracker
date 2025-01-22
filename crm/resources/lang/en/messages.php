@@ -132,7 +132,9 @@ return [
             'plan_get_success' => 'Subscription Plans data get successfully.',
         ],
         'trip' => [
+            'type_success' => 'Trip Type get successfully.',
             'list_success' => 'Trip data get successfully.',
+            'add_success' => 'Trip created successfully.',
             'status_list_success' => 'Trip Status data get successfully.',
         ],
         'task' => [

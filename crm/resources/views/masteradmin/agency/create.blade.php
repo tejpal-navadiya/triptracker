@@ -164,7 +164,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="users_password">Password
                                             <span class="text-danger">*</span></label>
@@ -175,7 +175,26 @@
 
                                             <x-input-error class="mt-2" :messages="$errors->get('users_password')" />
                                         </div>
+                                    </div> -->
+
+                                    <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="users_password">Password
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                       
+
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="users_password" placeholder="Enter Password" name="users_password" autofocus autocomplete="users_password"  />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="toggle-password">
+                                                    <i class="fas fa-eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <x-input-error class="mt-2" :messages="$errors->get('users_password')" />
                                     </div>
+                                </div>
 
 
 
@@ -543,3 +562,22 @@
         </script>
     @endsection
 @endif
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('users_password');
+        const icon = togglePassword.querySelector('i');
+
+        togglePassword.addEventListener('click', function (e) {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+</script>

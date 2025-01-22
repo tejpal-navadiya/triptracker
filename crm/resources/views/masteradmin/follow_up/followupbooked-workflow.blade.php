@@ -24,6 +24,8 @@
 					$color = '#DB9ACA';
 				} elseif (($status) === 'Welcome Home') {
 					$color = '#F6A96D';
+				} elseif (($status) === 'Trip Completed') {
+					$color = '#F56B62';
 				} elseif (($status) === '6 month Review') {
 					$color = '#FBC11E';
 				} elseif (($status) === '1 year Review') {

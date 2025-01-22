@@ -245,6 +245,7 @@
                         $('#completedDatatable').DataTable();
                         $('#oneYearDatatable').DataTable();
                         $('#sixMonthDatatable').DataTable();
+                        $('#completedTripDataTable').DataTable();
                 },
                 error: function(xhr) {
                     console.error('Error:', xhr);
@@ -340,7 +341,7 @@ $('#listViewBtn').click(function (e) {
             $('#completedDatatable').DataTable();
             $('#oneYearDatatable').DataTable();
             $('#sixMonthDatatable').DataTable();
-            
+            $('#completedTripDataTable').DataTable();
             
         },
         error: function (xhr) {

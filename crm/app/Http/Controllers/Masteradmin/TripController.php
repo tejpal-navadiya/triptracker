@@ -254,7 +254,7 @@ class TripController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-       // dd($request->all());
+       //dd($request->all());
         $user = Auth::guard('masteradmins')->user();
         $dynamicId = $user->users_id;
         
@@ -1754,18 +1754,66 @@ class TripController extends Controller
                         $oneYearFollowUp = $oneYearFollowUpQuery->get();
                         // dd(\DB::getQueryLog()); 
                         
-
+                if($user->users_id && $user->role_id ==0 ){
+                    // Base Query for Trip Booked
+                        $bookedTripQuery = Trip::where('tr_status', 1)
+                        ->from($tripTable)
+                        ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                        ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                        ->where($tripTable . '.status', '=', 7)  // Trip Sold
+                        ->select([
+                            $tripTable . '.*',
+                            $masterUserTable . '.users_first_name',
+                            $masterUserTable . '.users_last_name',
+                            $travelerTable . '.trtm_first_name',  
+                            $travelerTable . '.trtm_last_name' 
+                        ]);
+                
+                        }else{
+                            $specificId = $user->users_id;
+                            $bookedTripQuery = Trip::where('tr_status', 1)
+                            ->from($tripTable)
+                            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                            ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                            ->where(function($query) use ($tripTable, $user, $specificId) {
+                                $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                                    ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                            })
+                            ->where($tripTable . '.status', '=', 7)  // Trip Sold
+                            ->select([
+                                $tripTable . '.*', 
+                                $masterUserTable . '.users_first_name', 
+                                $masterUserTable . '.users_last_name' ,
+                                $travelerTable . '.trtm_first_name',  
+                                $travelerTable . '.trtm_last_name' 
+                            ]);
+                        }
+                
+                        if ($trip_agent) {
+                            $bookedTripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+                        }
+                    
+                        if ($trip_traveler) {
+                            $bookedTripQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+                        }
+                
+                        if ($tr_number) {
+                            $bookedTripQuery->where($tripTable . '.tr_number', $tr_number);
+                        }
+                
+                    // Execute the query
+                    $bookedTripQuery = $bookedTripQuery->get();
 
 
                 // dd($tripCompleted);
 
         if ($request->ajax()) {
             
-                return view('masteradmin.follow_up.followupbooked-list', compact('trip', 'agency', 'trip_status','traveller','tripCompleted','sixMonthFollowUp','oneYearFollowUp'))->render();
+                return view('masteradmin.follow_up.followupbooked-list', compact('trip', 'agency', 'trip_status','traveller','tripCompleted','sixMonthFollowUp','oneYearFollowUp','bookedTripQuery'))->render();
             }
     
         // Return the main page view
-        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller','tripCompleted','sixMonthFollowUp','oneYearFollowUp'));
+        return view('masteradmin.follow_up.index', compact('trip', 'agency', 'trip_status','traveller','tripCompleted','sixMonthFollowUp','oneYearFollowUp','bookedTripQuery'));
     }
 
     public function follow_up_after(Request $request)
@@ -4543,11 +4591,63 @@ public function followUpBookgridView(Request $request)
     ->orderBy($tripTable . '.tr_start_date', 'ASC')
     ->get();
 
+    if($user->users_id && $user->role_id ==0 ){
+        // Base Query for Trip Booked
+            $bookedTripQuery = Trip::where('tr_status', 1)
+            ->from($tripTable)
+            ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+            ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+            ->where($tripTable . '.status', '=', 7)  // Trip Sold
+            ->select([
+                $tripTable . '.*',
+                $masterUserTable . '.users_first_name',
+                $masterUserTable . '.users_last_name',
+                $travelerTable . '.trtm_first_name',  
+                $travelerTable . '.trtm_last_name' 
+            ]);
+    
+            }else{
+                $specificId = $user->users_id;
+                $bookedTripQuery = Trip::where('tr_status', 1)
+                ->from($tripTable)
+                ->join($masterUserTable, $tripTable . '.tr_agent_id', '=', $masterUserTable . '.users_id')
+                ->leftJoin($travelerTable, $travelerTable . '.trtm_id', '=', $tripTable . '.tr_traveler_id') 
+                ->where(function($query) use ($tripTable, $user, $specificId) {
+                    $query->where($tripTable . '.tr_agent_id', $user->users_id)
+                        ->orWhere($tripTable . '.id', $specificId);  // Use $specificId here
+                })
+                ->where($tripTable . '.status', '=', 7)  // Trip Sold
+                ->select([
+                    $tripTable . '.*', 
+                    $masterUserTable . '.users_first_name', 
+                    $masterUserTable . '.users_last_name' ,
+                    $travelerTable . '.trtm_first_name',  
+                    $travelerTable . '.trtm_last_name' 
+                ]);
+            }
+    
+            if ($trip_agent) {
+                $bookedTripQuery->where($tripTable . '.tr_agent_id', $trip_agent);
+            }
+        
+            if ($trip_traveler) {
+                $bookedTripQuery->where($tripTable . '.tr_traveler_id', $trip_traveler);
+            }
+    
+            if ($tr_number) {
+                $bookedTripQuery->where($tripTable . '.tr_number', $tr_number);
+            }
+    
+        // Execute the query
+        $bookedTripQuery = $bookedTripQuery->get();
+
+
 
     // Combine all trip queries into one collection
     $allTripsResults = collect([
         'Trip Traveling' => $travellingTripQuery,
         'Welcome Home' => $welcomeHomeQuery,
+        'Trip Completed' => $bookedTripQuery,
         '6 month Review' => $sixMonthFollowUpQuery,
         '1 year Review' => $oneYearFollowUpQuery,
     ]);

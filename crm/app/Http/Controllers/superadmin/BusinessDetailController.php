@@ -65,7 +65,7 @@ class BusinessDetailController extends Controller
 
         });
         
-        //  dd($MasterUser);
+        // dd($MasterUser);
         return view('superadmin.businessdetails.index')->with('MasterUser', $MasterUser);
     }
 
@@ -79,10 +79,11 @@ class BusinessDetailController extends Controller
         $udetail = $userDetails
         ->where('users_email', '!=', $user->user_email) 
         ->get(); 
-
+       
         $user_id = $id;
-
+       
         $userdetailss = $userDetails->where(['users_email' => $user->user_email, 'role_id' => 0])->first();
+        //dd($userdetailss);
         if ($userdetailss) {
 
             $countries = DB::table('ta_countries')->where('id', $userdetailss->users_country)->first();
@@ -95,8 +96,7 @@ class BusinessDetailController extends Controller
             
         }
 
-       // dd($udetail);
-
+       
         $totalUserCount = $userDetails->where('users_email', '!=', $user->user_email)->count();
         $user->totalUserCount = $totalUserCount;
 
@@ -116,7 +116,7 @@ class BusinessDetailController extends Controller
             $detail->city_name = $city ? $city->name : '';
             
         }
-        //dd($udetail);
+        
         return view('superadmin.businessdetails.view_business', compact('user', 'udetail','userdetailss','user_id'));
     }
     public function updateStatus($id)
@@ -375,7 +375,7 @@ public function update(Request $request, $id)
     }
 
     // Step 1: Define the table name dynamically
-    $tableName = $user->buss_unique_id . '_tc_users_agency_phone';
+    $tableName = strtolower($user->buss_unique_id) . '_tc_users_agency_phone';
 
     // Step 2: Generate a unique random string for the column `age_user_phone_id`
     $ageid = $this->GenerateUniqueRandomString(
@@ -402,9 +402,9 @@ public function update(Request $request, $id)
     DB::table($tableName)->insert($data);
       }
 
-      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->buss_unique_id]);
+      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => strtolower($user->buss_unique_id)]);
         try {
-            Mail::to($request->users_email)->send(new UsersDetails($user->buss_unique_id, $loginUrl, $request->users_email));
+            Mail::to($request->users_email)->send(new UsersDetails(strtolower($user->buss_unique_id), $loginUrl, $request->users_email));
             session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
         } catch (\Exception $e) {
             session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
@@ -511,6 +511,7 @@ public function update(Request $request, $id)
         //     // Debug output
         //     //dd($users_image); // This will output the image path and stop execution for debugging purposes
         // }
+        
         $admin = MasterUser::create([
             'id' => $uniqueId,
             'user_agencies_name' => $request->user_agencies_name,
@@ -525,6 +526,7 @@ public function update(Request $request, $id)
             'user_address' => $request->user_address,
             'user_country' => $request->user_country,
             'user_state' => $request->user_state,
+            'user_personal_email' =>$request->user_personal_email,
             'user_image' => '',
             'buss_unique_id' => '',
             'sp_id' => $request->sp_id,
@@ -550,7 +552,7 @@ public function update(Request $request, $id)
         $admin->updated_at = now();  // Or \Carbon\Carbon::now() for the current timestamp
 
         //create own image floder 
-        $userFolder = 'masteradmin/' .$buss_unique_id.'_'.$request->input('user_first_name');
+        $userFolder = 'masteradmin/' .strtolower($buss_unique_id).'_'.$request->input('user_first_name');
         Storage::makeDirectory($userFolder, 0755, true);
 
         $users_image = '';
@@ -596,6 +598,7 @@ public function update(Request $request, $id)
             'users_country' => $request->user_country,
             'users_city' => $request->user_city,
             'users_zip' => $request->user_zip,
+            'users_personal_email' =>$request->user_personal_email,
             'users_image' => $users_image,
             'id' => $admin->id,
             'role_id' => 0,
@@ -618,7 +621,7 @@ public function update(Request $request, $id)
         $loginUrl = route('masteradmin.login');
 
         try {
-            Mail::to($request->user_email)->send(new UserRegistered($buss_unique_id, $loginUrl, $request->user_email,$invoiceUrl=''));
+            Mail::to($request->user_email)->send(new UserRegistered(strtolower($buss_unique_id), $loginUrl, $request->user_email,$invoiceUrl=''));
 
            session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
         } catch (\Exception $e) {

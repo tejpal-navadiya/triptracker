@@ -1211,7 +1211,11 @@
                                                             $tripTypes = json_decode($trip->tr_type_trip, true) ?? []; // Decode and ensure it's an array
                                                             //dd($tripTypes);
                                                         @endphp
-
+                                                        @php
+                                                            if (!isset($rowtriptypeIndex)) {
+                                                                $rowtriptypeIndex = 0;  // Initialize if not already set
+                                                            }
+                                                        @endphp
                                                        
                                                             @php
                                                                 $displayedTripTypes = []; // Array to track displayed trip types
@@ -1224,7 +1228,7 @@
                                                             {{-- Check if current trip type is in $tripTypes --}}
                                                           
                                                             @php
-                                                             $tripTypeName = $trip->trip_type_name;
+                                                             $tripTypeName = $trip->trip_type_name ?? '';
                                                                         $rowtriptype = 0; 
                                                                     @endphp
                                                                     @php
@@ -1249,7 +1253,7 @@
                                                                     
                                                                     @php
                                                                     
-                                                                    
+                                                                    $tripTypeName = $trip->trip_type_name ?? '';
                                                                   
                                                                      $tripFields = collect($tripTypes)->filter(function ($t) use ($tripTypeName) {
         return strtolower($t) === strtolower($tripTypeName);
@@ -1340,7 +1344,7 @@
                                                                         
                                                                        
                                                                 </div>
-                                                                <input type="hidden" id="hiddenRowtriptype_{{ $trip->ty_id }}" name="hiddenRowtriptype_{{ $trip->ty_id }}" value="{{ $rowtriptype-1 }}">
+                                                                <input type="hidden" id="hiddenRowtriptype_{{ $trip->ty_id }}" name="hiddenRowtriptype_{{ $trip->ty_id }}" value="{{ isset($rowtriptype) ? $rowtriptype - 1 : 0 }}">
                                                                 
                                                                 @php
                                                                     $rowtriptypeIndex = $rowtriptypeIndex + 1; // Initialize a counter for row trip type

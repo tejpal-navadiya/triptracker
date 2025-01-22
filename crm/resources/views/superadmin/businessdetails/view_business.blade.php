@@ -87,8 +87,8 @@
                                                         <td>{{ $userdetailss->users_first_name ?? ''}}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td><strong>Email :</strong></td>
-                                                        <td>{{ $userdetailss->users_email ?? ''}}</td>
+                                                        <td><strong>Personal Email :</strong></td>
+                                                        <td>{{ $userdetailss->users_personal_email ?? ''}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Business Phone :</strong></td>
@@ -168,7 +168,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Email Address</th>
+                                            <th>Personal Email Address</th>
                                             <th>Business Email Address</th>
                                             <th>Phone Number</th>
                                             <th>User Role</th>

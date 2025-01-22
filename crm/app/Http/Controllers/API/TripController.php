@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MasterUserDetails;
 use App\Models\TripStatus;
 use App\Models\TaskStatus;
+use App\Models\TripType;
 
 
 class TripController extends Controller
@@ -275,32 +276,117 @@ class TripController extends Controller
 
     public function AddTrip(Request $request)
     {
-        try{
+        try {
             $auth_user = $request->attributes->get('authenticated_user');
-            //dd($auth_user->users_id);
             if (!$auth_user) {
                 return $this->sendError('Unauthenticated.', [], 500);
             }
-
+    
             $uniqueId = $request->header('X-UniqueId');
-
-          
-         
+    
+            // Validate the input fields
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|string',
+                'tr_name' => 'required|string',
+                'tr_agent_id' => 'required|string',
+                'tr_traveler_id' => 'required|string',
+                'tr_number' => 'nullable|string',
+                'tr_email' => 'nullable|email',
+                'tr_phone' => 'nullable|string|regex:/^[0-9]{1,12}$/',
+                'tr_num_people' => 'nullable|integer',
+                'tr_start_date' => 'nullable|date',
+                'tr_end_date' => 'nullable|date',
+                'tr_final_payment_date' => 'nullable|date',
+                'tr_value_trip' => 'nullable|numeric',
+                'tr_final_amount' => 'nullable|numeric',
+                'tr_desc' => 'nullable|string',
+                'status' => 'nullable|string',
+                'tr_type_trip' => 'nullable|array'
+            ], [
+                'tr_name.required' => 'Trip Name is required',
+                'tr_agent_id.required' => 'Agent ID is required',
+                'traveler_id.required' => 'Lead Traveler is required',
+                'tr_email.regex' => 'Please enter a valid email address.',
+            ]);
+    
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 500);
+            }
+    
+            $validated = $validator->validated();
+    
+            // Create a new trip using the validated data
+            $tripTable = $uniqueId . '_tc_trip';
+            $tableuniqueId = $this->GenerateUniqueRandomString($table = $tripTable, $column = "tr_id", $chars = 6);
+    
+            $trip = [
+                'id' => $validated['id'],
+                'tr_id' => $tableuniqueId,
+                'tr_name' => $validated['tr_name'],
+                'tr_agent_id' => $validated['tr_agent_id'],
+                'tr_traveler_id' => $validated['tr_traveler_id'],
+                'tr_number' => $validated['tr_number'],
+                'tr_email' => $validated['tr_email'],
+                'tr_phone' => $validated['tr_phone'],
+                'tr_num_people' => $validated['tr_num_people'],
+                'tr_start_date' => $validated['tr_start_date'],
+                'tr_end_date' => $validated['tr_end_date'],
+                'tr_final_payment_date' => $validated['tr_final_payment_date'],
+                'tr_value_trip' => $validated['tr_value_trip'],
+                'tr_final_amount' => $validated['tr_final_amount'],
+                'tr_desc' => $validated['tr_desc'],
+                'status' => $validated['status'],
+                'tr_type_trip' => json_encode($validated['tr_type_trip']),
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+    
+            DB::table($tripTable)->insert($trip);
+    
+            // Process trip types
+            $tripTypesData = [];
+            $tripTypes = $request->input('trip_types');
+            if (isset($tripTypes) && is_array($tripTypes) && count($tripTypes) > 0) {
+                foreach ($tripTypes as $tripTypeId => $tripTypeEntries) {
+                    foreach ($tripTypeEntries as $entry) {
+                        $tripTypeText = $entry['trip_type_text'];
+                        $tripTypeConfirmation = $entry['trip_type_confirmation'];
+                        $tripTypeName = $entry['trip_type_name'];
+                        $triptypeid = $entry['trip_type_id'] ?? '';
+    
+                        $typeOfTripTablename = $uniqueId . '_tc_type_of_trip';
+                        $uniqueIdType = $this->GenerateUniqueRandomString($table = $typeOfTripTablename, $column = "trip_type_id", $chars = 6);
+    
+                        $typeOfTrip = [
+                            'trip_type_id' => $uniqueIdType,
+                            'tr_id' => $tableuniqueId,
+                            'id' => $validated['id'],
+                            'trip_type_name' => $tripTypeName,
+                            'trip_type_text' => $tripTypeText,
+                            'trip_type_confirmation' => $tripTypeConfirmation,
+                            'trip_status' => 1,
+                            'ty_id' => $triptypeid,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ];
+    
+                        DB::table($typeOfTripTablename)->insert($typeOfTrip);
+                        $tripTypesData[] = $typeOfTrip;
+                    }
+                }
+            }
             
-            //dd($taskItem);
-            // $response = [
-            //     'data' => $this->TripTaskListResponse($task->items()), 
-            // ];
-
-            // return $this->sendResponse($response, __('messages.api.task.list_success'));      
-        }
-        catch(\Exception $e)
-        {
-            
-            $this->serviceLogError('GetTaskList', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+            $response = [
+                'trip' => $trip,
+                'trip_types' => $tripTypesData
+            ];
+            return $this->sendResponse($response, __('messages.api.trip.add_success'));
+        } catch (\Exception $e) {
+            $this->serviceLogError('AddTrip', $user_id = $auth_user->users_id ?? 0, $e->getMessage(), json_encode($request->all()), $e);
             return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
-        }    
+        }
     }
+    
     
     public function filterTrip(Request $request)
     {
@@ -555,6 +641,25 @@ class TripController extends Controller
     }
 }
     
+
+
+    public function GetTripTypeofList(Request $request) 
+        {
+            try {
+
+                $triptype = TripType::orderBy('ty_name', 'ASC')->get();
+        
+                if ($triptype->isEmpty()) {
+                    return $this->sendError('No Trip Type found.', [], 404);
+                }
+        
+                return $this->sendResponse($triptype, __('messages.api.trip.type_success'));
+            } catch (\Exception $e) {
+                $this->serviceLogError('GetTripTypeofList', $user_id = 0, $e->getMessage(), json_encode($request->all()), $e);
+                return $this->sendError($e->getMessage(), config('global.null_object'), 500, false);
+            }
+        }
+
     public function TripStatus(Request $request) 
     {
          try {

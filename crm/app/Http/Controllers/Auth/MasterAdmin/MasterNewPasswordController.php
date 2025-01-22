@@ -94,11 +94,11 @@ class MasterNewPasswordController extends Controller
             // $user = MasterUser::where('user_email', $request->user_email)
             // ->update(['user_password' => Hash::make($request->user_password)]);
             $userDetails = new MasterUserDetails();
-            $userDetails->setTableForUniqueId($request->user_id);
+            $userDetails->setTableForUniqueId(strtolower($request->user_id));
          
 
             $userWithRoleZero = $userDetails->where('user_id', $request->user_id)
-                                ->where('role_id', 0)
+                                ->where('role_id', '0')
                                 ->where('users_email', $request->user_email)
                                 ->first();
 
@@ -107,6 +107,7 @@ class MasterNewPasswordController extends Controller
                 // If user with role_id == 0 exists, update password using users_email
                 $usersd = $userDetails->where('users_email', $request->user_email)
                     ->where('user_id', $request->user_id)
+                    ->where('role_id', '0')
                     ->update(['users_password' => Hash::make($request->user_password)]);
             } else {
                 // dd( 'else');

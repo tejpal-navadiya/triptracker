@@ -851,9 +851,9 @@ public function store(Request $request)
           $travelerItem->save();
       }
 
-      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => $user->user_id]);
+      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->user_work_email, 'user_id' => $user->user_id]);
         try {
-            Mail::to($request->users_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->users_email));
+            Mail::to($request->user_work_email)->send(new UsersDetails($user->user_id, $loginUrl, $request->user_work_email));
             session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
         } catch (\Exception $e) {
             session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));
@@ -1053,6 +1053,8 @@ public function store(Request $request)
     $agent = AgencyPhones::where('age_id', $agency->users_id)->get();
     $phones_type = StaticAgentPhone::all();
 
+
+    
 
     return view('masteradmin.agency.edit', compact('agency','phones_type', 'users_role', 'agent','country','states','city'));
     
