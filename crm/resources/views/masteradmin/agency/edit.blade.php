@@ -114,8 +114,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
 
-                                            <label for="tr_agent_id">Personal Email Address<span
-                                                    class="text-danger">*</span></label>
+                                            <label for="tr_agent_id">Personal Email Address</label>
 
                                             <x-text-input type="email" class="form-control" id="tr_agent_id"
                                                 placeholder="Enter Personal Email Address" name="users_email" autofocus

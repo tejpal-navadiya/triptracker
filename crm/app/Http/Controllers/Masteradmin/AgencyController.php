@@ -988,7 +988,7 @@ public function store(Request $request)
         
                     $baseSuccessUrl = route('agencysuccess', [
                         'user_id' => $user->user_id,
-                        'email' => $validatedData['users_email'],
+                        'email' => $validatedData['user_work_email'],
                         'stripe_id' => $Stripesubscription->id,
                         'plan_id' => $user->plan_id,
                         'period' => $period,
@@ -1009,7 +1009,7 @@ public function store(Request $request)
                         'price' => $price_stripe_id,
                         'quantity' => $quantity,
                     ]],
-                    'customer_email' => $validatedData['users_email'],
+                    'customer_email' => $validatedData['user_work_email'],
                     'success_url' => $successUrl,
                     'cancel_url' => route('agencycancel'),
                 ]);

@@ -402,9 +402,9 @@ public function update(Request $request, $id)
     DB::table($tableName)->insert($data);
       }
 
-      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->users_email, 'user_id' => strtolower($user->buss_unique_id)]);
+      $loginUrl = route('masteradmin.userdetail.changePassword', ['email' => $request->user_work_email, 'user_id' => strtolower($user->buss_unique_id)]);
         try {
-            Mail::to($request->users_email)->send(new UsersDetails(strtolower($user->buss_unique_id), $loginUrl, $request->users_email));
+            Mail::to($request->user_work_email)->send(new UsersDetails(strtolower($user->buss_unique_id), $loginUrl, $request->user_work_email));
             session()->flash('link-success', __('messages.masteradmin.user.link_send_success'));
         } catch (\Exception $e) {
             session()->flash('link-error', __('messages.masteradmin.user.link_send_error'));

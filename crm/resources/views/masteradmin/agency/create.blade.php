@@ -114,8 +114,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="users_email">Personal Email Address<span
-                                                    class="text-danger">*</span></label>
+                                            <label for="users_email">Personal Email Address</label>
                                             <x-text-input type="email" class="form-control" id="users_email"
                                                 placeholder="Enter Personal Email Address" name="users_email" autofocus
                                                 autocomplete="users_email" value="{{ old('users_email') }}" />

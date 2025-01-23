@@ -170,7 +170,7 @@
                                             <th>Name</th>
                                             <th>Personal Email Address</th>
                                             <th>Business Email Address</th>
-                                            <th>Phone Number</th>
+                                            <th>Business Phone Number</th>
                                             <th>User Role</th>
                                             <th>Last Updated</th>
                                             <th>User Id</th>

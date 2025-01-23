@@ -77,7 +77,7 @@
                                             <th>Name</th>
                                             <th>Personal Email Address</th>
                                             <th>Business Email Address</th>
-                                            <th>Phone Number</th>
+                                            <th>Business Phone Number</th>
                                             <th>Users Id</th>
                                             <th>User Role</th>
                                             <th>Status</th>
@@ -90,9 +90,20 @@
                                             <tr>
                                                 <td>{{ $value->users_first_name ?? ('' . ' ' . $value->users_first_name ?? '')}} {{ $value->users_last_name ?? ('' . ' ' . $value->users_last_name ?? '') }}
                                                 </td>
-                                                <td>{{ $value->users_email }}</td>
-                                                <td>{{ $value->user_work_email ?? $value->users_email }}</td>
-                                                <td>{{ $value->user_emergency_phone_number ?? ($value->users_phone ?? '') }}
+                                                <td>@if ($value->userRole->role_name ?? '')
+                                                          {{ $value->users_email ?? '' }}
+                                                    @else
+                                                        {{ $value->users_personal_email ?? '' }}
+                                                    @endif
+                                                    </td>
+                                                    <td>@if ($value->role_id == 0)
+                                                          {{ $value->users_email ?? '' }}
+                                                    @else
+                                                        {{ $value->user_work_email ?? '' }}
+                                                       
+                                                    @endif
+                                                    </td>
+                                                <td>{{ $value->user_emergency_phone_number ?? ($value->users_business_phone ?? '') }}
                                                 </td>
                                                 <td>{{ $value->user_id }}</td>
                                                 <td>{{ $value->userRole->role_name ?? config('global.default_user_role') }}
